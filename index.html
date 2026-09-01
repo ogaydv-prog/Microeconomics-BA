@@ -9,7 +9,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -28,36 +28,37 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
+            padding: 15px 20px;
             position: relative;
         }
 
         .top-left-logo {
             position: absolute;
-            top: 20px;
-            left: 25px;
-            width: 60px;
-            height: 60px;
+            top: 25px;
+            left: 30px;
+            width: 55px;
+            height: 55px;
             object-fit: contain;
         }
 
         header {
             text-align: center;
             margin-top: 10px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         h1 {
-            font-size: 30px;
+            font-size: 36px;
             font-weight: 800;
             color: #001e50;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             margin-top: 15px;
             letter-spacing: -0.5px;
+            text-transform: uppercase;
         }
 
         .subtitle {
-            font-size: 14px;
+            font-size: 15px;
             color: #475569;
             max-width: 750px;
             line-height: 1.5;
@@ -65,71 +66,53 @@
             font-weight: 500;
         }
 
-        /* Сетка: строго 5 карточек в ряд на десктопе */
+        /* Сетка для 10 карточек */
         .grid-container {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 16px;
-            max-width: 1180px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 1150px;
             width: 100%;
             justify-content: center;
             align-items: center;
             padding-bottom: 30px;
         }
 
-        @media (max-width: 1024px) {
-            .grid-container {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        @media (max-width: 640px) {
-            .grid-container {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 10px;
-            }
-        }
-
-        /* Единый одинаковый размер и идеальная пропорция карточки */
+        /* Карточка с точным облеганием рамки по контуру */
         .card {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: inline-block;
             text-decoration: none;
             background: #ffffff;
-            border: 2px solid #cbd5e1;
+            border: 2px solid #e2e8f0;
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            width: 100%;
-            height: 280px; /* Идеальная высота для полного отображения */
+            width: 195px;
+            height: 255px;
             position: relative;
-            padding: 6px;
+            padding: 0; /* Отступы полностью убраны, чтобы рамка облегала картинку */
         }
 
-        /* Изображение вписывается полностью 100% без обрезки заголовков */
         .card img {
             width: 100%;
             height: 100%;
-            object-fit: contain; /* Картинка полностью помещается без срезов */
-            border-radius: 10px;
+            object-fit: fill; /* Заполняет рамку ровно без внутренних полей */
             display: block;
             transition: transform 0.3s ease;
         }
 
-        /* Акцентная синяя рамка и эффект при наведении */
         .card:hover {
-            transform: translateY(-6px) scale(1.02);
+            transform: translateY(-8px) scale(1.03);
             border-color: #001e50;
-            box-shadow: 0 12px 24px rgba(0, 30, 80, 0.18);
+            box-shadow: 0 16px 30px rgba(0, 30, 80, 0.18);
         }
 
         .card:hover img {
-            transform: scale(1.03);
+            transform: scale(1.02);
         }
 
-        /* Неактивные карточки */
+        /* Карточки без активных ссылок */
         .card.disabled {
             cursor: default;
             opacity: 0.88;
@@ -137,8 +120,8 @@
 
         .card.disabled:hover {
             transform: none;
-            border-color: #cbd5e1;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+            border-color: #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
         }
 
         .card.disabled:hover img {
@@ -149,7 +132,7 @@
             margin-top: auto;
             font-size: 13px;
             color: #64748b;
-            padding-top: 25px;
+            padding-top: 30px;
             padding-bottom: 20px;
             text-align: center;
             line-height: 1.6;
@@ -164,7 +147,7 @@
     <header>
         <h1>МИКРОЭКОНОМИКА</h1>
         <p class="subtitle">
-            Интерактивный образовательный портал | Школа Цифровых Технологий и Экономики 2026<br>
+            Интерактивный образовательный портал | Школа Цифровых Технологий и Экономики 2026 <br>
             Образовательная программа: <strong>Бизнес-Аналитика и Экономика (БАиЭ)</strong> | AlmaU
         </p>
     </header>
