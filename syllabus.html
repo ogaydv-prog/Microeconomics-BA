@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Силлабус: Микроэкономика (Mik 1214) | AlmaU БАиЭ</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+
+    <!-- Header -->
+    <header class="bg-slate-900 text-white border-b border-slate-800 shadow-xl sticky top-0 z-40 backdrop-blur-md bg-opacity-95">
+        <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-4">
+                <img src="https://ogaydv-prog.github.io/Economics-se/almau.jpg" alt="AlmaU Logo" class="h-12 w-auto object-contain rounded-xl border border-slate-700 p-1 bg-white">
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold tracking-widest text-indigo-400 uppercase">Mik 1214 • 5 ECTS</span>
+                        <span class="text-[10px] bg-indigo-950 text-indigo-300 font-extrabold px-2 py-0.5 rounded border border-indigo-800/40 uppercase">ОП: БАиЭ</span>
+                    </div>
+                    <h1 class="text-xl sm:text-2xl font-extrabold tracking-tight bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent">
+                        Силлабус: Микроэкономика
+                    </h1>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                <a href="index.html" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs sm:text-sm font-semibold transition-all border border-slate-700 hover:border-slate-600 flex items-center space-x-2">
+                    <i class="fa-solid fa-arrow-left text-indigo-400"></i>
+                    <span>Вернуться на главную</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div class="bg-slate-900/60 border-b border-slate-800 sticky top-[73px] z-30 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex space-x-2 overflow-x-auto py-3 custom-scrollbar text-xs font-bold">
+                <button onclick="switchTab(event, 'tab-overview')" class="tab-btn px-4 py-2.5 rounded-xl transition-all flex items-center space-x-2 whitespace-nowrap bg-indigo-600 text-white shadow-md">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>1. Описание</span>
+                </button>
+                <button onclick="switchTab(event, 'tab-philosophy')" class="tab-btn px-4 py-2.5 rounded-xl transition-all flex items-center space-x-2 whitespace-nowrap text-slate-400 hover:text-white hover:bg-slate-800/60">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                    <span>2. Философия и РО</span>
+                </button>
+                <button onclick="switchTab(event, 'tab-schedule')" class="tab-btn px-4 py-2.5 rounded-xl transition-all flex items-center space-x-2 whitespace-nowrap text-slate-400 hover:text-white hover:bg-slate-800/60">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <span>3. План (15 Недель)</span>
+                </button>
+                <button onclick="switchTab(event, 'tab-policy')" class="tab-btn px-4 py-2.5 rounded-xl transition-all flex items-center space-x-2 whitespace-nowrap text-slate-400 hover:text-white hover:bg-slate-800/60">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>4. Политика курса</span>
+                </button>
+                <button onclick="switchTab(event, 'tab-ai')" class="tab-btn px-4 py-2.5 rounded-xl transition-all flex items-center space-x-2 whitespace-nowrap text-slate-400 hover:text-white hover:bg-slate-800/60">
+                    <i class="fa-solid fa-robot"></i>
+                    <span>5. Использование ИИ</span>
+                </button>
+                <button onclick="switchTab(event, 'tab-grading')" class="tab-btn px-4 py-2.5 rounded-xl transition-all flex items-center space-x-2 whitespace-nowrap text-slate-400 hover:text-white hover:bg-slate-800/60">
+                    <i class="fa-solid fa-calculator"></i>
+                    <span>6. Оценивание</span>
+                </button>
+                <button onclick="switchTab(event, 'tab-rubrics')" class="tab-btn px-4 py-2.5 rounded-xl transition-all flex items-center space-x-2 whitespace-nowrap text-slate-400 hover:text-white hover:bg-slate-800/60">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span>7. Литература и Рубрики</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        
+        <!-- TAB 1: OVERVIEW -->
+        <div id="tab-overview" class="tab-content active space-y-6">
+            <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 shadow-2xl">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center border-b border-slate-800 pb-5 gap-4">
+                    <div>
+                        <span class="text-xs font-bold text-indigo-400 uppercase tracking-widest">Паспорт дисциплины</span>
+                        <h2 class="text-2xl font-extrabold text-white mt-1">Микроэкономика (Mik 1214)</h2>
+                        <p class="text-xs text-slate-400 mt-1">Школа цифровых технологий и экономики • ОП «Бизнес-Аналитика и Экономика» (БАиЭ)</p>
+                    </div>
+                    <div class="flex items-center space-x-3 bg-slate-950 p-3 rounded-xl border border-slate-800">
+                        <i class="fa-solid fa-qrcode text-3xl text-indigo-400"></i>
+                        <div class="text-[11px]">
+                            <p class="font-bold text-slate-200">Официальный силлабус</p>
+                            <a href="https://disk.yandex.kz/i/38lxoDhxyUTxRg" target="_blank" class="text-indigo-400 hover:underline">Скачать PDF (Яндекс.Диск)</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Specs Grid -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 my-6">
+                    <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800">
+                        <span class="text-[10px] font-bold text-slate-500 uppercase">Объем кредитов</span>
+                        <p class="text-lg font-extrabold text-indigo-400 mt-1">5 ECTS (150 часов)</p>
+                        <p class="text-[11px] text-slate-400">45ч Ауд. / 105ч СРОП и СРО</p>
+                    </div>
+                    <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800">
+                        <span class="text-[10px] font-bold text-slate-500 uppercase">Формат и Семестр</span>
+                        <p class="text-lg font-extrabold text-emerald-400 mt-1">Offline / 1 Семестр</p>
+                        <p class="text-[11px] text-slate-400">Пререквизиты: Нет</p>
+                    </div>
+                    <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800">
+                        <span class="text-[10px] font-bold text-slate-500 uppercase">Преподаватель</span>
+                        <p class="text-sm font-extrabold text-slate-200 mt-1">Дмитрий Огай, MBA</p>
+                        <p class="text-[11px] text-slate-400">Professor of Practice</p>
+                    </div>
+                    <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800">
+                        <span class="text-[10px] font-bold text-slate-500 uppercase">Контакты</span>
+                        <p class="text-xs font-bold text-indigo-300 mt-1">d.ogay@almau.edu.kz</p>
+                        <p class="text-[11px] text-slate-400">По расписанию занятий</p>
+                    </div>
+                </div>
+
+                <div class="space-y-4 text-sm text-slate-300 leading-relaxed">
+                    <div class="p-4 bg-slate-950 rounded-xl border border-slate-800">
+                        <h3 class="text-base font-bold text-white mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-align-left text-indigo-400"></i>
+                            Краткое описание курса
+                        </h3>
+                        <p>
+                            Дисциплина направлена на формирование представлений о принципах и методах микроэкономики, об основных микроэкономических моделях объективной оценки поведения субъектов рыночной экономики и успешной реализации их в бизнес-среде, способности описывать, анализировать и применять фундаментальные аспекты экономической теории на микроуровне.
+                        </p>
+                    </div>
+
+                    <div class="p-4 bg-slate-950 rounded-xl border border-slate-800">
+                        <h3 class="text-base font-bold text-white mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-bullseye text-indigo-400"></i>
+                            Цель курса
+                        </h3>
+                        <p>
+                            Формирование у студентов понимания основ микроэкономики и развитие фундаментальных знаний о микроэкономических принципах, включая концепции спроса, предложения, рыночного равновесия, а также факторов, влияющих на принятие решений потребителями и производителями.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: PHILOSOPHY & OUTCOMES -->
+        <div id="tab-philosophy" class="tab-content space-y-6">
+            <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 shadow-2xl">
+                <h2 class="text-xl font-extrabold text-white mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-heart-pulse text-indigo-400"></i>
+                    Педагогическая философия и Результаты Обучения (РО)
+                </h2>
+
+                <div class="p-4 bg-indigo-950/30 rounded-xl border border-indigo-900/40 mb-6 text-xs text-indigo-200 leading-relaxed space-y-2">
+                    <p class="font-bold">Ключевые принципы преподавания:</p>
+                    <p>• <strong>Ориентация на студента:</strong> развитие критического мышления, самостоятельности и ответственности за обучение.</p>
+                    <p>• <strong>Интерактивность:</strong> дискуссии, решение кейсов и совместное решение практических задач.</p>
+                    <p>• <strong>Связь теории и практики:</strong> соединение академических знаний с реальными бизнес-процессами.</p>
+                </div>
+
+                <h3 class="text-sm font-bold text-slate-300 uppercase tracking-wider mb-3">Ожидаемые Результаты Обучения (Learning Outcomes)</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 flex items-start space-x-3">
+                        <span class="px-2.5 py-1 bg-indigo-600 text-white font-black text-xs rounded-lg">РО 1</span>
+                        <div class="text-xs">
+                            <h4 class="font-bold text-white">Знание основных концепций</h4>
+                            <p class="text-slate-400 mt-1">Ограниченность ресурсов, спрос и предложение, эластичность, предельная полезность, предельные издержки.</p>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 flex items-start space-x-3">
+                        <span class="px-2.5 py-1 bg-indigo-600 text-white font-black text-xs rounded-lg">РО 2</span>
+                        <div class="text-xs">
+                            <h4 class="font-bold text-white">Анализ рынков и равновесия</h4>
+                            <p class="text-slate-400 mt-1">Определение рыночного равновесия и оценка последствий вмешательства государства (налоги, субсидии, регулирование).</p>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 flex items-start space-x-3">
+                        <span class="px-2.5 py-1 bg-indigo-600 text-white font-black text-xs rounded-lg">РО 3</span>
+                        <div class="text-xs">
+                            <h4 class="font-bold text-white">Оценка поведения фирм и потребителей</h4>
+                            <p class="text-slate-400 mt-1">Анализ производственных функций, структуры затрат и выбор оптимального уровня производства.</p>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 flex items-start space-x-3">
+                        <span class="px-2.5 py-1 bg-indigo-600 text-white font-black text-xs rounded-lg">РО 4</span>
+                        <div class="text-xs">
+                            <h4 class="font-bold text-white">Анализ рыночных структур</h4>
+                            <p class="text-slate-400 mt-1">Сравнение совершенной конкуренции, монополии, монополистической конкуренции и олигополии.</p>
+                        </div>
+                    </div>
+                    <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 flex items-start space-x-3 md:col-span-2">
+                        <span class="px-2.5 py-1 bg-indigo-600 text-white font-black text-xs rounded-lg">РО 5</span>
+                        <div class="text-xs">
+                            <h4 class="font-bold text-white">Критическая оценка государственной политики</h4>
+                            <p class="text-slate-400 mt-1">Оценка мер государственного регулирования, налогообложения и их влияния на общественное благосостояние.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: SCHEDULE -->
+        <div id="tab-schedule" class="tab-content space-y-6">
+            <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 shadow-2xl">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-extrabold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-list-ol text-indigo-400"></i>
+                        Тематический план по неделям (15 Недель)
+                    </h2>
+                    <span class="text-xs font-bold text-slate-400">45 аудиторных часов</span>
+                </div>
+
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left border-collapse min-w-[700px]">
+                        <thead>
+                            <tr class="border-b border-slate-800 bg-slate-950/60 text-slate-400 text-[10px] font-bold uppercase tracking-wider">
+                                <th class="py-3 px-3 w-12 text-center">Нед.</th>
+                                <th class="py-3 px-4">Тема / Модуль</th>
+                                <th class="py-3 px-3 text-center">Формат работы</th>
+                                <th class="py-3 px-3 text-center">РО</th>
+                                <th class="py-3 px-3 text-right">Вес</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/60 text-xs">
+                            <tr class="hover:bg-slate-950/30">
+                                <td class="py-3 px-3 text-center font-bold text-indigo-400">1</td>
+                                <td class="py-3 px-4">Введение в микроэкономику. Модель PPF.</td>
+                                <td class="py-3 px-3 text-center">Анализ модели PPF</td>
+                                <td class="py-3 px-3 text-center font-bold text-slate-300">РО1</td>
+                                <td class="py-3 px-3 text-right font-medium text-slate-400">—</td>
+                            </tr>
+                            <tr class="hover:bg-slate-950/30">
+                                <td class="py-3 px-3 text-center font-bold text-indigo-400">2</td>
+                                <td class="py-3 px-4">Теория спроса и предложения. Рыночное равновесие.</td>
+                                <td class="py-3 px-3 text-center">Кейс-стади</td>
+                                <td class="py-3 px-3 text-center font-bold text-slate-300">РО1, РО2</td>
+                                <td class="py-3 px-3 text-right font-medium text-slate-400">—</td>
+                            </tr>
+                            <tr class="hover:bg-slate-950/30">
+                                <td class="py-3 px-3 text-center font-bold text-indigo-400">3</td>
+                                <td class="py-3 px-4">Эластичность спроса и предложения.</td>
+                                <td class="py-3 px-3 text-center">Решение задач</td>
+                                <td class="py-3 px-3 text-center font-bold text-slate-300">РО1, РО2</td>
+                                <td class="py-3 px-3 text-right font-bold text-emerald-400">5%</td>
+                            </tr>
+                            <tr class="hover:bg-slate-950/30">
+                                <td class="py-3 px-3 text-center font-bold text-indigo-400">4</td>
+                                <td class="py-3 px-4">Теория поведения потребителей и бюджетные ограничения.</td>
+                                <td class="py-3 px-3 text-center">Анализ модели PPF</td>
+                                <td class="py-3 px-3 text-center font-bold text-slate-300">РО2, РО3</td>
+                                <td class="py-3 px-3 text-right font-medium text-slate-400">—</td>
+                            </tr>
+                            <tr class="hover:bg-slate-950/30">
+                                <td class="py-3 px-3 text-center font-bold text-indigo-400">5</td>
+                                <td class="py-3 px-4">Издержки производства. Поведение фирмы и теория производства.</td>
+                                <td class="py-3 px-3 text-center">Case-study</td>
+                                <td class="py-3 px-3 text-center font-bold text-slate-300">РО2, РО3</td>
+                                <td class="py-3 px-3 text-right font-bold text-emerald-400">5%</td>
+                            </tr>
+                            <tr class="hover:bg-slate-950/30">
+                                <td class="py-3 px-3 text-center font-bold text-indigo-400">6</td>
+                                <td class="py-3 px-4">Типы конкуренции и рыночная инфраструктура.</td>
+                                <td class="py-3 px-3 text-center">Практика</td>
+                                <td class="py-3 px-3 text-center font-bold text-slate-300">РО4</td>
+                                <td class="py-3 px-3 text-right font-bold text-emerald-400">5%</td>
+                            </tr>
+                            <tr class="hover:bg-slate-950/30">
+                                <td class="py-3 px-3 text-center font-bold text-indigo-400">7</td>
+                                <td class="py-3 px-4">Природа отрасли. Монополия и монополистическая конкуренция.</td>
+                                <td class="py-3 px-3 text-center">Решение задач</td>
+                                <td class="py-3 px-3 text-center font-bold text-slate-300">РО3-РО5</td>
+                                <td class="py-3 px-3 text-right font-bold text-emerald-400">5%</td>
+                            </tr>
+                            <tr class="bg-indigo-950/40 hover:bg-indigo-950/60 font-bold">
+                                <td class="py-3 px-3 text-center text-amber-400">8</td>
+                                <td class="py-3 px-4 text-white">Рубежный контроль 1 (Midterm 1)</td>
+                                <td class="py-3 px-3 text-center">Тестирование</td>
+                                <td class="py-3 px-3 text-center text-slate-300">РО1-РО3</td>
+                                <td class="py-3 px-3 text-right text-amber-400">10%</td>
+                            </tr>
+                            <tr class="hover:bg-slate-950/30">
+                                <td class="py-3 px-3 text-center font-bold text-indigo-400">9</td>
+                                <td class="py-3 px-4">Олигополия.</td>
+                                <td class="py-3 px-3 text-center">Решение задач</td>
+                                <td class="py-3 px-3 text-center font-bold text-slate-300">РО4</td>
+                                <td class="py-3 px-3 text-right font-bold text-emerald-400">5%</td>
+                            </tr>
+                            <tr class="hover:bg-slate-950/30">
+                                <td class="py-3 px-3 text-center font-bold text-indigo-400">10</td>
+                                <td class="py-3 px-4">Теория игр.</td>
+                                <td class="py-3 px-3 text-center">Case-study / Задачи</td>
+                                <td class="py-3 px-3 text-center font-bold text-slate-300">РО4</td>
+                                <td class="py-3 px-3 text-right font-bold text-emerald-400">5%</td>
+                            </tr>
+                            <tr class="hover:bg-slate-950/30">
+                                <td class="py-3 px-3 text-center font-bold text-indigo-400">11</td>
+                                <td class="py-3 px-4">Государственный сектор в микроэкономике. Внешние эффекты и общественные блага.</td>
+                                <td class="py-3 px-3 text-center">Анализ моделей</td>
+                                <td class="py-3 px-3 text-center font-bold text-slate-300">РО4, РО5</td>
+                                <td class="py-3 px-3 text-right font-bold text-emerald-400">5%</td>
+                            </tr>
+                            <tr class="hover:bg-slate-950/30">
+                                <td class="py-3 px-3 text-center font-bold text-indigo-400">12</td>
+                                <td class="py-3 px-4">Экономика информации.</td>
+                                <td class="py-3 px-3 text-center">Case-study</td>
+                                <td class="py-3 px-3 text-center font-bold text-slate-300">РО2, РО5</td>
+                                <td class="py-3 px-3 text-right font-bold text-emerald-400">5%</td>
+                            </tr>
+                            <tr class="hover:bg-slate-950/30">
+                                <td class="py-3 px-3 text-center font-bold text-indigo-400">13</td>
+                                <td class="py-3 px-4">Факторы производства.</td>
+                                <td class="py-3 px-3 text-center">Case-study</td>
+                                <td class="py-3 px-3 text-center font-bold text-slate-300">РО2, РО5</td>
+                                <td class="py-3 px-3 text-right font-medium text-slate-400">—</td>
+                            </tr>
+                            <tr class="hover:bg-slate-950/30">
+                                <td class="py-3 px-3 text-center font-bold text-indigo-400">14</td>
+                                <td class="py-3 px-4">Неравенство в распределении доходов и бедность.</td>
+                                <td class="py-3 px-3 text-center">Кривая Лоренца</td>
+                                <td class="py-3 px-3 text-center font-bold text-slate-300">РО5</td>
+                                <td class="py-3 px-3 text-right font-medium text-slate-400">—</td>
+                            </tr>
+                            <tr class="hover:bg-slate-950/30">
+                                <td class="py-3 px-3 text-center font-bold text-indigo-400">15</td>
+                                <td class="py-3 px-4">Рубежный контроль 2 (Midterm 2)</td>
+                                <td class="py-3 px-3 text-center">Практическое задание</td>
+                                <td class="py-3 px-3 text-center font-bold text-slate-300">Все РО</td>
+                                <td class="py-3 px-3 text-right font-bold text-emerald-400">10%</td>
+                            </tr>
+                            <tr class="bg-rose-950/40 hover:bg-rose-950/60 font-bold">
+                                <td class="py-3 px-3 text-center text-rose-400">16</td>
+                                <td class="py-3 px-4 text-white">Промежуточная аттестация (Экзамен)</td>
+                                <td class="py-3 px-3 text-center">Комбинированный экзамен</td>
+                                <td class="py-3 px-3 text-center text-slate-300">Все РО</td>
+                                <td class="py-3 px-3 text-right text-rose-400">40% Итога</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: POLICY -->
+        <div id="tab-policy" class="tab-content space-y-6">
+            <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 shadow-2xl">
+                <h2 class="text-xl font-extrabold text-white mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-gavel text-indigo-400"></i>
+                    Политика курса AlmaU
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-300">
+                    <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-3">
+                        <h3 class="font-bold text-white text-sm">Этика занятий:</h3>
+                        <ul class="list-disc pl-4 space-y-1.5">
+                            <li>Обязательное посещение занятий. Пропуск <strong>более 30%</strong> занятий влечет оценку <strong>F</strong> без права сдачи экзамена.</li>
+                            <li>Пунктуальность обязательна: опоздавшие на занятие не допускаются.</li>
+                            <li>Сдача заданий по истечении дедлайна влечет снижение баллов.</li>
+                        </ul>
+                    </div>
+                    <div class="p-4 bg-slate-950 rounded-xl border border-slate-800 space-y-3">
+                        <h3 class="font-bold text-white text-sm">Этика экзамена:</h3>
+                        <ul class="list-disc pl-4 space-y-1.5">
+                            <li>Запрещено использование гаджетов и списывание.</li>
+                            <li>Списывание на экзамене влечет удаление с актом и выставление <strong>0 баллов (F)</strong> за весь курс.</li>
+                            <li>За систематические нарушения выставляется статус <strong>AW</strong> (Academic Withdrawal).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: AI POLICY -->
+        <div id="tab-ai" class="tab-content space-y-6">
+            <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 shadow-2xl">
+                <h2 class="text-xl font-extrabold text-white mb-2 flex items-center gap-2">
+                    <i class="fa-solid fa-brain text-indigo-400"></i>
+                    Политика использования Искусственного Интеллекта (ИИ)
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                    <div class="p-5 bg-emerald-950/20 border border-emerald-900/40 rounded-xl space-y-3">
+                        <h3 class="font-bold text-emerald-400 text-sm">РАЗРЕШЕНО:</h3>
+                        <ul class="list-disc pl-4 space-y-2 text-xs text-slate-300">
+                            <li>Автоматизация расчетов и моделирование микроэкономических данных.</li>
+                            <li>Помощь в понимании сложных теоретических концепций.</li>
+                            <li>Поиск источников и исследование материалов.</li>
+                        </ul>
+                    </div>
+                    <div class="p-5 bg-rose-950/20 border border-rose-900/40 rounded-xl space-y-3">
+                        <h3 class="font-bold text-rose-400 text-sm">ЗАПРЕЩЕНО:</h3>
+                        <ul class="list-disc pl-4 space-y-2 text-xs text-slate-300">
+                            <li>Замена собственного мышления и критического анализа генерацией текста.</li>
+                            <li>Автоматическое выполнение и сдача письменных работ без личного участия.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 6: GRADING -->
+        <div id="tab-grading" class="tab-content space-y-6">
+            <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 shadow-2xl">
+                <h2 class="text-xl font-extrabold text-white mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-calculator text-indigo-400"></i>
+                    Формула итоговой оценки
+                </h2>
+                <div class="p-5 bg-slate-950 rounded-xl border border-slate-800 text-center mb-6">
+                    <div class="text-xl sm:text-2xl font-black text-indigo-400 my-2">
+                        Итоговая Оценка = <span class="text-white">Рейтинг × 0.6</span> + <span class="text-rose-400">Экзамен × 0.4</span>
+                    </div>
+                    <p class="text-xs text-slate-400">
+                        Где <strong>Рейтинг = (РК1 + РК2) / 2</strong>.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 7: RUBRICS & LITERATURE -->
+        <div id="tab-rubrics" class="tab-content space-y-6">
+            <div class="bg-slate-900 rounded-2xl p-6 border border-slate-800 shadow-2xl">
+                <h2 class="text-xl font-extrabold text-white mb-4">Список литературы</h2>
+                <div class="space-y-3 text-xs text-slate-300">
+                    <p><strong>Обязательная литература:</strong></p>
+                    <p>1. Грегори Мэнкью, Марк Тейлор «Микроэкономика», 3-е издание, издательство «Питер», 2019г.</p>
+                    <p class="pt-2"><strong>Дополнительная литература:</strong></p>
+                    <p>1. Роберт Пиндайк, Даниел Рубинфельд, «Микроэкономика», 4-е издание, «Дело», 2012г.</p>
+                    <p>2. Макконнелл К., Брю С., Флинн Ш., «Экономикс: принципы, проблемы и политика», 21-е издание, 2025г.</p>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 border-t border-slate-900 py-6 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <p>© Almaty Management University | Школа цифровых технологий и экономики 2026</p>
+            <p class="text-slate-600">Mik 1214 • Микроэкономика (ОП БАиЭ)</p>
+        </div>
+    </footer>
+
+    <!-- Tab Switching Script -->
+    <script>
+        function switchTab(event, tabId) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                btn.className = "tab-btn px-4 py-2.5 rounded-xl transition-all flex items-center space-x-2 whitespace-nowrap text-slate-400 hover:text-white hover:bg-slate-800/60";
+            });
+
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.className = "tab-btn px-4 py-2.5 rounded-xl transition-all flex items-center space-x-2 whitespace-nowrap bg-indigo-600 text-white shadow-md";
+        }
+    </script>
+</body>
+</html>
