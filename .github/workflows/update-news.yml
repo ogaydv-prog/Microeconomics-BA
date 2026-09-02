@@ -1,0 +1,16 @@
+name: Update Weekly News
+
+on:
+  schedule:
+    # 19:00 UTC среды = 01:00 AM четверга по времени Астаны (UTC+5)
+    - cron: '0 19 * * 3'
+  workflow_dispatch: # Возможность запустить вручную кнопкой
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Ваши шаги парсинга новостей и пуша обратно в main
