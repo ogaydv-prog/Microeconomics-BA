@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Topics Visual Gallery | Microeconomics BA | AlmaU</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #0f172a; }
+        
+        /* Карточка темы и идеальный контейнер под рамку */
+        .topic-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid #e2e8f0;
+        }
+        
+        /* Эффект увеличения картинки с синей рамкой ровно по размеру */
+        .topic-card:hover {
+            transform: translateY(-4px);
+            border-color: #001e50; /* Синий цвет AlmaU */
+            box-shadow: 0 12px 24px -8px rgba(0, 30, 80, 0.25);
+        }
+
+        .img-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* Пропорция 16:9 для всех картинок */
+            overflow: hidden;
+            background-color: #f1f5f9;
+        }
+
+        .img-container img {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Предотвращает искажение и растяжение */
+            transition: transform 0.4s ease;
+        }
+
+        .topic-card:hover .img-container img {
+            transform: scale(1.06);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-blue-900 selection:text-white">
+
+    <!-- HEADER WITH NAVIGATION -->
+    <header class="bg-[#001e50] text-white py-4 px-4 shadow-lg sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-4">
+                <a href="index.html">
+                    <img src="https://ogaydv-prog.github.io/Industrial-Economics/almau.jpg" alt="AlmaU Logo" class="h-10 w-auto rounded bg-white p-1">
+                </a>
+                <div>
+                    <h1 class="text-xl font-black tracking-tight uppercase" id="header-title">Microeconomics Topics Visual Gallery</h1>
+                    <p class="text-xs text-slate-300 font-medium" id="header-subtitle">Department of Economics & Business Disciplines • AlmaU 2026</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <!-- ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКА -->
+                <button onclick="toggleLanguage()" class="px-3 py-2 bg-amber-500 hover:bg-amber-400 text-slate-900 rounded-xl text-xs font-black transition flex items-center gap-1.5 shadow-md">
+                    <i class="fa-solid fa-globe"></i>
+                    <span id="lang-btn-text">EN / RU</span>
+                </button>
+
+                <!-- MAIN HUB -->
+                <a href="index.html" class="px-3.5 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-xs font-semibold transition border border-slate-500 flex items-center gap-1.5">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span id="btn-back">Main Hub</span>
+                </a>
+
+                <!-- KZ ECONOMIC CLOCK -->
+                <button onclick="openClockModal()" class="px-3.5 py-2 bg-amber-500 hover:bg-amber-400 text-slate-900 font-extrabold text-xs rounded-xl transition flex items-center gap-1.5 shadow-md">
+                    <i class="fa-solid fa-clock"></i>
+                    <span>KZ Clock</span>
+                </button>
+
+                <!-- SCALE CASE -->
+                <button onclick="openCaseModal()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs rounded-xl transition border border-slate-700 flex items-center gap-1.5 shadow-md">
+                    <i class="fa-solid fa-calculator text-amber-400"></i>
+                    <span>Scale Case</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-7xl w-full mx-auto px-4 py-8 flex-grow">
+        
+        <div class="mb-8 border-b border-slate-200 pb-4">
+            <span class="text-xs font-bold text-blue-800 uppercase tracking-widest block mb-1" id="page-tag">Visual Learning Modules</span>
+            <h2 class="text-3xl font-black text-[#001e50]" id="page-title">Microeconomics Course Topics & Visual Models</h2>
+            <p class="text-xs text-slate-500 mt-1 max-w-3xl" id="page-desc">Comprehensive visual infographics, market structures, elasticity models, and consumer behavior diagrams for Microeconomics course.</p>
+        </div>
+
+        <!-- СЕТКА ИЛЛЮСТРАЦИЙ ТЕМ (14 ТЕМ В ТОЧНОМ ПОРЯДКЕ) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="topics-grid">
+            
+            <!-- TOPIC 1 -->
+            <div class="topic-card bg-white rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="img-container cursor-pointer" onclick="openLightbox('pic-topic1-mic.png', 'Topic 1: Introduction to Microeconomics & PPF')">
+                        <img src="pic-topic1-mic.png" alt="Topic 1 Visual" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <span class="text-[10px] font-black uppercase text-blue-600 tracking-wider">Module 01</span>
+                        <h3 class="text-sm font-extrabold text-slate-800 mt-0.5" id="t1-title">Topic 1: Introduction to Economics & PPF</h3>
+                        <p class="text-xs text-slate-500 mt-1.5 leading-relaxed" id="t1-desc">Scarcity, opportunity costs, factors of production, and the Production Possibility Frontier (PPF) model.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOPIC 2 -->
+            <div class="topic-card bg-white rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="img-container cursor-pointer" onclick="openLightbox('pic-topic2-mic.png', 'Topic 2: Market Demand, Supply & Equilibrium')">
+                        <img src="pic-topic2-mic.png" alt="Topic 2 Visual" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <span class="text-[10px] font-black uppercase text-blue-600 tracking-wider">Module 02</span>
+                        <h3 class="text-sm font-extrabold text-slate-800 mt-0.5" id="t2-title">Topic 2: Demand, Supply & Market Equilibrium</h3>
+                        <p class="text-xs text-slate-500 mt-1.5 leading-relaxed" id="t2-desc">Law of demand and supply, market equilibrium mechanism, surpluses, shortages, and price controls.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOPIC 3 -->
+            <div class="topic-card bg-white rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="img-container cursor-pointer" onclick="openLightbox('pic-topic3-mic.png', 'Topic 3: Elasticity of Demand & Supply')">
+                        <img src="pic-topic3-mic.png" alt="Topic 3 Visual" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <span class="text-[10px] font-black uppercase text-blue-600 tracking-wider">Module 03</span>
+                        <h3 class="text-sm font-extrabold text-slate-800 mt-0.5" id="t3-title">Topic 3: Elasticity & Its Applications</h3>
+                        <p class="text-xs text-slate-500 mt-1.5 leading-relaxed" id="t3-desc">Price elasticity of demand (PED), income elasticity, cross-price elasticity, and revenue impact.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOPIC 4 -->
+            <div class="topic-card bg-white rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="img-container cursor-pointer" onclick="openLightbox('pic-topic4-mic.png', 'Topic 4: Consumer Choice Theory')">
+                        <img src="pic-topic4-mic.png" alt="Topic 4 Visual" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <span class="text-[10px] font-black uppercase text-blue-600 tracking-wider">Module 04</span>
+                        <h3 class="text-sm font-extrabold text-slate-800 mt-0.5" id="t4-title">Topic 4: Theory of Consumer Choice</h3>
+                        <p class="text-xs text-slate-500 mt-1.5 leading-relaxed" id="t4-desc">Utility maximization, indifference curves, budget constraints, and marginal rate of substitution (MRS).</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOPIC 5 -->
+            <div class="topic-card bg-white rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="img-container cursor-pointer" onclick="openLightbox('pic-topic5-mic.png', 'Topic 5: Production & Cost Structure')">
+                        <img src="pic-topic5-mic.png" alt="Topic 5 Visual" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <span class="text-[10px] font-black uppercase text-blue-600 tracking-wider">Module 05</span>
+                        <h3 class="text-sm font-extrabold text-slate-800 mt-0.5" id="t5-title">Topic 5: Production Costs & Firm Behavior</h3>
+                        <p class="text-xs text-slate-500 mt-1.5 leading-relaxed" id="t5-desc">Short-run vs long-run production costs, fixed/variable costs, marginal cost (MC), and economies of scale.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOPIC 6 -->
+            <div class="topic-card bg-white rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="img-container cursor-pointer" onclick="openLightbox('pic-topic6-mic.png', 'Topic 6: Perfect Competition')">
+                        <img src="pic-topic6-mic.png" alt="Topic 6 Visual" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <span class="text-[10px] font-black uppercase text-blue-600 tracking-wider">Module 06</span>
+                        <h3 class="text-sm font-extrabold text-slate-800 mt-0.5" id="t6-title">Topic 6: Perfectly Competitive Markets</h3>
+                        <p class="text-xs text-slate-500 mt-1.5 leading-relaxed" id="t6-desc">Profit maximization (MR=MC), price takers, short-run shutdown decisions, and long-run equilibrium.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOPIC 7 -->
+            <div class="topic-card bg-white rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="img-container cursor-pointer" onclick="openLightbox('pic-topic7-mic.png', 'Topic 7: Pure Monopoly')">
+                        <img src="pic-topic7-mic.png" alt="Topic 7 Visual" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <span class="text-[10px] font-black uppercase text-blue-600 tracking-wider">Module 07</span>
+                        <h3 class="text-sm font-extrabold text-slate-800 mt-0.5" id="t7-title">Topic 7: Pure Monopoly & Market Power</h3>
+                        <p class="text-xs text-slate-500 mt-1.5 leading-relaxed" id="t7-desc">Monopoly pricing, barriers to entry, deadweight loss, price discrimination, and public policy regulation.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOPIC 8-1 -->
+            <div class="topic-card bg-white rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="img-container cursor-pointer" onclick="openLightbox('pic-topic8-1-mic.png', 'Topic 8: Monopolistic Competition')">
+                        <img src="pic-topic8-1-mic.png" alt="Topic 8 Visual" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <span class="text-[10px] font-black uppercase text-blue-600 tracking-wider">Module 08</span>
+                        <h3 class="text-sm font-extrabold text-slate-800 mt-0.5" id="t8-title">Topic 8: Monopolistic Competition</h3>
+                        <p class="text-xs text-slate-500 mt-1.5 leading-relaxed" id="t8-desc">Product differentiation, non-price competition, advertising dynamics, and long-run zero economic profit.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOPIC 9 -->
+            <div class="topic-card bg-white rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="img-container cursor-pointer" onclick="openLightbox('pic-topic9-mic.png', 'Topic 9: Oligopoly & Game Theory')">
+                        <img src="pic-topic9-mic.png" alt="Topic 9 Visual" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <span class="text-[10px] font-black uppercase text-blue-600 tracking-wider">Module 09</span>
+                        <h3 class="text-sm font-extrabold text-slate-800 mt-0.5" id="t9-title">Topic 9: Oligopoly & Strategic Interaction</h3>
+                        <p class="text-xs text-slate-500 mt-1.5 leading-relaxed" id="t9-desc">Game theory, Prisoner's Dilemma, Nash equilibrium, cartels, and interdependence among market leaders.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOPIC 10 -->
+            <div class="topic-card bg-white rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="img-container cursor-pointer" onclick="openLightbox('pic-topic10-mic.png', 'Topic 10: Externalities & Public Goods')">
+                        <img src="pic-topic10-mic.png" alt="Topic 10 Visual" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <span class="text-[10px] font-black uppercase text-blue-600 tracking-wider">Module 10</span>
+                        <h3 class="text-sm font-extrabold text-slate-800 mt-0.5" id="t10-title">Topic 10: Externalities & Market Failure</h3>
+                        <p class="text-xs text-slate-500 mt-1.5 leading-relaxed" id="t10-desc">Positive and negative externalities, Pigouvian taxes, Coase theorem, public goods, and free-rider problems.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOPIC 11 -->
+            <div class="topic-card bg-white rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="img-container cursor-pointer" onclick="openLightbox('pic-topic11-mic.png', 'Topic 11: Labor Market Economics')">
+                        <img src="pic-topic11-mic.png" alt="Topic 11 Visual" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <span class="text-[10px] font-black uppercase text-blue-600 tracking-wider">Module 11</span>
+                        <h3 class="text-sm font-extrabold text-slate-800 mt-0.5" id="t11-title">Topic 11: Factor Markets & Labor Demand</h3>
+                        <p class="text-xs text-slate-500 mt-1.5 leading-relaxed" id="t11-desc">Marginal revenue product of labor (MRPL), wage determination, labor supply curve, and monopsony power.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOPIC 12 -->
+            <div class="topic-card bg-white rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="img-container cursor-pointer" onclick="openLightbox('pic-topic12-mic.png', 'Topic 12: Asymmetric Information')">
+                        <img src="pic-topic12-mic.png" alt="Topic 12 Visual" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <span class="text-[10px] font-black uppercase text-blue-600 tracking-wider">Module 12</span>
+                        <h3 class="text-sm font-extrabold text-slate-800 mt-0.5" id="t12-title">Topic 12: Asymmetric Information & Risk</h3>
+                        <p class="text-xs text-slate-500 mt-1.5 leading-relaxed" id="t12-desc">Adverse selection, moral hazard, principal-agent problems, signaling mechanisms, and insurance market dynamics.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOPIC 13 -->
+            <div class="topic-card bg-white rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="img-container cursor-pointer" onclick="openLightbox('pic-topic13-mic.png', 'Topic 13: Behavioral Economics')">
+                        <img src="pic-topic13-mic.png" alt="Topic 13 Visual" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <span class="text-[10px] font-black uppercase text-blue-600 tracking-wider">Module 13</span>
+                        <h3 class="text-sm font-extrabold text-slate-800 mt-0.5" id="t13-title">Topic 13: Intro to Behavioral Economics</h3>
+                        <p class="text-xs text-slate-500 mt-1.5 leading-relaxed" id="t13-desc">Bounded rationality, cognitive biases, loss aversion, anchoring, heuristic decision-making, and nudge theory.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TOPIC 14 -->
+            <div class="topic-card bg-white rounded-2xl overflow-hidden shadow-sm flex flex-col justify-between">
+                <div>
+                    <div class="img-container cursor-pointer" onclick="openLightbox('pic-topic14-mic.png', 'Topic 14: General Equilibrium & Welfare')">
+                        <img src="pic-topic14-mic.png" alt="Topic 14 Visual" loading="lazy">
+                    </div>
+                    <div class="p-4">
+                        <span class="text-[10px] font-black uppercase text-blue-600 tracking-wider">Module 14</span>
+                        <h3 class="text-sm font-extrabold text-slate-800 mt-0.5" id="t14-title">Topic 14: General Equilibrium & Welfare</h3>
+                        <p class="text-xs text-slate-500 mt-1.5 leading-relaxed" id="t14-desc">Pareto efficiency, Edgeworth box diagram, welfare economic theorems, and overall resource allocation efficiency.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- LIGHTBOX MODAL FOR FULLSCREEN IMAGE VIEW -->
+    <div id="lightboxModal" class="fixed inset-0 z-50 bg-black/90 hidden flex items-center justify-center p-4 backdrop-blur-sm" onclick="closeLightbox()">
+        <div class="relative max-w-5xl w-full bg-slate-900 rounded-2xl p-2 border border-slate-700 shadow-2xl flex flex-col items-center" onclick="event.stopPropagation()">
+            <div class="w-full flex justify-between items-center px-4 py-2 text-white border-b border-slate-800">
+                <span id="lightbox-caption" class="text-xs font-bold uppercase tracking-wider text-amber-400">Model View</span>
+                <button onclick="closeLightbox()" class="text-slate-400 hover:text-white bg-slate-800 hover:bg-rose-600 px-3 py-1 rounded-lg text-xs font-bold transition">
+                    <i class="fa-solid fa-xmark mr-1"></i> Close
+                </button>
+            </div>
+            <div class="p-2 w-full flex justify-center items-center">
+                <img id="lightbox-img" src="" alt="Enlarged Diagram" class="max-h-[80vh] w-auto object-contain rounded-lg">
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 1: KZ ECONOMIC CLOCK -->
+    <div id="clockModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-2 sm:p-6">
+        <div class="bg-[#090d16] w-full max-w-7xl h-[92vh] rounded-2xl border border-gray-700 shadow-2xl flex flex-col overflow-hidden relative">
+            <div class="bg-[#0d1117] px-6 py-3 border-b border-gray-800 flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <span class="inline-block w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="text-xs font-bold uppercase tracking-wider text-amber-400">Live Analytics Hub</span>
+                </div>
+                <button onclick="closeClockModal()" class="text-gray-400 hover:text-white bg-gray-800 hover:bg-red-600 px-3 py-1 rounded-md text-xs font-bold transition">
+                    <i class="fa-solid fa-xmark mr-1"></i> Close
+                </button>
+            </div>
+            <div class="flex-grow w-full h-full bg-[#090d16]">
+                <iframe id="clockIframe" src="" class="w-full h-full border-0"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: SCALE CASE -->
+    <div id="caseModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-3xl rounded-xl border border-stone-300 shadow-2xl flex flex-col overflow-hidden relative max-h-[90vh]">
+            <div class="bg-stone-900 text-white px-6 py-4 flex justify-between items-center shrink-0">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-lightbulb text-amber-400 text-lg"></i>
+                    <h3 class="font-extrabold text-sm sm:text-base tracking-wide uppercase">Macro Case Study: The Scale of Money</h3>
+                </div>
+                <button onclick="closeCaseModal()" class="text-stone-400 hover:text-white bg-stone-800 hover:bg-red-600 px-3 py-1 rounded text-xs font-bold transition">
+                    <i class="fa-solid fa-xmark mr-1"></i> Close Case
+                </button>
+            </div>
+
+            <div class="p-6 overflow-y-auto space-y-6">
+                <div class="scale-riddle-wrapper" style="font-family: system-ui, -apple-system, sans-serif;">
+                    <button onclick="toggleScaleRiddle()" style="width: 100%; padding: 14px 20px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #38bdf8; border: 1px dashed #0284c7; border-radius: 10px; font-weight: 600; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                        <span id="riddle-toggle-icon">👁️‍🗨️</span> <span id="riddle-toggle-text">Click to Unlock: The Large Numbers Riddle</span>
+                    </button>
+
+                    <div id="scale-riddle-panel" style="display: none; margin-top: 15px; padding: 25px; background-color: #0b1329; border: 1px solid #1e293b; border-radius: 12px;">
+                        <div style="display: flex; justify-content: center; gap: 30px; margin-bottom: 25px;">
+                            <button id="btn-million" onclick="runScaleStep('million', this)" style="width: 75px; height: 75px; border-radius: 50%; border: none; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; font-weight: bold; font-size: 0.9rem; cursor: pointer; box-shadow: 0 6px 0 #1e40af;">1M</button>
+                            <button id="btn-billion" onclick="runScaleStep('billion', this)" style="width: 75px; height: 75px; border-radius: 50%; border: none; background: linear-gradient(135deg, #eab308 0%, #a16207 100%); color: #0f172a; font-weight: bold; font-size: 0.9rem; cursor: pointer; box-shadow: 0 6px 0 #854d0e;">1B</button>
+                            <button id="btn-trillion" onclick="runScaleStep('trillion', this)" style="width: 75px; height: 75px; border-radius: 50%; border: none; background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); color: white; font-weight: bold; font-size: 0.9rem; cursor: pointer; box-shadow: 0 6px 0 #991b1b;">1T</button>
+                        </div>
+
+                        <div id="riddle-output-zone" style="visibility: hidden; opacity: 0; transition: opacity 0.4s ease; text-align: center; padding: 20px; background: rgba(30, 41, 59, 0.5); border-radius: 8px;">
+                            <div id="riddle-badge" style="display: inline-block; padding: 4px 12px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; border-radius: 20px; margin-bottom: 10px;">System Initialized</div>
+                            <div id="riddle-time-value" style="font-size: 2.5rem; font-weight: 800; color: #ffffff; margin-bottom: 8px; font-family: monospace;">0.0</div>
+                            <p id="riddle-context-text" style="font-size: 0.95rem; color: #cbd5e1; max-width: 600px; margin: 0 auto 20px auto;">Select a scale button to begin decoding vector coordinates.</p>
+
+                            <div style="margin-top: 25px; padding-top: 15px; border-top: 1px dashed #334155;">
+                                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #64748b; margin-bottom: 8px;">
+                                    <span id="timeline-left-label">Deep Past</span>
+                                    <span style="color: #38bdf8; font-weight: 600;">Today (0s)</span>
+                                </div>
+                                <div style="position: relative; width: 100%; height: 6px; background-color: #1e293b; border-radius: 3px;">
+                                    <div id="timeline-progress-bar" style="position: absolute; right: 0; top: 0; height: 100%; width: 0%; border-radius: 3px; background-color: #3b82f6;"></div>
+                                    <div id="timeline-node-pin" style="position: absolute; top: -5px; right: 0%; transform: translateX(50%); width: 16px; height: 16px; border-radius: 50%; background-color: #ffffff; border: 3px solid #0f172a;"></div>
+                                </div>
+                                <div style="position: relative; width: 100%; height: 25px; margin-top: 8px;">
+                                    <span id="timeline-dynamic-marker" style="position: absolute; right: 0%; transform: translateX(50%); font-size: 0.85rem; font-weight: bold; color: #60a5fa; font-family: monospace;"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-100 px-6 py-3 border-t border-slate-200 text-slate-500 text-[11px] flex justify-between items-center shrink-0">
+                <span>Microeconomics Case Module</span>
+                <span class="serif italic">AlmaU Economics Department</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 py-6 text-center text-xs border-t border-slate-800">
+        <p id="footer-text">Developed for Microeconomics Students | AlmaU School of Economics and Digital Technologies 2026</p>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script>
+        const clockUrl = "https://ogaydv-prog.github.io/KZ-economic-clock/index-en.html";
+        let currentLang = 'en';
+
+        const i18n = {
+            en: {
+                headerTitle: "Microeconomics Topics Visual Gallery",
+                headerSubtitle: "Department of Economics & Business Disciplines • AlmaU 2026",
+                btnBack: "Main Hub",
+                pageTag: "Visual Learning Modules",
+                pageTitle: "Microeconomics Course Topics & Visual Models",
+                pageDesc: "Comprehensive visual infographics, market structures, elasticity models, and consumer behavior diagrams for Microeconomics course.",
+                footerText: "Developed for Microeconomics Students | AlmaU School of Economics and Digital Technologies 2026",
+                t1Title: "Topic 1: Introduction to Economics & PPF",
+                t1Desc: "Scarcity, opportunity costs, factors of production, and the Production Possibility Frontier (PPF) model.",
+                t2Title: "Topic 2: Demand, Supply & Market Equilibrium",
+                t2Desc: "Law of demand and supply, market equilibrium mechanism, surpluses, shortages, and price controls.",
+                t3Title: "Topic 3: Elasticity & Its Applications",
+                t3Desc: "Price elasticity of demand (PED), income elasticity, cross-price elasticity, and revenue impact.",
+                t4Title: "Topic 4: Theory of Consumer Choice",
+                t4Desc: "Utility maximization, indifference curves, budget constraints, and marginal rate of substitution (MRS).",
+                t5Title: "Topic 5: Production Costs & Firm Behavior",
+                t5Desc: "Short-run vs long-run production costs, fixed/variable costs, marginal cost (MC), and economies of scale.",
+                t6Title: "Topic 6: Perfectly Competitive Markets",
+                t6Desc: "Profit maximization (MR=MC), price takers, short-run shutdown decisions, and long-run equilibrium.",
+                t7Title: "Topic 7: Pure Monopoly & Market Power",
+                t7Desc: "Monopoly pricing, barriers to entry, deadweight loss, price discrimination, and public policy regulation.",
+                t8Title: "Topic 8: Monopolistic Competition",
+                t8Desc: "Product differentiation, non-price competition, advertising dynamics, and long-run zero economic profit.",
+                t9Title: "Topic 9: Oligopoly & Strategic Interaction",
+                t9Desc: "Game theory, Prisoner's Dilemma, Nash equilibrium, cartels, and interdependence among market leaders.",
+                t10Title: "Topic 10: Externalities & Market Failure",
+                t10Desc: "Positive and negative externalities, Pigouvian taxes, Coase theorem, public goods, and free-rider problems.",
+                t11Title: "Topic 11: Factor Markets & Labor Demand",
+                t11Desc: "Marginal revenue product of labor (MRPL), wage determination, labor supply curve, and monopsony power.",
+                t12Title: "Topic 12: Asymmetric Information & Risk",
+                t12Desc: "Adverse selection, moral hazard, principal-agent problems, signaling mechanisms, and insurance market dynamics.",
+                t13Title: "Topic 13: Intro to Behavioral Economics",
+                t13Desc: "Bounded rationality, cognitive biases, loss aversion, anchoring, heuristic decision-making, and nudge theory.",
+                t14Title: "Topic 14: General Equilibrium & Welfare",
+                t14Desc: "Pareto efficiency, Edgeworth box diagram, welfare economic theorems, and overall resource allocation efficiency."
+            },
+            ru: {
+                headerTitle: "Визуальная галерея тем по микроэкономике",
+                headerSubtitle: "Кафедра экономических и бизнес-дисциплин • AlmaU 2026",
+                btnBack: "На главный хаб",
+                pageTag: "Наглядные учебные модули",
+                pageTitle: "Темы курса микроэкономики и графические модели",
+                pageDesc: "Инфографика, рыночные структуры, модели эластичности и диаграммы потребительского поведения по дисциплине «Микроэкономика».",
+                footerText: "Разработано для студентов курса «Микроэкономика» | AlmaU Школа экономики и цифровых технологий 2026",
+                t1Title: "Тема 1: Введение в экономику и модель КПВ",
+                t1Desc: "Ограниченность ресурсов, альтернативные издержки, факторы производства и Граница производственных возможностей (КПВ).",
+                t2Title: "Тема 2: Спрос, предложение и рыночное равновесие",
+                t2Desc: "Законы спроса и предложения, механизм рыночного равновесия, дефицит, излишек и регулирование цен.",
+                t3Title: "Тема 3: Эластичность и ее применение",
+                t3Desc: "Эластичность спроса по цене, эластичность по доходу, перекрестная эластичность и влияние на выручку.",
+                t4Title: "Тема 4: Теория потребительского выбора",
+                t4Desc: "Максимизация полезности, кривые безразличия, бюджетные ограничения и предельная норма замещения (MRS).",
+                t5Title: "Тема 5: Издержки производства и поведение фирмы",
+                t5Desc: "Издержки в краткосрочном и долгосрочном периодах, постоянные/переменные затраты, предельные издержки (MC) и эффект масштаба.",
+                t6Title: "Тема 6: Совершенно конкурентные рынки",
+                t6Desc: "Максимизация прибыли (MR=MC), ценополучатели, условия закрытия фирмы и долгосрочное равновесие.",
+                t7Title: "Тема 7: Чистая монополия и рыночная власть",
+                t7Desc: "Монопольное ценообразование, барьеры для входа, безвозвратные потери, ценовая дискриминация и регулирование.",
+                t8Title: "Тема 8: Монополистическая конкуренция",
+                t8Desc: "Дифференциация продукта, неценовая конкуренция, реклама и нулевая экономическая прибыль в долгосрочном периоде.",
+                t9Title: "Тема 9: Олигополия и стратегическое взаимодействие",
+                t9Desc: "Теория игр, дилемма заключенного, равновесие Нэша, картели и взаимозависимость лидеров рынка.",
+                t10Title: "Тема 10: Внешние эффекты и провалы рынка",
+                t10Desc: "Положительные и отрицательные экстерналии, налоги Пигу, теорема Коуза, общественные блага и проблема провайдера.",
+                t11Title: "Тема 11: Рынки факторов производства и труд",
+                t11Desc: "Предельный продукт труда в денежном выражении (MRPL), формирование зарплаты, предложение труда и монопсония.",
+                t12Title: "Тема 12: Асимметрия информации и риски",
+                t12Desc: "Неблагоприятный отбор, моральный риск, проблема «принципал-агент», сигналы и динамика страховых рынков.",
+                t13Title: "Тема 13: Введение в поведенческую экономику",
+                t13Desc: "Ограниченная рациональность, когнитивные искажения, неприятие потерь, эффекты привязки и теория подталкивания (Nudge).",
+                t14Title: "Тема 14: Общее равновесие и благосостояние",
+                t14Desc: "Парето-эффективность, диаграмма «ящик Эджворта», теоремы экономики благосостояния и эффективность распределения ресурсов."
+            }
+        };
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'ru' : 'en';
+            const l = i18n[currentLang];
+
+            document.getElementById('header-title').innerText = l.headerTitle;
+            document.getElementById('header-subtitle').innerText = l.headerSubtitle;
+            document.getElementById('btn-back').innerText = l.btnBack;
+            document.getElementById('page-tag').innerText = l.pageTag;
+            document.getElementById('page-title').innerText = l.pageTitle;
+            document.getElementById('page-desc').innerText = l.pageDesc;
+            document.getElementById('footer-text').innerText = l.footerText;
+
+            for (let i = 1; i <= 14; i++) {
+                let key = i === 8 ? 't8' : `t${i}`;
+                let titleEl = document.getElementById(`${key}-title`);
+                let descEl = document.getElementById(`${key}-desc`);
+                if (titleEl) titleEl.innerText = l[`${key}Title`];
+                if (descEl) descEl.innerText = l[`${key}Desc`];
+            }
+        }
+
+        // Lightbox Functions
+        function openLightbox(imgSrc, caption) {
+            document.getElementById('lightbox-img').src = imgSrc;
+            document.getElementById('lightbox-caption').innerText = caption;
+            document.getElementById('lightboxModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightboxModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Modals
+        function openClockModal() {
+            const modal = document.getElementById('clockModal');
+            const iframe = document.getElementById('clockIframe');
+            if (!iframe.src || iframe.src !== clockUrl) iframe.src = clockUrl;
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeClockModal() {
+            document.getElementById('clockModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function openCaseModal() {
+            document.getElementById('caseModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeCaseModal() {
+            document.getElementById('caseModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                closeLightbox();
+                closeClockModal();
+                closeCaseModal();
+            }
+        });
+
+        // Scale Riddle Logic
+        let countInterval = null;
+        function toggleScaleRiddle() {
+            const panel = document.getElementById('scale-riddle-panel');
+            const text = document.getElementById('riddle-toggle-text');
+            const icon = document.getElementById('riddle-toggle-icon');
+            if (panel.style.display === 'none') {
+                panel.style.display = 'block';
+                text.innerText = 'Hide Scale Riddle Panel';
+                icon.innerText = '✨';
+            } else {
+                panel.style.display = 'none';
+                text.innerText = 'Click to Unlock: The Large Numbers Riddle';
+                icon.innerText = '👁️‍🗨️';
+            }
+        }
+
+        function runScaleStep(type, btnElement) {
+            btnElement.style.transform = 'translateY(4px)';
+            setTimeout(() => { btnElement.style.transform = 'translateY(0)'; }, 100);
+            if (countInterval) clearInterval(countInterval);
+
+            const outputZone = document.getElementById('riddle-output-zone');
+            const progressBar = document.getElementById('timeline-progress-bar');
+            const nodePin = document.getElementById('timeline-node-pin');
+            const dynamicMarker = document.getElementById('timeline-dynamic-marker');
+            const timeValue = document.getElementById('riddle-time-value');
+            const contextText = document.getElementById('riddle-context-text');
+            const badge = document.getElementById('riddle-badge');
+
+            outputZone.style.visibility = 'visible';
+            outputZone.style.opacity = '1';
+            let startTime = performance.now();
+
+            if (type === 'million') {
+                badge.innerText = "Scale Vector: 1 Million ($1,000,000)";
+                badge.style.backgroundColor = 'rgba(59, 130, 246, 0.2)'; badge.style.color = '#60a5fa';
+                contextText.innerHTML = "A brief transaction interval. If a central bank updates its reserves by a million, it's a minor liquidity ripple.";
+                progressBar.style.backgroundColor = '#3b82f6';
+                let duration = 1200;
+                countInterval = setInterval(() => {
+                    let elapsed = performance.now() - startTime;
+                    let progress = Math.min(elapsed / duration, 1);
+                    let current = progress * 11.6;
+                    let currentPercentage = progress * 8;
+                    progressBar.style.width = currentPercentage + '%';
+                    nodePin.style.right = currentPercentage + '%';
+                    dynamicMarker.style.right = currentPercentage + '%';
+                    timeValue.style.color = '#60a5fa'; timeValue.innerText = `⏱️ ${current.toFixed(1)} Days`;
+                    dynamicMarker.style.color = '#60a5fa'; dynamicMarker.innerText = `-${current.toFixed(1)} Days`;
+                    if (progress === 1) clearInterval(countInterval);
+                }, 16);
+            } else if (type === 'billion') {
+                badge.innerText = "Scale Vector: 1 Billion ($1,000,000,000)";
+                badge.style.backgroundColor = 'rgba(234, 179, 8, 0.2)'; badge.style.color = '#fde047';
+                contextText.innerHTML = "<strong>Systemic Expansion:</strong> Going back 1 billion seconds takes us to 1994. Dial-up internet, pager networks, no smartphones.";
+                progressBar.style.backgroundColor = '#eab308';
+                let duration = 2000;
+                countInterval = setInterval(() => {
+                    let elapsed = performance.now() - startTime;
+                    let progress = Math.min(elapsed / duration, 1);
+                    let current = progress * 31.7;
+                    let currentPercentage = progress * 45;
+                    progressBar.style.width = currentPercentage + '%';
+                    nodePin.style.right = currentPercentage + '%';
+                    dynamicMarker.style.right = currentPercentage + '%';
+                    timeValue.style.color = '#fde047'; timeValue.innerText = `⏳ ${current.toFixed(1)} Years`;
+                    dynamicMarker.style.color = '#fde047'; dynamicMarker.innerText = `-${current.toFixed(1)} Yrs (1994)`;
+                    if (progress === 1) clearInterval(countInterval);
+                }, 16);
+            } else if (type === 'trillion') {
+                badge.innerText = "Scale Vector: 1 Trillion ($1,000,000,000,000)";
+                badge.style.backgroundColor = 'rgba(239, 68, 68, 0.2)'; badge.style.color = '#fca5a5';
+                contextText.innerHTML = "<strong>Systemic Explosion:</strong> 31.7 thousand years ago, Mammoths and Neanderthals ruled the plains.";
+                progressBar.style.backgroundColor = '#ef4444';
+                let duration = 4000;
+                countInterval = setInterval(() => {
+                    let elapsed = performance.now() - startTime;
+                    let progress = Math.min(elapsed / duration, 1);
+                    let easeProgress = Math.pow(progress, 3);
+                    let current = Math.floor(easeProgress * 31689);
+                    let currentPercentage = easeProgress * 98;
+                    progressBar.style.width = currentPercentage + '%';
+                    nodePin.style.right = currentPercentage + '%';
+                    dynamicMarker.style.right = currentPercentage + '%';
+                    timeValue.style.color = '#ef4444'; timeValue.innerText = `🌋 ${current.toLocaleString()} Years`;
+                    dynamicMarker.style.color = '#fca5a5'; dynamicMarker.innerText = `-${current.toLocaleString()} Years`;
+                    if (progress === 1) clearInterval(countInterval);
+                }, 16);
+            }
+        }
+    </script>
+</body>
+</html>
