@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Economics | Global Economic News & Analysis | Microeconomics BA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #fcfbf9; color: #111111; }
+        .serif { font-family: 'Merriweather', Georgia, serif; }
+        .brand-red { background-color: #e5001c; }
+        .text-brand-red { color: #e5001c; }
+        .border-brand-red { border-color: #e5001c; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-red-600 selection:text-white border-t-4 border-brand-red">
+
+    <!-- HEADER WITH HUB BUTTONS -->
+    <header class="bg-white border-b border-stone-300 sticky top-0 z-40 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 py-3 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-4">
+                <a href="index.html" class="brand-red text-white font-extrabold px-3 py-1.5 text-lg sm:text-xl tracking-tighter serif shadow-sm inline-block">
+                    The Economics
+                </a>
+                <div class="hidden md:block border-l border-stone-300 pl-4">
+                    <span class="text-xs font-bold tracking-widest text-stone-500 uppercase block" id="txt-hub-title">Academic Intelligence Hub</span>
+                    <span class="text-xs text-stone-700" id="txt-hub-sub">AlmaU • Department of Economics and Business Disciplines</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <!-- КНОПКА ПЕРЕКЛЮЧЕНИЯ ЯЗЫКА (EN / RU) -->
+                <button onclick="toggleLanguage()" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-400 text-slate-900 font-black text-xs transition-all border border-amber-600 flex items-center space-x-1.5 rounded-sm shadow-sm">
+                    <i class="fa-solid fa-globe"></i>
+                    <span id="lang-btn-text">EN / RU</span>
+                </button>
+
+                <!-- MAIN HUB -->
+                <a href="index.html" class="px-3 py-1.5 bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-semibold transition-all border border-stone-300 flex items-center space-x-1.5 rounded-sm">
+                    <i class="fa-solid fa-arrow-left text-brand-red"></i>
+                    <span id="txt-main-hub">Main Hub</span>
+                </a>
+                
+                <!-- КНОПКА 1: KZ Economic Clock -->
+                <button onclick="openClockModal()" class="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-black font-extrabold text-xs transition-all border border-amber-600 flex items-center space-x-1.5 rounded-sm shadow-sm">
+                    <i class="fa-solid fa-clock text-black"></i>
+                    <span>KZ Economic Clock</span>
+                </button>
+
+                <!-- КНОПКА 2: Scale Case -->
+                <button onclick="openCaseModal()" class="px-3 py-1.5 bg-stone-800 hover:bg-stone-900 text-white font-bold text-xs transition-all border border-stone-900 flex items-center space-x-1.5 rounded-sm shadow-sm">
+                    <i class="fa-solid fa-calculator text-amber-400"></i>
+                    <span>Scale Case</span>
+                </button>
+
+                <div class="border-l border-stone-300 pl-3 ml-1">
+                    <img src="https://ogaydv-prog.github.io/Industrial-Economics/almau.jpg" alt="AlmaU Logo" class="h-9 w-auto object-contain bg-white p-0.5 border border-stone-200 rounded-sm">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- SUBHEADER WITH REFRESH TIME -->
+    <div class="bg-stone-100 border-b border-stone-200 py-2">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center text-xs text-stone-600">
+            <span class="font-semibold uppercase tracking-wider flex items-center gap-1.5">
+                <i class="fa-solid fa-rotate text-brand-red animate-spin" style="animation-duration: 6s;"></i> 
+                <span id="txt-briefing-tag">Automated Weekly Briefing</span>
+            </span>
+            <span class="serif italic" id="txt-schedule-tag">Updated Every Thursday at 01:00 AM (Astana Time)</span>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="border-b-2 border-stone-900 pb-6 mb-8">
+            <span class="text-xs font-extrabold text-brand-red uppercase tracking-widest block mb-1" id="txt-section-tag">Global Economic Analysis</span>
+            <h1 class="text-3xl sm:text-4xl font-black text-stone-900 serif leading-tight" id="txt-main-title">
+                The World This Week: Trade, Policy & Macro Economic Trends
+            </h1>
+            <p class="text-sm sm:text-base text-stone-600 mt-2 max-w-4xl leading-relaxed serif" id="txt-main-desc">
+                Automatically curated economic headlines and international business updates from The Guardian, BBC News, and Euronews for academic discussion at Almaty Management University.
+            </p>
+        </div>
+
+        <!-- СЕТКА НОВОСТЕЙ С ПОДДЕРЖКОЙ EN/RU -->
+        <div id="news-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            <!-- Карточка 1: Guardian -->
+            <div class="space-y-3 border-t-2 border-stone-900 pt-4 flex flex-col justify-between">
+                <div>
+                    <span class="text-xs font-bold text-brand-red uppercase tracking-widest">The Guardian</span>
+                    <h3 class="text-lg font-bold text-stone-900 serif leading-snug mt-1" id="news1-title">
+                        AI could cause global economic downturn, Bank of England governor tells G20
+                    </h3>
+                    <p class="text-xs text-stone-600 leading-relaxed mt-2" id="news1-desc">
+                        Andrew Bailey warns group about risk of advanced ‘frontier models’ destabilising the ‘highly interconnected’ financial system...
+                    </p>
+                </div>
+                <div class="pt-4 font-sans">
+                    <a href="https://www.theguardian.com/business/2026/aug/31/advanced-frontier-ai-financial-stability-andrew-bailey-g20" target="_blank" rel="noopener noreferrer" class="text-xs text-brand-red font-bold hover:underline flex items-center space-x-1">
+                        <span id="news1-link">Read Full Original Article →</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Карточка 2: BBC News -->
+            <div class="space-y-3 border-t-2 border-stone-900 pt-4 flex flex-col justify-between">
+                <div>
+                    <span class="text-xs font-bold text-brand-red uppercase tracking-widest">BBC News</span>
+                    <h3 class="text-lg font-bold text-stone-900 serif leading-snug mt-1" id="news2-title">
+                        Global trade and supply chains face new tariff pressures
+                    </h3>
+                    <p class="text-xs text-stone-600 leading-relaxed mt-2" id="news2-desc">
+                        International markets monitor policy decisions across North America and Europe as cross-border commerce adjusts...
+                    </p>
+                </div>
+                <div class="pt-4 font-sans">
+                    <a href="http://feeds.bbci.co.uk/news/business/rss.xml" target="_blank" rel="noopener noreferrer" class="text-xs text-brand-red font-bold hover:underline flex items-center space-x-1">
+                        <span id="news2-link">Read Full Original Article →</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Карточка 3: Euronews -->
+            <div class="space-y-3 border-t-2 border-stone-900 pt-4 flex flex-col justify-between">
+                <div>
+                    <span class="text-xs font-bold text-brand-red uppercase tracking-widest">Euronews</span>
+                    <h3 class="text-lg font-bold text-stone-900 serif leading-snug mt-1" id="news3-title">
+                        European Central Bank reviews interest rate trajectory amid inflation trends
+                    </h3>
+                    <p class="text-xs text-stone-600 leading-relaxed mt-2" id="news3-desc">
+                        European economic indicators highlight shifting consumer confidence and industrial manufacturing output across the euro zone...
+                    </p>
+                </div>
+                <div class="pt-4 font-sans">
+                    <a href="https://www.euronews.com/business" target="_blank" rel="noopener noreferrer" class="text-xs text-brand-red font-bold hover:underline flex items-center space-x-1">
+                        <span id="news3-link">Read Full Original Article →</span>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="bg-stone-900 text-stone-400 py-8 border-t-4 border-brand-red mt-12 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center space-x-3">
+                <span class="brand-red text-white font-black px-2 py-1 text-sm serif">The Economics</span>
+                <span id="txt-footer-brand">International Business News Hub • Almaty Management University</span>
+            </div>
+            <p class="text-stone-500 text-center md:text-right" id="txt-footer-sub">
+                Automatically updated every Thursday at 01:00 AM via GitHub Actions. Microeconomics Course.
+            </p>
+        </div>
+    </footer>
+
+    <!-- МОДАЛЬНОЕ ОКНО 1: KAZAKHSTAN ECONOMIC CLOCK -->
+    <div id="clockModal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-md hidden flex items-center justify-center p-2 sm:p-6">
+        <div class="bg-[#090d16] w-full max-w-7xl h-[92vh] rounded-2xl border border-gray-700 shadow-2xl flex flex-col overflow-hidden relative">
+            <div class="bg-[#0d1117] px-6 py-3 border-b border-gray-800 flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <span class="inline-block w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="text-xs font-bold uppercase tracking-wider text-amber-400">Live Analytics Hub</span>
+                </div>
+                <button onclick="closeClockModal()" class="text-gray-400 hover:text-white bg-gray-800 hover:bg-red-600 px-3 py-1 rounded-md text-xs font-bold transition-all flex items-center space-x-1">
+                    <i class="fa-solid fa-xmark"></i>
+                    <span>Close</span>
+                </button>
+            </div>
+            <div class="flex-grow w-full h-full bg-[#090d16]">
+                <iframe id="clockIframe" src="" class="w-full h-full border-0"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО 2: SCALE CASE -->
+    <div id="caseModal" class="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-3xl rounded-xl border border-stone-300 shadow-2xl flex flex-col overflow-hidden relative max-h-[90vh]">
+            <div class="bg-stone-900 text-white px-6 py-4 flex justify-between items-center shrink-0">
+                <div class="flex items-center space-x-2">
+                    <i class="fa-solid fa-lightbulb text-amber-400 text-lg"></i>
+                    <h3 class="font-extrabold text-sm sm:text-base tracking-wide uppercase" id="txt-modal-scale-title">Macro Case Study: The Scale of Money</h3>
+                </div>
+                <button onclick="closeCaseModal()" class="text-stone-400 hover:text-white bg-stone-800 hover:bg-red-600 px-3 py-1 rounded text-xs font-bold transition-all">
+                    <i class="fa-solid fa-xmark mr-1"></i> Close Case
+                </button>
+            </div>
+
+            <div class="p-6 overflow-y-auto space-y-6">
+                <div class="scale-riddle-wrapper" style="font-family: system-ui, -apple-system, sans-serif;">
+                    <button onclick="toggleScaleRiddle()" style="width: 100%; padding: 14px 20px; background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); color: #38bdf8; border: 1px dashed #0284c7; border-radius: 10px; font-weight: 600; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                        <span id="riddle-toggle-icon">👁️‍🗨️</span> <span id="riddle-toggle-text">Click to Unlock: The Large Numbers Riddle</span>
+                    </button>
+
+                    <div id="scale-riddle-panel" style="display: none; margin-top: 15px; padding: 25px; background-color: #0b1329; border: 1px solid #1e293b; border-radius: 12px;">
+                        <div style="display: flex; justify-content: center; gap: 30px; margin-bottom: 25px;">
+                            <button id="btn-million" onclick="runScaleStep('million', this)" style="width: 75px; height: 75px; border-radius: 50%; border: none; background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; font-weight: bold; font-size: 0.9rem; cursor: pointer; box-shadow: 0 6px 0 #1e40af;">1M</button>
+                            <button id="btn-billion" onclick="runScaleStep('billion', this)" style="width: 75px; height: 75px; border-radius: 50%; border: none; background: linear-gradient(135deg, #eab308 0%, #a16207 100%); color: #0f172a; font-weight: bold; font-size: 0.9rem; cursor: pointer; box-shadow: 0 6px 0 #854d0e;">1B</button>
+                            <button id="btn-trillion" onclick="runScaleStep('trillion', this)" style="width: 75px; height: 75px; border-radius: 50%; border: none; background: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%); color: white; font-weight: bold; font-size: 0.9rem; cursor: pointer; box-shadow: 0 6px 0 #991b1b;">1T</button>
+                        </div>
+
+                        <div id="riddle-output-zone" style="visibility: hidden; opacity: 0; transition: opacity 0.4s ease; text-align: center; padding: 20px; background: rgba(30, 41, 59, 0.5); border-radius: 8px;">
+                            <div id="riddle-badge" style="display: inline-block; padding: 4px 12px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; border-radius: 20px; margin-bottom: 10px;">
+                                System Initialized
+                            </div>
+                            
+                            <div id="riddle-time-value" style="font-size: 2.5rem; font-weight: 800; color: #ffffff; margin-bottom: 8px; font-family: monospace;">
+                                0.0
+                            </div>
+                            
+                            <p id="riddle-context-text" style="font-size: 0.95rem; color: #cbd5e1; max-width: 600px; margin: 0 auto 20px auto;">
+                                Select a scale button to begin decoding vector coordinates.
+                            </p>
+
+                            <div style="margin-top: 25px; padding-top: 15px; border-top: 1px dashed #334155;">
+                                <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: #64748b; margin-bottom: 8px;">
+                                    <span id="timeline-left-label">Deep Past</span>
+                                    <span style="color: #38bdf8; font-weight: 600;" id="txt-timeline-today">Today (0s)</span>
+                                </div>
+                                
+                                <div style="position: relative; width: 100%; height: 6px; background-color: #1e293b; border-radius: 3px;">
+                                    <div id="timeline-progress-bar" style="position: absolute; right: 0; top: 0; height: 100%; width: 0%; border-radius: 3px; background-color: #3b82f6;"></div>
+                                    <div id="timeline-node-pin" style="position: absolute; top: -5px; right: 0%; transform: translateX(50%); width: 16px; height: 16px; border-radius: 50%; background-color: #ffffff; border: 3px solid #0f172a;"></div>
+                                </div>
+                                
+                                <div style="position: relative; width: 100%; height: 25px; margin-top: 8px;">
+                                    <span id="timeline-dynamic-marker" style="position: absolute; right: 0%; transform: translateX(50%); font-size: 0.85rem; font-weight: bold; color: #60a5fa; font-family: monospace;"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-stone-100 px-6 py-3 border-t border-stone-200 text-stone-500 text-[11px] flex justify-between items-center shrink-0">
+                <span>Microeconomics Case Module</span>
+                <span class="serif italic">AlmaU Economics Department</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- СКРИПТЫ УПРАВЛЕНИЯ, ЯЗЫКА И АНИМАЦИИ -->
+    <script>
+        const clockUrl = "https://ogaydv-prog.github.io/KZ-economic-clock/index-en.html";
+        let currentLang = 'en';
+
+        const i18n = {
+            en: {
+                hubTitle: "Academic Intelligence Hub",
+                hubSub: "AlmaU • Department of Economics and Business Disciplines",
+                mainHub: "Main Hub",
+                briefingTag: "Automated Weekly Briefing",
+                scheduleTag: "Updated Every Thursday at 01:00 AM (Astana Time)",
+                sectionTag: "Global Economic Analysis",
+                mainTitle: "The World This Week: Trade, Policy & Macro Economic Trends",
+                mainDesc: "Automatically curated economic headlines and international business updates from The Guardian, BBC News, and Euronews for academic discussion at Almaty Management University.",
+                footerBrand: "International Business News Hub • Almaty Management University",
+                footerSub: "Automatically updated every Thursday at 01:00 AM via GitHub Actions. Microeconomics Course.",
+                modalScaleTitle: "Macro Case Study: The Scale of Money",
+                riddleUnlock: "Click to Unlock: The Large Numbers Riddle",
+                riddleHide: "Hide Scale Riddle Panel",
+                news1Title: "AI could cause global economic downturn, Bank of England governor tells G20",
+                news1Desc: "Andrew Bailey warns group about risk of advanced ‘frontier models’ destabilising the ‘highly interconnected’ financial system...",
+                news1Link: "Read Full Original Article →",
+                news2Title: "Global trade and supply chains face new tariff pressures",
+                news2Desc: "International markets monitor policy decisions across North America and Europe as cross-border commerce adjusts...",
+                news2Link: "Read Full Original Article →",
+                news3Title: "European Central Bank reviews interest rate trajectory amid inflation trends",
+                news3Desc: "European economic indicators highlight shifting consumer confidence and industrial manufacturing output across the euro zone...",
+                news3Link: "Read Full Original Article →"
+            },
+            ru: {
+                hubTitle: "Академический аналитический хаб",
+                hubSub: "AlmaU • Кафедра экономических и бизнес-дисциплин",
+                mainHub: "На главный хаб",
+                briefingTag: "Автоматический еженедельный брифинг",
+                scheduleTag: "Обновляется каждый четверг в 01:00 ночи (время Астаны)",
+                sectionTag: "Глобальный экономический анализ",
+                mainTitle: "Мир на этой неделе: Торговля, политика и макроэкономика",
+                mainDesc: "Автоматически скомпонованные экономические новости и международные обзоры от The Guardian, BBC News и Euronews для академических дискуссий в Алматы Менеджмент Университете.",
+                footerBrand: "Международный новостной экономический хаб • Almaty Management University",
+                footerSub: "Автоматически обновляется каждый четверг в 01:00 через GitHub Actions. Курс «Микроэкономика».",
+                modalScaleTitle: "Макроэкономический кейс: Масштаб денег",
+                riddleUnlock: "Нажмите, чтобы открыть: Загадка больших чисел",
+                riddleHide: "Скрыть панель загадки масштаба",
+                news1Title: "ИИ может вызвать мировой экономический спад, заявила Банк Англии на G20",
+                news1Desc: "Эндрю Бейли предупреждает о рисках передовых моделей ИИ, способных дестабилизировать взаимосвязанную финансовую систему...",
+                news2Title: "Глобальная торговля и цепочки поставок сталкиваются с тарифным давлением",
+                news2Desc: "Международные рынки отслеживают решения в Северной Америке и Европе по мере адаптации трансграничной торговли...",
+                news3Title: "Европейский центральный банк пересматривает траекторию процентных ставок",
+                news3Desc: "Экономические индикаторы Европы указывают на изменение уверенности потребителей и объемов промышленного производства...",
+                news1Link: "Читать оригинал статьи →",
+                news2Link: "Читать оригинал статьи →",
+                news3Link: "Читать оригинал статьи →"
+            }
+        };
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'en' ? 'ru' : 'en';
+            const l = i18n[currentLang];
+
+            document.getElementById('txt-hub-title').innerText = l.hubTitle;
+            document.getElementById('txt-hub-sub').innerText = l.hubSub;
+            document.getElementById('txt-main-hub').innerText = l.mainHub;
+            document.getElementById('txt-briefing-tag').innerText = l.briefingTag;
+            document.getElementById('txt-schedule-tag').innerText = l.scheduleTag;
+            document.getElementById('txt-section-tag').innerText = l.sectionTag;
+            document.getElementById('txt-main-title').innerText = l.mainTitle;
+            document.getElementById('txt-main-desc').innerText = l.mainDesc;
+            document.getElementById('txt-footer-brand').innerText = l.footerBrand;
+            document.getElementById('txt-footer-sub').innerText = l.footerSub;
+            document.getElementById('txt-modal-scale-title').innerText = l.modalScaleTitle;
+
+            document.getElementById('news1-title').innerText = l.news1Title;
+            document.getElementById('news1-desc').innerText = l.news1Desc;
+            document.getElementById('news1-link').innerText = l.news1Link;
+
+            document.getElementById('news2-title').innerText = l.news2Title;
+            document.getElementById('news2-desc').innerText = l.news2Desc;
+            document.getElementById('news2-link').innerText = l.news2Link;
+
+            document.getElementById('news3-title').innerText = l.news3Title;
+            document.getElementById('news3-desc').innerText = l.news3Desc;
+            document.getElementById('news3-link').innerText = l.news3Link;
+
+            const panel = document.getElementById('scale-riddle-panel');
+            if (panel.style.display !== 'none') {
+                document.getElementById('riddle-toggle-text').innerText = l.riddleHide;
+            } else {
+                document.getElementById('riddle-toggle-text').innerText = l.riddleUnlock;
+            }
+        }
+
+        function openClockModal() {
+            const modal = document.getElementById('clockModal');
+            const iframe = document.getElementById('clockIframe');
+            if (!iframe.src || iframe.src !== clockUrl) {
+                iframe.src = clockUrl;
+            }
+            modal.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeClockModal() {
+            document.getElementById('clockModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function openCaseModal() {
+            document.getElementById('caseModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCaseModal() {
+            document.getElementById('caseModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                closeClockModal();
+                closeCaseModal();
+            }
+        });
+
+        let countInterval = null;
+
+        function toggleScaleRiddle() {
+            const panel = document.getElementById('scale-riddle-panel');
+            const text = document.getElementById('riddle-toggle-text');
+            const icon = document.getElementById('riddle-toggle-icon');
+            const l = i18n[currentLang];
+            
+            if (panel.style.display === 'none') {
+                panel.style.display = 'block';
+                text.innerText = l.riddleHide;
+                icon.innerText = '✨';
+                resetRiddleState(); 
+            } else {
+                panel.style.display = 'none';
+                text.innerText = l.riddleUnlock;
+                icon.innerText = '👁️‍🗨️';
+                resetRiddleState(); 
+            }
+        }
+
+        function resetRiddleState() {
+            if (countInterval) clearInterval(countInterval);
+            const outputZone = document.getElementById('riddle-output-zone');
+            outputZone.style.opacity = '0';
+            outputZone.style.visibility = 'hidden';
+        }
+
+        function runScaleStep(type, btnElement) {
+            btnElement.style.transform = 'translateY(4px)';
+            setTimeout(() => { btnElement.style.transform = 'translateY(0)'; }, 100);
+
+            if (countInterval) clearInterval(countInterval);
+
+            const outputZone = document.getElementById('riddle-output-zone');
+            const progressBar = document.getElementById('timeline-progress-bar');
+            const nodePin = document.getElementById('timeline-node-pin');
+            const dynamicMarker = document.getElementById('timeline-dynamic-marker');
+            const leftLabel = document.getElementById('timeline-left-label');
+            const timeValue = document.getElementById('riddle-time-value');
+            const contextText = document.getElementById('riddle-context-text');
+            const badge = document.getElementById('riddle-badge');
+
+            outputZone.style.visibility = 'visible';
+            outputZone.style.opacity = '1';
+
+            let startTime = performance.now();
+
+            if (type === 'million') {
+                badge.innerText = "Scale Vector: 1 Million ($1,000,000)";
+                badge.style.backgroundColor = 'rgba(59, 130, 246, 0.2)';
+                badge.style.color = '#60a5fa';
+                contextText.innerHTML = "A brief transaction interval. If a central bank updates its reserves by a million, it's a minor liquidity ripple.";
+                leftLabel.innerText = "Next Few Weeks";
+                
+                progressBar.style.backgroundColor = '#3b82f6';
+                let duration = 1200; 
+                
+                countInterval = setInterval(() => {
+                    let elapsed = performance.now() - startTime;
+                    let progress = Math.min(elapsed / duration, 1);
+                    let current = progress * 11.6;
+                    let currentPercentage = progress * 8;
+                    
+                    progressBar.style.width = currentPercentage + '%';
+                    nodePin.style.right = currentPercentage + '%';
+                    dynamicMarker.style.right = currentPercentage + '%';
+                    
+                    timeValue.style.color = '#60a5fa';
+                    timeValue.innerText = `⏱️ ${current.toFixed(1)} Days`;
+                    dynamicMarker.style.color = '#60a5fa';
+                    dynamicMarker.innerText = `-${current.toFixed(1)} Days`;
+
+                    if (progress === 1) clearInterval(countInterval);
+                }, 16);
+
+            } else if (type === 'billion') {
+                badge.innerText = "Scale Vector: 1 Billion ($1,000,000,000)";
+                badge.style.backgroundColor = 'rgba(234, 179, 8, 0.2)';
+                badge.style.color = '#fde047';
+                contextText.innerHTML = "<strong>Systemic Expansion:</strong> Going back 1 billion seconds takes us to 1994. Dial-up internet, pager networks, no smartphones.";
+                leftLabel.innerText = "Past Decades (1980s)";
+                
+                progressBar.style.backgroundColor = '#eab308';
+                let duration = 2000; 
+
+                countInterval = setInterval(() => {
+                    let elapsed = performance.now() - startTime;
+                    let progress = Math.min(elapsed / duration, 1);
+                    let current = progress * 31.7;
+                    let currentPercentage = progress * 45;
+                    
+                    progressBar.style.width = currentPercentage + '%';
+                    nodePin.style.right = currentPercentage + '%';
+                    dynamicMarker.style.right = currentPercentage + '%';
+                    
+                    timeValue.style.color = '#fde047';
+                    timeValue.innerText = `⏳ ${current.toFixed(1)} Years`;
+                    dynamicMarker.style.color = '#fde047';
+                    dynamicMarker.innerText = `-${current.toFixed(1)} Yrs (1994)`;
+
+                    if (progress === 1) clearInterval(countInterval);
+                }, 16);
+
+            } else if (type === 'trillion') {
+                badge.innerText = "Scale Vector: 1 Trillion ($1,000,000,000,000)";
+                badge.style.backgroundColor = 'rgba(239, 68, 68, 0.2)';
+                badge.style.color = '#fca5a5';
+                contextText.innerHTML = "<strong>Systemic Explosion:</strong> 31.7 thousand years ago, Mammoths and Neanderthals ruled the plains.";
+                leftLabel.innerText = "Stone Age (32k Years Ago)";
+                
+                progressBar.style.backgroundColor = '#ef4444';
+                let duration = 4000; 
+
+                countInterval = setInterval(() => {
+                    let elapsed = performance.now() - startTime;
+                    let progress = Math.min(elapsed / duration, 1);
+                    let easeProgress = Math.pow(progress, 3);
+                    let current = Math.floor(easeProgress * 31689);
+                    let currentPercentage = easeProgress * 98; 
+                    
+                    progressBar.style.width = currentPercentage + '%';
+                    nodePin.style.right = currentPercentage + '%';
+                    dynamicMarker.style.right = currentPercentage + '%';
+                    
+                    timeValue.style.color = '#ef4444';
+                    timeValue.innerText = `🌋 ${current.toLocaleString()} Years`;
+                    dynamicMarker.style.color = '#fca5a5';
+                    dynamicMarker.innerText = `-${current.toLocaleString()} Years`;
+
+                    if (progress === 1) clearInterval(countInterval);
+                }, 16);
+            }
+        }
+    </script>
+</body>
+</html>
