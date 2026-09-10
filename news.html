@@ -83,18 +83,18 @@
                 The World This Week: Trade, Policy & Macro Economic Trends
             </h1>
             <p class="text-sm sm:text-base text-stone-600 mt-2 max-w-4xl leading-relaxed serif" id="txt-main-desc">
-                Automatically curated economic headlines and international business updates from The Guardian, BBC News, and Euronews for academic discussion at Almaty Management University.
+                Automatically curated economic headlines and international business updates from The Guardian, BBC News, Euronews, and Inside FMCG for academic discussion at Almaty Management University.
             </p>
         </div>
 
-        <!-- СЕТКА НОВОСТЕЙ С ПОДДЕРЖКОЙ EN/RU -->
-        <div id="news-grid" class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- СЕТКА НОВОСТЕЙ ИЗ 4 КОЛОНОК -->
+        <div id="news-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             
             <!-- Карточка 1: Guardian -->
             <div class="space-y-3 border-t-2 border-stone-900 pt-4 flex flex-col justify-between">
                 <div>
                     <span class="text-xs font-bold text-brand-red uppercase tracking-widest">The Guardian</span>
-                    <h3 class="text-lg font-bold text-stone-900 serif leading-snug mt-1" id="news1-title">
+                    <h3 class="text-base font-bold text-stone-900 serif leading-snug mt-1" id="news1-title">
                         AI could cause global economic downturn, Bank of England governor tells G20
                     </h3>
                     <p class="text-xs text-stone-600 leading-relaxed mt-2" id="news1-desc">
@@ -112,7 +112,7 @@
             <div class="space-y-3 border-t-2 border-stone-900 pt-4 flex flex-col justify-between">
                 <div>
                     <span class="text-xs font-bold text-brand-red uppercase tracking-widest">BBC News</span>
-                    <h3 class="text-lg font-bold text-stone-900 serif leading-snug mt-1" id="news2-title">
+                    <h3 class="text-base font-bold text-stone-900 serif leading-snug mt-1" id="news2-title">
                         Global trade and supply chains face new tariff pressures
                     </h3>
                     <p class="text-xs text-stone-600 leading-relaxed mt-2" id="news2-desc">
@@ -120,12 +120,9 @@
                     </p>
                 </div>
                 <div class="pt-4 font-sans">
-                    <!-- ПРАВИЛЬНЫЙ ВАРИАНТ: -->
-<a href="https://www.bbc.com/news/business" target="_blank" rel="noopener noreferrer" class="text-xs text-brand-red font-bold hover:underline flex items-center space-x-1">
-    <span id="news2-link">Read Full Original Article →</span>
-</a>
-                     
-                    
+                    <a href="https://www.bbc.com/news/business" target="_blank" rel="noopener noreferrer" class="text-xs text-brand-red font-bold hover:underline flex items-center space-x-1">
+                        <span id="news2-link">Read Full Original Article →</span>
+                    </a>
                 </div>
             </div>
 
@@ -133,7 +130,7 @@
             <div class="space-y-3 border-t-2 border-stone-900 pt-4 flex flex-col justify-between">
                 <div>
                     <span class="text-xs font-bold text-brand-red uppercase tracking-widest">Euronews</span>
-                    <h3 class="text-lg font-bold text-stone-900 serif leading-snug mt-1" id="news3-title">
+                    <h3 class="text-base font-bold text-stone-900 serif leading-snug mt-1" id="news3-title">
                         European Central Bank reviews interest rate trajectory amid inflation trends
                     </h3>
                     <p class="text-xs text-stone-600 leading-relaxed mt-2" id="news3-desc">
@@ -143,6 +140,24 @@
                 <div class="pt-4 font-sans">
                     <a href="https://www.euronews.com/business" target="_blank" rel="noopener noreferrer" class="text-xs text-brand-red font-bold hover:underline flex items-center space-x-1">
                         <span id="news3-link">Read Full Original Article →</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Карточка 4: Inside FMCG (НОВАЯ) -->
+            <div class="space-y-3 border-t-2 border-stone-900 pt-4 flex flex-col justify-between">
+                <div>
+                    <span class="text-xs font-bold text-brand-red uppercase tracking-widest">Inside FMCG</span>
+                    <h3 class="text-base font-bold text-stone-900 serif leading-snug mt-1" id="news4-title">
+                        Danone’s high-protein dairy brand YoPro lands in NZ
+                    </h3>
+                    <p class="text-xs text-stone-600 leading-relaxed mt-2" id="news4-desc">
+                        Danone expands its functional dairy portfolio into New Zealand, introducing high-protein yoghurts to capitalise on growing consumer demand...
+                    </p>
+                </div>
+                <div class="pt-4 font-sans">
+                    <a href="https://insidefmcg.com.au/2026/09/09/danones-high-protein-dairy-brand-yopro-lands-in-nz/?_sc=NjA3NzUxMSM3MTM5Mw%3D%3D&utm_campaign=FMCG-NB-2026-09-10&utm_medium=email&utm_source=brevo" target="_blank" rel="noopener noreferrer" class="text-xs text-brand-red font-bold hover:underline flex items-center space-x-1">
+                        <span id="news4-link">Read Full Original Article →</span>
                     </a>
                 </div>
             </div>
@@ -262,7 +277,7 @@
                 scheduleTag: "Updated Every Thursday at 01:00 AM (Astana Time)",
                 sectionTag: "Global Economic Analysis",
                 mainTitle: "The World This Week: Trade, Policy & Macro Economic Trends",
-                mainDesc: "Automatically curated economic headlines and international business updates from The Guardian, BBC News, and Euronews for academic discussion at Almaty Management University.",
+                mainDesc: "Automatically curated economic headlines and international business updates from The Guardian, BBC News, Euronews, and Inside FMCG for academic discussion at Almaty Management University.",
                 footerBrand: "International Business News Hub • Almaty Management University",
                 footerSub: "Automatically updated every Thursday at 01:00 AM via GitHub Actions. Microeconomics Course.",
                 modalScaleTitle: "Macro Case Study: The Scale of Money",
@@ -276,7 +291,10 @@
                 news2Link: "Read Full Original Article →",
                 news3Title: "European Central Bank reviews interest rate trajectory amid inflation trends",
                 news3Desc: "European economic indicators highlight shifting consumer confidence and industrial manufacturing output across the euro zone...",
-                news3Link: "Read Full Original Article →"
+                news3Link: "Read Full Original Article →",
+                news4Title: "Danone’s high-protein dairy brand YoPro lands in NZ",
+                news4Desc: "Danone expands its functional dairy portfolio into New Zealand, introducing high-protein yoghurts to capitalise on growing consumer demand...",
+                news4Link: "Read Full Original Article →"
             },
             ru: {
                 hubTitle: "Академический аналитический хаб",
@@ -286,7 +304,7 @@
                 scheduleTag: "Обновляется каждый четверг в 01:00 ночи (время Астаны)",
                 sectionTag: "Глобальный экономический анализ",
                 mainTitle: "Мир на этой неделе: Торговля, политика и макроэкономика",
-                mainDesc: "Автоматически скомпонованные экономические новости и международные обзоры от The Guardian, BBC News и Euronews для академических дискуссий в Алматы Менеджмент Университете.",
+                mainDesc: "Автоматически скомпонованные экономические новости и международные обзоры от The Guardian, BBC News, Euronews и Inside FMCG для академических дискуссий в Алматы Менеджмент Университете.",
                 footerBrand: "Международный новостной экономический хаб • Almaty Management University",
                 footerSub: "Автоматически обновляется каждый четверг в 01:00 через GitHub Actions. Курс «Микроэкономика».",
                 modalScaleTitle: "Макроэкономический кейс: Масштаб денег",
@@ -298,9 +316,12 @@
                 news2Desc: "Международные рынки отслеживают решения в Северной Америке и Европе по мере адаптации трансграничной торговли...",
                 news3Title: "Европейский центральный банк пересматривает траекторию процентных ставок",
                 news3Desc: "Экономические индикаторы Европы указывают на изменение уверенности потребителей и объемов промышленного производства...",
+                news4Title: "Высокобелковый молочный бренд YoPro от Danone выходит на рынок Новой Зеландии",
+                news4Desc: "Danone расширяет портфель функциональных молочных продуктов в Новой Зеландии, запускает высокобелковые йогурты для удовлетворения спроса...",
                 news1Link: "Читать оригинал статьи →",
                 news2Link: "Читать оригинал статьи →",
-                news3Link: "Читать оригинал статьи →"
+                news3Link: "Читать оригинал статьи →",
+                news4Link: "Читать оригинал статьи →"
             }
         };
 
@@ -331,6 +352,10 @@
             document.getElementById('news3-title').innerText = l.news3Title;
             document.getElementById('news3-desc').innerText = l.news3Desc;
             document.getElementById('news3-link').innerText = l.news3Link;
+
+            document.getElementById('news4-title').innerText = l.news4Title;
+            document.getElementById('news4-desc').innerText = l.news4Desc;
+            document.getElementById('news4-link').innerText = l.news4Link;
 
             const panel = document.getElementById('scale-riddle-panel');
             if (panel.style.display !== 'none') {
