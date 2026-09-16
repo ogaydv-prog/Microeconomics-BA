@@ -108,7 +108,7 @@
         .card img {
             width: 100%;
             height: 100%;
-            object-fit: fill; /* Полное заполнение без обрезки */
+            object-fit: fill;
             display: block;
         }
 
@@ -118,7 +118,7 @@
             box-shadow: 0 16px 30px rgba(0, 30, 80, 0.18);
         }
 
-        /* 3D-Flip карточка для Видео (переворот при наведении) */
+        /* 3D-Flip карточка для Видео */
         .flip-card {
             background-color: transparent;
             width: 180px;
@@ -136,7 +136,6 @@
             border-radius: 12px;
         }
 
-        /* Переворот строго по HOVER */
         .flip-card:hover .flip-card-inner {
             transform: rotateY(180deg);
         }
@@ -219,7 +218,7 @@
             line-height: 1.6;
         }
 
-        /* АДАПТАЦИЯ ДЛЯ СМАРТФОНОВ (Mobile) */
+        /* Мобильная адаптация */
         @media (max-width: 640px) {
             .top-nav {
                 flex-direction: column;
@@ -279,17 +278,17 @@
         </a>
 
         <!-- 2. Симулятор 1: Спорт -->
-        <a href="sim-elastisity-sport-rus.html" class="card" title="Симулятор: Эластичность (Спорт)">
+        <a href="pictures/main/sim-elastisity-sport-rus.html" class="card" title="Симулятор: Эластичность (Спорт)">
             <img src="pictures/main/pic-sim-elastisity-sport-pe.png" alt="Симулятор спорта">
         </a>
 
         <!-- 3. Симулятор 2: Бананы -->
-        <a href="sim-elastisity-bananas-rus.html" class="card" title="Симулятор: Тест выручки (Бананы)">
+        <a href="pictures/main/sim-elastisity-bananas-rus.html" class="card" title="Симулятор: Тест выручки (Бананы)">
             <img src="pictures/main/pic-sim-elastisity-bananas-pe.png" alt="Симулятор бананов">
         </a>
 
         <!-- 4. Практический кейс (Студенческое питание) -->
-        <a href="task-elastisity-student-food.html" class="card" title="Практический кейс: Эластичность">
+        <a href="pictures/main/task-elastisity-student-food.html" class="card" title="Практический кейс: Эластичность">
             <img src="pictures/main/pic-task-coffee-pe.png" alt="Кейс эластичности">
         </a>
 
@@ -300,13 +299,13 @@
                 <div class="flip-card-front">
                     <img src="pictures/main/pic-video3-pe.png" alt="Видеолекции">
                 </div>
-                <!-- Оборотная сторона (появляется при наведении) -->
+                <!-- Оборотная сторона -->
                 <div class="flip-card-back">
                     <h3>Видеолекции</h3>
-                    <a href="https://www.youtube.com/embed/31Qb9aKm9mo" target="_blank" rel="noopener noreferrer" class="video-link">
+                    <a href="https://www.youtube.com/watch?v=31Qb9aKm9mo" target="_blank" rel="noopener noreferrer" class="video-link">
                         ▶ Part 1 (YouTube)
                     </a>
-                    <a href="https://www.youtube.com/embed/HHcblIxiAAk?cc_load_policy=1&hl=ru" target="_blank" rel="noopener noreferrer" class="video-link">
+                    <a href="https://www.youtube.com/watch?v=HHcblIxiAAk" target="_blank" rel="noopener noreferrer" class="video-link">
                         ▶ Part 2 (YouTube)
                     </a>
                 </div>
