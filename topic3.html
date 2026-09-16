@@ -23,7 +23,7 @@
             position: relative;
         }
 
-        /* Шапка с логотипом и кнопкой навигации */
+        /* Навигационная шапка */
         .top-nav {
             width: 100%;
             max-width: 1200px;
@@ -34,8 +34,8 @@
         }
 
         .top-left-logo {
-            width: 60px;
-            height: 60px;
+            width: 55px;
+            height: 55px;
             object-fit: contain;
         }
 
@@ -43,13 +43,12 @@
             text-decoration: none;
             background-color: #001e50;
             color: white;
-            padding: 10px 20px;
+            padding: 9px 18px;
             border-radius: 8px;
             font-weight: 600;
             font-size: 14px;
             transition: all 0.3s ease;
             box-shadow: 0 4px 10px rgba(0, 30, 80, 0.15);
-            display: inline-block;
         }
 
         .back-button:hover {
@@ -60,20 +59,21 @@
 
         header {
             text-align: center;
-            margin-bottom: 35px;
+            margin-bottom: 30px;
         }
 
         h1 {
-            font-size: 28px;
+            font-size: 30px;
             font-weight: 700;
             color: #001e50;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            margin-top: 10px;
         }
 
         .subtitle {
             font-size: 15px;
             color: #555555;
-            max-width: 700px;
+            max-width: 650px;
             line-height: 1.5;
             margin: 0 auto;
         }
@@ -90,7 +90,7 @@
             padding-bottom: 40px;
         }
 
-        /* Стандартные карточки */
+        /* Единые стандартные карточки */
         .card {
             display: inline-block;
             text-decoration: none;
@@ -103,23 +103,22 @@
             width: 180px; 
             height: 270px; 
             position: relative;
-            cursor: pointer;
         }
 
         .card img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: fill; /* Полное заполнение без обрезки */
             display: block;
         }
 
         .card:hover {
-            transform: translateY(-8px) scale(1.04);
+            transform: translateY(-8px) scale(1.03);
             border-color: #001e50;
-            box-shadow: 0 16px 30px rgba(0, 30, 80, 0.2);
+            box-shadow: 0 16px 30px rgba(0, 30, 80, 0.18);
         }
 
-        /* Карточка 3D-Переворот для Видео */
+        /* 3D-Flip карточка для Видео (переворот при наведении) */
         .flip-card {
             background-color: transparent;
             width: 180px;
@@ -132,12 +131,13 @@
             width: 100%;
             height: 100%;
             text-align: center;
-            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transform-style: preserve-3d;
             border-radius: 12px;
         }
 
-        .flip-card.flipped .flip-card-inner {
+        /* Переворот строго по HOVER */
+        .flip-card:hover .flip-card-inner {
             transform: rotateY(180deg);
         }
 
@@ -151,16 +151,20 @@
             overflow: hidden;
             border: 2px solid #cbd5e1;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .flip-card-front {
-            background-color: #ffffff;
+        .flip-card-front img {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+            display: block;
         }
 
-        .flip-card:hover .flip-card-front, 
+        .flip-card:hover .flip-card-front,
         .flip-card:hover .flip-card-back {
             border-color: #001e50;
-            box-shadow: 0 16px 30px rgba(0, 30, 80, 0.2);
+            box-shadow: 0 16px 30px rgba(0, 30, 80, 0.18);
         }
 
         .flip-card-back {
@@ -171,7 +175,7 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 15px;
+            padding: 12px;
             gap: 12px;
         }
 
@@ -180,16 +184,15 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
             color: #38bdf8;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
         }
 
-        .video-btn {
+        .video-link {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
             width: 100%;
-            padding: 10px 8px;
+            padding: 10px 6px;
             background: #ffffff;
             color: #001e50;
             text-decoration: none;
@@ -197,41 +200,36 @@
             font-size: 11px;
             font-weight: 700;
             transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
         }
 
-        .video-btn:hover {
-            background: #f0f6fc;
-            color: #ef4444;
-            transform: scale(1.03);
-        }
-
-        .flip-hint {
-            font-size: 9px;
-            color: #94a3b8;
-            margin-top: 4px;
+        .video-link:hover {
+            background: #38bdf8;
+            color: #001e50;
+            transform: scale(1.04);
         }
 
         footer {
             margin-top: auto;
-            font-size: 13px;
+            font-size: 14px;
             color: #718096;
-            padding-top: 20px;
+            padding-top: 30px;
             padding-bottom: 20px;
             text-align: center;
             line-height: 1.6;
         }
 
-        /* МОБИЛЬНАЯ АДАПТАЦИЯ (Smartphones) */
+        /* АДАПТАЦИЯ ДЛЯ СМАРТФОНОВ (Mobile) */
         @media (max-width: 640px) {
             .top-nav {
                 flex-direction: column;
                 align-items: center;
-                gap: 15px;
+                gap: 12px;
             }
 
             .top-left-logo {
-                width: 70px;
-                height: 70px;
+                width: 65px;
+                height: 65px;
             }
 
             h1 {
@@ -251,7 +249,7 @@
                 height: 235px;
             }
 
-            .video-btn {
+            .video-link {
                 font-size: 10px;
                 padding: 8px 4px;
             }
@@ -260,7 +258,7 @@
 </head>
 <body>
 
-    <!-- Шапка с логотипом и кнопкой возврта -->
+    <!-- Навигация: Логотип и кнопка возврата -->
     <div class="top-nav">
         <img src="pictures/main/almau.jpg" alt="AlmaU Logo" class="top-left-logo">
         <a href="topics.html" class="back-button">← К темам курса</a>
@@ -295,23 +293,22 @@
             <img src="pictures/main/pic-task-coffee-pe.png" alt="Кейс эластичности">
         </a>
 
-        <!-- 5. Видеоматериалы (3D-Flip Card на YouTube) -->
-        <div class="flip-card" id="videoCard" onclick="toggleFlipCard()">
+        <!-- 5. Видеоматериалы (3D Flip на Hover) -->
+        <div class="flip-card">
             <div class="flip-card-inner">
                 <!-- Лицевая сторона -->
                 <div class="flip-card-front">
                     <img src="pictures/main/pic-video3-pe.png" alt="Видеолекции">
                 </div>
-                <!-- Оборотная сторона -->
+                <!-- Оборотная сторона (появляется при наведении) -->
                 <div class="flip-card-back">
                     <h3>Видеолекции</h3>
-                    <a href="https://www.youtube.com/embed/31Qb9aKm9mo" target="_blank" rel="noopener noreferrer" class="video-btn" onclick="event.stopPropagation();">
-                        ▶ ЧPart 1 (YouTube)
+                    <a href="https://www.youtube.com/embed/31Qb9aKm9mo" target="_blank" rel="noopener noreferrer" class="video-link">
+                        ▶ Part 1 (YouTube)
                     </a>
-                    <a href="https://www.youtube.com/embed/HHcblIxiAAk?cc_load_policy=1&hl=ru" target="_blank" rel="noopener noreferrer" class="video-btn" onclick="event.stopPropagation();">
+                    <a href="https://www.youtube.com/embed/HHcblIxiAAk?cc_load_policy=1&hl=ru" target="_blank" rel="noopener noreferrer" class="video-link">
                         ▶ Part 2 (YouTube)
                     </a>
-                    <span class="flip-hint">Нажмите, чтобы свернуть</span>
                 </div>
             </div>
         </div>
@@ -321,13 +318,6 @@
         <p>Разработано для студентов AlmaU 2026 | Дисциплина: Микроэкономика</p>
         <p>© Almaty Management University | Школа цифровых технологий и экономики</p>
     </footer>
-
-    <script>
-        function toggleFlipCard() {
-            const card = document.getElementById('videoCard');
-            card.classList.toggle('flipped');
-        }
-    </script>
 
 </body>
 </html>
