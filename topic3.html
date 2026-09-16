@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тема 3: Эластичность спроса и предложения | Микроэкономика</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #333333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Шапка с логотипом и кнопкой навигации */
+        .top-nav {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .top-left-logo {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        .back-button {
+            text-decoration: none;
+            background-color: #001e50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 30, 80, 0.15);
+            display: inline-block;
+        }
+
+        .back-button:hover {
+            background-color: #003380;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0, 30, 80, 0.25);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #001e50;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: #555555;
+            max-width: 700px;
+            line-height: 1.5;
+            margin: 0 auto;
+        }
+
+        /* Сетка карточек */
+        .grid-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            max-width: 1200px;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+            padding-bottom: 40px;
+        }
+
+        /* Стандартные карточки */
+        .card {
+            display: inline-block;
+            text-decoration: none;
+            background: #ffffff;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 180px; 
+            height: 270px; 
+            position: relative;
+            cursor: pointer;
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.04);
+            border-color: #001e50;
+            box-shadow: 0 16px 30px rgba(0, 30, 80, 0.2);
+        }
+
+        /* Карточка 3D-Переворот для Видео */
+        .flip-card {
+            background-color: transparent;
+            width: 180px;
+            height: 270px;
+            perspective: 1000px;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            border-radius: 12px;
+        }
+
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #cbd5e1;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .flip-card-front {
+            background-color: #ffffff;
+        }
+
+        .flip-card:hover .flip-card-front, 
+        .flip-card:hover .flip-card-back {
+            border-color: #001e50;
+            box-shadow: 0 16px 30px rgba(0, 30, 80, 0.2);
+        }
+
+        .flip-card-back {
+            background-color: #001e50;
+            color: white;
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            gap: 12px;
+        }
+
+        .flip-card-back h3 {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #38bdf8;
+            margin-bottom: 5px;
+        }
+
+        .video-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            width: 100%;
+            padding: 10px 8px;
+            background: #ffffff;
+            color: #001e50;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+        }
+
+        .video-btn:hover {
+            background: #f0f6fc;
+            color: #ef4444;
+            transform: scale(1.03);
+        }
+
+        .flip-hint {
+            font-size: 9px;
+            color: #94a3b8;
+            margin-top: 4px;
+        }
+
+        footer {
+            margin-top: auto;
+            font-size: 13px;
+            color: #718096;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        /* МОБИЛЬНАЯ АДАПТАЦИЯ (Smartphones) */
+        @media (max-width: 640px) {
+            .top-nav {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+
+            .top-left-logo {
+                width: 70px;
+                height: 70px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .subtitle {
+                font-size: 13px;
+            }
+
+            .grid-container {
+                gap: 15px;
+            }
+
+            .card, .flip-card {
+                width: 155px;
+                height: 235px;
+            }
+
+            .video-btn {
+                font-size: 10px;
+                padding: 8px 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Шапка с логотипом и кнопкой возврта -->
+    <div class="top-nav">
+        <img src="pictures/main/almau.jpg" alt="AlmaU Logo" class="top-left-logo">
+        <a href="topics.html" class="back-button">← К темам курса</a>
+    </div>
+
+    <header>
+        <h1>Тема 3: Эластичность спроса и предложения</h1>
+        <p class="subtitle">
+            Выберите учебный материал: интерактивная презентация, аналитические симуляторы эластичности, практический кейс или видеолекции.
+        </p>
+    </header>
+
+    <main class="grid-container">
+        <!-- 1. Презентация (Piktochart) -->
+        <a href="https://create.piktochart.com/output/354b6bb78bec-2026" 
+           target="_blank" rel="noopener noreferrer" class="card" title="Презентация: Эластичность">
+            <img src="pictures/main/pic-preza3-pe.png" alt="Презентация">
+        </a>
+
+        <!-- 2. Симулятор 1: Спорт -->
+        <a href="sim-elastisity-sport-rus.html" class="card" title="Симулятор: Эластичность (Спорт)">
+            <img src="pictures/main/pic-sim-elastisity-sport-pe.png" alt="Симулятор спорта">
+        </a>
+
+        <!-- 3. Симулятор 2: Бананы -->
+        <a href="sim-elastisity-bananas-rus.html" class="card" title="Симулятор: Тест выручки (Бананы)">
+            <img src="pictures/main/pic-sim-elastisity-bananas-pe.png" alt="Симулятор бананов">
+        </a>
+
+        <!-- 4. Практический кейс (Студенческое питание) -->
+        <a href="task-elastisity-student-food.html" class="card" title="Практический кейс: Эластичность">
+            <img src="pictures/main/pic-task-coffee-pe.png" alt="Кейс эластичности">
+        </a>
+
+        <!-- 5. Видеоматериалы (3D-Flip Card на YouTube) -->
+        <div class="flip-card" id="videoCard" onclick="toggleFlipCard()">
+            <div class="flip-card-inner">
+                <!-- Лицевая сторона -->
+                <div class="flip-card-front">
+                    <img src="pictures/main/pic-video3-pe.png" alt="Видеолекции">
+                </div>
+                <!-- Оборотная сторона -->
+                <div class="flip-card-back">
+                    <h3>Видеолекции</h3>
+                    <a href="https://www.youtube.com/embed/31Qb9aKm9mo" target="_blank" rel="noopener noreferrer" class="video-btn" onclick="event.stopPropagation();">
+                        ▶ ЧPart 1 (YouTube)
+                    </a>
+                    <a href="https://www.youtube.com/embed/HHcblIxiAAk?cc_load_policy=1&hl=ru" target="_blank" rel="noopener noreferrer" class="video-btn" onclick="event.stopPropagation();">
+                        ▶ Part 2 (YouTube)
+                    </a>
+                    <span class="flip-hint">Нажмите, чтобы свернуть</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>Разработано для студентов AlmaU 2026 | Дисциплина: Микроэкономика</p>
+        <p>© Almaty Management University | Школа цифровых технологий и экономики</p>
+    </footer>
+
+    <script>
+        function toggleFlipCard() {
+            const card = document.getElementById('videoCard');
+            card.classList.toggle('flipped');
+        }
+    </script>
+
+</body>
+</html>
