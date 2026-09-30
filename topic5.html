@@ -23,20 +23,20 @@
             position: relative;
         }
 
-        /* Навигационная шапка */
-        .top-nav {
+        /* Главный контейнер верха */
+        .header-container {
             width: 100%;
-            max-width: 1200px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
+            max-width: 1350px;
+            position: relative;
+            margin-bottom: 25px;
         }
 
-        .top-left-logo {
-            width: 55px;
-            height: 55px;
-            object-fit: contain;
+        /* Кнопка "К темам курса" всегда справа сверху */
+        .top-nav-right {
+            position: absolute;
+            top: 0;
+            right: 0;
+            z-index: 10;
         }
 
         .back-button {
@@ -49,6 +49,7 @@
             font-size: 14px;
             transition: all 0.3s ease;
             box-shadow: 0 4px 10px rgba(0, 30, 80, 0.15);
+            display: inline-block;
         }
 
         .back-button:hover {
@@ -57,42 +58,59 @@
             box-shadow: 0 6px 14px rgba(0, 30, 80, 0.25);
         }
 
+        /* Шапка темы с заголовком */
         header {
             text-align: center;
-            margin-bottom: 30px;
+            padding: 0 120px; /* Отступы по бокам, чтобы не наезжать на логотип и кнопку */
+        }
+
+        /* Логотип AlmaU слева на уровне заголовка на ПК */
+        .top-left-logo {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 65px;
+            height: 65px;
+            object-fit: contain;
         }
 
         h1 {
-            font-size: 30px;
+            font-size: 28px;
             font-weight: 700;
             color: #001e50;
             margin-bottom: 8px;
-            margin-top: 10px;
+            line-height: 1.2;
         }
 
         .subtitle {
-            font-size: 15px;
+            font-size: 14px;
             color: #555555;
-            max-width: 650px;
+            max-width: 700px;
             line-height: 1.5;
             margin: 0 auto;
         }
 
-        /* Сетка карточек */
+        /* Сетка карточек — строго 6 в ряд на больших экранах */
         .grid-container {
             display: flex;
-            flex-wrap: wrap;
-            gap: 25px;
-            max-width: 1200px;
+            flex-wrap: nowrap; /* Не переносить на ПК */
+            gap: 16px;
+            max-width: 1380px;
             width: 100%;
             justify-content: center;
-            align-items: center;
+            align-items: stretch;
             padding-bottom: 40px;
         }
 
-        /* Единые стандартные карточки */
+        /* Общие свойства карточек */
+        .card-wrapper {
+            flex: 1 1 0;
+            min-width: 160px;
+            max-width: 200px;
+        }
+
         .card {
-            display: inline-block;
+            display: block;
             text-decoration: none;
             background: #ffffff;
             border: 2px solid #cbd5e1;
@@ -100,16 +118,16 @@
             overflow: hidden;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            width: 180px; 
-            height: 270px; 
+            height: 100%;
             position: relative;
         }
 
         .card img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain; /* Картинка полностью помещается без обрезания */
             display: block;
+            background-color: #ffffff;
         }
 
         .card:hover {
@@ -121,9 +139,9 @@
         /* 3D-Flip карточка для Видео */
         .flip-card {
             background-color: transparent;
-            width: 180px;
-            height: 270px;
             perspective: 1000px;
+            height: 100%;
+            min-height: 270px;
         }
 
         .flip-card-inner {
@@ -156,8 +174,9 @@
         .flip-card-front img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
             display: block;
+            background-color: #ffffff;
         }
 
         .flip-card:hover .flip-card-front,
@@ -210,25 +229,50 @@
 
         footer {
             margin-top: auto;
-            font-size: 14px;
+            font-size: 13px;
             color: #718096;
-            padding-top: 30px;
+            padding-top: 20px;
             padding-bottom: 20px;
             text-align: center;
             line-height: 1.6;
         }
 
-        /* Мобильная адаптация */
-        @media (max-width: 640px) {
-            .top-nav {
+        /* Адаптивность для мобильных устройств и планшетов */
+        @media (max-width: 1024px) {
+            .grid-container {
+                flex-wrap: wrap; /* Разрешаем перенос на маленьких экранах */
+                gap: 15px;
+            }
+            
+            .card-wrapper {
+                flex: 0 0 calc(33.333% - 15px); /* 3 в ряд на планшетах */
+                max-width: 180px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                display: flex;
                 flex-direction: column;
                 align-items: center;
                 gap: 12px;
+                margin-bottom: 20px;
             }
 
             .top-left-logo {
-                width: 65px;
-                height: 65px;
+                position: static; /* По центру сверху на мобильном */
+                width: 60px;
+                height: 60px;
+                margin: 0 auto;
+            }
+
+            .top-nav-right {
+                position: static; /* Кнопка под логотипом по центру */
+                margin-top: 4px;
+            }
+
+            header {
+                padding: 0;
             }
 
             h1 {
@@ -239,94 +283,103 @@
                 font-size: 13px;
             }
 
-            .grid-container {
-                gap: 15px;
+            .card-wrapper {
+                flex: 0 0 calc(50% - 10px); /* 2 в ряд на смартфонах */
+                max-width: 160px;
             }
 
-            .card, .flip-card {
-                width: 155px;
-                height: 235px;
-            }
-
-            .flip-card-back {
-                padding: 8px 6px;
-                gap: 4px;
-            }
-
-            .video-link {
-                font-size: 9px;
-                padding: 5px 2px;
+            .flip-card {
+                min-height: 240px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Навигация: Логотип и кнопка возврата -->
-    <div class="top-nav">
+    <!-- Шапка с адаптивным логотипом и кнопкой -->
+    <div class="header-container">
+        <!-- Логотип AlmaU -->
         <img src="almau.jpg" alt="AlmaU Logo" class="top-left-logo">
-        <a href="topics.html" class="back-button">← К темам курса</a>
+        
+        <!-- Заголовок темы -->
+        <header>
+            <h1>Тема 5: Теория производства и издержки</h1>
+            <p class="subtitle">
+                Выберите учебный материал: интерактивная презентация, аналитические симуляторы издержек и изокост, тексты лекций и видеоуроки.
+            </p>
+        </header>
+
+        <!-- Кнопка возврата -->
+        <div class="top-nav-right">
+            <a href="topics.html" class="back-button">← К темам курса</a>
+        </div>
     </div>
 
-    <header>
-        <h1>Тема 5: Теория производства и издержки</h1>
-        <p class="subtitle">
-            Выберите учебный материал: интерактивная презентация, аналитические симуляторы издержек и изокост, тексты лекций и видеоуроки.
-        </p>
-    </header>
-
+    <!-- Сетка карточек — ВСЕ 6 В ОДИН РЯД -->
     <main class="grid-container">
         <!-- 1. Презентация -->
-        <a href="#" class="card" title="Презентация: Теория производства и издержки">
-            <img src="pic-preza5-micro.png" alt="Презентация Темы 5">
-        </a>
+        <div class="card-wrapper">
+            <a href="#" class="card" title="Презентация: Теория производства и издержки">
+                <img src="pic-preza5-micro.png" alt="Презентация Темы 5">
+            </a>
+        </div>
 
-        <!-- 2. Симулятор 1: Производственные издержки -->
-        <a href="sim-production-costs-se.html" class="card" title="Симулятор: Издержки производства">
-            <img src="pic-sim-production-costs-me.png" alt="Симулятор издержек">
-        </a>
+        <!-- 2. Симулятор 1: Издержки производства -->
+        <div class="card-wrapper">
+            <a href="sim-production-costs-se.html" class="card" title="Симулятор: Издержки производства">
+                <img src="pic-sim-production-costs-me.png" alt="Симулятор издержек">
+            </a>
+        </div>
 
         <!-- 3. Симулятор 2: Изокванты и Изокосты -->
-        <a href="sim-izocosts-izocvant-5-pe.html" class="card" title="Симулятор: Изокванты и Изокосты">
-            <img src="pic-sim-izocosts-me.png" alt="Симулятор изокост и изоквант">
-        </a>
+        <div class="card-wrapper">
+            <a href="sim-izocosts-izocvant-5-pe.html" class="card" title="Симулятор: Изокванты и Изокосты">
+                <img src="pic-sim-izocosts-me.png" alt="Симулятор изокост и изоквант">
+            </a>
+        </div>
 
-        <!-- 4. Практический кейс/Задачи -->
-        <a href="sim-task-production-costs-5-pe.html" class="card" title="Задачи: Расчет издержек">
-            <img src="pic-sim-task4-me.png" alt="Задачи по издержкам">
-        </a>
+        <!-- 4. Задачи по издержкам -->
+        <div class="card-wrapper">
+            <a href="sim-task-production-costs-5-pe.html" class="card" title="Задачи: Расчет издержек">
+                <img src="pic-sim-task4-me.png" alt="Задачи по издержкам">
+            </a>
+        </div>
 
         <!-- 5. Лекционный материал (Google Docs) -->
-        <a href="https://docs.google.com/document/d/1zEx78sghk8ZUncVmNqPeF7G-CfcDv-XmySLlRd8N330/edit?usp=sharing" 
-           target="_blank" rel="noopener noreferrer" class="card" title="Материалы лекции: Теория производства">
-            <img src="pic-lecture5-micro.png" alt="Материалы лекции">
-        </a>
+        <div class="card-wrapper">
+            <a href="https://docs.google.com/document/d/1zEx78sghk8ZUncVmNqPeF7G-CfcDv-XmySLlRd8N330/edit?usp=sharing" 
+               target="_blank" rel="noopener noreferrer" class="card" title="Материалы лекции: Теория производства">
+                <img src="pic-lecture5-micro.png" alt="Материалы лекции">
+            </a>
+        </div>
 
         <!-- 6. Видеоматериалы (3D Flip со списком из 5 видео) -->
-        <div class="flip-card">
-            <div class="flip-card-inner">
-                <!-- Лицевая сторона -->
-                <div class="flip-card-front">
-                    <img src="pic-video5-micro.png" alt="Видеолекции">
-                </div>
-                <!-- Оборотная сторона со всеми 5 видео -->
-                <div class="flip-card-back">
-                    <h3>Видеолекции</h3>
-                    <a href="https://www.youtube.com/watch?v=EAp8nr2tUjE&t=70s" target="_blank" rel="noopener noreferrer" class="video-link">
-                        ▶ Лекция 1 (YouTube)
-                    </a>
-                    <a href="https://www.youtube.com/watch?v=TOw8hSOk5SQ" target="_blank" rel="noopener noreferrer" class="video-link">
-                        ▶ Лекция 2 (YouTube)
-                    </a>
-                    <a href="https://www.youtube.com/watch?v=mIkUO81_C98" target="_blank" rel="noopener noreferrer" class="video-link">
-                        ▶ Лекция 3 (YouTube)
-                    </a>
-                    <a href="https://www.youtube.com/watch?v=CUYwi_sxIJg" target="_blank" rel="noopener noreferrer" class="video-link">
-                        ▶ Лекция 4 (YouTube)
-                    </a>
-                    <a href="https://www.youtube.com/watch?v=1az5t5VOCVE&t=148s" target="_blank" rel="noopener noreferrer" class="video-link">
-                        ▶ Лекция 5 (YouTube)
-                    </a>
+        <div class="card-wrapper">
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <!-- Лицевая сторона -->
+                    <div class="flip-card-front">
+                        <img src="pic-video5-micro.png" alt="Видеолекции">
+                    </div>
+                    <!-- Оборотная сторона со всеми 5 видео -->
+                    <div class="flip-card-back">
+                        <h3>Видеолекции</h3>
+                        <a href="https://www.youtube.com/watch?v=EAp8nr2tUjE&t=70s" target="_blank" rel="noopener noreferrer" class="video-link">
+                            ▶ Лекция 1 (YouTube)
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=TOw8hSOk5SQ" target="_blank" rel="noopener noreferrer" class="video-link">
+                            ▶ Лекция 2 (YouTube)
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=mIkUO81_C98" target="_blank" rel="noopener noreferrer" class="video-link">
+                            ▶ Лекция 3 (YouTube)
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=CUYwi_sxIJg" target="_blank" rel="noopener noreferrer" class="video-link">
+                            ▶ Лекция 4 (YouTube)
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=1az5t5VOCVE&t=148s" target="_blank" rel="noopener noreferrer" class="video-link">
+                            ▶ Лекция 5 (YouTube)
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
