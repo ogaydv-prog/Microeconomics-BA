@@ -24,7 +24,7 @@
             </div>
         </div>
 
-        <!-- Табы -->
+        <!-- Переключатели вкладок -->
         <div class="flex bg-slate-900 rounded-xl p-1 border border-slate-700">
             <button id="btn-tab1" onclick="switchTab('sim1')" class="tab-btn active px-3.5 py-1.5 rounded-lg text-xs font-bold text-sky-400 flex items-center gap-2">
                 <i class="fa-solid fa-chart-line"></i> <span>Академическая модель</span>
@@ -39,12 +39,12 @@
         </a>
     </header>
 
-    <!-- Область отображения вкладок -->
+    <!-- Область отображения вкладок через iframe -->
     <main class="flex-1 w-full h-[calc(100vh-57px)] relative bg-[#0b0f13]">
-        <!-- Вкладка 1: sim-production-costs-se.html -->
+        <!-- Вкладка 1: Академическая модель -->
         <iframe id="iframe-sim1" src="sim-production-costs-se.html" class="w-full h-full border-0 block"></iframe>
 
-        <!-- Вкладка 2: sim-t-shirts.html -->
+        <!-- Вкладка 2: Кейс T-Shirt -->
         <iframe id="iframe-sim2" src="sim-t-shirts.html" class="w-full h-full border-0 hidden"></iframe>
     </main>
 
