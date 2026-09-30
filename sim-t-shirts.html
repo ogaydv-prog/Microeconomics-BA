@@ -1,0 +1,905 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>T-Shirt Production Economics Simulator</title>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-color: #080c14;
+            --panel-bg: rgba(15, 23, 42, 0.85);
+            --panel-border: rgba(59, 130, 246, 0.2);
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --bright-blue: #3b82f6;
+            --deep-blue: #0066ff;
+            --neon-green: #10b981;
+            --neon-red: #ef4444;
+            --neon-amber: #f59e0b;
+            --vintage-red: #dc2626;
+            --accent-purple: #8b5cf6;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 15px;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 102, 255, 0.05) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(59, 130, 246, 0.05) 0%, transparent 40%);
+        }
+
+        /* Top Header & Tabs Bar */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 10px 20px;
+            margin-bottom: 15px;
+            backdrop-filter: blur(12px);
+        }
+
+        .app-title h1 {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            background: linear-gradient(90deg, #ffffff, var(--bright-blue));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .app-title p {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .tabs-container {
+            display: flex;
+            gap: 8px;
+            background: rgba(8, 12, 20, 0.6);
+            padding: 4px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 6px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, rgba(0, 102, 255, 0.3), rgba(59, 130, 246, 0.2));
+            color: #ffffff;
+            border: 1px solid var(--bright-blue);
+            box-shadow: 0 0 10px rgba(0, 102, 255, 0.4);
+        }
+
+        /* Main Grid Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            gap: 15px;
+        }
+
+        /* Left Column */
+        .left-column {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Controls Panel */
+        .controls-panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 20px 16px;
+            backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .panel-section-title {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--bright-blue);
+            border-bottom: 1px solid rgba(59, 130, 246, 0.2);
+            padding-bottom: 6px;
+            margin-bottom: 4px;
+        }
+
+        .slider-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .slider-label-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+        }
+
+        .slider-label {
+            color: var(--text-main);
+        }
+
+        .slider-value {
+            font-weight: 700;
+            color: var(--bright-blue);
+        }
+
+        /* Vintage Red Slider Bar */
+        input[type=range] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+        }
+
+        input[type=range]:focus {
+            outline: none;
+        }
+
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 4px;
+            cursor: pointer;
+            background: #1e293b;
+            border-radius: 2px;
+        }
+
+        input[type=range]::-webkit-slider-thumb {
+            height: 16px;
+            width: 9px;
+            border-radius: 2px;
+            background: var(--vintage-red);
+            cursor: pointer;
+            -webkit-appearance: none;
+            margin-top: -6px;
+            box-shadow: 0 0 6px rgba(220, 38, 38, 0.8);
+            border: 1px solid #7f1d1d;
+        }
+
+        /* Narrative Panel */
+        .narrative-panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 14px;
+            backdrop-filter: blur(12px);
+            line-height: 1.5;
+            font-size: 11px;
+            color: var(--text-main);
+            flex: 1;
+        }
+
+        .narrative-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--bright-blue);
+            margin-bottom: 6px;
+        }
+
+        /* Analytics Column */
+        .analytics-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        /* Top Gauge Row */
+        .gauge-row {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 15px;
+        }
+
+        .gauge-card, .metrics-summary-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 12px;
+            backdrop-filter: blur(12px);
+        }
+
+        .gauge-container {
+            position: relative;
+            width: 100%;
+            height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .gauge-canvas {
+            width: 220px !important;
+            height: 120px !important;
+        }
+
+        .gauge-title {
+            text-align: center;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+
+        /* KPI Cards Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            height: 100%;
+            align-content: center;
+        }
+
+        .kpi-card {
+            background: rgba(8, 12, 20, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 8px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .kpi-title {
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+
+        .kpi-value {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .val-blue { color: var(--bright-blue); }
+        .val-positive { color: var(--neon-green); }
+        .val-negative { color: var(--neon-red); }
+
+        /* Charts Grid (2x2) */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .chart-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 12px;
+            padding: 12px;
+            backdrop-filter: blur(12px);
+            height: 250px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chart-header {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .chart-header::before {
+            content: '';
+            width: 3px;
+            height: 10px;
+            background: var(--bright-blue);
+            border-radius: 2px;
+        }
+
+        .chart-wrapper {
+            position: relative;
+            flex: 1;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="app-header">
+        <div class="app-title">
+            <h1>Симулятор экономики производства футболок</h1>
+            <p>Сравнительный микроэкономический анализ Mass Market & Premium бренд-сегментов</p>
+        </div>
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="switchTab('mass')">Mass Market</button>
+            <button class="tab-btn" onclick="switchTab('premium')">Premium Segment</button>
+        </div>
+    </header>
+
+    <!-- Dashboard Main -->
+    <div class="dashboard-grid">
+        
+        <!-- Left Sidebar -->
+        <div class="left-column">
+            <aside class="controls-panel">
+                <div class="panel-section-title">Переменные модели</div>
+
+                <!-- Global Volume Slider -->
+                <div class="slider-group">
+                    <div class="slider-label-row">
+                        <span class="slider-label">Объем партии (Q):</span>
+                        <span class="slider-value" id="val-q">150 тыс. шт</span>
+                    </div>
+                    <input type="range" id="input-q" min="10" max="500" value="150" oninput="updateAll()">
+                </div>
+
+                <!-- Mass Market Sliders -->
+                <div id="controls-mass">
+                    <div class="slider-group" style="margin-top: 14px;">
+                        <div class="slider-label-row">
+                            <span class="slider-label">Сырье и ткань:</span>
+                            <span class="slider-value" id="val-mass-mat">2.20 €</span>
+                        </div>
+                        <input type="range" id="input-mass-mat" min="1.0" max="5.0" step="0.1" value="2.2" oninput="updateAll()">
+                    </div>
+
+                    <div class="slider-group" style="margin-top: 14px;">
+                        <div class="slider-label-row">
+                            <span class="slider-label">Пошив (CMT):</span>
+                            <span class="slider-value" id="val-mass-labor">1.20 €</span>
+                        </div>
+                        <input type="range" id="input-mass-labor" min="0.5" max="3.0" step="0.1" value="1.2" oninput="updateAll()">
+                    </div>
+
+                    <div class="slider-group" style="margin-top: 14px;">
+                        <div class="slider-label-row">
+                            <span class="slider-label">Логистика/таможня:</span>
+                            <span class="slider-value" id="val-mass-log">0.80 €</span>
+                        </div>
+                        <input type="range" id="input-mass-log" min="0.2" max="2.0" step="0.1" value="0.8" oninput="updateAll()">
+                    </div>
+
+                    <div class="slider-group" style="margin-top: 14px;">
+                        <div class="slider-label-row">
+                            <span class="slider-label">Цена реализации (P):</span>
+                            <span class="slider-value" id="val-mass-price">18.00 €</span>
+                        </div>
+                        <input type="range" id="input-mass-price" min="10" max="30" step="0.5" value="18" oninput="updateAll()">
+                    </div>
+
+                    <div class="slider-group" style="margin-top: 14px;">
+                        <div class="slider-label-row">
+                            <span class="slider-label">Постоянные издержки (FC):</span>
+                            <span class="slider-value" id="val-mass-fc">800 тыс. €</span>
+                        </div>
+                        <input type="range" id="input-mass-fc" min="200" max="1500" step="50" value="800" oninput="updateAll()">
+                    </div>
+                </div>
+
+                <!-- Premium Sliders -->
+                <div id="controls-premium" style="display: none;">
+                    <div class="slider-group" style="margin-top: 14px;">
+                        <div class="slider-label-row">
+                            <span class="slider-label">Эко-сырье (Supima/CmiA):</span>
+                            <span class="slider-value" id="val-prem-mat">7.50 €</span>
+                        </div>
+                        <input type="range" id="input-prem-mat" min="4.0" max="15.0" step="0.5" value="7.5" oninput="updateAll()">
+                    </div>
+
+                    <div class="slider-group" style="margin-top: 14px;">
+                        <div class="slider-label-row">
+                            <span class="slider-label">Этичный пошив (FairWork):</span>
+                            <span class="slider-value" id="val-prem-labor">5.00 €</span>
+                        </div>
+                        <input type="range" id="input-prem-labor" min="2.5" max="12.0" step="0.5" value="5.0" oninput="updateAll()">
+                    </div>
+
+                    <div class="slider-group" style="margin-top: 14px;">
+                        <div class="slider-label-row">
+                            <span class="slider-label">Эко-сбор FairTrade/EPR:</span>
+                            <span class="slider-value" id="val-prem-eco">0.80 €</span>
+                        </div>
+                        <input type="range" id="input-prem-eco" min="0.1" max="2.5" step="0.1" value="0.8" oninput="updateAll()">
+                    </div>
+
+                    <div class="slider-group" style="margin-top: 14px;">
+                        <div class="slider-label-row">
+                            <span class="slider-label">Цена реализации (P):</span>
+                            <span class="slider-value" id="val-prem-price">55.00 €</span>
+                        </div>
+                        <input type="range" id="input-prem-price" min="30" max="100" step="1.0" value="55" oninput="updateAll()">
+                    </div>
+
+                    <div class="slider-group" style="margin-top: 14px;">
+                        <div class="slider-label-row">
+                            <span class="slider-label">Постоянные издержки (FC):</span>
+                            <span class="slider-value" id="val-prem-fc">350 тыс. €</span>
+                        </div>
+                        <input type="range" id="input-prem-fc" min="100" max="800" step="25" value="350" oninput="updateAll()">
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Narrative Block -->
+            <section class="narrative-panel">
+                <div class="narrative-title">💡 Экономическое резюме</div>
+                <div id="narrative-text">Загрузка данных...</div>
+            </section>
+        </div>
+
+        <!-- Right Visual Column -->
+        <main class="analytics-panel">
+
+            <!-- Gauge + KPI Cards Row -->
+            <div class="gauge-row">
+                <div class="gauge-card">
+                    <div class="gauge-title" id="gauge-title-label">Операционная маржа (%)</div>
+                    <div class="gauge-container">
+                        <canvas id="customGaugeCanvas" class="gauge-canvas"></canvas>
+                    </div>
+                </div>
+
+                <div class="metrics-summary-card">
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <span class="kpi-title">Себестоимость (Unit Cost)</span>
+                            <span class="kpi-value val-blue" id="kpi-unit-cost">0.00 €</span>
+                        </div>
+                        <div class="kpi-card">
+                            <span class="kpi-title">Маржа на единицу</span>
+                            <span class="kpi-value" id="kpi-unit-margin">0.00 €</span>
+                        </div>
+                        <div class="kpi-card">
+                            <span class="kpi-title">Точка безубыточности</span>
+                            <span class="kpi-value val-blue" id="kpi-bep">0 тыс. шт</span>
+                        </div>
+                        <div class="kpi-card">
+                            <span class="kpi-title">Выручка (Total Revenue)</span>
+                            <span class="kpi-value val-blue" id="kpi-tr">0.00 М€</span>
+                        </div>
+                        <div class="kpi-card">
+                            <span class="kpi-title">Совокупные издержки</span>
+                            <span class="kpi-value val-negative" id="kpi-tc">0.00 М€</span>
+                        </div>
+                        <div class="kpi-card">
+                            <span class="kpi-title">Операционная прибыль</span>
+                            <span class="kpi-value" id="kpi-profit">0.00 М€</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts 2x2 Grid -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <div class="chart-header">Структура себестоимости единицы</div>
+                    <div class="chart-wrapper"><canvas id="chart1"></canvas></div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">Точка безубыточности (TR vs TC)</div>
+                    <div class="chart-wrapper"><canvas id="chart2"></canvas></div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">Динамика издержек (ATC, AVC, AFC, MC)</div>
+                    <div class="chart-wrapper"><canvas id="chart3"></canvas></div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">Чувствительность прибыли к внешним шокам</div>
+                    <div class="chart-wrapper"><canvas id="chart4"></canvas></div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        let activeTab = 'mass';
+        let charts = {};
+
+        // Color Palette
+        const COLOR_BRIGHT_BLUE = '#3b82f6';
+        const COLOR_DEEP_BLUE = '#0066ff';
+        const COLOR_GREEN = '#10b981';
+        const COLOR_RED = '#ef4444';
+        const COLOR_AMBER = '#f59e0b';
+        const COLOR_PURPLE = '#8b5cf6';
+        const COLOR_GRID = 'rgba(255, 255, 255, 0.12)';
+        const COLOR_TEXT_MUTED = '#94a3b8';
+
+        Chart.defaults.color = COLOR_TEXT_MUTED;
+        Chart.defaults.font.family = 'Segoe UI, sans-serif';
+        Chart.defaults.font.size = 10;
+
+        function switchTab(tab) {
+            activeTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            if (tab === 'mass') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('controls-mass').style.display = 'block';
+                document.getElementById('controls-premium').style.display = 'none';
+                document.getElementById('gauge-title-label').innerText = 'Операционная маржа (%)';
+            } else {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('controls-mass').style.display = 'none';
+                document.getElementById('controls-premium').style.display = 'block';
+                document.getElementById('gauge-title-label').innerText = 'Коэффициент наценки бренда (%)';
+            }
+            updateAll();
+        }
+
+        function getInputs() {
+            const Q = parseFloat(document.getElementById('input-q').value) * 1000;
+            if (activeTab === 'mass') {
+                return {
+                    Q,
+                    mat: parseFloat(document.getElementById('input-mass-mat').value),
+                    labor: parseFloat(document.getElementById('input-mass-labor').value),
+                    logistics: parseFloat(document.getElementById('input-mass-log').value),
+                    eco: 0,
+                    price: parseFloat(document.getElementById('input-mass-price').value),
+                    fc: parseFloat(document.getElementById('input-mass-fc').value) * 1000
+                };
+            } else {
+                return {
+                    Q,
+                    mat: parseFloat(document.getElementById('input-prem-mat').value),
+                    labor: parseFloat(document.getElementById('input-prem-labor').value),
+                    logistics: 1.5,
+                    eco: parseFloat(document.getElementById('input-prem-eco').value),
+                    price: parseFloat(document.getElementById('input-prem-price').value),
+                    fc: parseFloat(document.getElementById('input-prem-fc').value) * 1000
+                };
+            }
+        }
+
+        function calculateMetrics(p) {
+            const vcUnit = p.mat + p.labor + p.logistics + p.eco;
+            const landedCost = vcUnit;
+            const unitMargin = p.price - landedCost;
+            const marginRate = p.price > 0 ? (unitMargin / p.price) * 100 : 0;
+            
+            const TR = p.price * p.Q;
+            const VC = vcUnit * p.Q;
+            const TC = p.fc + VC;
+            const Profit = TR - TC;
+            const bep = (p.price - vcUnit) > 0 ? p.fc / (p.price - vcUnit) : Infinity;
+
+            return { vcUnit, landedCost, unitMargin, marginRate, TR, VC, TC, Profit, bep };
+        }
+
+        // Custom Gauge with Neon White Dauphine (Hour-hand style) Pointer
+        function drawCustomGauge(value, minVal, maxVal) {
+            const canvas = document.getElementById('customGaugeCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            canvas.width = 220 * window.devicePixelRatio;
+            canvas.height = 120 * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+            const cx = 110;
+            const cy = 105;
+            const radius = 75;
+            const lineWidth = 8;
+
+            ctx.clearRect(0, 0, 220, 120);
+
+            // Zone 1: Red Arc
+            ctx.beginPath();
+            ctx.arc(cx, cy, radius, Math.PI, Math.PI * 1.35, false);
+            ctx.strokeStyle = COLOR_RED;
+            ctx.lineWidth = lineWidth;
+            ctx.stroke();
+
+            // Zone 2: Blue Arc
+            ctx.beginPath();
+            ctx.arc(cx, cy, radius, Math.PI * 1.35, Math.PI * 1.7, false);
+            ctx.strokeStyle = COLOR_DEEP_BLUE;
+            ctx.lineWidth = lineWidth;
+            ctx.stroke();
+
+            // Zone 3: Green Arc
+            ctx.beginPath();
+            ctx.arc(cx, cy, radius, Math.PI * 1.7, 2 * Math.PI, false);
+            ctx.strokeStyle = COLOR_GREEN;
+            ctx.lineWidth = lineWidth;
+            ctx.stroke();
+
+            // White Ticks
+            const totalTicks = 9;
+            for (let i = 0; i < totalTicks; i++) {
+                const angle = Math.PI + (i / (totalTicks - 1)) * Math.PI;
+                const innerR = radius - 10;
+                const outerR = radius - 15;
+                
+                const x1 = cx + innerR * Math.cos(angle);
+                const y1 = cy + innerR * Math.sin(angle);
+                const x2 = cx + outerR * Math.cos(angle);
+                const y2 = cy + outerR * Math.sin(angle);
+
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.strokeStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.lineWidth = 1.2;
+                ctx.stroke();
+            }
+
+            // Pointer Angle Calculation
+            let clampedVal = Math.max(minVal, Math.min(maxVal, value));
+            let pct = (clampedVal - minVal) / (maxVal - minVal);
+            let targetAngle = Math.PI + pct * Math.PI;
+
+            // DRAW DAUPHINE / HOUR-HAND POINTER (Neon White)
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.rotate(targetAngle);
+
+            ctx.beginPath();
+            // Узкое основание слева
+            ctx.moveTo(0, -2);
+            // Плавное расширение к середине (форма часовой стрелки / острие стрелы)
+            ctx.lineTo(35, -4.5);
+            // Сужение к красивому острому кончику вверху
+            ctx.lineTo(65, 0);
+            // Обратная сторона симметрично вниз
+            ctx.lineTo(35, 4.5);
+            ctx.lineTo(0, 2);
+            ctx.closePath();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowColor = 'rgba(255, 255, 255, 0.9)'; // Яркий белый неон
+            ctx.shadowBlur = 10;
+            ctx.fill();
+
+            ctx.restore();
+
+            // Center Pin Overlay
+            ctx.beginPath();
+            ctx.arc(cx, cy, 4, 0, 2 * Math.PI);
+            ctx.fillStyle = COLOR_BRIGHT_BLUE;
+            ctx.fill();
+
+            // Value Text
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 15px Segoe UI';
+            ctx.textAlign = 'center';
+            ctx.fillText(value.toFixed(1) + '%', cx, cy - 20);
+        }
+
+        function initCharts() {
+            // Chart 1: Donut Structure (Светлый сектор маржи)
+            charts.c1 = new Chart(document.getElementById('chart1'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Сырье', 'Пошив', 'Логистика', 'Эко-сбор', 'Маржа'],
+                    datasets: [{
+                        data: [1, 1, 1, 1, 1],
+                        backgroundColor: [
+                            COLOR_BRIGHT_BLUE, 
+                            COLOR_PURPLE, 
+                            COLOR_AMBER, 
+                            COLOR_GREEN, 
+                            'rgba(255, 255, 255, 0.25)'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: { padding: 5 },
+                    plugins: { legend: { position: 'right', labels: { boxWidth: 8, font: { size: 9 } } } },
+                    cutout: '65%'
+                }
+            });
+
+            // Chart 2: Break-Even
+            charts.c2 = new Chart(document.getElementById('chart2'), {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        { label: 'Выручка (TR)', borderColor: COLOR_GREEN, data: [], borderWidth: 2, pointRadius: 0 },
+                        { label: 'Издержки (TC)', borderColor: COLOR_RED, data: [], borderWidth: 2, pointRadius: 0 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { grid: { color: COLOR_GRID }, title: { display: true, text: 'Объем (тыс. шт)', font: { size: 9 } } },
+                        y: { grid: { color: COLOR_GRID }, title: { display: true, text: 'Млн €', font: { size: 9 } } }
+                    },
+                    plugins: { legend: { position: 'top', labels: { boxWidth: 8, font: { size: 9 } } } }
+                }
+            });
+
+            // Chart 3: Cost Dynamics
+            charts.c3 = new Chart(document.getElementById('chart3'), {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        { label: 'ATC (Средние общие)', borderColor: COLOR_BRIGHT_BLUE, data: [], borderWidth: 2, pointRadius: 0 },
+                        { label: 'AVC (Переменные)', borderColor: COLOR_AMBER, data: [], borderWidth: 1.5, borderDash: [3, 3], pointRadius: 0 },
+                        { label: 'AFC (Постоянные)', borderColor: COLOR_PURPLE, data: [], borderWidth: 1.5, borderDash: [2, 2], pointRadius: 0 },
+                        { label: 'MC (Предельные)', borderColor: COLOR_RED, data: [], borderWidth: 2, pointRadius: 0 }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { grid: { color: COLOR_GRID }, title: { display: true, text: 'Объем (тыс. шт)', font: { size: 9 } } },
+                        y: { grid: { color: COLOR_GRID }, title: { display: true, text: '€ / шт', font: { size: 9 } } }
+                    },
+                    plugins: { legend: { position: 'top', labels: { boxWidth: 8, font: { size: 8 } } } }
+                }
+            });
+
+            // Chart 4: Sensitivity Bar Chart
+            charts.c4 = new Chart(document.getElementById('chart4'), {
+                type: 'bar',
+                data: {
+                    labels: ['База', 'Сырье +20%', 'Логистика +30%', 'Цена -10%'],
+                    datasets: [{
+                        label: 'Прибыль (Млн €)',
+                        data: [0, 0, 0, 0],
+                        backgroundColor: [COLOR_BRIGHT_BLUE, COLOR_AMBER, COLOR_PURPLE, COLOR_RED]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: { grid: { display: false } },
+                        y: { grid: { color: COLOR_GRID }, title: { display: true, text: 'Млн €', font: { size: 9 } } }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        function updateAll() {
+            const p = getInputs();
+            const m = calculateMetrics(p);
+
+            // Input Labels
+            document.getElementById('val-q').innerText = (p.Q / 1000) + ' тыс. шт';
+            if (activeTab === 'mass') {
+                document.getElementById('val-mass-mat').innerText = p.mat.toFixed(2) + ' €';
+                document.getElementById('val-mass-labor').innerText = p.labor.toFixed(2) + ' €';
+                document.getElementById('val-mass-log').innerText = p.logistics.toFixed(2) + ' €';
+                document.getElementById('val-mass-price').innerText = p.price.toFixed(2) + ' €';
+                document.getElementById('val-mass-fc').innerText = (p.fc / 1000) + ' тыс. €';
+            } else {
+                document.getElementById('val-prem-mat').innerText = p.mat.toFixed(2) + ' €';
+                document.getElementById('val-prem-labor').innerText = p.labor.toFixed(2) + ' €';
+                document.getElementById('val-prem-eco').innerText = p.eco.toFixed(2) + ' €';
+                document.getElementById('val-prem-price').innerText = p.price.toFixed(2) + ' €';
+                document.getElementById('val-prem-fc').innerText = (p.fc / 1000) + ' тыс. €';
+            }
+
+            // Specific KPI Colors
+            document.getElementById('kpi-unit-cost').innerText = m.landedCost.toFixed(2) + ' €';
+            document.getElementById('kpi-bep').innerText = isFinite(m.bep) ? Math.round(m.bep / 1000) + ' тыс. шт' : 'N/A';
+            document.getElementById('kpi-tr').innerText = (m.TR / 1e6).toFixed(2) + ' М€';
+            
+            // Dynamic Profit & Unit Margin Colors
+            const unitMarginElem = document.getElementById('kpi-unit-margin');
+            unitMarginElem.innerText = m.unitMargin.toFixed(2) + ' €';
+            unitMarginElem.className = 'kpi-value ' + (m.unitMargin >= 0 ? 'val-positive' : 'val-negative');
+
+            document.getElementById('kpi-tc').innerText = (m.TC / 1e6).toFixed(2) + ' М€';
+
+            const profitElem = document.getElementById('kpi-profit');
+            profitElem.innerText = (m.Profit / 1e6).toFixed(2) + ' М€';
+            profitElem.className = 'kpi-value ' + (m.Profit >= 0 ? 'val-positive' : 'val-negative');
+
+            // Draw Gauge
+            drawCustomGauge(m.marginRate, -10, 60);
+
+            // Update Chart 1
+            charts.c1.data.datasets[0].data = [p.mat, p.labor, p.logistics, p.eco, Math.max(0, m.unitMargin)];
+            charts.c1.update();
+
+            // Update Line Charts
+            const qSteps = [];
+            const trData = [];
+            const tcData = [];
+            const atcData = [];
+            const avcData = [];
+            const afcData = [];
+            const mcData = [];
+
+            for (let step = 10; step <= 500; step += 25) {
+                const qVal = step * 1000;
+                qSteps.push(step);
+                trData.push((p.price * qVal) / 1e6);
+                tcData.push((p.fc + m.vcUnit * qVal) / 1e6);
+                
+                const afc = p.fc / qVal;
+                const avc = m.vcUnit;
+                const atc = afc + avc;
+                const mc = avc + (step > 300 ? (step - 300) * 0.005 : 0);
+
+                atcData.push(atc);
+                avcData.push(avc);
+                afcData.push(afc);
+                mcData.push(mc);
+            }
+
+            charts.c2.data.labels = qSteps;
+            charts.c2.data.datasets[0].data = trData;
+            charts.c2.data.datasets[1].data = tcData;
+            charts.c2.update();
+
+            charts.c3.data.labels = qSteps;
+            charts.c3.data.datasets[0].data = atcData;
+            charts.c3.data.datasets[1].data = avcData;
+            charts.c3.data.datasets[2].data = afcData;
+            charts.c3.data.datasets[3].data = mcData;
+            charts.c3.update();
+
+            // Update Chart 4
+            const baseProfit = m.Profit / 1e6;
+            const shockMatProfit = ((p.price * p.Q) - (p.fc + (m.vcUnit + p.mat * 0.2) * p.Q)) / 1e6;
+            const shockLogProfit = ((p.price * p.Q) - (p.fc + (m.vcUnit + p.logistics * 0.3) * p.Q)) / 1e6;
+            const shockPriceProfit = (((p.price * 0.9) * p.Q) - (p.fc + m.vcUnit * p.Q)) / 1e6;
+
+            charts.c4.data.datasets[0].data = [baseProfit, shockMatProfit, shockLogProfit, shockPriceProfit];
+            charts.c4.update();
+
+            updateNarrative(p, m);
+        }
+
+        function updateNarrative(p, m) {
+            const textElem = document.getElementById('narrative-text');
+            if (activeTab === 'mass') {
+                textElem.innerHTML = `
+                    При выпуске <b>${(p.Q/1000).toFixed(0)} тыс. шт</b> себестоимость единицы <span style="color:${COLOR_BRIGHT_BLUE}">${m.landedCost.toFixed(2)} €</span>.
+                    Безубыточность наступает при <b>${isFinite(m.bep) ? Math.round(m.bep/1000) : '—'} тыс. шт</b>.
+                    ${m.Profit > 0 
+                        ? `<br><span style="color:${COLOR_GREEN}">Прибыль: <b>${(m.Profit/1e6).toFixed(2)} М€</b>. Эффект масштаба эффективно снижает AFC.</span>` 
+                        : `<br><span style="color:${COLOR_RED}">Убыток! Высокие постоянные издержки (${(p.fc/1000).toFixed(0)} тыс. €) не покрываются маржой.</span>`}
+                `;
+            } else {
+                textElem.innerHTML = `
+                    В премиум-сегменте эко-сбор составляет <span style="color:${COLOR_GREEN}">${p.eco.toFixed(2)} €/шт</span>.
+                    Высокая цена (<b>${p.price.toFixed(2)} €</b>) обеспечивает маржинальность <span style="color:${COLOR_BRIGHT_BLUE}">${m.marginRate.toFixed(1)}%</span>.
+                    ${m.Profit > 0 
+                        ? `<br><span style="color:${COLOR_GREEN}">Прибыль: <b>${(m.Profit/1e6).toFixed(2)} М€</b>. Бренд покрывает зеленые стандарты.</span>` 
+                        : `<br><span style="color:${COLOR_RED}">Маржа недостаточно высока для компенсации эко-сборов и постоянных расходов.</span>`}
+                `;
+            }
+        }
+
+        window.onload = () => {
+            initCharts();
+            updateAll();
+        };
+    </script>
+</body>
+</html>
