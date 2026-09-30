@@ -129,7 +129,7 @@
         </li>
         <li>
           <strong id="lbl-step-graph-title" class="text-emerald-400">Исследование графика и параметров издержек:</strong>
-          <span id="lbl-step-graph-body">Перемещайте ползунок «Объем выпуска (Q)» или маркер по графику. Найдите точки min ATC (оптимум) и min AVC (точка закрытия).</span>
+          <span id="lbl-step-graph-body">Перемещайте ползунок «Объем выпуска (Q)» или тяните маркер напрямую по графику. Найдите точки min ATC (оптимум), min AVC (точка закрытия) и проанализируйте динамику MC.</span>
         </li>
         <li>
           <strong id="lbl-step-explanation-title" class="text-amber-400">Управленческое обоснование (до 150 слов):</strong>
@@ -273,18 +273,20 @@
         </div>
       </div>
 
-      <!-- Canvas Plot -->
+      <!-- Canvas Plot (С ВОССТАНОВЛЕННЫМИ 4 КРИВЫМИ: ATC, AVC, AFC, MC) -->
       <div class="bg-[#14181c] border border-slate-800 shadow-xl rounded-xl p-4 relative overflow-hidden">
         <div class="flex flex-wrap gap-4 text-[10px] font-extrabold mb-3">
           <div class="flex items-center gap-1.5"><span class="w-3 h-3 bg-emerald-500 rounded-full inline-block"></span><span class="text-slate-300">ATC</span></div>
           <div class="flex items-center gap-1.5"><span class="w-3 h-3 bg-indigo-400 rounded-full inline-block"></span><span class="text-slate-300">AVC</span></div>
           <div class="flex items-center gap-1.5"><span class="w-3 h-3 bg-slate-500 rounded-full inline-block"></span><span class="text-slate-300">AFC</span></div>
           <div class="flex items-center gap-1.5"><span class="w-3 h-3 bg-rose-500 rounded-full inline-block"></span><span class="text-slate-300">MC</span></div>
+          <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-amber-400 inline-block border border-white"></span><span class="text-slate-300">Min ATC / Min AVC</span></div>
         </div>
         
         <div class="w-full">
           <canvas id="costCanvas" class="w-full h-auto block cursor-crosshair"></canvas>
         </div>
+        <div class="text-[9px] text-slate-500 text-right mt-1">*Перемещайте маркер объема Q мышью или пальцем по полю графика</div>
       </div>
 
       <!-- Student Explanation Box -->
@@ -324,13 +326,13 @@
 </div>
 
 <script>
-  // Ваша новая ссылка на опубликованный Google Apps Script
   const scriptUrl = "https://script.google.com/macros/s/AKfycby155CHvi7n4A9KgAOoKSu85dbVRY7Pl2zMbY0EaCu3ocyJCBbZt_GfhDT_KLfo49B_Ng/exec";
 
   let currentLang = 'ru';
   let activeStudent = null;
+  let isDraggingQ = false;
 
-  // 19 СТУДЕНТОВ ГРУППЫ МИКРОЭКОНОМИКИ
+  // 19 СТУДЕНТОВ
   const studentsDatabase = [
     { id: "st_1", nameRu: "Айболқызы Алиназ", nameEn: "Alinaz Aibolkymy" },
     { id: "st_2", nameRu: "Айтқали Әмір Русланұлы", nameEn: "Amir Aitkali" },
@@ -479,6 +481,7 @@
     const getX = (q) => pad.left + (q / maxValQ) * gW;
     const getY = (p) => pad.top + (1 - p / maxValP) * gH;
 
+    // Сетка
     ctx.strokeStyle = '#1e293b'; ctx.lineWidth = 0.5;
     for (let i = 1; i <= 5; i++) {
       let q_grid = (maxValQ / 5) * i;
@@ -487,11 +490,33 @@
       ctx.beginPath(); ctx.moveTo(pad.left, getY(p_grid)); ctx.lineTo(w - pad.right, getY(p_grid)); ctx.stroke();
     }
 
+    // Оси
     ctx.strokeStyle = '#475569'; ctx.lineWidth = 1.5;
     ctx.beginPath(); ctx.moveTo(pad.left, pad.top - 10); ctx.lineTo(pad.left, h - pad.bottom); ctx.lineTo(w - pad.right + 10, h - pad.bottom); ctx.stroke();
 
     ctx.lineWidth = 3;
-    // ATC
+
+    // 1. AFC (Средние постоянные - серый)
+    ctx.strokeStyle = '#64748b'; ctx.beginPath();
+    for (let q = 2; q <= 100; q++) {
+      const c = getCosts(q, model);
+      if (getY(c.afc) > pad.top && getY(c.afc) < h - pad.bottom) {
+        if (q === 2) ctx.moveTo(getX(q), getY(c.afc)); else ctx.lineTo(getX(q), getY(c.afc));
+      }
+    }
+    ctx.stroke();
+
+    // 2. AVC (Средние переменные - фиолетовый)
+    ctx.strokeStyle = '#818cf8'; ctx.beginPath();
+    for (let q = 1; q <= 100; q++) {
+      const c = getCosts(q, model);
+      if (getY(c.avc) > pad.top && getY(c.avc) < h - pad.bottom) {
+        if (q === 1) ctx.moveTo(getX(q), getY(c.avc)); else ctx.lineTo(getX(q), getY(c.avc));
+      }
+    }
+    ctx.stroke();
+
+    // 3. ATC (Средние общие - зеленый)
     ctx.strokeStyle = '#10b981'; ctx.beginPath();
     for (let q = 2; q <= 100; q++) {
       const c = getCosts(q, model);
@@ -501,7 +526,7 @@
     }
     ctx.stroke();
 
-    // MC
+    // 4. MC (Предельные издержки - розовый)
     ctx.strokeStyle = '#f43f5e'; ctx.beginPath();
     for (let q = 1; q <= 100; q++) {
       const c = getCosts(q, model);
@@ -511,11 +536,47 @@
     }
     ctx.stroke();
 
-    // Q Line
+    // Точки минимумов min ATC и min AVC
+    ctx.fillStyle = '#f59e0b'; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(getX(minima.qAtcMin), getY(minima.minATC), 6, 0, 2 * Math.PI); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.arc(getX(minima.qAvcMin), getY(minima.minAVC), 6, 0, 2 * Math.PI); ctx.fill(); ctx.stroke();
+
+    // Линия текущего Q
     ctx.strokeStyle = '#818cf8'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]);
     ctx.beginPath(); ctx.moveTo(getX(Q), pad.top); ctx.lineTo(getX(Q), h - pad.bottom); ctx.stroke();
     ctx.setLineDash([]);
+
+    window.lastGW = gW;
   }
+
+  // Интерактивное перетаскивание ползунка мышью/пальцем прямо по холсту
+  function getQFromX(mouseX, gW) {
+    let relativeX = (mouseX - pad.left) / gW;
+    return Math.max(1, Math.min(100, Math.round(relativeX * 100)));
+  }
+
+  function getMousePos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const clientX = e.clientX || (e.touches && e.touches[0].clientX);
+    return { x: (clientX - rect.left) * (canvas.width / rect.width) };
+  }
+
+  canvas.addEventListener('mousedown', (e) => {
+    const pos = getMousePos(e);
+    if (pos.x >= pad.left && pos.x <= canvas.width - pad.right) {
+      isDraggingQ = true;
+      volumeSlider.value = getQFromX(pos.x, window.lastGW);
+      update();
+    }
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isDraggingQ) return;
+    volumeSlider.value = getQFromX(getMousePos(e).x, window.lastGW);
+    update();
+  });
+
+  window.addEventListener('mouseup', () => { isDraggingQ = false; });
 
   function generateStudentToken() {
     if (!activeStudent) {
@@ -540,7 +601,6 @@
     const jsonStr = JSON.stringify(payload);
     const token = btoa(encodeURIComponent(jsonStr));
 
-    // Асинхронная отправка в Google Таблицу
     fetch(scriptUrl, {
       method: "POST",
       mode: "no-cors",
@@ -562,7 +622,7 @@
   window.addEventListener('load', () => {
     populateStudentSelect();
     canvas.width = canvas.parentElement.clientWidth;
-    canvas.height = 300;
+    canvas.height = 320;
     update();
   });
 </script>
