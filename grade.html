@@ -586,7 +586,9 @@
     </footer>
 
     <script>
-        // Полный список академической группы (20 человек в алфавитном порядке)
+        const STORAGE_KEY = 'almau_micro_ba_students_2026_v2';
+
+        // Полный список академической группы (19 человек в алфавитном порядке)
         const rawStudentList = [
             "Айболқызы Алиназ",
             "Айткали Амир Русланулы",
@@ -658,7 +660,7 @@
         }
 
         function loadDatabase() {
-            const savedData = localStorage.getItem('almau_micro_ba_students_2026_v1');
+            const savedData = localStorage.getItem(STORAGE_KEY);
             if (savedData) {
                 try {
                     students = JSON.parse(savedData);
@@ -669,11 +671,10 @@
                 students = initialGroupStudents;
             }
             students.forEach(student => ensureAttendanceHours(student));
-            updateDashboardData();
         }
 
         function saveDatabase() {
-            localStorage.setItem('almau_micro_ba_students_2026_v1', JSON.stringify(students));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
         }
 
         // Формула взвешенной оценки: 10% Пос, 10% Акт, 10% ТК1, 10% РК1, 10% ТК2, 10% РК2, 40% Экзамен
@@ -1025,24 +1026,11 @@
                 student[field] = numVal;
                 saveDatabase();
                 
-                const finalScore = calculateWeightedScore(
-                    student.attendance, 
-                    student.activities,
-                    student.ca1, 
-                    student.mc1, 
-                    student.ca2, 
-                    student.mc2, 
-                    student.exam
-                );
-                document.getElementById(`final-score-${id}`).textContent = finalScore;
-                
-                const gradeInfo = getLetterGrade(finalScore);
-                const letterBadge = document.getElementById(`letter-${id}`);
-                letterBadge.textContent = gradeInfo.letter;
-                letterBadge.className = `inline-flex items-center justify-center px-2 py-0.5 text-[11px] font-bold rounded-lg border ${gradeInfo.class} w-10`;
-                
+                const searchFilter = document.getElementById('teacher-search-input').value;
+                renderTeacherTable(searchFilter);
                 updateStats();
                 updateGroupChart();
+                showToast(`Оценка обновлена для: ${student.name}`, 'success');
             }
         }
 
@@ -1298,27 +1286,8 @@
 
                 saveDatabase();
                 
-                const finalScore = calculateWeightedScore(
-                    student.attendance, 
-                    student.activities,
-                    student.ca1, 
-                    student.mc1, 
-                    student.ca2, 
-                    student.mc2, 
-                    student.exam
-                );
-                document.getElementById(`final-score-${student.id}`).textContent = finalScore;
-                
-                const gradeInfo = getLetterGrade(finalScore);
-                const letterBadge = document.getElementById(`letter-${student.id}`);
-                letterBadge.textContent = gradeInfo.letter;
-                letterBadge.className = `inline-flex items-center justify-center px-2 py-0.5 text-[11px] font-bold rounded-lg border ${gradeInfo.class} w-10`;
-                
-                const attTriggerBtn = document.getElementById(`att-trigger-${student.id}`);
-                if (attTriggerBtn) {
-                    attTriggerBtn.innerHTML = `<span>${student.attendance}%</span><i class="fa-solid fa-pencil text-[8px] text-slate-500"></i>`;
-                }
-
+                const searchFilter = document.getElementById('teacher-search-input').value;
+                renderTeacherTable(searchFilter);
                 updateStats();
                 updateGroupChart();
                 closeAttendanceModal();
