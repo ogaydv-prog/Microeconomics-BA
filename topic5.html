@@ -107,6 +107,7 @@
             width: 180px !important;
             height: 270px !important;
             flex-shrink: 0;
+            cursor: pointer;
         }
 
         /* Единая рамка и оформление карточки */
@@ -126,7 +127,7 @@
         .card img, .flip-card-front img {
             width: 100% !important;
             height: 100% !important;
-            object-fit: fill !important; /* Картинка полностью сжимается/растягивается под 180x270 */
+            object-fit: fill !important;
             display: block !important;
         }
 
@@ -303,14 +304,15 @@
 
     <!-- Сетка карточек — СТРОГО 6 В РЯД (180px x 270px) -->
     <main class="grid-container">
-        <!-- 1. Презентация -->
-        <a href="#" class="card" title="Презентация: Теория производства и издержки">
+        <!-- 1. Презентация (Открывает Canva в новой вкладке) -->
+        <a href="https://www.canva.com/design/DAGfsjS8o4Q/9k4e016a2i10yB_u7lYpSg/view?utm_content=DAGfsjS8o4Q&utm_campaign=designshare&utm_medium=link2&utm_source=unspecified&pv=2" 
+           target="_blank" rel="noopener noreferrer" class="card" title="Интерактивная презентация: Теория производства и издержки">
             <img src="pic-preza5-micro.png" alt="Презентация Темы 5">
         </a>
 
-        <!-- 2. Симулятор 1: Издержки производства -->
-        <a href="sim-production-costs-se.html" class="card" title="Симулятор: Издержки производства">
-            <img src="pic-sim-production-costs-me.png" alt="Симулятор издержек">
+        <!-- 2. Симулятор 1: Издержки производства (Открывает сразу 2 симулятора в отдельных вкладках) -->
+        <a href="#" onclick="openDualSimulators(event)" class="card" title="Симуляторы: Анализ издержек производства + T-Shirt Industry Case">
+            <img src="pic-sim-production-costs-me.png" alt="Симуляторы издержек производства">
         </a>
 
         <!-- 3. Симулятор 2: Изокванты и Изокосты -->
@@ -363,6 +365,19 @@
         <p>Разработано для студентов AlmaU 2026 | Дисциплина: Микроэкономика</p>
         <p>© Almaty Management University | Школа цифровых технологий и экономики</p>
     </footer>
+
+    <!-- Скрипт одновременного открытия двух симуляторов -->
+    <script>
+        function openDualSimulators(event) {
+            event.preventDefault(); // Предотвращаем стандартный переход по ссылке #
+            
+            // 1. Открываем базовый академический симулятор издержек
+            window.open('sim-production-costs-se.html', '_blank');
+            
+            // 2. Открываем практический кейс индустрии футболок (T-Shirt Industry)
+            window.open('sim-t-shirt-industry-cost.html', '_blank');
+        }
+    </script>
 
 </body>
 </html>
