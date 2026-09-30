@@ -27,9 +27,13 @@
     outline: none;
     transition: all 0.2s ease-in-out;
   }
-  input[type="text"]:focus, input[type="number"]:focus, select:focus {
-    border-color: #6366f1;
-    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+  
+  /* Стиль для заблокированных уникальных параметров */
+  input[readonly] {
+    background-color: #0d1117 !important;
+    border-color: #21262d !important;
+    color: #8b949e !important;
+    cursor: not-allowed;
   }
 
   input[type="range"].vintage-slider {
@@ -56,10 +60,7 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.4);
     transition: transform 0.1s ease;
   }
-  input[type="range"].vintage-slider::-webkit-slider-thumb:hover {
-    transform: scale(1.08);
-  }
-
+  input[type="range"].vintage-slider::-webkit-slider-thumb:hover { transform: scale(1.08); }
   .modal-blur { backdrop-filter: blur(8px); }
 </style>
 </head>
@@ -70,34 +71,27 @@
   <!-- Header Section -->
   <div class="flex flex-col md:flex-row justify-between items-center border-b border-slate-800 pb-5 mb-5 gap-4">
     <div>
-      <span id="lbl-sub-header" class="text-[10px] font-bold tracking-[0.25em] text-indigo-400 uppercase block">ALMAU • 2026</span>
-      <h1 id="lbl-main-title" class="text-lg md:text-xl font-black text-white tracking-tight mt-0.5">Task 5. Издержки производства</h1>
-      <p id="lbl-main-desc" class="text-slate-400 text-xs font-medium">Определение параметров затрат и экономического состояния компании (Шкала 100 баллов)</p>
+      <span class="text-[10px] font-bold tracking-[0.25em] text-indigo-400 uppercase block">ALMAU • 2026</span>
+      <h1 class="text-lg md:text-xl font-black text-white tracking-tight mt-0.5">Task 5. Анализ издержек и управленческого выбора</h1>
+      <p class="text-slate-400 text-xs font-medium">Оптимизация объема выпуска фирмой-получателем цены (Price Taker)</p>
     </div>
     
     <div class="flex flex-wrap items-center gap-3 shrink-0">
-      <div class="flex items-center bg-[#151b22] border border-slate-700/60 rounded-lg p-1">
-        <button id="btn-lang-ru" onclick="setLanguage('ru')" class="px-2.5 py-1 rounded text-xs font-bold transition-all bg-indigo-600 text-white shadow-md">RU</button>
-        <button id="btn-lang-en" onclick="setLanguage('en')" class="px-2.5 py-1 rounded text-xs font-bold transition-all text-slate-400 hover:text-slate-200">EN</button>
-      </div>
-
-      <button id="btn-lock-submit" onclick="generateStudentToken()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-4 py-2 rounded-xl text-xs shadow-lg shadow-emerald-900/30 transition-all flex items-center gap-2">
-        <i class="fa-solid fa-paper-plane"></i> <span id="lbl-btn-submit">Отправить решение в таблицу</span>
+      <button id="btn-lock-submit" onclick="generateStudentToken()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold px-4 py-2.5 rounded-xl text-xs shadow-lg shadow-emerald-900/30 transition-all flex items-center gap-2">
+        <i class="fa-solid fa-paper-plane"></i> <span>Отправить на проверку</span>
       </button>
     </div>
   </div>
 
-  <!-- INPUT PANEL: Выбор студента из списка -->
+  <!-- INPUT PANEL: Выбор студента -->
   <div class="bg-indigo-950/30 border border-indigo-500/30 rounded-xl p-4 mb-4 flex flex-col lg:flex-row items-center justify-between gap-4">
     <div class="flex items-center gap-3 w-full lg:w-1/3">
       <div class="p-2.5 bg-indigo-600/20 text-indigo-400 border border-indigo-500/30 rounded-lg shrink-0">
         <i class="fa-solid fa-user-check text-lg"></i>
       </div>
       <div>
-        <label id="lbl-search-title" class="block text-[11px] font-bold uppercase text-indigo-300">
-          Идентификация студента
-        </label>
-        <p id="lbl-search-desc" class="text-[10px] text-slate-400">Выберите себя из списка группы</p>
+        <label class="block text-[11px] font-bold uppercase text-indigo-300">Идентификация студента</label>
+        <p class="text-[10px] text-slate-400">Выберите ФИО для фиксации вашего варианта</p>
       </div>
     </div>
 
@@ -105,40 +99,27 @@
       <select id="student-select" onchange="onStudentSelectChange()" class="w-full text-xs font-bold py-2.5 border border-indigo-500/40 rounded-xl text-indigo-100 bg-[#151b22]">
         <option value="">-- Выберите ваше ФИО --</option>
       </select>
-      
       <span id="variant-badge" class="shrink-0 text-[10px] font-mono font-extrabold uppercase px-3.5 py-2.5 rounded-xl bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
         Вариант #--
       </span>
     </div>
   </div>
 
-  <!-- ИНСТРУКЦИЯ -->
+  <!-- ПОДРОБНАЯ ИНСТРУКЦИЯ (С ЧЕТКОЙ СВЯЗКОЙ ШАГОВ) -->
   <div class="bg-[#14181c] border border-slate-800 rounded-xl mb-6 p-4 border-l-4 border-l-indigo-500 shadow-md">
-    <div class="flex items-center gap-2.5 mb-3 border-b border-slate-800 pb-2">
+    <div class="flex items-center gap-2.5 mb-2.5 border-b border-slate-800 pb-2">
       <i class="fa-solid fa-graduation-cap text-indigo-400 text-base"></i>
-      <h3 id="lbl-instr-header" class="text-xs font-extrabold uppercase tracking-wider text-indigo-300">
-        Инструкция и алгоритм выполнения задания для студента
-      </h3>
+      <h3 class="text-xs font-extrabold uppercase tracking-wider text-indigo-300"> Пошаговый алгоритм выполнения задания</h3>
     </div>
 
-    <div class="text-xs text-slate-300 space-y-3">
-      <ol class="list-decimal list-inside space-y-2.5 leading-relaxed">
-        <li>
-          <strong id="lbl-step-id-title" class="text-indigo-400">Идентификация:</strong>
-          <span id="lbl-step-id-body">Выберите свое ФИО в списке выше. Система сформирует индивидуальный вариант (FC, a, b, c).</span>
-        </li>
-        <li>
-          <strong id="lbl-step-graph-title" class="text-emerald-400">Исследование графика и параметров издержек:</strong>
-          <span id="lbl-step-graph-body">Перемещайте ползунок «Объем выпуска (Q)» или тяните маркер напрямую по графику. Найдите точки min ATC (оптимум), min AVC (точка закрытия) и проанализируйте динамику MC.</span>
-        </li>
-        <li>
-          <strong id="lbl-step-explanation-title" class="text-amber-400">Управленческое обоснование (до 150 слов):</strong>
-          <span id="lbl-step-explanation-body">Охарактеризуйте финансовое состояние фирмы при выбранном Q (прибыль, минимизация убытков или зона закрытия, покрытие VC).</span>
-        </li>
-        <li>
-          <strong id="lbl-step-submit-title" class="text-indigo-400">Отправка в Google Таблицу (оценка из 100):</strong>
-          <span id="lbl-step-submit-body">Нажмите зеленую кнопку «Отправить решение в таблицу». Результаты с автопроверкой по 100-балльной системе уйдут преподавателю.</span>
-        </li>
+    <div class="text-xs text-slate-300 space-y-2 leading-relaxed">
+      <ol class="list-decimal list-inside space-y-1.5 text-slate-300">
+        <li><strong>Идентификация:</strong> Выберите свое ФИО выше. Система зафиксирует ваши уникальные издержки в Шагах 1 и 2.</li>
+        <li><strong>Шаг 1 и 2 (Фиксированные издержки):</strong> Постоянные ($FC$) и переменные ($a, b, c$) параметры привязаны к вашему варианту и закрыты от изменений.</li>
+        <li><strong>Шаг 3 (Управление выпуском Q):</strong> Двигайте ползунок объёма выпуска $Q$ или передвигайте маркер по графику. Найдите точки $min\,ATC$ (технологический оптимум) и $min\,AVC$ (точка закрытия).</li>
+        <li><strong>Шаг 4 (Исследование окупаемости при цене P):</strong> Включите тумблер в Шаге 4, чтобы задать рыночную цену $P$ и определить зоны безубыточности.</li>
+        <li><strong>Управленческое обоснование:</strong> Внизу страницы опишите выбор $Q$: покрывает ли фирма переменные затраты $VC$, работает ли с прибылью ($P > ATC$) или минимизирует убытки.</li>
+        <li><strong>Финал:</strong> Нажмите зеленый кнопку <strong>«Отправить на проверку»</strong>.</li>
       </ol>
     </div>
   </div>
@@ -149,83 +130,71 @@
     <!-- LEFT PANEL -->
     <div class="lg:col-span-4 flex flex-col gap-4">
       
-      <!-- Step 1: Fixed Costs FC -->
+      <!-- Step 1: FC (Заблокирован) -->
       <div class="bg-[#14181c] border border-slate-800 rounded-xl p-5 shadow-inner">
-        <h3 id="lbl-step1-title" class="text-xs font-black text-indigo-400 tracking-wider uppercase mb-4 flex items-center gap-2">
+        <h3 class="text-xs font-black text-indigo-400 tracking-wider uppercase mb-3 flex items-center gap-2">
           <span class="w-2 h-2 bg-indigo-500 rounded-full"></span>
           Шаг 1. Постоянные затраты (FC)
         </h3>
-        <div class="flex flex-col gap-1.5">
-          <div class="flex justify-between items-center mb-1">
-            <label id="lbl-fc" class="text-[11px] text-slate-400 font-medium">Постоянные издержки (FC)</label>
-            <span id="fc-badge" class="text-sm font-black text-indigo-400 font-mono">1 200 ₸</span>
-          </div>
-          <div class="py-2.5">
-            <input type="range" id="volume-slider-fc" min="200" max="4000" value="1200" step="50" class="w-full vintage-slider">
-          </div>
-          <p id="lbl-fc-desc" class="text-[10px] text-slate-500 mt-1">Аренда, амортизация, оклады управления (не зависят от Q).</p>
+        <div class="flex justify-between items-center bg-[#0d1117] p-3 rounded-lg border border-slate-800">
+          <span class="text-[11px] text-slate-400 font-medium">Фиксированный FC варианта:</span>
+          <span id="fc-badge" class="text-sm font-black text-indigo-400 font-mono">-- ₸</span>
         </div>
+        <p class="text-[10px] text-slate-500 mt-2">Аренда, амортизация, оклады управления (заданы вашим вариантом).</p>
       </div>
 
-      <!-- Step 2: Technology Parameters VC -->
+      <!-- Step 2: VC (Заблокирован) -->
       <div class="bg-[#14181c] border border-slate-800 rounded-xl p-5 shadow-inner">
-        <h3 id="lbl-step2-title" class="text-xs font-black text-emerald-400 tracking-wider uppercase mb-4 flex items-center gap-2">
+        <h3 class="text-xs font-black text-emerald-400 tracking-wider uppercase mb-3 flex items-center gap-2">
           <span class="w-2 h-2 bg-emerald-500 rounded-full"></span>
           Шаг 2. Параметры технологии (VC)
         </h3>
-        
-        <div class="space-y-3">
-          <div class="grid grid-cols-3 gap-2">
-            <div class="flex flex-col gap-1">
-              <span id="lbl-coeff-a-btn" class="text-[10px] text-indigo-300 font-semibold bg-indigo-950/40 border border-indigo-500/20 px-1.5 py-0.5 rounded text-center">Линейный (a)</span>
-              <input type="number" id="inp-vca" value="25" step="1" min="1" class="text-center">
-            </div>
-            <div class="flex flex-col gap-1">
-              <span id="lbl-coeff-b-btn" class="text-[10px] text-emerald-300 font-semibold bg-emerald-950/40 border border-emerald-500/20 px-1.5 py-0.5 rounded text-center">Сжатие (b)</span>
-              <input type="number" id="inp-vcb" value="0.60" step="0.05" min="0" class="text-center">
-            </div>
-            <div class="flex flex-col gap-1">
-              <span id="lbl-coeff-c-btn" class="text-[10px] text-rose-300 font-semibold bg-rose-950/40 border border-rose-500/20 px-1.5 py-0.5 rounded text-center">Перегрузка (c)</span>
-              <input type="number" id="inp-vcc" value="0.012" step="0.001" min="0.001" class="text-center">
-            </div>
+        <div class="grid grid-cols-3 gap-2 mb-2">
+          <div class="flex flex-col gap-1">
+            <span class="text-[9px] text-indigo-300 font-semibold text-center">Линейный (a)</span>
+            <input type="number" id="inp-vca" value="25" readonly class="text-center font-mono text-xs">
           </div>
-
-          <p class="text-[10px] text-slate-500 leading-normal">
-            *<span id="lbl-vc-formula">Формула переменных издержек:</span><br>
-            <span class="font-mono text-emerald-400 text-[11px]">VC(Q) = a·Q - b·Q² + c·Q³</span>
-          </p>
+          <div class="flex flex-col gap-1">
+            <span class="text-[9px] text-emerald-300 font-semibold text-center">Сжатие (b)</span>
+            <input type="number" id="inp-vcb" value="0.60" readonly class="text-center font-mono text-xs">
+          </div>
+          <div class="flex flex-col gap-1">
+            <span class="text-[9px] text-rose-300 font-semibold text-center">Перегрузка (c)</span>
+            <input type="number" id="inp-vcc" value="0.012" readonly class="text-center font-mono text-xs">
+          </div>
         </div>
+        <p class="text-[10px] text-slate-500 leading-normal">
+          *Параметры функции издержек: <span class="font-mono text-emerald-400">VC(Q) = a·Q - b·Q² + c·Q³</span>
+        </p>
       </div>
 
-      <!-- Step 3: Production Volume Q -->
-      <div class="bg-[#14181c] border border-indigo-500/20 rounded-xl p-5 shadow-inner">
+      <!-- Step 3: Управление Q (АКТИВНО) -->
+      <div class="bg-[#14181c] border border-indigo-500/30 rounded-xl p-5 shadow-inner ring-1 ring-indigo-500/20">
         <div class="flex justify-between items-center mb-2">
-          <h3 id="lbl-step3-title" class="text-xs font-black text-amber-400 tracking-wider uppercase">Шаг 3. Объем выпуска (Q)</h3>
+          <h3 class="text-xs font-black text-amber-400 tracking-wider uppercase">Шаг 3. Выбор объема (Q)</h3>
           <span id="volume-badge" class="text-lg font-black text-indigo-400">50 шт</span>
         </div>
-        
         <div class="py-2.5">
           <input type="range" id="volume-slider" min="1" max="100" value="50" class="w-full vintage-slider">
         </div>
-        
-        <div class="grid grid-cols-2 gap-3 mt-3 text-[11px] text-slate-400">
+        <div class="grid grid-cols-2 gap-3 mt-2 text-[11px] text-slate-400">
           <div class="bg-black/30 p-2.5 rounded-lg border border-slate-800">
-            <span id="lbl-card-vc" class="block text-slate-500 uppercase text-[9px] mb-0.5">Переменные (VC)</span>
+            <span class="block text-slate-500 uppercase text-[9px] mb-0.5">Переменные (VC)</span>
             <span id="stat-vc" class="text-white font-bold text-sm">-</span>
           </div>
           <div class="bg-black/30 p-2.5 rounded-lg border border-slate-800">
-            <span id="lbl-card-tc" class="block text-slate-500 uppercase text-[9px] mb-0.5">Общие издержки (TC)</span>
+            <span class="block text-slate-500 uppercase text-[9px] mb-0.5">Общие издержки (TC)</span>
             <span id="stat-tc" class="text-indigo-400 font-bold text-sm font-mono">-</span>
           </div>
         </div>
       </div>
 
-      <!-- Step 4: Break-Even Analysis -->
+      <!-- Step 4: Анализ Рыночной цены P (ИСПРАВЛЕННЫЙ СЛАЙДЕР) -->
       <div class="bg-[#14181c] border border-rose-500/20 rounded-xl p-5 shadow-inner">
         <div class="flex justify-between items-center mb-3">
-          <h3 id="lbl-step4-title" class="text-xs font-black text-rose-400 tracking-wider uppercase flex items-center gap-2">
+          <h3 class="text-xs font-black text-rose-400 tracking-wider uppercase flex items-center gap-2">
             <span class="w-2 h-2 bg-rose-500 rounded-full animate-pulse"></span>
-            Шаг 4. Анализ безубыточности
+            Шаг 4. Анализ рынка и цены (P)
           </h3>
           <label class="relative inline-flex items-center cursor-pointer">
             <input type="checkbox" id="chk-bep" class="sr-only peer">
@@ -233,9 +202,9 @@
           </label>
         </div>
         
-        <div id="bep-controls" class="space-y-3 opacity-40 pointer-events-none transition-all duration-300">
+        <div id="bep-controls" class="space-y-3 opacity-30 transition-all duration-300">
           <div class="flex justify-between items-center">
-            <label id="lbl-market-price" class="text-[11px] text-slate-400 font-medium">Рыночная цена товара (P)</label>
+            <label class="text-[11px] text-slate-400 font-medium">Рыночная цена товара (P)</label>
             <span id="price-badge" class="text-xs bg-rose-500/20 text-rose-300 font-bold px-2 py-0.5 rounded">80 ₸</span>
           </div>
           <div class="py-1">
@@ -252,57 +221,58 @@
       <!-- Metrics Bar -->
       <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
         <div class="bg-[#14181c] border-l-4 border-slate-500 p-4 rounded-r-xl">
-          <span id="lbl-afc-head" class="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">Средние постоянные (AFC)</span>
+          <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">Средние постоянные (AFC)</span>
           <div id="val-afc" class="text-xs md:text-sm font-mono font-bold text-slate-200 mt-1">-</div>
         </div>
 
         <div class="bg-[#14181c] border-l-4 border-emerald-500 p-4 rounded-r-xl">
-          <span id="lbl-atc-head" class="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">Себестоимость (ATC)</span>
+          <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">Себестоимость (ATC)</span>
           <div id="val-atc" class="text-xs md:text-sm font-mono font-bold text-emerald-400 mt-1">-</div>
           <span class="text-[9px] text-slate-500 block mt-1">Min ATC: <span id="val-atc-min" class="font-bold text-slate-300">-</span></span>
         </div>
 
         <div class="bg-[#14181c] border-l-4 border-rose-500 p-4 rounded-r-xl">
-          <span id="lbl-mc-head" class="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">Предельные издержки (MC)</span>
+          <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">Предельные издержки (MC)</span>
           <div id="val-mc" class="text-xs md:text-sm font-mono font-bold text-rose-400 mt-1">-</div>
         </div>
 
         <div class="bg-[#14181c] border-l-4 border-indigo-400 p-4 rounded-r-xl">
-          <span id="lbl-bep-head" class="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">Безубыточность (BEP)</span>
+          <span class="text-[9px] font-bold text-slate-500 uppercase tracking-wider block">Безубыточность (BEP)</span>
           <div id="val-bep" class="text-xs md:text-sm font-mono font-bold text-slate-500 mt-1">Off</div>
         </div>
       </div>
 
-      <!-- Canvas Plot (С ВОССТАНОВЛЕННЫМИ 4 КРИВЫМИ: ATC, AVC, AFC, MC) -->
+      <!-- Canvas Plot -->
       <div class="bg-[#14181c] border border-slate-800 shadow-xl rounded-xl p-4 relative overflow-hidden">
         <div class="flex flex-wrap gap-4 text-[10px] font-extrabold mb-3">
           <div class="flex items-center gap-1.5"><span class="w-3 h-3 bg-emerald-500 rounded-full inline-block"></span><span class="text-slate-300">ATC</span></div>
           <div class="flex items-center gap-1.5"><span class="w-3 h-3 bg-indigo-400 rounded-full inline-block"></span><span class="text-slate-300">AVC</span></div>
           <div class="flex items-center gap-1.5"><span class="w-3 h-3 bg-slate-500 rounded-full inline-block"></span><span class="text-slate-300">AFC</span></div>
           <div class="flex items-center gap-1.5"><span class="w-3 h-3 bg-rose-500 rounded-full inline-block"></span><span class="text-slate-300">MC</span></div>
+          <div class="flex items-center gap-1.5" id="legend-price-container" style="display:none;"><span class="w-3.5 h-0.5 bg-pink-400 inline-block border-t border-dashed"></span><span class="text-slate-300">Цена P</span></div>
           <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-amber-400 inline-block border border-white"></span><span class="text-slate-300">Min ATC / Min AVC</span></div>
         </div>
         
         <div class="w-full">
           <canvas id="costCanvas" class="w-full h-auto block cursor-crosshair"></canvas>
         </div>
-        <div class="text-[9px] text-slate-500 text-right mt-1">*Перемещайте маркер объема Q мышью или пальцем по полю графика</div>
+        <div class="text-[9px] text-slate-500 text-right mt-1">*Перемещайте маркер объема Q мышью по полю графика</div>
       </div>
 
       <!-- Student Explanation Box -->
       <div class="bg-[#14181c] border border-slate-800 rounded-xl p-4 shadow-inner">
         <div class="flex justify-between items-center mb-2">
-          <label id="lbl-student-text-title" class="text-xs font-bold text-indigo-300 uppercase">Обоснование управленческого решения (до 150 слов)</label>
+          <label class="text-xs font-bold text-indigo-300 uppercase">Обоснование управленческого решения (до 150 слов)</label>
           <span id="word-count-badge" class="text-[10px] font-mono text-slate-400">0 / 150 слов</span>
         </div>
-        <textarea id="student-explanation" rows="4" class="w-full bg-[#0d1117] border border-slate-700/80 rounded-lg p-3 text-xs text-slate-200 outline-none focus:border-indigo-500 transition-all resize-none" placeholder="Проанализируйте полученные показатели издержек (ATC, AVC, MC) и охарактеризуйте финансовое состояние фирмы..."></textarea>
+        <textarea id="student-explanation" rows="4" class="w-full bg-[#0d1117] border border-slate-700/80 rounded-lg p-3 text-xs text-slate-200 outline-none focus:border-indigo-500 transition-all resize-none" placeholder="Проанализируйте полученные показатели: покрываются ли переменные издержки (VC), есть ли прибыль (P > ATC) или фирма минимизирует убытки, насколько выбор близок к технологическому оптимуму min ATC..."></textarea>
       </div>
 
     </div>
 
   </div>
 
-  <div id="lbl-footer" class="text-center text-[10px] text-slate-600 border-t border-slate-800/60 mt-5 pt-3">
+  <div class="text-center text-[10px] text-slate-600 border-t border-slate-800/60 mt-5 pt-3">
     AlmaU • 2026
   </div>
 
@@ -315,12 +285,12 @@
     <div class="h-12 w-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center text-2xl mx-auto mb-3 border border-emerald-500/30">
       <i class="fa-solid fa-circle-check"></i>
     </div>
-    <h3 class="text-base font-black text-emerald-400 uppercase tracking-wide mb-1">Решение отправлено!</h3>
+    <h3 class="text-base font-black text-emerald-400 uppercase tracking-wide mb-1">Решение отправлено на проверку!</h3>
     <p class="text-xs text-slate-300 mb-4 leading-relaxed">
-      Ваш ответ и обоснование успешно записаны в Google Таблицу преподавателя и проверены по <strong class="text-emerald-400">100-балльной системе</strong>.
+      Ваш ответ успешно записан в преподавательскую таблицу и отправлен на проверку по <strong class="text-emerald-400">100-балльной системе</strong>.
     </p>
     <button onclick="closeTokenModal()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 rounded-xl text-xs transition-all">
-      Закрыть
+      Закрыть окно
     </button>
   </div>
 </div>
@@ -328,11 +298,9 @@
 <script>
   const scriptUrl = "https://script.google.com/macros/s/AKfycby155CHvi7n4A9KgAOoKSu85dbVRY7Pl2zMbY0EaCu3ocyJCBbZt_GfhDT_KLfo49B_Ng/exec";
 
-  let currentLang = 'ru';
   let activeStudent = null;
   let isDraggingQ = false;
 
-  // 19 СТУДЕНТОВ
   const studentsDatabase = [
     { id: "st_1", nameRu: "Айболқызы Алиназ", nameEn: "Alinaz Aibolkymy" },
     { id: "st_2", nameRu: "Айтқали Әмір Русланұлы", nameEn: "Amir Aitkali" },
@@ -390,23 +358,24 @@
 
     if (activeStudent) {
       const params = generateStudentParameters(activeStudent.nameRu);
-      inpFc.value = params.fc;
       inpVca.value = params.a;
       inpVcb.value = params.b;
       inpVcc.value = params.c;
 
       document.getElementById('variant-badge').innerText = `Вариант #${params.variantNum}`;
+      document.getElementById('fc-badge').innerText = formatValue(params.fc);
       update();
     }
   }
 
-  const inpFc = document.getElementById('volume-slider-fc');
-  const fcBadge = document.getElementById('fc-badge');
   const inpVca = document.getElementById('inp-vca');
   const inpVcb = document.getElementById('inp-vcb');
   const inpVcc = document.getElementById('inp-vcc');
   const chkBep = document.getElementById('chk-bep');
+  const bepControls = document.getElementById('bep-controls');
   const priceSlider = document.getElementById('price-slider');
+  const priceBadge = document.getElementById('price-badge');
+  const legendPriceContainer = document.getElementById('legend-price-container');
   const volumeSlider = document.getElementById('volume-slider');
   const volumeBadge = document.getElementById('volume-badge');
   const statVc = document.getElementById('stat-vc');
@@ -417,11 +386,26 @@
   const valAtcMin = document.getElementById('val-atc-min');
   const valBep = document.getElementById('val-bep');
   const studentExplanation = document.getElementById('student-explanation');
+  const wordCountBadge = document.getElementById('word-count-badge');
   const canvas = document.getElementById('costCanvas');
   const ctx = canvas.getContext('2d');
   const pad = { top: 25, right: 40, bottom: 45, left: 80 };
 
   function formatValue(val) { return new Intl.NumberFormat('ru-RU').format(Math.round(val)) + ' ₸'; }
+
+  function calculateModel() {
+    let fcVal = 1200;
+    if (activeStudent) {
+      const params = generateStudentParameters(activeStudent.nameRu);
+      fcVal = params.fc;
+    }
+    return {
+      fc: fcVal,
+      vca: parseFloat(inpVca.value) || 25,
+      vcb: parseFloat(inpVcb.value) || 0.6,
+      vcc: parseFloat(inpVcc.value) || 0.012
+    };
+  }
 
   function getCosts(Q, model) {
     if (Q <= 0) return { fc: model.fc, vc: 0, tc: model.fc, afc: Infinity, avc: 0, atc: Infinity, mc: model.vca };
@@ -441,20 +425,15 @@
     return { qAtcMin, minATC, qAvcMin, minAVC };
   }
 
-  function calculateModel() {
-    return {
-      fc: parseFloat(inpFc.value) || 0,
-      vca: parseFloat(inpVca.value) || 0,
-      vcb: parseFloat(inpVcb.value) || 0,
-      vcc: parseFloat(inpVcc.value) || 0.001
-    };
-  }
+  studentExplanation.addEventListener('input', () => {
+    const words = studentExplanation.value.trim().split(/\s+/).filter(w => w.length > 0);
+    wordCountBadge.innerText = `${Math.min(words.length, 150)} / 150 слов`;
+  });
 
   function update() {
     const model = calculateModel();
     const Q = parseInt(volumeSlider.value);
     volumeBadge.innerText = Q + " шт";
-    fcBadge.innerText = formatValue(model.fc);
 
     const costs = getCosts(Q, model);
     const minima = findMinima(model);
@@ -466,17 +445,50 @@
     valMc.innerText = formatValue(costs.mc);
     valAtcMin.innerHTML = `Q = ${Math.round(minima.qAtcMin)} (${formatValue(minima.minATC)})`;
 
-    drawGraphics(Q, costs, minima, model);
+    let bepPoints = [];
+    
+    // Включение/Выключение слайдера цены
+    if (chkBep.checked) {
+      bepControls.classList.remove('opacity-30');
+      legendPriceContainer.style.display = 'flex';
+      const P = parseFloat(priceSlider.value);
+      priceBadge.innerText = P + " ₸";
+
+      let profitStart = null, profitEnd = null;
+      for (let q = 1; q <= 100; q += 0.1) {
+        const c = getCosts(q, model);
+        if (P >= c.atc) {
+          if (profitStart === null) profitStart = q;
+          profitEnd = q;
+        }
+      }
+      if (profitStart !== null) {
+        bepPoints = [profitStart, profitEnd];
+        valBep.innerText = `${Math.round(profitStart)} - ${Math.round(profitEnd)} шт`;
+        valBep.className = "text-xs md:text-sm font-mono font-bold text-indigo-400 mt-1";
+      } else {
+        valBep.innerText = "Зона убытков";
+        valBep.className = "text-xs md:text-sm font-mono font-bold text-rose-400 mt-1";
+      }
+    } else {
+      bepControls.classList.add('opacity-30');
+      legendPriceContainer.style.display = 'none';
+      valBep.innerText = "Off";
+      valBep.className = "text-xs md:text-sm font-mono font-bold text-slate-500 mt-1";
+    }
+
+    drawGraphics(Q, costs, minima, model, bepPoints);
   }
 
-  function drawGraphics(Q, currentCosts, minima, model) {
+  function drawGraphics(Q, currentCosts, minima, model, bepPoints) {
     const w = canvas.width, h = canvas.height;
     ctx.clearRect(0, 0, w, h);
 
     const gW = w - pad.left - pad.right;
     const gH = h - pad.top - pad.bottom;
     const maxValQ = 100;
-    const maxValP = Math.max(currentCosts.atc * 1.5, minima.minATC * 1.8) * 1.05;
+    const P = chkBep.checked ? parseFloat(priceSlider.value) : 0;
+    const maxValP = Math.max(currentCosts.atc * 1.5, minima.minATC * 1.8, P * 1.2) * 1.05;
 
     const getX = (q) => pad.left + (q / maxValQ) * gW;
     const getY = (p) => pad.top + (1 - p / maxValP) * gH;
@@ -496,7 +508,7 @@
 
     ctx.lineWidth = 3;
 
-    // 1. AFC (Средние постоянные - серый)
+    // AFC
     ctx.strokeStyle = '#64748b'; ctx.beginPath();
     for (let q = 2; q <= 100; q++) {
       const c = getCosts(q, model);
@@ -506,7 +518,7 @@
     }
     ctx.stroke();
 
-    // 2. AVC (Средние переменные - фиолетовый)
+    // AVC
     ctx.strokeStyle = '#818cf8'; ctx.beginPath();
     for (let q = 1; q <= 100; q++) {
       const c = getCosts(q, model);
@@ -516,7 +528,7 @@
     }
     ctx.stroke();
 
-    // 3. ATC (Средние общие - зеленый)
+    // ATC
     ctx.strokeStyle = '#10b981'; ctx.beginPath();
     for (let q = 2; q <= 100; q++) {
       const c = getCosts(q, model);
@@ -526,7 +538,7 @@
     }
     ctx.stroke();
 
-    // 4. MC (Предельные издержки - розовый)
+    // MC
     ctx.strokeStyle = '#f43f5e'; ctx.beginPath();
     for (let q = 1; q <= 100; q++) {
       const c = getCosts(q, model);
@@ -536,12 +548,29 @@
     }
     ctx.stroke();
 
-    // Точки минимумов min ATC и min AVC
+    // Линия Рыночной цены P
+    if (chkBep.checked) {
+      ctx.strokeStyle = '#f472b6'; ctx.lineWidth = 2.5; ctx.setLineDash([6, 3]);
+      ctx.beginPath(); ctx.moveTo(pad.left, getY(P)); ctx.lineTo(w - pad.right, getY(P)); ctx.stroke();
+      ctx.setLineDash([]);
+      ctx.fillStyle = '#f472b6'; ctx.font = 'bold 10px Inter';
+      ctx.fillText(`P = ${P} ₸`, w - pad.right - 60, getY(P) - 6);
+
+      if (bepPoints.length > 0) {
+        ctx.fillStyle = '#f472b6'; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1.5;
+        bepPoints.forEach((pt, idx) => {
+          ctx.beginPath(); ctx.arc(getX(pt), getY(P), 5.5, 0, 2 * Math.PI); ctx.fill(); ctx.stroke();
+          ctx.fillText(`BEP${idx+1}`, getX(pt) - 12, getY(P) - 9);
+        });
+      }
+    }
+
+    // Точки min ATC и min AVC
     ctx.fillStyle = '#f59e0b'; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.arc(getX(minima.qAtcMin), getY(minima.minATC), 6, 0, 2 * Math.PI); ctx.fill(); ctx.stroke();
     ctx.beginPath(); ctx.arc(getX(minima.qAvcMin), getY(minima.minAVC), 6, 0, 2 * Math.PI); ctx.fill(); ctx.stroke();
 
-    // Линия текущего Q
+    // Выбранный Q
     ctx.strokeStyle = '#818cf8'; ctx.lineWidth = 1.5; ctx.setLineDash([4, 4]);
     ctx.beginPath(); ctx.moveTo(getX(Q), pad.top); ctx.lineTo(getX(Q), h - pad.bottom); ctx.stroke();
     ctx.setLineDash([]);
@@ -549,7 +578,6 @@
     window.lastGW = gW;
   }
 
-  // Интерактивное перетаскивание ползунка мышью/пальцем прямо по холсту
   function getQFromX(mouseX, gW) {
     let relativeX = (mouseX - pad.left) / gW;
     return Math.max(1, Math.min(100, Math.round(relativeX * 100)));
@@ -616,7 +644,7 @@
 
   function closeTokenModal() { document.getElementById('token-modal').classList.add('hidden'); }
 
-  [inpFc, inpVca, inpVcb, inpVcc, volumeSlider, priceSlider].forEach(el => el.addEventListener('input', update));
+  [volumeSlider, priceSlider].forEach(el => el.addEventListener('input', update));
   chkBep.addEventListener('change', update);
 
   window.addEventListener('load', () => {
