@@ -3,93 +3,320 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тема 5: Теория производства и издержки</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Тема 5: Теория производства и издержки | Микроэкономика</title>
     <style>
-        body {
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #0b1120;
-            color: #f8fafc;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #333333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Навигационная шапка */
+        .top-nav {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .top-left-logo {
+            width: 55px;
+            height: 55px;
+            object-fit: contain;
+        }
+
+        .back-button {
+            text-decoration: none;
+            background-color: #001e50;
+            color: white;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 30, 80, 0.15);
+        }
+
+        .back-button:hover {
+            background-color: #003380;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0, 30, 80, 0.25);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 30px;
+            font-weight: 700;
+            color: #001e50;
+            margin-bottom: 8px;
+            margin-top: 10px;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: #555555;
+            max-width: 650px;
+            line-height: 1.5;
+            margin: 0 auto;
+        }
+
+        /* Сетка карточек */
+        .grid-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 25px;
+            max-width: 1200px;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+            padding-bottom: 40px;
+        }
+
+        /* Единые стандартные карточки */
+        .card {
+            display: inline-block;
+            text-decoration: none;
+            background: #ffffff;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 180px; 
+            height: 270px; 
+            position: relative;
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+            display: block;
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.03);
+            border-color: #001e50;
+            box-shadow: 0 16px 30px rgba(0, 30, 80, 0.18);
+        }
+
+        /* 3D-Flip карточка для Видео */
+        .flip-card {
+            background-color: transparent;
+            width: 180px;
+            height: 270px;
+            perspective: 1000px;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            border-radius: 12px;
+        }
+
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #cbd5e1;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .flip-card-front img {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+            display: block;
+        }
+
+        .flip-card:hover .flip-card-front,
+        .flip-card:hover .flip-card-back {
+            border-color: #001e50;
+            box-shadow: 0 16px 30px rgba(0, 30, 80, 0.18);
+        }
+
+        .flip-card-back {
+            background-color: #001e50;
+            color: white;
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 12px;
+            gap: 12px;
+        }
+
+        .flip-card-back h3 {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #38bdf8;
+            margin-bottom: 4px;
+        }
+
+        .video-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 10px 6px;
+            background: #ffffff;
+            color: #001e50;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 700;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+        }
+
+        .video-link:hover {
+            background: #38bdf8;
+            color: #001e50;
+            transform: scale(1.04);
+        }
+
+        footer {
+            margin-top: auto;
+            font-size: 14px;
+            color: #718096;
+            padding-top: 30px;
+            padding-bottom: 20px;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        /* Мобильная адаптация */
+        @media (max-width: 640px) {
+            .top-nav {
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .top-left-logo {
+                width: 65px;
+                height: 65px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .subtitle {
+                font-size: 13px;
+            }
+
+            .grid-container {
+                gap: 15px;
+            }
+
+            .card, .flip-card {
+                width: 155px;
+                height: 235px;
+            }
+
+            .video-link {
+                font-size: 10px;
+                padding: 8px 4px;
+            }
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between p-6">
+<body>
 
-    <!-- Шапка -->
-    <header class="max-w-7xl mx-auto w-full flex justify-between items-center mb-8">
-        <div class="flex items-center gap-4">
-            <img src="almau.jpg" alt="AlmaU" class="h-12 w-auto rounded-lg bg-white p-1">
-            <div>
-                <h1 class="text-xl md:text-2xl font-bold text-white">Тема 5: Теория производства и издержки</h1>
-                <p class="text-xs text-slate-400">Выберите учебный материал: интерактивные симуляторы издержек и изокост, тексты лекций и видеоуроки.</p>
-            </div>
-        </div>
-        <a href="index.html" class="bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-semibold px-4 py-2 rounded-xl border border-slate-700 transition-all flex items-center gap-2">
-            <i class="fa-solid fa-arrow-left text-sky-400"></i>
-            <span>К темам курса</span>
-        </a>
+    <!-- Навигация: Логотип и кнопка возврата -->
+    <div class="top-nav">
+        <img src="almau.jpg" alt="AlmaU Logo" class="top-left-logo">
+        <a href="topics.html" class="back-button">← К темам курса</a>
+    </div>
+
+    <header>
+        <h1>Тема 5: Теория производства и издержки</h1>
+        <p class="subtitle">
+            Выберите учебный материал: интерактивная презентация, аналитические симуляторы издержек и изокост, задания или видеолекции.
+        </p>
     </header>
 
-    <!-- Основные карточки -->
-    <main class="max-w-7xl mx-auto w-full my-auto">
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 items-center">
+    <main class="grid-container">
+        <!-- 1. Презентация -->
+        <a href="presentation-topic5.html" class="card" title="Презентация: Теория производства">
+            <img src="pic-presentation-topic5.png" alt="Презентация">
+        </a>
 
-            <!-- 1. Презентация -->
-            <a href="presentation-topic5.html" class="bg-slate-900/60 border border-slate-800 hover:border-slate-700 rounded-2xl p-4 flex flex-col items-center justify-between h-80 transition-all hover:-translate-y-1 group">
-                <span class="text-xs font-medium text-slate-400 group-hover:text-white transition-colors mb-2">Презентация</span>
-                <div class="flex-1 w-full flex items-center justify-center overflow-hidden rounded-xl">
-                    <img src="pic-presentation-topic5.png" alt="Презентация" class="max-h-full max-w-full object-contain rounded-lg">
+        <!-- 2. Симулятор: Экономические издержки (Хаб) -->
+        <a href="sim-production-costs-hub.html" class="card" title="Симулятор издержек">
+            <img src="pic-sim-production-costs-me.png" alt="Симулятор издержек">
+        </a>
+
+        <!-- 3. Симулятор: Изокосты и Изокванты -->
+        <a href="sim-isocost-isoquant.html" class="card" title="Симулятор: Изокосты и Изокванты">
+            <img src="pic-sim-isocost.png" alt="Симулятор Изокосты">
+        </a>
+
+        <!-- 4. Задания -->
+        <a href="tasks-topic5.html" class="card" title="Задания по теме 5">
+            <img src="pic-tasks-topic5.png" alt="Задания">
+        </a>
+
+        <!-- 5. Материалы для чтения -->
+        <a href="reading-topic5.html" class="card" title="Материалы для чтения">
+            <img src="pic-reading-topic5.png" alt="Материалы для чтения">
+        </a>
+
+        <!-- 6. Видеоматериалы (3D Flip на Hover) -->
+        <div class="flip-card">
+            <div class="flip-card-inner">
+                <!-- Лицевая сторона -->
+                <div class="flip-card-front">
+                    <img src="pic-video-topic5.png" alt="Видеоматериалы">
                 </div>
-            </a>
-
-            <!-- 2. Симулятор издержек (Хаб) — УМЕНЬШЕНО ДО ОБЩЕГО РАЗМЕРА -->
-            <a href="sim-production-costs-hub.html" class="bg-slate-900/60 border border-slate-800 hover:border-slate-700 rounded-2xl p-4 flex flex-col items-center justify-between h-80 transition-all hover:-translate-y-1 group">
-                <span class="text-xs font-medium text-slate-400 group-hover:text-white transition-colors mb-2">Симулятор издержек</span>
-                <div class="flex-1 w-full flex items-center justify-center overflow-hidden rounded-xl">
-                    <img src="pic-sim-production-costs-me.png" alt="Симулятор издержек" class="max-h-full max-w-full object-cover rounded-lg">
+                <!-- Оборотная сторона -->
+                <div class="flip-card-back">
+                    <h3>Видеолекции</h3>
+                    <a href="video-topic5.html" class="video-link">
+                        ▶ Смотреть видео
+                    </a>
                 </div>
-            </a>
-
-            <!-- 3. Изокосты и Изокванты -->
-            <a href="sim-isocost-isoquant.html" class="bg-slate-900/60 border border-slate-800 hover:border-slate-700 rounded-2xl p-4 flex flex-col items-center justify-between h-80 transition-all hover:-translate-y-1 group">
-                <span class="text-xs font-medium text-slate-400 group-hover:text-white transition-colors mb-2">Изокосты и Изокванты</span>
-                <div class="flex-1 w-full flex items-center justify-center overflow-hidden rounded-xl">
-                    <img src="pic-sim-isocost.png" alt="Изокосты и Изокванты" class="max-h-full max-w-full object-contain rounded-lg">
-                </div>
-            </a>
-
-            <!-- 4. Задания -->
-            <a href="tasks-topic5.html" class="bg-slate-900/60 border border-slate-800 hover:border-slate-700 rounded-2xl p-4 flex flex-col items-center justify-between h-80 transition-all hover:-translate-y-1 group">
-                <span class="text-xs font-medium text-slate-400 group-hover:text-white transition-colors mb-2">Задания</span>
-                <div class="flex-1 w-full flex items-center justify-center overflow-hidden rounded-xl">
-                    <img src="pic-tasks-topic5.png" alt="Задания" class="max-h-full max-w-full object-contain rounded-lg">
-                </div>
-            </a>
-
-            <!-- 5. Материалы для чтения -->
-            <a href="reading-topic5.html" class="bg-slate-900/60 border border-slate-800 hover:border-slate-700 rounded-2xl p-4 flex flex-col items-center justify-between h-80 transition-all hover:-translate-y-1 group">
-                <span class="text-xs font-medium text-slate-400 group-hover:text-white transition-colors mb-2">Материалы для чтения</span>
-                <div class="flex-1 w-full flex items-center justify-center overflow-hidden rounded-xl">
-                    <img src="pic-reading-topic5.png" alt="Материалы для чтения" class="max-h-full max-w-full object-contain rounded-lg">
-                </div>
-            </a>
-
-            <!-- 6. Видеоматериалы -->
-            <a href="video-topic5.html" class="bg-slate-900/60 border border-slate-800 hover:border-slate-700 rounded-2xl p-4 flex flex-col items-center justify-between h-80 transition-all hover:-translate-y-1 group">
-                <span class="text-xs font-medium text-slate-400 group-hover:text-white transition-colors mb-2">Видеоматериалы</span>
-                <div class="flex-1 w-full flex items-center justify-center overflow-hidden rounded-xl">
-                    <img src="pic-video-topic5.png" alt="Видеоматериалы" class="max-h-full max-w-full object-contain rounded-lg">
-                </div>
-            </a>
-
+            </div>
         </div>
     </main>
 
-    <!-- Подвал -->
-    <footer class="max-w-7xl mx-auto w-full text-center text-xs text-slate-500 mt-8">
+    <footer>
         <p>Разработано для студентов AlmaU 2026 | Дисциплина: Микроэкономика</p>
-        <p class="text-slate-600">© Almaty Management University | Школа цифровых технологий и экономики</p>
+        <p>© Almaty Management University | Школа цифровых технологий и экономики</p>
     </footer>
 
 </body>
