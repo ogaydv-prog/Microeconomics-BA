@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Экономика фирмы в условиях совершенной конкуренции</title>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-light: #2563eb;
+            --bg-gray: #f8fafc;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #334155;
+            --border: #cbd5e1;
+            --success: #15803d;
+            --warning: #b45309;
+            --danger: #b91c1c;
+            --slider-red: #dc2626;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        body { background-color: var(--bg-gray); color: var(--text-main); line-height: 1.6; padding: 20px; }
+        
+        header { margin-bottom: 20px; border-bottom: 3px solid var(--primary); padding-bottom: 10px; }
+        h1 { font-size: 1.8rem; color: var(--primary); margin-bottom: 4px; font-weight: 800; }
+        p.subtitle { color: var(--text-muted); font-size: 1rem; font-weight: 600; }
+
+        /* Navigation Tabs */
+        .tabs { display: flex; gap: 4px; border-bottom: 2px solid var(--border); margin-bottom: 20px; overflow-x: auto; padding-bottom: 2px; }
+        .tab-btn { padding: 10px 16px; border: 1px solid var(--border); border-bottom: none; background: #e2e8f0; font-size: 0.92rem; font-weight: 700; color: var(--text-muted); cursor: pointer; border-radius: 6px 6px 0 0; transition: all 0.2s; white-space: nowrap; }
+        .tab-btn:hover { background-color: #cbd5e1; color: var(--primary); }
+        .tab-btn.active { background-color: var(--primary); color: #ffffff; border-color: var(--primary); }
+
+        /* Content Containers */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Grid Layouts */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        @media (max-width: 1024px) { .grid-2 { grid-template-columns: 1fr; } }
+
+        /* Cards and Text Formatting */
+        .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .card h2 { font-size: 1.25rem; color: var(--primary); margin-bottom: 12px; border-bottom: 2px solid var(--bg-gray); padding-bottom: 6px; }
+        .card h3 { font-size: 1.05rem; color: var(--primary-light); margin: 14px 0 8px 0; }
+        .card p { margin-bottom: 10px; font-size: 0.95rem; text-align: justify; }
+        .card ul, .card ol { margin: 0 0 12px 20px; font-size: 0.95rem; }
+        .card li { margin-bottom: 4px; }
+
+        /* Boxes */
+        .formula-box { background-color: #f1f5f9; padding: 12px 16px; border-radius: 6px; font-family: 'Courier New', monospace; font-size: 1rem; font-weight: bold; border-left: 5px solid var(--primary-light); margin: 12px 0; color: var(--primary); }
+        .concept-box { background-color: #eff6ff; padding: 14px; border-radius: 6px; border: 1px solid #bfdbfe; margin: 12px 0; font-size: 0.92rem; }
+
+        /* Vintage Red Tuner Slider */
+        .control-panel { background: #f1f5f9; border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 14px; }
+        .control-group { margin-bottom: 12px; }
+        .control-group label { display: block; font-size: 0.9rem; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
+        .val-display { font-weight: 800; color: var(--slider-red); float: right; font-size: 1.05rem; }
+
+        input[type="range"].vintage-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 24px;
+            background: #cbd5e1;
+            border: 2px solid #64748b;
+            border-radius: 4px;
+            outline: none;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.15);
+        }
+
+        input[type="range"].vintage-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 32px;
+            background: var(--slider-red);
+            border: 2px solid #7f1d1d;
+            border-radius: 2px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.4);
+            margin-top: -4px;
+        }
+
+        /* Buttons & Badges */
+        .btn { padding: 8px 14px; border: none; background: var(--primary-light); color: white; font-weight: 700; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+        .btn:hover { background: var(--primary); }
+        .btn-danger { background: var(--danger); }
+        .btn-danger:hover { background: #991b1b; }
+
+        .badge { display: block; padding: 8px; border-radius: 6px; font-weight: 800; font-size: 0.95rem; text-align: center; margin: 10px 0; }
+        .badge-success { background: #dcfce7; color: var(--success); border: 1px solid #86efac; }
+        .badge-warning { background: #fef3c7; color: var(--warning); border: 1px solid #fde047; }
+        .badge-danger { background: #fee2e2; color: var(--danger); border: 1px solid #fca5a5; }
+
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; font-size: 0.88rem; margin: 12px 0; }
+        th, td { padding: 8px 10px; border: 1px solid var(--border); text-align: center; }
+        th { background-color: #f1f5f9; font-weight: 700; color: var(--primary); }
+        tr.selected-row { background-color: #fef08a !important; font-weight: bold; }
+        tr.opt-row { background-color: #dcfce7; font-weight: bold; }
+
+        .chart-container { position: relative; height: 260px; width: 100%; margin-top: 8px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Экономика фирмы в условиях совершенной конкуренции</h1>
+        <p class="subtitle">Микроэкономика, AlmaU 2026</p>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(0)">1. Логика и Введение</button>
+        <button class="tab-btn" onclick="switchTab(1)">2. Выручка конкурентной фирмы</button>
+        <button class="tab-btn" onclick="switchTab(2)">3. Пример Vaca Family Dairy</button>
+        <button class="tab-btn" onclick="switchTab(3)">4. Решение фирмы и Пороги</button>
+        <button class="tab-btn" onclick="switchTab(4)">5. Рыночное предложение и SR/LR</button>
+        <button class="tab-btn" onclick="switchTab(5)">6. Практический анализ</button>
+    </div>
+
+    <!-- TAB 1: LOGIC & INTRODUCTION -->
+    <div class="tab-content active" id="tab-0">
+        <div class="grid-2">
+            <div class="card">
+                <h2>1. Логика главы и результаты обучения</h2>
+                <p>Тема соединяет теорию издержек фирмы с формированием рыночного предложения. Ранее фирма была описана через производственную функцию, совокупные (TC), средние (ATC, AVC) и предельные (MC) издержки. Теперь эти кривые превращаются в правило поведения: при заданной рыночной цене фирма выбирает выпуск, временно прекращает производство (shutdown) либо покидает рынок (exit).</p>
+                
+                <div class="formula-box">Главная идея: Конкурентная фирма не выбирает цену. Она принимает цену как параметр (ценополучатель) и выбирает только количество выпуска.</div>
+
+                <h3>Результаты обучения:</h3>
+                <ul>
+                    <li>Объяснять, почему для конкурентной фирмы P = AR = MR, а для монополии P > MR.</li>
+                    <li>Находить максимизирующий прибыль выпуск по совокупным величинам и по равенству MR = MC.</li>
+                    <li>Интерпретировать равенство MR = MC как условие внутреннего оптимума.</li>
+                    <li>Различать выпуск с прибылью, работу с краткосрочным убытком, временное закрытие (P < AVC) и долгосрочный выход (P < ATC).</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h2>2. Совершенно конкурентный рынок</h2>
+                <p>Рынок признается совершенно конкурентным при выполнении двух основных условий:</p>
+                <ol>
+                    <li>На рынке действует множество покупателей и продавцов.</li>
+                    <li>Предлагаемые товары практически идентичны (однородны).</li>
+                </ol>
+                <p>В результате отдельный участник слишком мал относительно рынка, чтобы повлиять на рыночную цену. Дополнительное условие свободного входа и выхода определяет долгосрочное равновесие.</p>
+
+                <div class="concept-box">
+                    <strong>Стратегия ценополучателя:</strong><br>
+                    Отсутствие ценового решения не означает пассивности. Стратегия фирмы смещается в управление издержками, выбором оптимального масштаба и времени входа или выхода из отрасли.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 2: FIRM REVENUE (DYNAMIC BUILDER) -->
+    <div class="tab-content" id="tab-1">
+        <div class="grid-2">
+            <div class="card">
+                <h2>3. Выручка конкурентной фирмы</h2>
+                <p>Для конкурентной фирмы рассчитываются три вида выручки:</p>
+                <ul>
+                    <li><strong>Совокупная выручка (TR):</strong> TR = P × Q</li>
+                    <li><strong>Средняя выручка (AR):</strong> AR = TR / Q = P</li>
+                    <li><strong>Предельная выручка (MR):</strong> MR = ΔTR / ΔQ = P</li>
+                </ul>
+
+                <div class="formula-box">Условие ценополучателя: P = AR = MR</div>
+
+                <p>Поскольку продажа каждой дополнительной единицы происходит по одной и той же фиксированной рыночной цене P = 6 д.е., каждая новая единица добавляет к совокупной выручке ровно 6 д.е. Предельная выручка MR строго равна цене P.</p>
+                
+                <div style="display: flex; gap: 10px; margin-top: 14px;">
+                    <button class="btn" onclick="addUnit2()">+ Добавить единицу (Q + 1)</button>
+                    <button class="btn btn-danger" onclick="removeUnit2()">– Удалить единицу</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Интерактивный конструктор выручки (P = 6 д.е.)</h2>
+                <table id="revTable2">
+                    <thead>
+                        <tr><th>Выпуск (Q)</th><th>Цена (P)</th><th>TR (P×Q)</th><th>AR (TR/Q)</th><th>MR (ΔTR/ΔQ)</th></tr>
+                    </thead>
+                    <tbody>
+                        <!-- Dynamic rows -->
+                    </tbody>
+                </table>
+                <div class="concept-box">
+                    Каждый раз при добавлении единицы совокупная выручка TR возрастает ровно на величину рыночной цены P = 6 д.е. Поэтому линия спроса для отдельной фирмы горизонтальна.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 3: MILK FARM EXAMPLE (STEP-CHART & SYNC SLIDER) -->
+    <div class="tab-content" id="tab-2">
+        <div class="grid-2">
+            <div class="card">
+                <h2>4. Числовой пример Vaca Family Dairy</h2>
+                <p>Фиксированная цена P = 6 д.е. Постоянные издержки FC = 3 д.е. (при Q = 0 убыток равен -3 д.е.). Возрастающие предельные издержки MC создают ступенчатую структуру издержек за каждый галлон.</p>
+
+                <div class="control-panel">
+                    <div class="control-group">
+                        <label>Перемещайте ползунок выпуска (Q, галлоны): <span class="val-display" id="q3Val">4</span></label>
+                        <input type="range" class="vintage-slider" id="q3Slider" min="0" max="8" step="1" value="4" oninput="updateTab3()">
+                    </div>
+                </div>
+
+                <div style="overflow-x: auto; max-height: 260px;">
+                    <table id="farmTable3">
+                        <thead>
+                            <tr><th>Q</th><th>TR</th><th>TC</th><th>π</th><th>MR</th><th>MC</th><th>Δπ</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+
+                <div class="concept-box" id="farmAnalysis3"></div>
+            </div>
+
+            <div class="card">
+                <h2>Числовая логика примера Vaca Family Dairy Farm</h2>
+                <div class="chart-container">
+                    <canvas id="chartTab3Total"></canvas>
+                </div>
+                <div class="chart-container" style="margin-top: 12px;">
+                    <canvas id="chartTab3Marginal"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 4: FIRM DECISION & SHUTDOWN -->
+    <div class="tab-content" id="tab-3">
+        <div class="grid-2">
+            <div class="card">
+                <h2>5. Правило MR = MC и пороги деятельности</h2>
+                <p>Конкурентная фирма выбирает выпуск по правилу P = MC. Границы деятельности определяются уровнями средних издержек:</p>
+                <ul>
+                    <li><strong>Краткосрочный период (Shutdown):</strong> Фирма закрывается, если P < AVC. Убыток равен -FC.</li>
+                    <li><strong>Долгосрочный период (Exit):</strong> Фирма покидает рынок, если P < ATC.</li>
+                </ul>
+
+                <div class="control-panel">
+                    <div class="control-group">
+                        <label>Рыночная цена (P): <span class="val-display" id="p4Val">11.5</span></label>
+                        <input type="range" class="vintage-slider" id="p4Slider" min="3.0" max="16.0" step="0.2" value="11.5" oninput="updateTab4()">
+                    </div>
+                    <div class="control-group">
+                        <label>Постоянные издержки (FC): <span class="val-display" id="fc4Val">25</span></label>
+                        <input type="range" class="vintage-slider" id="fc4Slider" min="10" max="50" step="5" value="25" oninput="updateTab4()">
+                    </div>
+                </div>
+
+                <div id="statusBadge4" class="badge badge-success">Прибыль</div>
+                <div class="concept-box" id="metricsBox4"></div>
+            </div>
+
+            <div class="card">
+                <h2>Модель решений фирмы (P = MC)</h2>
+                <div class="chart-container" style="height: 380px;">
+                    <canvas id="chartTab4"></canvas>
+                </div>
+                <div class="formula-box" style="font-size: 0.85rem;">
+                    Sunk Costs (Невозвратные издержки): В коротком периоде FC неизбежны. Решение работать зависит только от соотношения P и AVC!
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 5: MARKET & SR/LR DYNAMICS -->
+    <div class="tab-content" id="tab-4">
+        <div class="card">
+            <h2>6. Формирование рыночного предложения и динамика SR / LR</h2>
+            <p>В коротком периоде число фирм фиксировано. В долгом периоде свободный вход и выход фирм приводит рынок к нулевой экономической прибыли (π = 0), где P = MC = min ATC.</p>
+
+            <div class="grid-2" style="margin-top: 14px;">
+                <div>
+                    <h3>Рынок и горизонтальный спрос фирмы</h3>
+                    <div class="control-panel">
+                        <div class="control-group">
+                            <label>Сдвиг спроса (D): <span class="val-display" id="d5Val">0</span></label>
+                            <input type="range" class="vintage-slider" id="d5Slider" min="-3" max="3" step="1" value="0" oninput="updateTab5()">
+                        </div>
+                    </div>
+                    <div class="chart-container" style="height: 240px;"><canvas id="chartTab5Market"></canvas></div>
+                </div>
+
+                <div>
+                    <h3>3-этапная динамика (A → B → C)</h3>
+                    <div style="display: flex; gap: 6px; margin-bottom: 10px;">
+                        <button class="btn" onclick="setStep5(1)">Этап A: LR</button>
+                        <button class="btn" onclick="setStep5(2)">Этап B: SR</button>
+                        <button class="btn" onclick="setStep5(3)">Этап C: LR Вход</button>
+                    </div>
+                    <div class="chart-container" style="height: 240px;"><canvas id="chartTab5LR"></canvas></div>
+                </div>
+            </div>
+            <div class="concept-box" id="infoBox5" style="margin-top: 14px;"></div>
+        </div>
+    </div>
+
+    <!-- TAB 6: CASES & PRACTICE -->
+    <div class="tab-content" id="tab-5">
+        <div class="card">
+            <h2>7. Практический анализ и разбор ситуаций</h2>
+            <table>
+                <thead>
+                    <tr><th>Ошибочное утверждение</th><th>Почему неверно</th><th>Корректный вывод</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="color: var(--danger); font-weight: 700;">«Фирма максимизирует прибыль при π = 0».</td>
+                        <td>Нулевая прибыль относится к долгосрочному равновесию всей отрасли.</td>
+                        <td>Выпуск выбирается по P = MC. Знак прибыли определяется разностью P − ATC.</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--danger); font-weight: 700;">«При убытке нужно немедленно закрываться».</td>
+                        <td>Постоянные издержки FC уплачены и не возвращаются при shutdown.</td>
+                        <td>Фирма продолжает работу при P ≥ AVC, покрывая переменные затраты и часть FC.</td>
+                    </tr>
+                    <tr>
+                        <td style="color: var(--danger); font-weight: 700;">«Нулевая прибыль означает отсутствие дохода».</td>
+                        <td>Экономические издержки включают альтернативную стоимость капитала и времени.</td>
+                        <td>Нулевая экономическая прибыль означает нормальную рыночную доходность.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <h2>Кейс 1: Кофейня в бизнес-центре</h2>
+                <p>Аренда 2000 д.е./мес. Выручка TR = 300 д.е./день, переменные затраты VC = 180 д.е./день. Решение на сегодня:</p>
+                <button class="btn" style="width: 100%; text-align: left; margin-bottom: 8px;" onclick="checkAnswer(1, true)">
+                    A. Продолжать работу (P > AVC, покрывает все VC и даёт 120 д.е./день на покрытие аренды).
+                </button>
+                <button class="btn" style="width: 100%; text-align: left;" onclick="checkAnswer(1, false)">
+                    B. Временно закрыться.
+                </button>
+                <div id="quizResult1" style="margin-top: 10px; font-weight: 800;"></div>
+            </div>
+
+            <div class="card">
+                <h2>Кейс 2: Фермерское хозяйство</h2>
+                <p>Ферма получила 50 000 д.е. прибыли из-за временного засушливого периода у конкурентов. Что произойдет в долгом периоде?</p>
+                <button class="btn" style="width: 100%; text-align: left; margin-bottom: 8px;" onclick="checkAnswer(2, false)">
+                    A. Прибыль сохранится неограниченно долго.
+                </button>
+                <button class="btn" style="width: 100%; text-align: left;" onclick="checkAnswer(2, true)">
+                    B. Вход новых фирм увеличит предложение, цена снизится до min ATC (π → 0).
+                </button>
+                <div id="quizResult2" style="margin-top: 10px; font-weight: 800;"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function switchTab(index) {
+            document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+                if (i < 6) btn.classList.toggle('active', i === index);
+            });
+            document.querySelectorAll('.tab-content').forEach((content, i) => {
+                content.classList.toggle('active', i === index);
+            });
+        }
+
+        // TAB 2 DYNAMIC BUILDER
+        let revQ2 = 3;
+        function renderRevTable2() {
+            const tbody = document.querySelector('#revTable2 tbody');
+            tbody.innerHTML = '';
+            for (let q = 1; q <= revQ2; q++) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${q}</td><td>6</td><td>${6 * q}</td><td>6</td><td>6</td>`;
+                tbody.appendChild(tr);
+            }
+        }
+        function addUnit2() { if (revQ2 < 10) { revQ2++; renderRevTable2(); } }
+        function removeUnit2() { if (revQ2 > 1) { revQ2--; renderRevTable2(); } }
+
+        // TAB 3 DATA & STEP-CHART RECONSTRUCTION
+        const farmData = [
+            { q: 0, tr: 0,  tc: 3,  p: -3, mr: null, mc: null },
+            { q: 1, tr: 6,  tc: 5,  p: 1,  mr: 6,    mc: 2 },
+            { q: 2, tr: 12, tc: 8,  p: 4,  mr: 6,    mc: 3 },
+            { q: 3, tr: 18, tc: 12, p: 6,  mr: 6,    mc: 4 },
+            { q: 4, tr: 24, tc: 17, p: 7,  mr: 6,    mc: 5 },
+            { q: 5, tr: 30, tc: 23, p: 7,  mr: 6,    mc: 6 },
+            { q: 6, tr: 36, tc: 30, p: 6,  mr: 6,    mc: 7 },
+            { q: 7, tr: 42, tc: 38, p: 4,  mr: 6,    mc: 8 },
+            { q: 8, tr: 48, tc: 47, p: 1,  mr: 6,    mc: 9 }
+        ];
+
+        let chart3Total, chart3Marginal;
+
+        function initTab3() {
+            const tbody = document.querySelector('#farmTable3 tbody');
+            tbody.innerHTML = '';
+            farmData.forEach((d) => {
+                const tr = document.createElement('tr');
+                tr.id = 'farm-row3-' + d.q;
+                const dProfit = (d.mr !== null && d.mc !== null) ? (d.mr - d.mc) : '—';
+                tr.innerHTML = `
+                    <td>${d.q}</td><td>${d.tr}</td><td>${d.tc}</td><td>${d.p}</td>
+                    <td>${d.mr !== null ? d.mr : '—'}</td><td>${d.mc !== null ? d.mc : '—'}</td><td>${dProfit}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // 1. Total Chart (TR, TC, Profit)
+            const ctxTotal = document.getElementById('chartTab3Total').getContext('2d');
+            chart3Total = new Chart(ctxTotal, {
+                type: 'line',
+                data: {
+                    labels: farmData.map(d => d.q),
+                    datasets: [
+                        { label: 'Совокупная выручка TR', data: farmData.map(d => d.tr), borderColor: '#2563eb', backgroundColor: '#2563eb', pointRadius: 5, fill: false },
+                        { label: 'Совокупные издержки TC', data: farmData.map(d => d.tc), borderColor: '#dc2626', backgroundColor: '#dc2626', pointRadius: 5, fill: false },
+                        { label: 'Прибыль π', data: farmData.map(d => d.p), borderColor: '#0d9488', backgroundColor: '#0d9488', borderWidth: 3, pointRadius: 6, fill: false },
+                        { label: 'Маркер Q', data: Array(9).fill(null), borderColor: '#eab308', backgroundColor: '#facc15', pointRadius: 9, pointHoverRadius: 11, showLine: false }
+                    ]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    plugins: { title: { display: true, text: 'Уровни: TR, TC и прибыль (д.е.)' } },
+                    scales: { x: { title: { display: true, text: 'Объём молока Q, галлоны' } } }
+                }
+            });
+
+            // 2. Marginal Step-Chart (Exact Word Doc Reconstruction)
+            const ctxMarginal = document.getElementById('chartTab3Marginal').getContext('2d');
+            chart3Marginal = new Chart(ctxMarginal, {
+                type: 'line',
+                data: {
+                    labels: [1, 2, 3, 4, 5, 6, 7, 8],
+                    datasets: [
+                        { 
+                            label: 'MC дополнительного галлона', 
+                            data: [2, 3, 4, 5, 6, 7, 8, 9], 
+                            borderColor: '#dc2626', 
+                            borderWidth: 3,
+                            stepped: 'before', 
+                            fill: false 
+                        },
+                        { 
+                            label: 'MR = P = 6', 
+                            data: [6, 6, 6, 6, 6, 6, 6, 6], 
+                            borderColor: '#2563eb', 
+                            borderWidth: 3,
+                            fill: false 
+                        }
+                    ]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    plugins: { title: { display: true, text: 'Предельное решение (д.е. на галлон)' } },
+                    scales: { 
+                        x: { title: { display: true, text: 'Номер дополнительного галлона' } },
+                        y: { min: 0, max: 10 }
+                    }
+                }
+            });
+
+            updateTab3();
+        }
+
+        function updateTab3() {
+            const selQ = parseInt(document.getElementById('q3Slider').value);
+            document.getElementById('q3Val').innerText = selQ;
+
+            // Update Table Selection
+            farmData.forEach(d => {
+                const row = document.getElementById('farm-row3-' + d.q);
+                if (row) row.className = (d.q === selQ) ? 'selected-row' : ((d.q === 4 || d.q === 5) ? 'opt-row' : '');
+            });
+
+            // Sync Yellow Point Marker on Total Chart
+            const markerData = Array(9).fill(null);
+            markerData[selQ] = farmData[selQ].p;
+            chart3Total.data.datasets[3].data = markerData;
+            chart3Total.update();
+
+            const curr = farmData[selQ];
+            const info = document.getElementById('farmAnalysis3');
+            if (selQ === 4 || selQ === 5) {
+                info.innerHTML = `<strong>Оптимум Q = ${selQ} галлонов</strong>: Максимальная прибыль <strong>π = 7 д.е.</strong> Для 5-го галлона MR = MC = 6 д.е., поэтому совокупная прибыль остается неизменной.`;
+            } else if (selQ < 4) {
+                info.innerHTML = `При Q = ${selQ}: MR (${curr.mr}) > MC (${curr.mc}). Каждая новая единица приносит больше выручки, чем затрат. <strong>Расширяйте выпуск!</strong>`;
+            } else {
+                info.innerHTML = `При Q = ${selQ}: MC (${curr.mc}) > MR (${curr.mr}). Дополнительный галлон разрушает прибыль. <strong>Сокращайте выпуск!</strong>`;
+            }
+        }
+
+        // COST CALCULATOR
+        function calcCosts(Q, FC) {
+            const a = 0.1, b = 1.2, c = 10;
+            const VC = a * Math.pow(Q, 3) - b * Math.pow(Q, 2) + c * Q;
+            const TC = FC + VC;
+            const MC = 3 * a * Math.pow(Q, 2) - 2 * b * Q + c;
+            const ATC = Q > 0 ? TC / Q : null;
+            const AVC = Q > 0 ? VC / Q : null;
+            return { VC, TC, MC, ATC, AVC };
+        }
+
+        // TAB 4 LOGIC
+        let chart4;
+        function initTab4() {
+            const ctx4 = document.getElementById('chartTab4').getContext('2d');
+            chart4 = new Chart(ctx4, {
+                type: 'line',
+                data: { labels: [], datasets: [] },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    scales: { y: { min: 0, max: 22, title: { display: true, text: 'Денежные единицы (д.е.)' } } } 
+                }
+            });
+            updateTab4();
+        }
+
+        function updateTab4() {
+            const P = parseFloat(document.getElementById('p4Slider').value);
+            const FC = parseFloat(document.getElementById('fc4Slider').value);
+
+            document.getElementById('p4Val').innerText = P.toFixed(1);
+            document.getElementById('fc4Val').innerText = FC;
+
+            const qVals = [], mcData = [], atcData = [], avcData = [], pData = [];
+            let optQ = 0, minDiff = 999;
+
+            for (let q = 1; q <= 15; q += 0.25) {
+                qVals.push(q.toFixed(1));
+                const c = calcCosts(q, FC);
+                mcData.push(c.MC);
+                atcData.push(c.ATC);
+                avcData.push(c.AVC);
+                pData.push(P);
+
+                if (Math.abs(c.MC - P) < minDiff && q > 4) {
+                    minDiff = Math.abs(c.MC - P);
+                    optQ = q;
+                }
+            }
+
+            const optCost = calcCosts(optQ, FC);
+            const badge = document.getElementById('statusBadge4');
+            const box = document.getElementById('metricsBox4');
+
+            if (P < optCost.AVC) {
+                badge.className = "badge badge-danger";
+                badge.innerText = "Временное закрытие (Shutdown): P < min AVC";
+                box.innerHTML = `Цена P = ${P.toFixed(1)} д.е. ниже min AVC (${optCost.AVC.toFixed(1)} д.е.). Выпуск Q* = 0. Убыток = -FC (-${FC} д.е.).`;
+            } else if (P < optCost.ATC) {
+                badge.className = "badge badge-warning";
+                badge.innerText = "Работа с убытком: AVC ≤ P < ATC";
+                const profit = (P - optCost.ATC) * optQ;
+                box.innerHTML = `Оптимум P = MC при Q* = ${optQ.toFixed(1)}. Убыток = ${profit.toFixed(1)} д.е. Выручка покрывает VC и часть FC.`;
+            } else {
+                badge.className = "badge badge-success";
+                badge.innerText = "Экономическая прибыль: P ≥ ATC";
+                const profit = (P - optCost.ATC) * optQ;
+                box.innerHTML = `Оптимум P = MC при Q* = ${optQ.toFixed(1)}. Прибыль π = +${profit.toFixed(1)} д.е.`;
+            }
+
+            chart4.data = {
+                labels: qVals,
+                datasets: [
+                    { label: 'MC', data: mcData, borderColor: '#dc2626', fill: false },
+                    { label: 'ATC', data: atcData, borderColor: '#2563eb', fill: false },
+                    { label: 'AVC', data: avcData, borderColor: '#0d9488', fill: false },
+                    { label: 'P = MR', data: pData, borderColor: '#15803d', borderDash: [5, 5], fill: false }
+                ]
+            };
+            chart4.update();
+        }
+
+        // TAB 5 LOGIC
+        let chart5M, chart5LR;
+        let step5 = 1;
+
+        function initTab5() {
+            const ctxM = document.getElementById('chartTab5Market').getContext('2d');
+            const ctxLR = document.getElementById('chartTab5LR').getContext('2d');
+
+            chart5M = new Chart(ctxM, {
+                type: 'line',
+                data: {
+                    labels: [0, 500, 1000, 1500],
+                    datasets: [
+                        { label: 'Спрос (D)', data: [16, 12, 8, 4], borderColor: '#2563eb' },
+                        { label: 'Предложение (S)', data: [0, 4, 8, 12], borderColor: '#dc2626' }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            chart5LR = new Chart(ctxLR, {
+                type: 'line',
+                data: { labels: ['Q1', 'Q2', 'Q3', 'Q4'], datasets: [] },
+                options: { responsive: true, maintainAspectRatio: false }
+            });
+
+            updateTab5();
+        }
+
+        function setStep5(s) { step5 = s; updateTab5(); }
+
+        function updateTab5() {
+            const dShift = parseInt(document.getElementById('d5Slider').value);
+            document.getElementById('d5Val').innerText = dShift > 0 ? '+' + dShift : dShift;
+
+            chart5M.data.datasets[0].data = [16 + dShift * 2, 12 + dShift * 2, 8 + dShift * 2, 4 + dShift * 2];
+            chart5M.update();
+
+            const info = document.getElementById('infoBox5');
+            if (step5 === 1) {
+                info.innerHTML = "<strong>Этап A (Исходный LR):</strong> Равновесие при P = min ATC, экономическая прибыль равна 0.";
+                chart5LR.data.datasets = [
+                    { label: 'D1', data: [12, 10, 8, 6], borderColor: '#2563eb' },
+                    { label: 'S1', data: [4, 6, 8, 10], borderColor: '#dc2626' }
+                ];
+            } else if (step5 === 2) {
+                info.innerHTML = "<strong>Этап B (Шок спроса SR):</strong> Рост спроса поднимает цену до P2. Существующие фирмы получают прибыль.";
+                chart5LR.data.datasets = [
+                    { label: 'D2', data: [16, 14, 12, 10], borderColor: '#2563eb' },
+                    { label: 'S1', data: [4, 6, 8, 10], borderColor: '#dc2626' }
+                ];
+            } else {
+                info.innerHTML = "<strong>Этап C (Вход фирм LR):</strong> Вход новых фирм сдвигает предложение S2 вправо. Цена возвращается к min ATC.";
+                chart5LR.data.datasets = [
+                    { label: 'D2', data: [16, 14, 12, 10], borderColor: '#2563eb' },
+                    { label: 'S2', data: [8, 10, 12, 14], borderColor: '#15803d' }
+                ];
+            }
+            chart5LR.update();
+        }
+
+        function checkAnswer(quizNum, isCorrect) {
+            const res = document.getElementById('quizResult' + quizNum);
+            if (isCorrect) {
+                res.style.color = "var(--success)";
+                res.innerText = "Верно! Абсолютно точный управленческий вывод.";
+            } else {
+                res.style.color = "var(--danger)";
+                res.innerText = "Неверно. Попробуйте перепроверить условия порогов P >= AVC.";
+            }
+        }
+
+        window.onload = function() {
+            renderRevTable2();
+            initTab3();
+            initTab4();
+            initTab5();
+        };
+    </script>
+</body>
+</html>
