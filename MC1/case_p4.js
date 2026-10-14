@@ -8,9 +8,9 @@
 let p4Chart1Inst = null;
 let p4Chart2Inst = null;
 
-// Базовые профили издержек, масштабируемые под диапазон \$65-\$78 / \$32-\$41 / \$18-\$20
+// Базовые профили издержек
 const p4_pcArchetypes = [
-    // Архетип 0: Базовый шаг MC
+    // Архетип 0
     [
         { q: 0, tvc: 0,   tc: 80,  mc: null, avc: null, atc: null },
         { q: 1, tvc: 25,  tc: 105, mc: 25,   avc: 25,   atc: 105 },
@@ -24,7 +24,7 @@ const p4_pcArchetypes = [
         { q: 9, tvc: 444, tc: 524, mc: 85,   avc: 49,   atc: 58 },
         { q: 10, tvc: 539, tc: 619, mc: 95,   avc: 54,   atc: 62 }
     ],
-    // Архетип 1: Сдвинутый минимум AVC
+    // Архетип 1
     [
         { q: 0, tvc: 0,   tc: 95,  mc: null, avc: null, atc: null },
         { q: 1, tvc: 28,  tc: 123, mc: 28,   avc: 28,   atc: 123 },
@@ -38,7 +38,7 @@ const p4_pcArchetypes = [
         { q: 9, tvc: 460, tc: 555, mc: 86,   avc: 51,   atc: 62 },
         { q: 10, tvc: 556, tc: 651, mc: 96,   avc: 56,   atc: 65 }
     ],
-    // Архетип 2: Альтернативный шаг издержек
+    // Архетип 2
     [
         { q: 0, tvc: 0,   tc: 70,  mc: null, avc: null, atc: null },
         { q: 1, tvc: 22,  tc: 92,  mc: 22,   avc: 22,   atc: 92 },
@@ -58,7 +58,7 @@ let p4_pcTableData = [];
 let activeMult = 1.0;
 let p4_pcCurrentPrice = 0;
 let p4_targetBoomQ = 7;
-let p4_targetRecessionQ = 4;
+let p4_targetRecessionQ = 3;
 
 function roundInt(val) {
     return val !== null && val !== undefined ? Math.round(val) : null;
@@ -78,11 +78,10 @@ function renderCaseP4(studentIdx, lang) {
     const archetypeIdx = studentIdx % 3;
     const baseTable = p4_pcArchetypes[archetypeIdx];
     
-    // РАВНОМЕРНОЕ РАСПРЕДЕЛЕНИЕ ОБЪЕМОВ
-    // Зеленый (Бум, Прибыль): Q* = 6, 7, 8 (Без 9!)
+    // Зеленый (Бум): Q* = 6, 7 или 8
     p4_targetBoomQ = 6 + (studentIdx % 3);
-    // Оранжевый (Спад, Мин.Убытков): Q* = 3, 4
-    p4_targetRecessionQ = 3 + ((studentIdx + 1) % 2);
+    // Оранжевый (Спад): Q* = 3
+    p4_targetRecessionQ = 3;
 
     const variantShift = (studentIdx * 3) % 7; 
     activeMult = 0.96 + ((studentIdx * 2) % 5) * 0.03;
@@ -96,14 +95,19 @@ function renderCaseP4(studentIdx, lang) {
         atc: roundInt((d.atc ? d.atc + variantShift * 0.1 : null) * activeMult)
     }));
 
-    // Автоматическая стыковка цен с точками MR = MC
+    // Точная стыковка цен
     const pBoomInt = p4_pcTableData[p4_targetBoomQ].mc || 68;
-    const pRecInt = p4_pcTableData[p4_targetRecessionQ].mc || 36;
+    const pRecInt = p4_pcTableData[p4_targetRecessionQ].mc || 32;
     
-    // Порог закрытия: цена ниже минимального AVC на \$8
+    // Порог закрытия: строго 10..14\$ ниже цены Спада
     let minAvc = 999;
     p4_pcTableData.forEach(d => { if (d.avc && d.avc < minAvc) minAvc = d.avc; });
-    const pCrisInt = Math.max(18, roundInt(minAvc - 8));
+    
+    const targetGap = 10 + (studentIdx % 5); // 10, 11, 12, 13, 14\$
+    let pCrisInt = pRecInt - targetGap;
+    if (pCrisInt >= minAvc) {
+        pCrisInt = minAvc - 2;
+    }
 
     const caseTitle = {
         en: "Case Strategy: Agro-Industrial Exporter & Market Volatility (Perfect Competition)",
