@@ -8,9 +8,9 @@
 let p4Chart1Inst = null;
 let p4Chart2Inst = null;
 
-// Базовые профили издержек, масштабируемые под диапазон \$50 / \$35 / \$27
+// Базовые профили издержек, масштабируемые под диапазон \$65-\$78 / \$32-\$41 / \$18-\$20
 const p4_pcArchetypes = [
-    // Архетип 0: Базовый шаг MC ≈ +8..9\$
+    // Архетип 0: Базовый шаг MC
     [
         { q: 0, tvc: 0,   tc: 80,  mc: null, avc: null, atc: null },
         { q: 1, tvc: 25,  tc: 105, mc: 25,   avc: 25,   atc: 105 },
@@ -57,7 +57,7 @@ const p4_pcArchetypes = [
 let p4_pcTableData = [];
 let activeMult = 1.0;
 let p4_pcCurrentPrice = 0;
-let p4_targetBoomQ = 6;
+let p4_targetBoomQ = 7;
 let p4_targetRecessionQ = 4;
 
 function roundInt(val) {
@@ -78,11 +78,11 @@ function renderCaseP4(studentIdx, lang) {
     const archetypeIdx = studentIdx % 3;
     const baseTable = p4_pcArchetypes[archetypeIdx];
     
-    // РАВНОМЕРНОЕ РАСПРЕДЕЛЕНИЕ ОБЪЕМОВ (Без 9 единиц!)
-    // Q* Бум = 5, 6, 7, 8 (ровно по кругу по вариантам)
-    p4_targetBoomQ = 5 + (studentIdx % 4);
-    // Q* Спад = 3, 4, 5
-    p4_targetRecessionQ = 3 + ((studentIdx + 1) % 3);
+    // РАВНОМЕРНОЕ РАСПРЕДЕЛЕНИЕ ОБЪЕМОВ
+    // Зеленый (Бум, Прибыль): Q* = 6, 7, 8 (Без 9!)
+    p4_targetBoomQ = 6 + (studentIdx % 3);
+    // Оранжевый (Спад, Мин.Убытков): Q* = 3, 4
+    p4_targetRecessionQ = 3 + ((studentIdx + 1) % 2);
 
     const variantShift = (studentIdx * 3) % 7; 
     activeMult = 0.96 + ((studentIdx * 2) % 5) * 0.03;
@@ -96,11 +96,11 @@ function renderCaseP4(studentIdx, lang) {
         atc: roundInt((d.atc ? d.atc + variantShift * 0.1 : null) * activeMult)
     }));
 
-    // Точная стыковка цены со значениями MC для выбранных объемов Q*
-    const pBoomInt = p4_pcTableData[p4_targetBoomQ].mc || 50;
-    const pRecInt = p4_pcTableData[p4_targetRecessionQ].mc || 35;
+    // Автоматическая стыковка цен с точками MR = MC
+    const pBoomInt = p4_pcTableData[p4_targetBoomQ].mc || 68;
+    const pRecInt = p4_pcTableData[p4_targetRecessionQ].mc || 36;
     
-    // Порог закрытия: цена ниже минимального AVC на \$8..10
+    // Порог закрытия: цена ниже минимального AVC на \$8
     let minAvc = 999;
     p4_pcTableData.forEach(d => { if (d.avc && d.avc < minAvc) minAvc = d.avc; });
     const pCrisInt = Math.max(18, roundInt(minAvc - 8));
