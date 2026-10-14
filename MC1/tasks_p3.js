@@ -1,7 +1,7 @@
 /* ==========================================================================
-   MIDTERM CONTROL 1 • MODULE FOR PART 3 (Business Analytics / Microeconomics)
-   AlmaU SDTE 2026 • Group: Business Analytics (BA)
-   Dynamic Variant Generation for 19+ Students (No Seed Clamping)
+   MIDTERM CONTROL 1 • MODULE FOR PART 3
+   File: MC1/tasks_p3.js
+   AlmaU SDTE 2026 • Group: Business Analytics & Economics
    ========================================================================== */
 
 let costChartInstance = null;
@@ -28,44 +28,39 @@ function renderTasksP3(studentIdx, lang) {
     const container = document.getElementById('part3-container');
     if (!container) return;
 
-    // Вариантный множитель k для 19+ уникальных студентов
     const seed = (typeof studentIdx === 'number' && studentIdx >= 0) ? studentIdx : 0;
     const k = seed + 1; 
-
-    // Выбор товара
     const prod = p3_productCatalog[seed % p3_productCatalog.length];
 
-    // =========================================================================
-    // ЗАДАЧА 3.1: Точка безубыточности (BEP) & Маржинальный доход (Из Задачи 2)
-    // =========================================================================
-    const TFC_val = 60000 + (k % 7) * 5000;      // Постоянные издержки (60,000 - 90,000)
-    const Price_val = 20 + (k % 6) * 2;          // Цена за единицу (20 - 30)
-    const AVC_val = 12 + (k % 4);                // Переменные на единицу (12 - 15)
-    const expectedBEP = Math.round(TFC_val / (Price_val - AVC_val)); // Q_BEP = TFC / (P - AVC)
+    // -------------------------------------------------------------------------
+    // ЗАДАЧА 3.1: Точка безубыточности (Q_BEP = TFC / (P - AVC))
+    // -------------------------------------------------------------------------
+    const TFC_val = 60000 + (k % 7) * 5000;
+    const Price_val = 20 + (k % 6) * 2;
+    const AVC_val = 12 + (k % 4);
+    const expectedBEP = Math.round(TFC_val / (Price_val - AVC_val));
 
-    // =========================================================================
-    // ЗАДАЧА 3.2: Динамика средних издержек (ATC для 9 единиц)
-    // =========================================================================
-    const atc8 = 90 + k * 3;
-    const mc9 = 18 + k * 2;
-    const expectedATC9 = Number(((atc8 * 8 + mc9) / 9).toFixed(2));
+    // -------------------------------------------------------------------------
+    // ЗАДАЧА 3.2: Заполнение TC и MC по известным средним издержкам (AC)
+    // -------------------------------------------------------------------------
+    const baseAC = [0, 0, 28 + (k%3), 25 + (k%3), 21 + (k%3), 18 + (k%3), 17 + (k%3), 19 + (k%3), 22 + (k%3)];
+    const expectedTC6 = baseAC[6] * 6; // TC для Q = 6
+    const expectedMC6 = expectedTC6 - (baseAC[5] * 5); // MC для 6-й единицы
 
-    // =========================================================================
-    // ЗАДАЧА 3.3: Максимизация прибыли конкурентной фирмы (P = MC) (Из Задачи 1)
-    // Функция TC = FC + b*Q^2 => MC = 2*b*Q. Равновесие при P = MC
-    // =========================================================================
+    // -------------------------------------------------------------------------
+    // ЗАДАЧА 3.3: Конкурентная фирма P = MC (TC = FC + Q^2 => MC = 2Q)
+    // -------------------------------------------------------------------------
     const FC_comp = 100 + k * 10;
-    const coeff_b = 1; // TC = FC + Q^2, следовательно MC = 2*Q
-    const Market_P = 60 + (k % 8) * 5; // Цена (60 - 95)
-    const expectedOptQ = Number((Market_P / (2 * coeff_b)).toFixed(2)); // Q* = P / 2
+    const Market_P = 60 + (k % 8) * 5;
+    const expectedOptQ = Number((Market_P / 2).toFixed(2));
 
-    // =========================================================================
-    // ЗАДАЧА 3.4: Таблица издержек на 10 единиц (Гладкие U-образные кривые)
-    // =========================================================================
+    // -------------------------------------------------------------------------
+    // ЗАДАЧА 3.4: Полная матрица на 10 единиц (U-образные кривые издержек)
+    // -------------------------------------------------------------------------
     const FC = 50 + (k % 5) * 10;
-    const m0 = 10 + (k % 3) * 2;        // Минимум MC
-    const q_min = 2;                    // Точка минимума MC
-    const alpha = 1.5 + (k % 4) * 0.2;  // Скорость роста MC
+    const m0 = 10 + (k % 3) * 2;
+    const q_min = 2;
+    const alpha = 1.5 + (k % 4) * 0.2;
 
     const mcArr = [0];
     const vcArr = [0];
@@ -84,48 +79,54 @@ function renderTasksP3(studentIdx, lang) {
         if (mcArr[q] <= P_mkt) optQ_Table = q;
     }
 
-    // Тексты задач на русском и английском
+    // Тексты заданий
     const t1Text = lang === 'en' ?
-        `A company producing <span class="font-bold text-indigo-400">${prod.en}</span> operates in a competitive market. Total Fixed Costs are <span class="font-bold text-emerald-400">$${TFC_val.toLocaleString()}</span>, unit selling price is <span class="font-bold text-sky-400">$${Price_val}</span>, and average variable cost is <span class="font-bold text-amber-400">$${AVC_val}</span>. Calculate the Break-Even Volume (Q<sub>BEP</sub>) in units.` :
-        `Фирма по выпуску <span class="font-bold text-indigo-400">${prod.ru}</span> работает на конкурентном рынке. Общие постоянные издержки составляют <span class="font-bold text-emerald-400">${TFC_val.toLocaleString()} €</span>, рыночная цена единицы продукции — <span class="font-bold text-sky-400">${Price_val} €</span>, а удельные переменные издержки — <span class="font-bold text-amber-400">${AVC_val} €</span>. Определите точку безубыточности (объем $Q_{BEP}$ в единицах).`;
+        `A company producing <span class="font-bold text-indigo-400">${prod.en}</span> has Total Fixed Costs of <span class="font-bold text-emerald-400">$${TFC_val.toLocaleString()}</span>, unit price <span class="font-bold text-sky-400">$${Price_val}</span>, and AVC <span class="font-bold text-amber-400">$${AVC_val}</span>. Calculate Break-Even Volume Q<sub>BEP</sub>.` :
+        `Фирма по выпуску <span class="font-bold text-indigo-400">${prod.ru}</span> имеет общие постоянные издержки <span class="font-bold text-emerald-400">${TFC_val.toLocaleString()} €</span>, рыночную цену <span class="font-bold text-sky-400">${Price_val} €</span> и AVC = <span class="font-bold text-amber-400">${AVC_val} €</span>. Рассчитайте точку безубыточности Q<sub>BEP</sub>.`;
 
     const t2Text = lang === 'en' ?
-        `Average total cost of 8 units is <span class="font-bold text-sky-400">$${atc8}</span>. Marginal cost of the 9th unit is <span class="font-bold text-emerald-400">$${mc9}</span>. Calculate average total cost (ATC) for 9 units.` :
-        `Средние общие издержки ($ATC$) производства 8 единиц продукции равны <span class="font-bold text-sky-400">${atc8} €</span>. Предельные издержки ($MC$) 9-й единицы составляют <span class="font-bold text-emerald-400">${mc9} €</span>. Рассчитайте $ATC$ для 9 единиц продукции.`;
+        `Given output Q=5 (AC=$${baseAC[5]}) and Q=6 (AC=$${baseAC[6]}). Calculate Total Cost (TC) for Q=6 and Marginal Cost (MC) of the 6th unit.` :
+        `Даны средние затраты AC при выпуске Q=5 (AC = ${baseAC[5]} €) и Q=6 (AC = ${baseAC[6]} €). Рассчитайте общие издержки TC для Q=6 и предельные издержки MC для 6-й единицы.`;
 
     const t3Text = lang === 'en' ?
-        `A competitive firm producing watches has Total Cost function <span class="font-bold text-indigo-400">TC = ${FC_comp} + Q<sup>2</sup></span> (hence Marginal Cost <span class="font-bold text-emerald-400">MC = 2Q</span>). If market price is <span class="font-bold text-amber-400">P = $${Market_P}</span>, calculate profit-maximizing output Q*.` :
-        `Компания на конкурентном рынке имеет функцию общих издержек <span class="font-bold text-indigo-400">TC = ${FC_comp} + Q<sup>2</sup></span> (предельные издержки <span class="font-bold text-emerald-400">MC = 2Q</span>). Если рыночная цена составляет <span class="font-bold text-amber-400">P = ${Market_P} €</span>, найдите объем производства $Q^*$, максимизирующий прибыль.`;
+        `A competitive firm has Total Cost function <span class="font-bold text-indigo-400">TC = ${FC_comp} + Q<sup>2</sup></span> (MC = 2Q). At market price <span class="font-bold text-amber-400">P = $${Market_P}</span>, calculate profit-maximizing output Q*.` :
+        `Конкурентная фирма имеет функцию издержек <span class="font-bold text-indigo-400">TC = ${FC_comp} + Q<sup>2</sup></span> (MC = 2Q). При рыночной цене <span class="font-bold text-amber-400">P = ${Market_P} €</span> найдите оптимальный выпуск Q*.`;
 
     // РЕНДЕРИНГ HTML
     container.innerHTML = `
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-            <!-- Task 3.1: BEP -->
+            <!-- Task 3.1 -->
             <div class="card p-6 space-y-4">
                 <span class="text-xs bg-indigo-500/10 text-indigo-400 px-3 py-1 rounded-md border border-indigo-500/20 uppercase font-black tracking-widest inline-block">${lang === 'en' ? 'Task 3.1' : 'Задача 3.1'}</span>
-                <h4 class="text-base font-bold text-slate-100">${lang === 'en' ? 'Break-Even Analysis' : 'Анализ безубыточности'}</h4>
+                <h4 class="text-base font-bold text-slate-100">${lang === 'en' ? 'Break-Even Analysis' : 'Точка безубыточности'}</h4>
                 <p class="text-sm text-slate-200 leading-relaxed">${t1Text}</p>
                 <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-2 text-sm">
-                    <label class="block text-slate-400 font-medium">${lang === 'en' ? 'Break-Even Output Q_BEP (units):' : 'Точка безубыточности Q_BEP (ед.):'}</label>
+                    <label class="block text-slate-400 font-medium">${lang === 'en' ? 'Output Q_BEP (units):' : 'Объем Q_BEP (ед.):'}</label>
                     <input type="text" id="ans-t1" data-expected="${expectedBEP}" placeholder="Q_BEP" oninput="sanitizeDecimalInput(this)" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-white font-mono text-base focus:border-indigo-500 outline-none">
                 </div>
             </div>
 
-            <!-- Task 3.2: ATC -->
+            <!-- Task 3.2 -->
             <div class="card p-6 space-y-4">
                 <span class="text-xs bg-indigo-500/10 text-indigo-400 px-3 py-1 rounded-md border border-indigo-500/20 uppercase font-black tracking-widest inline-block">${lang === 'en' ? 'Task 3.2' : 'Задача 3.2'}</span>
-                <h4 class="text-base font-bold text-slate-100">${lang === 'en' ? 'Average Cost Adjustment' : 'Средние издержки'}</h4>
+                <h4 class="text-base font-bold text-slate-100">${lang === 'en' ? 'TC & MC from Average Costs' : 'Расчет TC и MC по таблице AC'}</h4>
                 <p class="text-sm text-slate-200 leading-relaxed">${t2Text}</p>
-                <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-2 text-sm">
-                    <label class="block text-slate-400 font-medium">${lang === 'en' ? 'ATC for 9 units (€):' : 'ATC для 9 единиц (€):'}</label>
-                    <input type="text" id="ans-t2" data-expected="${expectedATC9}" placeholder="ATC (€)" oninput="sanitizeDecimalInput(this)" class="w-full bg-slate-900 border border-slate-700 p-3 rounded-lg text-white font-mono text-base focus:border-indigo-500 outline-none">
+                <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-3 text-sm">
+                    <div>
+                        <label class="block text-slate-400 font-medium mb-1">${lang === 'en' ? 'Total Cost for Q=6 (TC_6):' : 'Общие издержки TC при Q=6:'}</label>
+                        <input type="text" id="ans-t2-tc" data-expected="${expectedTC6}" placeholder="TC_6 (€)" oninput="sanitizeDecimalInput(this)" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-white font-mono text-base focus:border-indigo-500 outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-slate-400 font-medium mb-1">${lang === 'en' ? 'Marginal Cost for 6th unit (MC_6):' : 'Предельные издержки MC_6:'}</label>
+                        <input type="text" id="ans-t2-mc" data-expected="${expectedMC6}" placeholder="MC_6 (€)" oninput="sanitizeDecimalInput(this)" class="w-full bg-slate-900 border border-slate-700 p-2.5 rounded-lg text-white font-mono text-base focus:border-indigo-500 outline-none">
+                    </div>
                 </div>
             </div>
 
-            <!-- Task 3.3: Profit Maximization -->
+            <!-- Task 3.3 -->
             <div class="card p-6 space-y-4">
                 <span class="text-xs bg-indigo-500/10 text-indigo-400 px-3 py-1 rounded-md border border-indigo-500/20 uppercase font-black tracking-widest inline-block">${lang === 'en' ? 'Task 3.3' : 'Задача 3.3'}</span>
-                <h4 class="text-base font-bold text-slate-100">${lang === 'en' ? 'Profit Maximization (P = MC)' : 'Максимизация прибыли (P = MC)'}</h4>
+                <h4 class="text-base font-bold text-slate-100">${lang === 'en' ? 'Profit Maximization (P = MC)' : 'Максимизация прибыли'}</h4>
                 <p class="text-sm text-slate-200 leading-relaxed">${t3Text}</p>
                 <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-2 text-sm">
                     <label class="block text-slate-400 font-medium">${lang === 'en' ? 'Optimal Output Q* (units):' : 'Оптимальный выпуск Q* (ед.):'}</label>
@@ -134,7 +135,7 @@ function renderTasksP3(studentIdx, lang) {
             </div>
         </div>
 
-        <!-- Task 3.4: Table & Dynamic Chart -->
+        <!-- Task 3.4: Dynamic Cost Matrix & Chart -->
         <div class="card p-6 space-y-5">
             <div class="border-b border-slate-800 pb-4 flex justify-between items-center flex-wrap gap-3">
                 <div>
@@ -145,7 +146,6 @@ function renderTasksP3(studentIdx, lang) {
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                <!-- Table -->
                 <div class="lg:col-span-7 space-y-4">
                     <p class="text-sm text-slate-200 font-medium leading-relaxed">${lang === 'en' ? 'Complete the cost matrix for output Q = 1 to 10:' : 'Заполните таблицу издержек для выпуска Q от 1 до 10:'}</p>
                     <div class="overflow-x-auto custom-scrollbar">
@@ -173,7 +173,6 @@ function renderTasksP3(studentIdx, lang) {
                     </div>
                 </div>
 
-                <!-- Chart Column -->
                 <div class="lg:col-span-5 bg-slate-950/80 p-5 rounded-2xl border border-slate-800 space-y-4 flex flex-col justify-between">
                     <div class="text-xs uppercase font-bold text-slate-300 tracking-wider flex justify-between items-center border-b border-slate-800 pb-2">
                         <span>${lang === 'en' ? 'Unit Cost Curves (10 Units)' : 'Кривые издержек на единицу (10 Единиц)'}</span>
