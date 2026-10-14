@@ -78,12 +78,12 @@ function renderCaseP4(studentIdx, lang) {
     const archetypeIdx = studentIdx % 3;
     const baseTable = p4_pcArchetypes[archetypeIdx];
     
-    // Распределение оптимальных объемов по студентам (Q* = 6..9 для Бума, Q* = 4..6 для Спада)
-    p4_targetBoomQ = 6 + (studentIdx % 4);
-    p4_targetRecessionQ = 4 + ((studentIdx + 1) % 3);
+    // РАВНОМЕРНОЕ РАСПРЕДЕЛЕНИЕ ОБЪЕМОВ (Без 9 единиц!)
+    // Q* Бум = 5, 6, 7, 8 (ровно по кругу по вариантам)
+    p4_targetBoomQ = 5 + (studentIdx % 4);
+    // Q* Спад = 3, 4, 5
+    p4_targetRecessionQ = 3 + ((studentIdx + 1) % 3);
 
-    // Вариативные сдвиги: генерируют индивидуальные цены около \$50 / \$35 / \$27
-    const priceOffset = (studentIdx * 8) % 9; // Добавляет 0..8 к базовой цене
     const variantShift = (studentIdx * 3) % 7; 
     activeMult = 0.96 + ((studentIdx * 2) % 5) * 0.03;
 
@@ -96,17 +96,14 @@ function renderCaseP4(studentIdx, lang) {
         atc: roundInt((d.atc ? d.atc + variantShift * 0.1 : null) * activeMult)
     }));
 
-    // Автоматическая подгонка цены Бума к диапазону ~\$50-\$58, Спада к ~\$32-\$40, Кризиса к ~\$22-\$29
-    const baseBoomMc = p4_pcTableData[p4_targetBoomQ].mc || 50;
-    const baseRecMc = p4_pcTableData[p4_targetRecessionQ].mc || 35;
-
-    const pBoomInt = roundInt(baseBoomMc + (priceOffset % 4)); 
-    const pRecInt = roundInt(baseRecMc + (priceOffset % 3));  
+    // Точная стыковка цены со значениями MC для выбранных объемов Q*
+    const pBoomInt = p4_pcTableData[p4_targetBoomQ].mc || 50;
+    const pRecInt = p4_pcTableData[p4_targetRecessionQ].mc || 35;
     
     // Порог закрытия: цена ниже минимального AVC на \$8..10
     let minAvc = 999;
     p4_pcTableData.forEach(d => { if (d.avc && d.avc < minAvc) minAvc = d.avc; });
-    const pCrisInt = Math.max(18, roundInt(minAvc - 8 - (priceOffset % 3)));
+    const pCrisInt = Math.max(18, roundInt(minAvc - 8));
 
     const caseTitle = {
         en: "Case Strategy: Agro-Industrial Exporter & Market Volatility (Perfect Competition)",
