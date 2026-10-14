@@ -4,7 +4,7 @@
    Group: Business Analytics & Economics (BA & ECON)
    ========================================================================== */
 
-const GOOGLE_SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbz-fH9jFhcBpC0g5DFh9mKhB9wSo4WKtYNsa1-Cqv06ND1-0GbNemCR4VH1j2uUefAY/exec";
+const GOOGLE_SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbxAJlRT_dVxyuIwd7v6lwUXB2jeiPlz5MA1o08iq4lgy9e29HWS77_f3HNds6Xu39mUsw/exec";
 
 function verifyTeacherKey() {
     toggleModal('teacher-modal', false);
