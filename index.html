@@ -1,65 +1,429 @@
-<!-- 7. Рубежный контроль 1 (Доступ по паролю) -->
-<div onclick="openMc1Modal()" class="card" title="Рубежный контроль 1">
-    <img src="pic-mc1-micro-ba.png" alt="Рубежный контроль 1">
-</div>
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Микроэкономика | БАиЭ AlmaU</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<!-- Модальное окно авторизации РК1 -->
-<div id="mc1-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-white border-2 border-slate-200 rounded-2xl max-w-md w-full p-6 space-y-5 shadow-2xl relative">
-        <button onclick="closeMc1Modal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 text-lg font-bold">✕</button>
-        
-        <div class="text-center space-y-2">
-            <div class="w-14 h-14 bg-indigo-50 border border-indigo-100 rounded-full flex items-center justify-center mx-auto text-indigo-900 text-2xl">
-                🔒
-            </div>
-            <h3 class="text-xl font-bold text-slate-900 uppercase tracking-tight">Рубежный контроль 1</h3>
-            <p class="text-xs text-slate-500">Введите предоставленный преподавателем пароль для доступа к сессии тестирования.</p>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #ffffff;
+            color: #333333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px 20px;
+            position: relative;
+        }
+
+        .top-left-logo {
+            position: absolute;
+            top: 25px;
+            left: 30px;
+            width: 55px;
+            height: 55px;
+            object-fit: contain;
+        }
+
+        header {
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 25px;
+        }
+
+        h1 {
+            font-size: 38px;
+            font-weight: 900;
+            color: #001e50;
+            margin-bottom: 8px;
+            margin-top: 15px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: #555555;
+            max-width: 750px;
+            line-height: 1.5;
+            margin: 0 auto;
+            font-weight: 500;
+        }
+
+        /* Сетка для 10 карточек ровно по 5 в ряд */
+        .grid-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 1150px;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+            padding-bottom: 30px;
+        }
+
+        /* Карточка с точным облеганием рамки по контуру */
+        .card {
+            display: inline-block;
+            text-decoration: none;
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 195px;
+            height: 255px;
+            position: relative;
+            padding: 0;
+            cursor: pointer;
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-8px) scale(1.03);
+            border-color: #001e50;
+            box-shadow: 0 16px 30px rgba(0, 30, 80, 0.18);
+        }
+
+        .card:hover img {
+            transform: scale(1.02);
+        }
+
+        .card.disabled {
+            cursor: default;
+            opacity: 0.85;
+        }
+
+        .card.disabled:hover {
+            transform: none;
+            border-color: #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+        }
+
+        footer {
+            margin-top: auto;
+            font-size: 14px;
+            color: #718096;
+            padding-top: 30px;
+            padding-bottom: 20px;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        /* МОДАЛЬНОЕ ОКНО ПАРОЛЯ */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 30, 80, 0.75);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            transform: translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: translateY(0);
+        }
+
+        .modal-card h3 {
+            color: #001e50;
+            font-size: 20px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .modal-card p {
+            color: #64748b;
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        .modal-card input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            outline: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+            transition: border-color 0.2s;
+        }
+
+        .modal-card input:focus {
+            border-color: #2563eb;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-submit {
+            background: #2563eb;
+            color: #ffffff;
+        }
+
+        .btn-submit:hover {
+            background: #1d4ed8;
+        }
+
+        .btn-cancel {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .btn-cancel:hover {
+            background: #e2e8f0;
+        }
+
+        .error-msg {
+            color: #ef4444;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: -10px;
+            margin-bottom: 12px;
+            display: none;
+        }
+
+        /* === АДАПТАЦИЯ ДЛЯ СМАРТФОНОВ И ПЛАНШЕТОВ === */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px 15px;
+            }
+
+            .top-left-logo {
+                position: relative;
+                top: 0;
+                left: 0;
+                margin: 10px auto 5px auto;
+                display: block;
+            }
+
+            header {
+                margin-top: 0;
+                margin-bottom: 20px;
+            }
+
+            h1 {
+                font-size: 26px !important;
+                margin-top: 5px;
+            }
+
+            .subtitle {
+                text-indent: 0 !important;
+                font-size: 13px !important;
+                padding: 0 10px;
+            }
+
+            .grid-container {
+                gap: 12px;
+                padding-bottom: 20px;
+            }
+
+            .card {
+                width: calc(50% - 6px);
+                height: auto;
+                aspect-ratio: 195 / 255;
+            }
+        }
+
+        @media (max-width: 380px) {
+            .card {
+                width: 100%;
+                max-width: 240px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Логотип AlmaU -->
+    <img src="https://ogaydv-prog.github.io/Economics-se/almau.jpg" alt="AlmaU Logo" class="top-left-logo">
+
+    <header>
+        <h1 style="color: #001e50 !important; text-transform: uppercase !important; font-weight: 700 !important; font-size: 42px !important; letter-spacing: 1px;">
+            МИКРОЭКОНОМИКА
+        </h1>
+        <div style="max-width: 800px; margin: 0 auto; line-height: 1.6;">
+            <p class="subtitle" style="color: #94a3b8; font-weight: 400;">
+                Интерактивный образовательный портал <span style="color: #cbd5e1; font-weight: 300; margin: 0 6px;">|</span> Бизнес-Аналитика и Экономика
+            </p>
+            <p style="color: #94a3b8; font-size: 15px; font-weight: 400; margin-top: 4px; text-align: center;">
+                AlmaU 2026
+            </p>
+        </div>
+    </header>
+
+    <main class="grid-container">
+        <!-- 1. Темы курса -->
+        <a href="topics.html" class="card" title="Темы и материалы курса">
+            <img src="pic-topics-micro-ba.png" alt="Темы курса">
+        </a>
+
+        <!-- 2. Силлабус -->
+        <a href="syllabus.html" class="card" title="Силлабус и программа курса">
+            <img src="pic-sill-micro-ba.png" alt="Силлабус">
+        </a>
+
+        <!-- 3. Учебники -->
+        <a href="https://drive.google.com/file/d/1JaaFr7DnzFRNhBwd49AMFlXhXln8_B5a/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="card" title="Учебники и основная литература">
+            <img src="pic-book-micro-ba.png" alt="Учебники и литература">
+        </a>
+
+        <!-- 4. Глоссарий -->
+        <a href="https://www.economist.com/economics-a-to-z" target="_blank" rel="noopener noreferrer" class="card" title="Экономический глоссарий The Economist">
+            <img src="pic-gloss-micro-ba.png" alt="Глоссарий">
+        </a>
+
+        <!-- 5. Экономические новости -->
+        <a href="news.html" class="card" title="Экономические новости и аналитика">
+            <img src="pic-news-micro-ba.png" alt="Экономические новости">
+        </a>
+
+        <!-- 6. Видеоматериалы -->
+        <a href="video.html" class="card" title="Видеолекции и видеоматериалы">
+            <img src="pic-video-micro-ba.png" alt="Видеоматериалы">
+        </a>
+
+        <!-- 7. Рубежный контроль 1 (Доступ по паролю) -->
+        <div onclick="openMC1Modal()" class="card" title="Рубежный контроль 1">
+            <img src="pic-mc1-micro-ba.png" alt="Рубежный контроль 1">
         </div>
 
-        <div class="space-y-3">
-            <div>
-                <input type="password" id="mc1-pass-input" placeholder="Введите пароль доступа" 
-                       class="w-full border border-slate-300 rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-600 font-mono tracking-wider text-center"
-                       onkeydown="if(event.key==='Enter') verifyAndEnterMc1()">
-                <p id="mc1-error-msg" class="text-xs text-rose-600 font-bold mt-1.5 text-center hidden">Неверный пароль доступа!</p>
-            </div>
+        <!-- 8. Рубежный контроль 2 -->
+        <div class="card disabled" title="Рубежный контроль 2 — Скоро">
+            <img src="pic-mc2-micro-ba.png" alt="Рубежный контроль 2">
+        </div>
 
-            <button onclick="verifyAndEnterMc1()" class="w-full bg-[#001e50] hover:bg-indigo-900 text-white font-bold py-3 rounded-xl text-xs uppercase tracking-wider transition shadow-lg">
-                Войти в систему РК1
-            </button>
+        <!-- 9. Финальный экзамен -->
+        <div class="card disabled" title="Финальный экзамен — Подготовка">
+            <img src="pic-exam-micro-ba.png" alt="Финальный экзамен">
+        </div>
+
+        <!-- 10. Оценки и критерии -->
+        <a href="grade.html" class="card" title="Система оценивания и успеваемость">
+            <img src="pic-grade-micro-ba.png" alt="Система оценивания">
+        </a>
+    </main>
+
+    <!-- МОДАЛЬНОЕ ОКНО ПАРОЛЯ -->
+    <div id="mc1-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h3>Рубежный контроль 1</h3>
+            <p>Введите ключ доступа:</p>
+            <input type="password" id="mc1-pass-input" placeholder="Введите пароль" autocomplete="off" onkeydown="if(event.key === 'Enter') checkMC1Password()">
+            <div id="mc1-error" class="error-msg">Неверный ключ доступа!</div>
+            <div class="modal-buttons">
+                <button onclick="closeMC1Modal()" class="btn btn-cancel">Отмена</button>
+                <button onclick="checkMC1Password()" class="btn btn-submit">Войти</button>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    function openMc1Modal() {
-        document.getElementById('mc1-modal').classList.remove('hidden');
-        document.getElementById('mc1-pass-input').value = '';
-        document.getElementById('mc1-error-msg').classList.add('hidden');
-        setTimeout(() => document.getElementById('mc1-pass-input').focus(), 100);
-    }
+    <footer>
+        <p>Разработано для студентов ОП «Бизнес-Аналитика и Экономика» | Микроэкономика</p>
+        <p>© Almaty Management University | Школа цифровых технологий и экономики 2026</p>
+    </footer>
 
-    function closeMc1Modal() {
-        document.getElementById('mc1-modal').classList.add('hidden');
-    }
-
-    function verifyAndEnterMc1() {
-        // Получаем ввод, очищаем пробелы, переводим в верхний регистр
-        var inputVal = document.getElementById('mc1-pass-input').value.trim().toUpperCase();
-        var errMsg = document.getElementById('mc1-error-msg');
-
-        // Закодированное значение "BA-15102026MC1" в Base64 (в F12 пароль в чистом виде не виден)
-        var secretKey = "QkEtMTUxMDIwMjZNQzE=";
-
-        try {
-            if (btoa(inputVal) === secretKey) {
-                errMsg.classList.add('hidden');
-                window.location.href = 'mc1/indexmc1.html';
-            } else {
-                errMsg.classList.remove('hidden');
-            }
-        } catch (e) {
-            errMsg.classList.remove('hidden');
+    <script>
+        function openMC1Modal() {
+            const modal = document.getElementById('mc1-modal');
+            const input = document.getElementById('mc1-pass-input');
+            const err = document.getElementById('mc1-error');
+            
+            input.value = '';
+            err.style.display = 'none';
+            modal.classList.add('active');
+            setTimeout(() => input.focus(), 100);
         }
-    }
-</script>
+
+        function closeMC1Modal() {
+            document.getElementById('mc1-modal').classList.remove('active');
+        }
+
+        function checkMC1Password() {
+            const input = document.getElementById('mc1-pass-input');
+            const err = document.getElementById('mc1-error');
+            
+            // Нормализуем ввод: убираем лишние пробелы и дефисы, переводим в верхний регистр
+            const cleanEntered = input.value.trim().toUpperCase().replace(/[\s\-]/g, '');
+            
+            // Эталонное значение (сработает для BA-15102026MC1, ba-15102026mc1 и BA 15102026 MC1)
+            const TARGET_KEY = "BA15102026MC1";
+
+            if (!cleanEntered) return;
+
+            if (cleanEntered === TARGET_KEY) {
+                closeMC1Modal();
+                window.location.href = "mc1/indexmc1.html";
+            } else {
+                err.style.display = 'block';
+                input.select();
+            }
+        }
+    </script>
+</body>
+</html>
