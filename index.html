@@ -408,10 +408,10 @@
             const input = document.getElementById('mc1-pass-input');
             const err = document.getElementById('mc1-error');
             
-            // Нормализуем ввод: убираем лишние пробелы и дефисы, переводим в верхний регистр
+            // Очистка ввода от пробелов и дефисов, перевод в верхний регистр
             const cleanEntered = input.value.trim().toUpperCase().replace(/[\s\-]/g, '');
             
-            // Эталонное значение (сработает для BA-15102026MC1, ba-15102026mc1 и BA 15102026 MC1)
+            // Ключ для БАиЭ (сработает для BA-15102026MC1, ba-15102026mc1 и BA 15102026 MC1)
             const TARGET_KEY = "BA15102026MC1";
 
             if (!cleanEntered) return;
