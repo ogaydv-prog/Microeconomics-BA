@@ -66,7 +66,6 @@
             font-weight: 500;
         }
 
-        /* Сетка для 10 карточек ровно по 5 в ряд */
         .grid-container {
             display: flex;
             flex-wrap: wrap;
@@ -78,7 +77,6 @@
             padding-bottom: 30px;
         }
 
-        /* Карточка с точным облеганием рамки по контуру */
         .card {
             display: inline-block;
             text-decoration: none;
@@ -134,7 +132,6 @@
             line-height: 1.6;
         }
 
-        /* МОДАЛЬНОЕ ОКНО ПАРОЛЯ */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -248,7 +245,6 @@
             display: none;
         }
 
-        /* === АДАПТАЦИЯ ДЛЯ СМАРТФОНОВ И ПЛАНШЕТОВ === */
         @media (max-width: 768px) {
             body {
                 padding: 10px 15px;
@@ -301,7 +297,7 @@
 <body>
 
     <!-- Логотип AlmaU -->
-    <img src="https://ogaydv-prog.github.io/Economics-se/almau.jpg" alt="AlmaU Logo" class="top-left-logo">
+    <img src="https://ogaydv-prog.github.io/Microeconomics-BA/almau.jpg" alt="AlmaU Logo" class="top-left-logo">
 
     <header>
         <h1 style="color: #001e50 !important; text-transform: uppercase !important; font-weight: 700 !important; font-size: 42px !important; letter-spacing: 1px;">
@@ -408,16 +404,17 @@
             const input = document.getElementById('mc1-pass-input');
             const err = document.getElementById('mc1-error');
             
-            // Очистка ввода от пробелов и дефисов, перевод в верхний регистр
+            // Очищаем ввод от дефисов и пробелов, приводим к верхнему регистру
             const cleanEntered = input.value.trim().toUpperCase().replace(/[\s\-]/g, '');
             
-            // Ключ для БАиЭ (сработает для BA-15102026MC1, ba-15102026mc1 и BA 15102026 MC1)
+            // Ключ доступа для БАиЭ
             const TARGET_KEY = "BA15102026MC1";
 
             if (!cleanEntered) return;
 
             if (cleanEntered === TARGET_KEY) {
                 closeMC1Modal();
+                // Точное перенаправление наmc1/index_mc1.html (с подчёркиванием)
                 window.location.href = "mc1/index_mc1.html";
             } else {
                 err.style.display = 'block';
