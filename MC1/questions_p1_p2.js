@@ -31,8 +31,8 @@ const PART1_POOL = [
     {
         q_en: "Microeconomics is the study of?",
         q_ru: "Микроэкономика — это наука, изучающая:",
-        opts_en: ["A) Consumer behavior", "B) How households and firms make decisions", "C) Government economic policy", "D) How the economy as a whole works", "E) Inflation and unemployment"],
-        opts_ru: ["A) Поведение потребителей", "B) Как домохозяйства и фирмы принимают решения", "C) Государственное регулирование", "D) Экономику в целом", "E) Инфляцию и безработицу"],
+        opts_en: ["A) International trading", "B) How households and firms make decisions", "C) Government economic policy", "D) How the economy as a whole works", "E) Inflation and unemployment"],
+        opts_ru: ["A) Международную торговлю", "B) Как домохозяйства и фирмы принимают решения", "C) Государственное регулирование", "D) Экономику в целом", "E) Инфляцию и безработицу"],
         ans: "B"
     },
     {
