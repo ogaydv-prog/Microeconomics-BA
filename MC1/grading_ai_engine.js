@@ -205,10 +205,7 @@ const payload = {
 }
 
 function sendDirectToGoogleSheet(payload, token) {
-    if (!GOOGLE_SHEET_WEBAPP_URL) {
-        notify(currentLang === 'en' ? "Session completed successfully!" : "Работа успешно завершена!");
-        return;
-    }
+    if (!GOOGLE_SHEET_WEBAPP_URL) return;
 
     fetch(GOOGLE_SHEET_WEBAPP_URL, {
         method: 'POST',
@@ -218,7 +215,10 @@ function sendDirectToGoogleSheet(payload, token) {
             timestamp: payload.timestamp,
             studentName: payload.studentName,
             variant: payload.studentIdx + 1,
-            score: payload.score,
+            scoreP1P2: payload.scoreP1P2, // Передаем отдельно Part 1 & 2 Score
+            scoreP3: payload.scoreP3,     // Передаем отдельно Part 3 Score
+            scoreP4: payload.scoreP4,     // Передаем отдельно Part 4 Score
+            totalScore: payload.score,   // Передаем итоговый балл
             essay: payload.p4,
             rawToken: token
         })
@@ -228,7 +228,6 @@ function sendDirectToGoogleSheet(payload, token) {
         console.error("Sync Error:", err);
     });
 }
-
 // ==========================================
 // РАСШИФРОВКА И ПРОВЕРКА В ПАНЕЛИ
 // ==========================================
