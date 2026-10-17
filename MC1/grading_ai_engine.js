@@ -159,15 +159,30 @@ function compileFinalToken() {
     // Итоговый балл (MAX 100)
     let calculatedScore = Math.min(100, Math.round(scoreP1P2 + scoreP3 + scoreP4));
 
-    const payload = {
-        studentIdx: currentStudentIdx,
-        studentName: STUDENTS_LIST[currentStudentIdx],
-        timestamp: new Date().toLocaleString(),
-        p1_p2: p1_p2_answers,
-        p3: p3_answers,
-        p4: p4_essay,
-        score: calculatedScore
-    };
+   // === СТАРЫЙ КОД ===
+// const payload = {
+//     studentIdx: currentStudentIdx,
+//     studentName: STUDENTS_LIST[currentStudentIdx],
+//     timestamp: new Date().toLocaleString(),
+//     p1_p2: p1_p2_answers,
+//     p3: p3_answers,
+//     p4: p4_essay,
+//     score: calculatedScore
+// };
+
+
+const payload = {
+    studentIdx: currentStudentIdx,
+    studentName: STUDENTS_LIST[currentStudentIdx],
+    timestamp: new Date().toLocaleString(),
+    scoreP1P2: scoreP1P2,  // <--- Добавили балл за тесты
+    scoreP3: scoreP3,      // <--- Добавили балл за задачи
+    scoreP4: scoreP4,      // <--- Добавили балл за кейс/эссе
+    score: calculatedScore,
+    p1_p2: p1_p2_answers,
+    p3: p3_answers,
+    p4: p4_essay
+};
 
     const jsonStr = JSON.stringify(payload);
     const internalToken = "BA15102026-" + btoa(encodeURIComponent(jsonStr));
