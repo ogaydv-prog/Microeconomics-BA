@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тема 7: Чистая монополия и антимонопольное регулирование | Микроэкономика</title>
+    <title>Тема 7: Монополия и антимонопольное регулирование | Микроэкономика</title>
     <style>
         * {
             box-sizing: border-box;
@@ -60,10 +60,11 @@
         header {
             text-align: center;
             margin-bottom: 30px;
+            padding: 0 10px;
         }
 
         h1 {
-            font-size: 30px;
+            font-size: 28px;
             font-weight: 700;
             color: #001e50;
             margin-bottom: 8px;
@@ -71,28 +72,30 @@
         }
 
         .subtitle {
-            font-size: 15px;
+            font-size: 14px;
             color: #555555;
             max-width: 650px;
             line-height: 1.5;
             margin: 0 auto;
         }
 
-        /* Сетка карточек */
+        /* Сетка карточек с адаптацией под мобильные устройства */
         .grid-container {
             display: flex;
             flex-wrap: wrap;
-            gap: 25px;
-            max-width: 1200px;
+            gap: 20px;
+            max-width: 1100px;
             width: 100%;
             justify-content: center;
             align-items: center;
             padding-bottom: 40px;
         }
 
-        /* Единые стандартные карточки */
+        /* Единые стандартные карточки с идеальным вписыванием изображений */
         .card {
-            display: inline-block;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             text-decoration: none;
             background: #ffffff;
             border: 2px solid #cbd5e1;
@@ -103,12 +106,14 @@
             width: 180px; 
             height: 270px; 
             position: relative;
+            padding: 4px;
         }
 
         .card img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain; /* Картинка полностью вписывается без обрезки */
+            border-radius: 8px;
             display: block;
         }
 
@@ -151,12 +156,15 @@
             border: 2px solid #cbd5e1;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
             transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            padding: 4px;
+            background: #ffffff;
         }
 
         .flip-card-front img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            border-radius: 8px;
             display: block;
         }
 
@@ -176,6 +184,7 @@
             align-items: center;
             padding: 12px;
             gap: 10px;
+            border-radius: 12px;
         }
 
         .flip-card-back h3 {
@@ -191,7 +200,7 @@
             align-items: center;
             justify-content: center;
             width: 100%;
-            padding: 8px 6px;
+            padding: 9px 6px;
             background: #ffffff;
             color: #001e50;
             text-decoration: none;
@@ -212,42 +221,61 @@
 
         footer {
             margin-top: auto;
-            font-size: 14px;
+            font-size: 13px;
             color: #718096;
-            padding-top: 30px;
+            padding-top: 20px;
             padding-bottom: 20px;
             text-align: center;
             line-height: 1.6;
         }
 
-        /* Мобильная адаптация */
+        /* Мобильная адаптация для смартфонов */
         @media (max-width: 640px) {
+            body {
+                padding: 12px;
+            }
+
             .top-nav {
-                flex-direction: column;
+                flex-direction: row;
                 align-items: center;
-                gap: 12px;
+                margin-bottom: 15px;
             }
 
             .top-left-logo {
-                width: 65px;
-                height: 65px;
+                width: 45px;
+                height: 45px;
+            }
+
+            .back-button {
+                padding: 7px 12px;
+                font-size: 12px;
             }
 
             h1 {
-                font-size: 22px;
+                font-size: 20px;
             }
 
             .subtitle {
-                font-size: 13px;
+                font-size: 12px;
             }
 
             .grid-container {
-                gap: 15px;
+                display: grid;
+                grid-template-columns: repeat(2, 1fr); /* 2 колонки на смартфоне */
+                gap: 12px;
+                width: 100%;
+                max-width: 380px;
             }
 
             .card, .flip-card {
-                width: 155px;
-                height: 235px;
+                width: 100%;
+                height: auto;
+                aspect-ratio: 2 / 3; /* Сохраняем пропорцию карточек */
+            }
+
+            .flip-card-back {
+                padding: 8px;
+                gap: 6px;
             }
 
             .video-link {
@@ -266,7 +294,7 @@
     </div>
 
     <header>
-        <h1>Тема 7: Чистая монополия и антимонопольное регулирование</h1>
+        <h1>Тема 7: Монополия и антимонопольное регулирование</h1>
         <p class="subtitle">
             Выберите учебный материал: интерактивная презентация, лекционный конспект, симуляторы инфраструктуры рынков, антимонопольный калькулятор HHI и видеолекции.
         </p>
