@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Монополия и антимонопольное регулирование</title>
+    
+    <!-- Tailwind CSS & Chart.js -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        h1, h2, h3, h4 { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        input[type=range].vintage-tuner {
+            -webkit-appearance: none; appearance: none; width: 100%; height: 10px;
+            background: linear-gradient(180deg, #1e293b 0%, #334155 100%);
+            border-radius: 6px; border: 1px solid #475569; outline: none;
+        }
+        input[type=range].vintage-tuner::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none; width: 20px; height: 24px;
+            background: linear-gradient(180deg, #f8fafc 0%, #64748b 100%);
+            border: 1px solid #1e293b; border-radius: 4px; cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+
+        /* Colored tuner tracks for HHI simulator */
+        #slider1::-webkit-slider-runnable-track { background: #7f1d1d; border-radius: 4px; }
+        #slider2::-webkit-slider-runnable-track { background: #075985; border-radius: 4px; }
+        #slider3::-webkit-slider-runnable-track { background: #064e3b; border-radius: 4px; }
+        #slider4::-webkit-slider-runnable-track { background: #78350f; border-radius: 4px; }
+        #slider5::-webkit-slider-runnable-track { background: #581c87; border-radius: 4px; }
+
+        .tab-btn.active {
+            background-color: #ef4444 !important;
+            color: #ffffff !important;
+            font-weight: 700;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.2s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+
+    <!-- Header Navigation -->
+    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <span class="text-2xl">🏛️</span>
+                <div>
+                    <h1 class="font-extrabold text-lg text-white" id="main-title">Монополия и антимонопольное регулирование</h1>
+                    <p class="text-xs text-slate-400" id="sub-title">Интерактивный академический дашборд | SDTE AlmaU 2026</p>
+                </div>
+            </div>
+            <div class="flex items-center bg-slate-800 p-1 rounded-lg border border-slate-700">
+                <button id="lang-ru" onclick="setLanguage('ru')" class="px-3 py-1 text-xs font-bold rounded bg-red-600 text-white">RU</button>
+                <button id="lang-en" onclick="setLanguage('en')" class="px-3 py-1 text-xs font-bold rounded text-slate-400 hover:text-white">EN</button>
+            </div>
+        </div>
+
+        <div class="bg-slate-900/95 border-t border-slate-800 px-4">
+            <div class="max-w-7xl mx-auto flex gap-2 py-2 overflow-x-auto text-xs font-semibold">
+                <button class="tab-btn active px-3.5 py-2 rounded-lg bg-slate-800 text-slate-300" onclick="switchTab(event, 'tab-overview')" id="tb-overview">📋 Обзор & Цели</button>
+                <button class="tab-btn px-3.5 py-2 rounded-lg bg-slate-800 text-slate-300" onclick="switchTab(event, 'tab-model')" id="tb-model">⚖️ Модель монополии</button>
+                <button class="tab-btn px-3.5 py-2 rounded-lg bg-slate-800 text-slate-300" onclick="switchTab(event, 'tab-barriers')" id="tb-barriers">🚧 Барьеры входа</button>
+                <button class="tab-btn px-3.5 py-2 rounded-lg bg-slate-800 text-slate-300" onclick="switchTab(event, 'tab-demand')" id="tb-demand">📉 Спрос и MR</button>
+                <button class="tab-btn px-3.5 py-2 rounded-lg bg-slate-800 text-slate-300" onclick="switchTab(event, 'tab-profit')" id="tb-profit">💰 Оптимум & Прибыль</button>
+                <button class="tab-btn px-3.5 py-2 rounded-lg bg-slate-800 text-slate-300" onclick="switchTab(event, 'tab-welfare')" id="tb-welfare">⚖️ Потери (DWL)</button>
+                <button class="tab-btn px-3.5 py-2 rounded-lg bg-slate-800 text-slate-300" onclick="switchTab(event, 'tab-simulator')" id="tb-simulator">🎛️ Симулятор HHI</button>
+                <button class="tab-btn px-3.5 py-2 rounded-lg bg-slate-800 text-slate-300" onclick="switchTab(event, 'tab-kazakhstan')" id="tb-kazakhstan">🇰🇿 Регулирование в РК</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
+
+        <!-- ================= TAB 1: OVERVIEW & GOALS ================= -->
+        <div id="tab-overview" class="tab-content active space-y-6">
+            <div class="bg-slate-800/60 p-6 rounded-2xl border border-slate-700">
+                <h2 class="text-xl font-bold text-white mb-2" id="t1-head">Цели и результаты обучения (Learning Outcomes)</h2>
+                <p class="text-xs text-slate-300 leading-relaxed mb-6" id="t1-desc">
+                    Изучение теории монопольного рынка, двухшагового механизма ценообразования, оценки социальных потерь и практических инструментов регулирования.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
+                    <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-700">
+                        <div class="text-2xl mb-2">🎯</div>
+                        <h3 class="font-bold text-red-400 text-sm mb-1" id="out1-title">1. Рыночная власть</h3>
+                        <p class="text-slate-400" id="out1-desc">Определять монополию и отличать рыночную власть от простого размера фирмы.</p>
+                    </div>
+                    <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-700">
+                        <div class="text-2xl mb-2">📉</div>
+                        <h3 class="font-bold text-sky-400 text-sm mb-1" id="out2-title">2. Разрыв MR &lt; P</h3>
+                        <p class="text-slate-400" id="out2-desc">Объяснять, почему предельный доход ниже цены (MR &lt; P), и решать задачу в два шага.</p>
+                    </div>
+                    <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-700">
+                        <div class="text-2xl mb-2">⚖️</div>
+                        <h3 class="font-bold text-emerald-400 text-sm mb-1" id="out3-title">3. Потери благосостояния</h3>
+                        <p class="text-slate-400" id="out3-desc">Рассчитывать монопольную прибыль и разграничивать трансферт излишка и безвозвратные потери (DWL).</p>
+                    </div>
+                    <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-700">
+                        <div class="text-2xl mb-2">🏷️</div>
+                        <h3 class="font-bold text-amber-400 text-sm mb-1" id="out4-title">4. Дискриминация</h3>
+                        <p class="text-slate-400" id="out4-desc">Оценивать механизмы ценовой дискриминации и тарифы естественных монополий.</p>
+                    </div>
+                    <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-700">
+                        <div class="text-2xl mb-2">🏛️</div>
+                        <h3 class="font-bold text-indigo-400 text-sm mb-1" id="out5-title">5. Институты политики</h3>
+                        <p class="text-slate-400" id="out5-desc">Сопоставлять методы антимонопольного контроля, тарифного регулирования и госсобственности.</p>
+                    </div>
+                    <div class="p-4 bg-slate-900/80 rounded-xl border border-slate-700">
+                        <div class="text-2xl mb-2">🇰🇿</div>
+                        <h3 class="font-bold text-blue-400 text-sm mb-1" id="out6-title">6. Практика в Казахстане</h3>
+                        <p class="text-slate-400" id="out6-desc">Применять модель к институтам Казахстана (АЗРК и КРЕМ) и сравнивать их с международным опытом США.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-slate-800/60 p-6 rounded-2xl border border-slate-700">
+                <h3 class="font-extrabold text-base text-white mb-4" id="chain-title">🔗 Центральная логика анализа монополии</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-300">
+                        <thead class="bg-slate-900 text-slate-400 uppercase text-[10px]">
+                            <tr>
+                                <th class="p-3" id="th-stage">Этап</th>
+                                <th class="p-3" id="th-q">Экономический вопрос</th>
+                                <th class="p-3" id="th-r">Ключевой результат</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-700/50">
+                            <tr>
+                                <td class="p-3 font-bold text-blue-400" id="st1-lbl">1. Рынок</td>
+                                <td class="p-3" id="c1-q">Что ограничивает продавца?</td>
+                                <td class="p-3" id="c1-r">Наличие близких заменителей и барьеры входа.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-sky-400" id="st2-lbl">2. Доход</td>
+                                <td class="p-3" id="c2-q">Что происходит при расширении выпуска?</td>
+                                <td class="p-3" id="c2-r">MR &lt; P из-за эффекта снижения цены на прежние единицы.</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-emerald-400" id="st3-lbl">3. Выбор</td>
+                                <td class="p-3" id="c3-q">Какой объём максимизирует прибыль?</td>
+                                <td class="p-3" id="c3-r">Объём из MR = MC, а цена — с кривой спроса (P &gt; MC).</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-amber-400" id="st4-lbl">4. Благосостояние</td>
+                                <td class="p-3" id="c4-q">Какие сделки теряются?</td>
+                                <td class="p-3" id="c4-r">Qm &lt; Qe и возникновение чистых потерь общества (DWL).</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold text-red-400" id="st5-lbl">5. Политика</td>
+                                <td class="p-3" id="c5-q">Какой институт устраняет проблему?</td>
+                                <td class="p-3" id="c5-r">Защита конкуренции, регулирование тарифа или невмешательство.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 2: MODEL & SPECTRUM ================= -->
+        <div id="tab-model" class="tab-content space-y-6">
+            <div class="bg-slate-800/60 p-6 rounded-2xl border border-slate-700">
+                <h2 class="text-lg font-bold text-white mb-2" id="t2-head">Модель монополии и спектр рыночных структур</h2>
+                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6" id="t2-desc">
+                    Монополия — единственный продавец товара без близких заменителей. Ниже представлен спектр рыночных структур от идеальной конкуренции до чистой монополии.
+                </p>
+
+                <div class="p-6 bg-slate-900 rounded-2xl border border-slate-700 relative mb-6">
+                    <h3 class="text-center font-bold text-xs uppercase tracking-wider text-slate-400 mb-6" id="spec-title">СПЕКТР РЫНОЧНОЙ ВЛАСТИ (MARKET POWER CONTINUUM)</h3>
+                    
+                    <div class="relative w-full h-44 flex items-center justify-center">
+                        <svg class="w-full h-full" viewBox="0 0 800 150" preserveAspectRatio="xMidYMid meet">
+                            <defs>
+                                <linearGradient id="leftGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#10b981" />
+                                    <stop offset="100%" stop-color="#2563eb" />
+                                </linearGradient>
+                                <linearGradient id="rightGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#f97316" />
+                                    <stop offset="100%" stop-color="#ef4444" />
+                                </linearGradient>
+                            </defs>
+
+                            <polygon points="10,45 400,95 10,135" fill="url(#leftGrad)" opacity="0.95"/>
+                            <polygon points="400,95 790,45 790,135" fill="url(#rightGrad)" opacity="0.95"/>
+                            <circle cx="400" cy="95" r="5" fill="#ffffff" stroke="#0f172a" stroke-width="2"/>
+
+                            <text x="15" y="25" fill="#ffffff" font-size="12" font-weight="700" id="svg-pc-t">Совершенная конкуренция</text>
+                            <text x="215" y="25" fill="#ffffff" font-size="12" font-weight="700" id="svg-mc-t1">Монополистическая конк.</text>
+                            <text x="440" y="25" fill="#ffffff" font-size="12" font-weight="700" id="svg-olig-t">Олигополия</text>
+                            <text x="785" y="25" fill="#ffffff" font-size="12" font-weight="700" text-anchor="end" id="svg-pm-t">Чистая монополия</text>
+
+                            <text x="15" y="40" fill="#a7f3d0" font-size="10" font-weight="600">P = MC | HHI &lt; 1000</text>
+                            <text x="785" y="40" fill="#fca5a5" font-size="10" font-weight="600" text-anchor="end">P &gt; MC | HHI = 10 000</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs mb-6">
+                    <div class="p-4 bg-slate-900/90 rounded-xl border border-emerald-500/30">
+                        <h4 class="font-bold text-emerald-400 mb-1" id="m-left-title">Левый край: Совершенная конкуренция</h4>
+                        <p class="text-slate-300 leading-relaxed" id="m-left-desc">
+                            Множество мелких продавцов, однородный продукт. Фирма воспринимает рыночную цену как заданную (Price-taker). Индивидуальная кривая спроса абсолютно эластична (P = AR = MR). Прибыль в долгосрочном периоде равна нулю.
+                        </p>
+                    </div>
+                    <div class="p-4 bg-slate-900/90 rounded-xl border border-red-500/30">
+                        <h4 class="font-bold text-red-400 mb-1" id="m-right-title">Правый край: Чистая монополия</h4>
+                        <p class="text-slate-300 leading-relaxed" id="m-right-desc">
+                            Единственный продавец уникального товара. Фирма диктует цену (Price-maker) и сталкивается со всем рыночным спросом. Предельный доход всегда ниже цены (MR &lt; P), что приводит к недопроизводству и наценке над предельными издержками (P &gt; MC).
+                        </p>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs text-left text-slate-300 border border-slate-700 rounded-xl overflow-hidden">
+                        <thead class="bg-slate-900 text-slate-400 font-bold uppercase text-[10px]">
+                            <tr>
+                                <th class="p-3" id="cmp-col-attr">Характеристика</th>
+                                <th class="p-3 text-emerald-400" id="cmp-col-pc">Совершенная конкуренция</th>
+                                <th class="p-3 text-red-400" id="cmp-col-pm">Чистая монополия (Pure Monopoly)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-700/60 bg-slate-900/40">
+                            <tr>
+                                <td class="p-3 font-semibold" id="cmp1-l">Количество продавцов</td>
+                                <td class="p-3" id="cmp1-c">Множество мелких фирм</td>
+                                <td class="p-3 font-bold text-red-400" id="cmp1-m">Единственная фирма на рынке</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold" id="cmp2-l">Характер товара</td>
+                                <td class="p-3" id="cmp2-c">Стандартизированный (однородный)</td>
+                                <td class="p-3" id="cmp2-m">Уникальный (нет близких заменителей)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold" id="cmp3-l">Контроль над ценой</td>
+                                <td class="p-3" id="cmp3-c">Отсутствует (Price-taker, P = задана)</td>
+                                <td class="p-3 font-bold text-red-400" id="cmp3-m">Высокий (Price-maker, выбирает P на кривой D)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold" id="cmp4-l">Кривая спроса фирмы</td>
+                                <td class="p-3" id="cmp4-c">Абсолютно эластичная (горизонтальная)</td>
+                                <td class="p-3" id="cmp4-m">Нисходящая (совпадает со спросом всего рынка)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold" id="cmp5-l">Соотношение P и MR</td>
+                                <td class="p-3" id="cmp5-c">P = AR = MR</td>
+                                <td class="p-3 font-bold text-red-400" id="cmp5-m">P = AR &gt; MR (Клиновидный разрыв MR &lt; P)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-semibold" id="cmp6-l">Условие максимизации</td>
+                                <td class="p-3" id="cmp6-c">P = MR = MC (Общественно эффективный выпуск)</td>
+                                <td class="p-3" id="cmp6-m">MR = MC, но P &gt; MC (Недопроизводство Qm &lt; Qe)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 3: BARRIERS TO ENTRY ================= -->
+        <div id="tab-barriers" class="tab-content space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="lg:col-span-5 bg-slate-800/60 p-6 rounded-2xl border border-slate-700 flex flex-col justify-between">
+                    <div>
+                        <h2 class="text-lg font-bold text-white mb-2" id="t3-head">Источники барьеров входа</h2>
+                        <p class="text-xs text-slate-300 leading-relaxed mb-4" id="t3-desc">
+                            Фундаментальная причина монополии — барьеры входа, препятствующие появлению конкурентов в долгосрочном периоде.
+                        </p>
+                        <div class="space-y-3 text-xs">
+                            <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-700">
+                                <h4 class="font-bold text-red-400 mb-1" id="b1-t">1. Ключевой ресурс</h4>
+                                <p class="text-slate-400" id="b1-d">Исключительный доступ к незаменимому сырью или инфраструктурному узлу.</p>
+                            </div>
+                            <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-700">
+                                <h4 class="font-bold text-sky-400 mb-1" id="b2-t">2. Государственные права</h4>
+                                <p class="text-slate-400" id="b2-d">Патенты, авторские права и эксклюзивные лицензии.</p>
+                            </div>
+                            <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-700">
+                                <h4 class="font-bold text-emerald-400 mb-1" id="b3-t">3. Естественная монополия</h4>
+                                <p class="text-slate-400" id="b3-d">Падающие ATC: одна фирма производит дешевле нескольких из-за экономии на масштабе.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:col-span-7 bg-slate-800/60 p-6 rounded-2xl border border-slate-700">
+                    <h3 class="font-bold text-sm text-white mb-2" id="nat-chart-title">График 1: Естественная монополия (Падающие ATC)</h3>
+                    <div class="relative w-full h-80">
+                        <canvas id="naturalMonopolyChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 4: DEMAND & MR ================= -->
+        <div id="tab-demand" class="tab-content space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="lg:col-span-5 bg-slate-800/60 p-6 rounded-2xl border border-slate-700 flex flex-col justify-between">
+                    <div>
+                        <h2 class="text-lg font-bold text-white mb-2" id="t4-head">Спрос, выручка и разрыв MR &lt; P</h2>
+                        <p class="text-xs text-slate-300 leading-relaxed mb-4" id="t4-desc">
+                            Чтобы продать дополнительную единицу, одноценовой монополист должен снизить цену на ВСЕ продаваемые единицы (эффект цены).
+                        </p>
+                        <div class="p-4 bg-slate-900 rounded-xl border border-slate-700 space-y-2 mb-4">
+                            <div class="mono text-xs text-blue-400">TR(Q) = P(Q) × Q</div>
+                            <div class="mono text-xs text-red-400">Если P = a - bQ, то MR = a - 2bQ</div>
+                            <p class="text-[11px] text-slate-400 mt-1" id="t4-subtext">У линейного спроса кривая MR имеет тот же вертикальный перехват (a), но вдвое больший наклон (2b).</p>
+                        </div>
+                        <div class="space-y-4 bg-slate-900/80 p-4 rounded-xl border border-slate-700">
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold mb-1.5">
+                                    <span class="text-slate-300" id="lbl-dem-a">Перехват спроса (a):</span>
+                                    <span id="dem-a-val" class="font-bold text-red-400 mono">120</span>
+                                </div>
+                                <input type="range" id="dem-a-slider" min="80" max="160" value="120" class="vintage-tuner">
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-xs font-semibold mb-1.5">
+                                    <span class="text-slate-300" id="lbl-dem-b">Наклон спроса (b):</span>
+                                    <span id="dem-b-val" class="font-bold text-red-400 mono">2.0</span>
+                                </div>
+                                <input type="range" id="dem-b-slider" min="1" max="4" step="0.5" value="2" class="vintage-tuner">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:col-span-7 bg-slate-800/60 p-6 rounded-2xl border border-slate-700">
+                    <h3 class="font-bold text-sm text-white mb-2" id="mr-chart-title">Спрос (AR) и Предельный доход (MR)</h3>
+                    <div class="relative w-full h-80">
+                        <canvas id="mrDemandChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 5: PROFIT MAXIMIZATION ================= -->
+        <div id="tab-profit" class="tab-content space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="lg:col-span-4 bg-slate-800/60 p-6 rounded-2xl border border-slate-700 flex flex-col justify-between">
+                    <div>
+                        <h2 class="text-lg font-bold text-white mb-2" id="t5-head">Пошаговое решение</h2>
+                        <p class="text-xs text-slate-300 leading-relaxed mb-4" id="t5-desc">
+                            <b>Шаг 1:</b> Выбор выпуска Qm из равенства MR = MC.<br>
+                            <b>Шаг 2:</b> Нахождение цены Pm с кривой спроса над этим объёмом.
+                        </p>
+                        
+                        <div class="p-3.5 bg-slate-900 rounded-xl border border-slate-700 mb-4 space-y-2">
+                            <label class="flex items-center gap-2 text-xs font-bold text-emerald-400 cursor-pointer">
+                                <input type="checkbox" id="chk-show-tr" onchange="updateProfitSim()" checked class="w-4 h-4 rounded text-emerald-500 focus:ring-0">
+                                <span id="lbl-chk-profit">Показать зону прибыли π = (P - ATC) × Q</span>
+                            </label>
+                        </div>
+
+                        <div class="bg-slate-900/80 p-4 rounded-xl border border-slate-700 space-y-3">
+                            <div class="flex justify-between text-xs font-semibold">
+                                <span class="text-slate-300" id="lbl-sim-q">Выпуск монополии (Qm):</span>
+                                <span id="sim-q-val" class="font-bold text-red-400 mono">20</span>
+                            </div>
+                            <input type="range" id="sim-q-slider" min="5" max="35" value="20" class="vintage-tuner">
+                            <div class="text-xs text-slate-300 pt-2 border-t border-slate-800 space-y-1.5 font-medium">
+                                <div class="flex justify-between"><span id="lbl-sim-p">Цена (Pm):</span><b id="sim-p-out" class="text-blue-400 mono">80.0</b></div>
+                                <div class="flex justify-between"><span id="lbl-sim-atc">ATC(Qm):</span><b id="sim-atc-out" class="text-purple-400 mono">38.0</b></div>
+                                <div class="flex justify-between"><span id="lbl-sim-prof">Прибыль (π):</span><b id="sim-prof-out" class="text-emerald-400 mono">840</b></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:col-span-8 bg-slate-800/60 p-6 rounded-2xl border border-slate-700">
+                    <h3 class="font-bold text-sm text-white mb-2" id="profit-chart-title">Максимизация прибыли (MR = MC)</h3>
+                    <div class="relative w-full h-80 sm:h-96">
+                        <canvas id="profitChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 6: WELFARE & DWL ================= -->
+        <div id="tab-welfare" class="tab-content space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="lg:col-span-5 bg-slate-800/60 p-6 rounded-2xl border border-slate-700 flex flex-col justify-between">
+                    <div>
+                        <h2 class="text-lg font-bold text-white mb-2" id="t6-head">Чистые потери общества</h2>
+                        <p class="text-xs text-slate-300 leading-relaxed mb-4" id="t6-desc">
+                            Монополист ограничивает выпуск (Qm &lt; Qe). На неотпускных единицах между Qm и Qe ценность товара превышает MC, создавая чистые потери (DWL).
+                        </p>
+                        <div class="p-4 bg-slate-900 rounded-xl border border-slate-700 space-y-3 mb-4">
+                            <div class="flex justify-between text-xs font-semibold">
+                                <span class="text-slate-300" id="lbl-dwl-q">Регулировка Qm:</span>
+                                <span id="dwl-q-val" class="font-bold text-red-400 mono">20</span>
+                            </div>
+                            <input type="range" id="dwl-q-slider" min="10" max="33" value="20" class="vintage-tuner">
+                            <div class="p-3 bg-red-950/50 border border-red-500/40 rounded-lg text-xs space-y-1.5 mt-2">
+                                <div class="flex justify-between text-slate-300">
+                                    <span id="lbl-dwl-area">Площадь DWL (Красный треугольник):</span>
+                                    <b id="dwl-area-val" class="text-red-400 text-sm mono">266.7</b>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:col-span-7 bg-slate-800/60 p-6 rounded-2xl border border-slate-700">
+                    <h3 class="font-bold text-sm text-white mb-2" id="dwl-chart-title">Безвозвратные потери (Deadweight Loss)</h3>
+                    <div class="relative w-full h-80 sm:h-96">
+                        <canvas id="dwlChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 7: HHI SIMULATOR ================= -->
+        <div id="tab-simulator" class="tab-content space-y-6">
+            <div class="bg-slate-800/60 p-6 rounded-2xl border border-slate-700">
+                <div class="flex flex-wrap justify-between items-center mb-4 pb-3 border-b border-slate-700">
+                    <div>
+                        <h2 class="text-lg font-bold text-white" id="hhi-head">Интерактивный калькулятор Герфиндаля–Хиршмана (HHI)</h2>
+                        <p class="text-xs text-slate-400" id="hhi-sub">Анализ рыночной концентрации 5 компаний и индекс Лернера</p>
+                    </div>
+                    <div class="flex flex-wrap gap-1.5 mt-2 sm:mt-0">
+                        <button onclick="applyPreset([100,0,0,0,0])" class="px-2.5 py-1 bg-slate-700 hover:bg-red-600 text-white text-[11px] font-semibold rounded-md transition" id="btn-p-mono">Монополия</button>
+                        <button onclick="applyPreset([50,50,0,0,0])" class="px-2.5 py-1 bg-slate-700 hover:bg-red-600 text-white text-[11px] font-semibold rounded-md transition" id="btn-p-duo">Дуополия</button>
+                        <button onclick="applyPreset([40,30,20,10,0])" class="px-2.5 py-1 bg-slate-700 hover:bg-red-600 text-white text-[11px] font-semibold rounded-md transition" id="btn-p-olig">Олигополия</button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="lg:col-span-5 space-y-3">
+                        <div class="p-2.5 bg-slate-900/80 rounded-xl border border-slate-700 flex justify-between items-center border-l-4 border-l-red-500">
+                            <span class="text-xs font-bold text-slate-300" id="lbl-f1">Фирма 1 (Красная)</span>
+                            <span id="val-firm1" class="mono text-xs font-bold text-red-500">40%</span>
+                        </div>
+                        <input type="range" id="slider1" min="0" max="100" value="40" class="vintage-tuner">
+
+                        <div class="p-2.5 bg-slate-900/80 rounded-xl border border-slate-700 flex justify-between items-center border-l-4 border-l-sky-400">
+                            <span class="text-xs font-bold text-slate-300" id="lbl-f2">Фирма 2 (Голубая)</span>
+                            <span id="val-firm2" class="mono text-xs font-bold text-sky-400">30%</span>
+                        </div>
+                        <input type="range" id="slider2" min="0" max="100" value="30" class="vintage-tuner">
+
+                        <div class="p-2.5 bg-slate-900/80 rounded-xl border border-slate-700 flex justify-between items-center border-l-4 border-l-emerald-400">
+                            <span class="text-xs font-bold text-slate-300" id="lbl-f3">Фирма 3 (Изумрудная)</span>
+                            <span id="val-firm3" class="mono text-xs font-bold text-emerald-400">20%</span>
+                        </div>
+                        <input type="range" id="slider3" min="0" max="100" value="20" class="vintage-tuner">
+
+                        <div class="p-2.5 bg-slate-900/80 rounded-xl border border-slate-700 flex justify-between items-center border-l-4 border-l-amber-400">
+                            <span class="text-xs font-bold text-slate-300" id="lbl-f4">Фирма 4 (Янтарная)</span>
+                            <span id="val-firm4" class="mono text-xs font-bold text-amber-400">10%</span>
+                        </div>
+                        <input type="range" id="slider4" min="0" max="100" value="10" class="vintage-tuner">
+
+                        <div class="p-2.5 bg-slate-900/80 rounded-xl border border-slate-700 flex justify-between items-center border-l-4 border-l-purple-400">
+                            <span class="text-xs font-bold text-slate-300" id="lbl-f5">Фирма 5 (Фиолетовая)</span>
+                            <span id="val-firm5" class="mono text-xs font-bold text-purple-400">0%</span>
+                        </div>
+                        <input type="range" id="slider5" min="0" max="100" value="0" class="vintage-tuner">
+                    </div>
+
+                    <div class="lg:col-span-4 bg-slate-900/80 p-4 rounded-xl border border-slate-700 flex flex-col justify-between">
+                        <div class="relative h-48">
+                            <canvas id="hhiDoughnutChart"></canvas>
+                        </div>
+                        <div class="p-3 bg-slate-950 rounded-xl text-center space-y-1">
+                            <span class="text-[10px] font-bold uppercase text-slate-400" id="lbl-hhi-index">Индекс HHI</span>
+                            <div id="hhi-result" class="mono text-2xl font-black text-amber-400">3000</div>
+                            <div id="hhi-status" class="text-xs font-bold text-red-400">Высокая концентрация</div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-3 space-y-3 text-xs">
+                        <div class="p-3 bg-slate-900/90 rounded-xl border border-slate-700">
+                            <h4 class="font-bold text-slate-400 uppercase text-[10px] mb-1" id="lbl-verdict">Вердикт регулятора</h4>
+                            <div id="verdict-box" class="font-semibold text-red-400">Высокий риск блокировки слияний!</div>
+                        </div>
+                        <div class="p-3 bg-red-950/30 rounded-xl border border-red-800/40 space-y-1">
+                            <h4 class="font-bold text-red-300 uppercase text-[10px]" id="lbl-lerner">Индекс Лернера (L)</h4>
+                            <div id="lerner-val" class="mono font-bold text-emerald-400">L ≈ 0.27</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 8: KAZAKHSTAN REGULATION ================= -->
+        <div id="tab-kazakhstan" class="tab-content space-y-6">
+            <div class="bg-slate-800/60 p-6 rounded-2xl border border-slate-700 space-y-6">
+                <div>
+                    <h2 class="text-xl font-bold text-white mb-2" id="kz-head">Антимонопольное регулирование в Казахстане</h2>
+                    <p class="text-xs text-slate-300 leading-relaxed" id="kz-desc">
+                        Двухконтурная система: АЗРК РК (конкурентное право) и КРЕМ МНЭ РК (естественные монополии).
+                    </p>
+                </div>
+
+                <div class="p-6 bg-slate-900/90 rounded-2xl border border-slate-700 flex flex-col items-center justify-center space-y-4">
+                    <div class="text-center">
+                        <h3 class="font-bold text-sm text-amber-400 uppercase tracking-wider mb-1" id="gauge-head">
+                            ИНДИКАТОР ДОМИНИРОВАНИЯ
+                        </h3>
+                        <span class="text-xs text-sky-400 underline" id="gauge-sub">(Ст. 172 Предпринимательского Кодекса РК)</span>
+                    </div>
+
+                    <div class="relative w-80 h-36 flex flex-col items-center justify-start">
+                        <svg class="w-full h-32" viewBox="0 0 200 110">
+                            <path d="M 20 100 A 80 80 0 0 1 24.9 68.7" fill="none" stroke="#10b981" stroke-width="16" />
+                            <path d="M 24.9 68.7 A 80 80 0 0 1 63.6 26.4" fill="none" stroke="#3b82f6" stroke-width="16" />
+                            <path d="M 63.6 26.4 A 80 80 0 0 1 100 20" fill="none" stroke="#f97316" stroke-width="16" />
+                            <path d="M 100 20 A 80 80 0 0 1 180 100" fill="none" stroke="#ef4444" stroke-width="16" />
+
+                            <text x="10" y="108" fill="#94a3b8" font-size="8" font-weight="bold">0%</text>
+                            <text x="36" y="14" fill="#3b82f6" font-size="8.5" font-weight="bold">35%</text>
+                            <text x="100" y="8" fill="#f97316" font-size="8.5" font-weight="bold" text-anchor="middle">50%</text>
+                            <text x="180" y="108" fill="#ef4444" font-size="8" font-weight="bold">100%</text>
+
+                            <g id="gauge-needle">
+                                <line x1="100" y1="100" x2="100" y2="32" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" />
+                                <circle cx="100" cy="100" r="6" fill="#ef4444" stroke="#ffffff" stroke-width="2" />
+                            </g>
+                        </svg>
+
+                        <div class="mt-2">
+                            <span id="kz-share-val" class="mono font-black text-3xl text-amber-400">45%</span>
+                        </div>
+                    </div>
+
+                    <div class="w-full max-w-md space-y-2 pt-2">
+                        <input type="range" id="kz-share-slider" min="0" max="100" value="45" class="vintage-tuner">
+                    </div>
+
+                    <div id="kz-dom-status-box" class="w-full max-w-xl p-4 rounded-xl border text-xs bg-amber-950/40 border-amber-500/50">
+                        <div class="font-bold text-sm mb-1 text-amber-400" id="kz-dom-title">Доля от 35% до 50%</div>
+                        <p id="kz-dom-desc" class="text-slate-300">Признается доминирующим при наличии одностороннего влияния на рынок и высоких барьеров входа.</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div class="p-4 bg-slate-900/80 rounded-xl border border-sky-500/30 space-y-2">
+                        <h4 class="font-bold text-sky-400 text-sm flex items-center gap-2" id="azrk-title">
+                            <span>🏛️</span> АЗРК РК (Агентство по защите и развитию конкуренции)
+                        </h4>
+                        <p class="text-slate-300 leading-relaxed" id="azrk-desc">
+                            Осуществляет антимонопольный контроль над товарными рынками: пресекает монопольно высокие цены, антиконкурентные соглашения (картели) и злоупотребление доминирующим положением (ст. 172 Предпринимательского кодекса РК). Согласовывает сделки экономической концентрации (слияния/поглощения) при превышении порогов HHI и долей.
+                        </p>
+                    </div>
+                    <div class="p-4 bg-slate-900/80 rounded-xl border border-amber-500/30 space-y-2">
+                        <h4 class="font-bold text-amber-400 text-sm flex items-center gap-2" id="krem-title">
+                            <span>⚡</span> КРЕМ МНЭ РК (Комитет по регулированию естественных монополий)
+                        </h4>
+                        <p class="text-slate-300 leading-relaxed" id="krem-desc">
+                            Регулирует деятельность субъектов естественных монополий (электроэнергетика, водоснабжение, железнодорожная инфраструктура, трубопроводный транспорт). Применяет методы ценового регулирования: тарифы по методу «Затраты плюс» (Cost-Plus), предельные долгосрочные тарифы и контроль выполнения инвестиционных программ.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-slate-900 border-t border-slate-800 py-4 text-center text-xs text-slate-500">
+        <p id="footer-text">Академический дашборд | Бизнес-аналитика и экономика | SDTE AlmaU 2026</p>
+    </footer>
+<!-- ================= JAVASCRIPT APPLICATION ENGINE ================= -->
+    <script>
+        let currentLang = 'ru';
+
+        const dict = {
+            ru: {
+                mainTitle: "Монополия и антимонопольное регулирование",
+                subTitle: "Интерактивный академический дашборд | SDTE AlmaU 2026",
+                tbOverview: "📋 Обзор & Цели", tbModel: "⚖️ Модель монополии", tbBarriers: "🚧 Барьеры входа",
+                tbDemand: "📉 Спрос и MR", tbProfit: "💰 Оптимум & Прибыль", tbWelfare: "⚖️ Потери (DWL)",
+                tbSimulator: "🎛️ Симулятор HHI", tbKazakhstan: "🇰🇿 Регулирование в РК",
+                footerText: "Академический дашборд | Бизнес-аналитика и экономика | SDTE AlmaU 2026",
+                
+                t1Head: "Цели и результаты обучения (Learning Outcomes)",
+                t1Desc: "Изучение теории монопольного рынка, двухшагового механизма ценообразования, оценки социальных потерь и практических инструментов регулирования.",
+                out1Title: "1. Рыночная власть", out1Desc: "Определять монополию и отличать рыночную власть от простого размера фирмы.",
+                out2Title: "2. Разрыв MR < P", out2Desc: "Объяснять, почему предельный доход ниже цены (MR < P), и решать задачу в два шага.",
+                out3Title: "3. Потери благосостояния", out3Desc: "Рассчитывать монопольную прибыль и разграничивать трансферт излишка и безвозвратные потери (DWL).",
+                out4Title: "4. Дискриминация", out4Desc: "Оценивать механизмы ценовой дискриминации и тарифы естественных монополий.",
+                out5Title: "5. Институты политики", out5Desc: "Сопоставлять методы антимонопольного контроля, тарифного регулирования и госсобственности.",
+                out6Title: "6. Практика в Казахстане", out6Desc: "Применять модель к институтам Казахстана (АЗРК и КРЕМ) и сравнивать их с международным опытом США.",
+                
+                chainTitle: "🔗 Центральная логика анализа монополии",
+                thStage: "Этап", thQ: "Экономический вопрос", thR: "Ключевой результат",
+                st1Lbl: "1. Рынок", c1Q: "Что ограничивает продавца?", c1R: "Наличие близких заменителей и барьеры входа.",
+                st2Lbl: "2. Доход", c2Q: "Что происходит при расширении выпуска?", c2R: "MR < P из-за эффекта снижения цены на прежние единицы.",
+                st3Lbl: "3. Выбор", c3Q: "Какой объём максимизирует прибыль?", c3R: "Объём из MR = MC, а цена — с кривой спроса (P > MC).",
+                st4Lbl: "4. Благосостояние", c4Q: "Какие сделки теряются?", c4R: "Qm < Qe и возникновение чистых потерь общества (DWL).",
+                st5Lbl: "5. Политика", c5Q: "Какой институт устраняет проблему?", c5R: "Защита конкуренции, регулирование тарифа или невмешательство.",
+                
+                t2Head: "Модель монополии и спектр рыночных структур",
+                t2Desc: "Монополия — единственный продавец товара без близких заменителей. Ниже представлен спектр рыночных структур от идеальной конкуренции до чистой монополии.",
+                specTitle: "СПЕКТР РЫНОЧНОЙ ВЛАСТИ (MARKET POWER CONTINUUM)",
+                mLeftTitle: "Левый край: Совершенная конкуренция", mLeftDesc: "Множество мелких продавцов, однородный продукт. Фирма воспринимает рыночную цену как заданную (Price-taker). Индивидуальная кривая спроса абсолютно эластична (P = AR = MR). Прибыль в долгосрочном периоде равна нулю.",
+                mRightTitle: "Правый край: Чистая монополия", mRightDesc: "Единственный продавец уникального товара. Фирма диктует цену (Price-maker) и сталкивается со всем рыночным спросом. Предельный доход всегда ниже цены (MR < P), что приводит к недопроизводству и наценке над предельными издержками (P > MC).",
+                
+                t3Head: "Источники барьеров входа", t3Desc: "Фундаментальная причина монополии — барьеры входа, препятствующие появлению конкурентов в долгосрочном периоде.",
+                b1T: "1. Ключевой ресурс", b1D: "Исключительный доступ к незаменимому сырью или инфраструктурному узлу.",
+                b2T: "2. Государственные права", b2D: "Патенты, авторские права и эксклюзивные лицензии.",
+                b3T: "3. Естественная монополия", b3D: "Падающие ATC: одна фирма производит дешевле нескольких из-за экономии на масштабе.",
+                natChartTitle: "Естественная монополия (Падающие ATC)",
+                
+                t4Head: "Спрос, выручка и разрыв MR < P", t4Desc: "Чтобы продать дополнительную единицу, одноценовой монополист должен снизить цену на ВСЕ продаваемые единицы (эффект цены).",
+                t4Subtext: "У линейного спроса кривая MR имеет тот же вертикальный перехват (a), но вдвое больший наклон (2b).",
+                lblDemA: "Перехват спроса (a):", lblDemB: "Наклон спроса (b):", mrChartTitle: "Спрос (AR) и Предельный доход (MR)",
+                
+                t5Head: "Двухшаговое решение", t5Desc: "<b>Шаг 1:</b> Выбор выпуска Qm из равенства MR = MC.<br><b>Шаг 2:</b> Нахождение цены Pm с кривой спроса над этим объёмом.",
+                lblChkProfit: "Показать зону прибыли π = (P - ATC) × Q", lblSimQ: "Выпуск монополии (Qm):", lblSimP: "Цена (Pm):", lblSimAtc: "ATC(Qm):", lblSimProf: "Прибыль (π):",
+                profitChartTitle: "Максимизация прибыли (MR = MC)",
+                
+                t6Head: "Чистые потери общества", t6Desc: "Монополист ограничивает выпуск (Qm < Qe). На неотпускных единицах между Qm и Qe ценность товара превышает MC, создавая чистые потери (DWL).",
+                lblDwlQ: "Регулировка Qm:", lblDwlArea: "Площадь DWL (Красный треугольник):", dwlChartTitle: "Безвозвратные потери (Deadweight Loss)",
+                
+                hhiHead: "Интерактивный калькулятор Герфиндаля–Хиршмана (HHI)", hhiSub: "Анализ рыночной концентрации 5 компаний и индекс Лернера",
+                btnPMono: "Монополия", btnPDuo: "Дуополия", btnPOlig: "Олигополия",
+                lblF1: "Фирма 1 (Красная)", lblF2: "Фирма 2 (Голубая)", lblF3: "Фирма 3 (Изумрудная)", lblF4: "Фирма 4 (Янтарная)", lblF5: "Фирма 5 (Фиолетовая)",
+                lblHhiIndex: "Индекс HHI", lblVerdict: "Вердикт регулятора", lblLerner: "Индекс Лернера (L)",
+                
+                kzHead: "Антимонопольное регулирование в Казахстане", kzDesc: "Двухконтурная система: АЗРК РК (конкурентное право) и КРЕМ МНЭ РК (естественные монополии).",
+                gaugeHead: "ИНДИКАТОР ДОМИНИРОВАНИЯ", gaugeSub: "(Ст. 172 Предпринимательского Кодекса РК)",
+                azrkTitle: "🏛️ АЗРК РК (Агентство по защите и развитию конкуренции)", azrkDesc: "Осуществляет антимонопольный контроль над товарными рынками: пресекает монопольно высокие цены, антиконкурентные соглашения (картели) и злоупотребление доминирующим положением (ст. 172 Предпринимательского кодекса РК). Согласовывает сделки экономической концентрации при превышении порогов HHI и долей.",
+                kremTitle: "⚡ КРЕМ МНЭ РК (Комитет по регулированию естественных монополий)", kremDesc: "Регулирует деятельность субъектов естественных монополий (электроэнергетика, водоснабжение, железнодорожная инфраструктура, трубопроводный транспорт). Применяет методы ценового регулирования: тарифы по методу «Затраты плюс» (Cost-Plus), предельные долгосрочные тарифы и контроль инвестиционных программ."
+            },
+            en: {
+                mainTitle: "Monopoly and Antitrust Regulation",
+                subTitle: "Interactive Academic Dashboard | SDTE AlmaU 2026",
+                tbOverview: "📋 Overview & Goals", tbModel: "⚖️ Monopoly Model", tbBarriers: "🚧 Entry Barriers",
+                tbDemand: "📉 Demand & MR", tbProfit: "💰 Optimum & Profit", tbWelfare: "⚖️ Welfare & DWL",
+                tbSimulator: "🎛️ HHI Simulator", tbKazakhstan: "🇰🇿 Kazakhstan Policy",
+                footerText: "Academic Dashboard | Business Analytics & Economics | SDTE AlmaU 2026",
+                
+                t1Head: "Learning Outcomes",
+                t1Desc: "Studying the theory of pure monopoly, two-step pricing mechanism, welfare loss estimation, and practical regulatory tools.",
+                out1Title: "1. Market Power", out1Desc: "Define monopoly and distinguish market power from simple firm size.",
+                out2Title: "2. MR < P Gap", out2Desc: "Explain why marginal revenue is below price (MR < P) and solve in two steps.",
+                out3Title: "3. Welfare Loss", out3Desc: "Calculate monopoly profit and separate surplus transfer from deadweight loss (DWL).",
+                out4Title: "4. Price Discrimination", out4Desc: "Evaluate price discrimination mechanisms and natural monopoly tariffs.",
+                out5Title: "5. Policy Institutions", out5Desc: "Compare antitrust enforcement, price regulation, and public ownership.",
+                out6Title: "6. Kazakhstan Practice", out6Desc: "Apply the model to KZ institutions (AZRK & KREM) and compare with US antitrust law.",
+                
+                chainTitle: "🔗 Central Logic of Monopoly Analysis",
+                thStage: "Stage", thQ: "Economic Question", thR: "Key Result",
+                st1Lbl: "1. Market", c1Q: "What constrains the seller?", c1R: "Presence of close substitutes and barriers to entry.",
+                st2Lbl: "2. Revenue", c2Q: "What happens when output expands?", c2R: "MR < P due to price reduction effect on previous units.",
+                st3Lbl: "3. Choice", c3Q: "What output maximizes profit?", c3R: "Output where MR = MC, price set on demand curve (P > MC).",
+                st4Lbl: "4. Welfare", c4Q: "Which trades are lost?", c4R: "Qm < Qe creating Deadweight Welfare Loss (DWL).",
+                st5Lbl: "5. Policy", c5Q: "Which institution resolves the issue?", c5R: "Antitrust enforcement, tariff regulation, or laissez-faire.",
+                
+                t2Head: "Monopoly Model and Market Spectrum",
+                t2Desc: "Monopoly is a single seller of a product with no close substitutes. Below is the market structure continuum from perfect competition to pure monopoly.",
+                specTitle: "MARKET POWER CONTINUUM",
+                mLeftTitle: "Left End: Perfect Competition", mLeftDesc: "Many small sellers, homogeneous product. Firm is a price-taker. Individual demand curve is perfectly elastic (P = AR = MR). Long-run economic profit is zero.",
+                mRightTitle: "Right End: Pure Monopoly", mRightDesc: "Single seller of a unique good. Firm is a price-maker facing market demand. Marginal revenue is always below price (MR < P), leading to underproduction (P > MC).",
+                
+                t3Head: "Sources of Entry Barriers", t3Desc: "The fundamental cause of monopoly is entry barriers that prevent potential competitors from entering the market in the long run.",
+                b1T: "1. Key Resource", b1D: "Exclusive access to an essential raw material or infrastructure node.",
+                b2T: "2. Government Rights", b2D: "Patents, copyrights, and exclusive licenses.",
+                b3T: "3. Natural Monopoly", b3D: "Falling ATC: a single firm produces cheaper than multiple firms due to economies of scale.",
+                natChartTitle: "Natural Monopoly (Declining ATC)",
+                
+                t4Head: "Demand, Revenue, and MR < P Gap", t4Desc: "To sell an additional unit, a single-price monopolist must reduce the price on ALL units sold (price effect).",
+                t4Subtext: "For linear demand, the MR curve shares the same vertical intercept (a) but has twice the slope (2b).",
+                lblDemA: "Demand Intercept (a):", lblDemB: "Demand Slope (b):", mrChartTitle: "Demand (AR) and Marginal Revenue (MR)",
+                
+                t5Head: "Two-Step Solution", t5Desc: "<b>Step 1:</b> Choose output Qm where MR = MC.<br><b>Step 2:</b> Find price Pm on demand curve above Qm.",
+                lblChkProfit: "Show profit area π = (P - ATC) × Q", lblSimQ: "Monopoly Output (Qm):", lblSimP: "Price (Pm):", lblSimAtc: "ATC(Qm):", lblSimProf: "Profit (π):",
+                profitChartTitle: "Profit Maximization (MR = MC)",
+                
+                t6Head: "Deadweight Loss", t6Desc: "Monopolist restricts output (Qm < Qe). On unproduced units between Qm and Qe, value exceeds MC, creating deadweight loss (DWL).",
+                lblDwlQ: "Adjust Qm:", lblDwlArea: "DWL Area (Red Triangle):", dwlChartTitle: "Deadweight Loss (DWL)",
+                
+                hhiHead: "Herfindahl–Hirschman Index (HHI) Calculator", hhiSub: "Market concentration analysis of 5 firms & Lerner Index",
+                btnPMono: "Monopoly", btnPDuo: "Duopoly", btnPOlig: "Oligopoly",
+                lblF1: "Firm 1 (Red)", lblF2: "Firm 2 (Sky Blue)", lblF3: "Firm 3 (Emerald)", lblF4: "Firm 4 (Amber)", lblF5: "Firm 5 (Purple)",
+                lblHhiIndex: "HHI Index", lblVerdict: "Regulatory Verdict", lblLerner: "Lerner Index (L)",
+                
+                kzHead: "Antitrust Regulation in Kazakhstan", kzDesc: "Dual-system: AZRK RK (competition law) and KREM MNE RK (natural monopolies).",
+                gaugeHead: "DOMINANCE INDICATOR", gaugeSub: "(Art. 172 Entrepreneurial Code of RK)",
+                azrkTitle: "🏛️ AZRK RK (Competition Protection Agency)", azrkDesc: "Enforces antitrust law across markets: prevents monopoly pricing, cartels, and abuse of dominance. Approves M&A concentration deals based on HHI and market share thresholds.",
+                kremTitle: "⚡ KREM MNE RK (Natural Monopolies Committee)", kremDesc: "Regulates natural monopoly subjects (electricity, water supply, railways, pipeline transport). Applies price regulation methods: Cost-Plus tariffs, long-term rate caps, and investment monitoring."
+            }
+        };
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            const d = dict[lang];
+            
+            document.getElementById('lang-ru').className = lang === 'ru' ? "px-3 py-1 text-xs font-bold rounded bg-red-600 text-white" : "px-3 py-1 text-xs font-bold rounded text-slate-400 hover:text-white";
+            document.getElementById('lang-en').className = lang === 'en' ? "px-3 py-1 text-xs font-bold rounded bg-red-600 text-white" : "px-3 py-1 text-xs font-bold rounded text-slate-400 hover:text-white";
+
+            document.getElementById('main-title').innerText = d.mainTitle;
+            document.getElementById('sub-title').innerText = d.subTitle;
+            document.getElementById('tb-overview').innerText = d.tbOverview;
+            document.getElementById('tb-model').innerText = d.tbModel;
+            document.getElementById('tb-barriers').innerText = d.tbBarriers;
+            document.getElementById('tb-demand').innerText = d.tbDemand;
+            document.getElementById('tb-profit').innerText = d.tbProfit;
+            document.getElementById('tb-welfare').innerText = d.tbWelfare;
+            document.getElementById('tb-simulator').innerText = d.tbSimulator;
+            document.getElementById('tb-kazakhstan').innerText = d.tbKazakhstan;
+            document.getElementById('footer-text').innerText = d.footerText;
+
+            // Tab 1
+            document.getElementById('t1-head').innerText = d.t1Head;
+            document.getElementById('t1-desc').innerText = d.t1Desc;
+            document.getElementById('out1-title').innerText = d.out1Title; document.getElementById('out1-desc').innerText = d.out1Desc;
+            document.getElementById('out2-title').innerText = d.out2Title; document.getElementById('out2-desc').innerText = d.out2Desc;
+            document.getElementById('out3-title').innerText = d.out3Title; document.getElementById('out3-desc').innerText = d.out3Desc;
+            document.getElementById('out4-title').innerText = d.out4Title; document.getElementById('out4-desc').innerText = d.out4Desc;
+            document.getElementById('out5-title').innerText = d.out5Title; document.getElementById('out5-desc').innerText = d.out5Desc;
+            document.getElementById('out6-title').innerText = d.out6Title; document.getElementById('out6-desc').innerText = d.out6Desc;
+            document.getElementById('chain-title').innerText = d.chainTitle;
+            document.getElementById('th-stage').innerText = d.thStage; document.getElementById('th-q').innerText = d.thQ; document.getElementById('th-r').innerText = d.thR;
+            document.getElementById('st1-lbl').innerText = d.st1Lbl; document.getElementById('c1-q').innerText = d.c1Q; document.getElementById('c1-r').innerText = d.c1R;
+            document.getElementById('st2-lbl').innerText = d.st2Lbl; document.getElementById('c2-q').innerText = d.c2Q; document.getElementById('c2-r').innerText = d.c2R;
+            document.getElementById('st3-lbl').innerText = d.st3Lbl; document.getElementById('c3-q').innerText = d.c3Q; document.getElementById('c3-r').innerText = d.c3R;
+            document.getElementById('st4-lbl').innerText = d.st4Lbl; document.getElementById('c4-q').innerText = d.c4Q; document.getElementById('c4-r').innerText = d.c4R;
+            document.getElementById('st5-lbl').innerText = d.st5Lbl; document.getElementById('c5-q').innerText = d.c5Q; document.getElementById('c5-r').innerText = d.c5R;
+
+            // Tab 2
+            document.getElementById('t2-head').innerText = d.t2Head; document.getElementById('t2-desc').innerText = d.t2Desc;
+            document.getElementById('spec-title').innerText = d.specTitle;
+            document.getElementById('m-left-title').innerText = d.mLeftTitle; document.getElementById('m-left-desc').innerText = d.mLeftDesc;
+            document.getElementById('m-right-title').innerText = d.mRightTitle; document.getElementById('m-right-desc').innerText = d.mRightDesc;
+
+            // Tab 3
+            document.getElementById('t3-head').innerText = d.t3Head; document.getElementById('t3-desc').innerText = d.t3Desc;
+            document.getElementById('b1-t').innerText = d.b1T; document.getElementById('b1-d').innerText = d.b1D;
+            document.getElementById('b2-t').innerText = d.b2T; document.getElementById('b2-d').innerText = d.b2D;
+            document.getElementById('b3-t').innerText = d.b3T; document.getElementById('b3-d').innerText = d.b3D;
+            document.getElementById('nat-chart-title').innerText = d.natChartTitle;
+
+            // Tab 4
+            document.getElementById('t4-head').innerText = d.t4Head; document.getElementById('t4-desc').innerText = d.t4Desc;
+            document.getElementById('t4-subtext').innerText = d.t4Subtext;
+            document.getElementById('lbl-dem-a').innerText = d.lblDemA; document.getElementById('lbl-dem-b').innerText = d.lblDemB;
+            document.getElementById('mr-chart-title').innerText = d.mrChartTitle;
+
+            // Tab 5
+            document.getElementById('t5-head').innerText = d.t5Head; document.getElementById('t5-desc').innerHTML = d.t5Desc;
+            document.getElementById('lbl-chk-profit').innerText = d.lblChkProfit;
+            document.getElementById('lbl-sim-q').innerText = d.lblSimQ; document.getElementById('lbl-sim-p').innerText = d.lblSimP;
+            document.getElementById('lbl-sim-atc').innerText = d.lblSimAtc; document.getElementById('lbl-sim-prof').innerText = d.lblSimProf;
+            document.getElementById('profit-chart-title').innerText = d.profitChartTitle;
+
+            // Tab 6
+            document.getElementById('t6-head').innerText = d.t6Head; document.getElementById('t6-desc').innerText = d.t6Desc;
+            document.getElementById('lbl-dwl-q').innerText = d.lblDwlQ; document.getElementById('lbl-dwl-area').innerText = d.lblDwlArea;
+            document.getElementById('dwl-chart-title').innerText = d.dwlChartTitle;
+
+            // Tab 7
+            document.getElementById('hhi-head').innerText = d.hhiHead; document.getElementById('hhi-sub').innerText = d.hhiSub;
+            document.getElementById('btn-p-mono').innerText = d.btnPMono; document.getElementById('btn-p-duo').innerText = d.btnPDuo; document.getElementById('btn-p-olig').innerText = d.btnPOlig;
+            document.getElementById('lbl-f1').innerText = d.lblF1; document.getElementById('lbl-f2').innerText = d.lblF2;
+            document.getElementById('lbl-f3').innerText = d.lblF3; document.getElementById('lbl-f4').innerText = d.lblF4; document.getElementById('lbl-f5').innerText = d.lblF5;
+            document.getElementById('lbl-hhi-index').innerText = d.lblHhiIndex; document.getElementById('lbl-verdict').innerText = d.lblVerdict; document.getElementById('lbl-lerner').innerText = d.lblLerner;
+
+            // Tab 8
+            document.getElementById('kz-head').innerText = d.kzHead; document.getElementById('kz-desc').innerText = d.kzDesc;
+            document.getElementById('gauge-head').innerText = d.gaugeHead; document.getElementById('gauge-sub').innerText = d.gaugeSub;
+            document.getElementById('azrk-title').innerHTML = `<span>🏛️</span> ${d.azrkTitle}`; document.getElementById('azrk-desc').innerText = d.azrkDesc;
+            document.getElementById('krem-title').innerHTML = `<span>⚡</span> ${d.kremTitle}`; document.getElementById('krem-desc').innerText = d.kremDesc;
+
+            calculateHHI();
+            updateKzGauge();
+        }
+
+        let charts = {};
+        let currentDWLTriangle = []; 
+        let currentProfitRect = null; // Точные координаты зоны прибыли (0 -> Qm, ATC -> Pm)
+
+        // ПЛАГИН 1: ЗАЛИВКА ЗОНЫ ПРИБЫЛИ СВЕТЛО-ЗЕЛЕНЫМ И ЖЕЛТЫМ ПУНКТИРОМ
+        const exactProfitPlugin = {
+            id: 'exactProfitPlugin',
+            beforeDraw(chart) {
+                if (chart.canvas.id !== 'profitChart' || !currentProfitRect) return;
+                const { ctx, scales: { x, y } } = chart;
+                ctx.save();
+
+                const x0 = x.getPixelForValue(0);
+                const x1 = x.getPixelForValue(currentProfitRect.Qm);
+                const yATC = y.getPixelForValue(currentProfitRect.ATC);
+                const yP = y.getPixelForValue(currentProfitRect.P);
+
+                const width = x1 - x0;
+                const height = yATC - yP; // y-ось сверху вниз
+
+                // 1. Заливка мягким светло-зелёным тоном
+                ctx.fillStyle = 'rgba(34, 197, 94, 0.25)';
+                ctx.fillRect(x0, yP, width, height);
+
+                // 2. Красивый золотистый пунктирный контур
+                ctx.strokeStyle = '#f59e0b';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.strokeRect(x0, yP, width, height);
+
+                ctx.restore();
+            }
+        };
+
+        // ПЛАГИН 2: ТОЧНАЯ ПОЛИГОНАЛЬНАЯ ЗАЛИВКА ТРЕУГОЛЬНИКА DWL
+        const exactDWLPlugin = {
+            id: 'exactDWLPlugin',
+            beforeDraw(chart) {
+                if (chart.canvas.id !== 'dwlChart' || !currentDWLTriangle.length) return;
+                const { ctx, scales: { x, y } } = chart;
+                ctx.save();
+                ctx.beginPath();
+                
+                const p1 = { x: x.getPixelForValue(currentDWLTriangle[0].x), y: y.getPixelForValue(currentDWLTriangle[0].y) };
+                const p2 = { x: x.getPixelForValue(currentDWLTriangle[1].x), y: y.getPixelForValue(currentDWLTriangle[1].y) };
+                const p3 = { x: x.getPixelForValue(currentDWLTriangle[2].x), y: y.getPixelForValue(currentDWLTriangle[2].y) };
+
+                ctx.moveTo(p1.x, p1.y);
+                ctx.lineTo(p2.x, p2.y);
+                ctx.lineTo(p3.x, p3.y);
+                ctx.closePath();
+
+                ctx.fillStyle = 'rgba(239, 68, 68, 0.45)';
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = '#ef4444';
+                ctx.stroke();
+                ctx.restore();
+            }
+        };
+
+        function switchTab(evt, tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            evt.currentTarget.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+
+            setTimeout(() => {
+                Object.values(charts).forEach(chart => {
+                    if (chart) {
+                        chart.resize();
+                        chart.update();
+                    }
+                });
+            }, 50);
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const ctxNat = document.getElementById('naturalMonopolyChart').getContext('2d');
+            const qRange = Array.from({length: 40}, (_, i) => (i + 1) * 2.5);
+            charts.nat = new Chart(ctxNat, {
+                type: 'line',
+                data: {
+                    labels: qRange,
+                    datasets: [
+                        { label: 'ATC', data: qRange.map(q => 20 + 800 / q), borderColor: '#8b5cf6', borderWidth: 3, pointRadius: 0 },
+                        { label: 'MC', data: qRange.map(() => 20), borderColor: '#10b981', borderWidth: 2, borderDash: [4,4], pointRadius: 0 }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false, animation: false,
+                    scales: { x: { ticks: { color: '#94a3b8' } }, y: { min: 0, max: 100, ticks: { color: '#94a3b8' } } },
+                    plugins: { legend: { labels: { color: '#f8fafc' } } }
+                }
+            });
+
+            charts.mr = new Chart(document.getElementById('mrDemandChart').getContext('2d'), {
+                type: 'line',
+                data: { labels: [], datasets: [] },
+                options: {
+                    responsive: true, maintainAspectRatio: false, animation: false,
+                    scales: { x: { type: 'linear', min: 0, max: 60, ticks: { color: '#94a3b8' } }, y: { min: -20, max: 140, ticks: { color: '#94a3b8' } } },
+                    plugins: { legend: { labels: { color: '#f8fafc' } } }
+                }
+            });
+
+            charts.profit = new Chart(document.getElementById('profitChart').getContext('2d'), {
+                type: 'line',
+                data: { labels: [], datasets: [] },
+                options: {
+                    responsive: true, maintainAspectRatio: false, animation: false,
+                    scales: { x: { type: 'linear', min: 0, max: 55, ticks: { color: '#94a3b8' } }, y: { min: 0, max: 130, ticks: { color: '#94a3b8' } } },
+                    plugins: { legend: { labels: { color: '#f8fafc' } } }
+                },
+                plugins: [exactProfitPlugin]
+            });
+
+            charts.dwl = new Chart(document.getElementById('dwlChart').getContext('2d'), {
+                type: 'line',
+                data: { labels: [], datasets: [] },
+                options: {
+                    responsive: true, maintainAspectRatio: false, animation: false,
+                    scales: { x: { type: 'linear', min: 0, max: 55, ticks: { color: '#94a3b8' } }, y: { min: 0, max: 130, ticks: { color: '#94a3b8' } } },
+                    plugins: { legend: { labels: { color: '#f8fafc' } } }
+                },
+                plugins: [exactDWLPlugin]
+            });
+
+            charts.hhi = new Chart(document.getElementById('hhiDoughnutChart').getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Firm 1', 'Firm 2', 'Firm 3', 'Firm 4', 'Firm 5'],
+                    datasets: [{ data: [40, 30, 20, 10, 0], backgroundColor: ['#ef4444', '#0ea5e9', '#10b981', '#f59e0b', '#a855f7'], borderWidth: 1 }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, animation: false, cutout: '70%', plugins: { legend: { display: false } } }
+            });
+
+            document.getElementById('dem-a-slider').addEventListener('input', updateMRChart);
+            document.getElementById('dem-b-slider').addEventListener('input', updateMRChart);
+            document.getElementById('sim-q-slider').addEventListener('input', updateProfitSim);
+            document.getElementById('dwl-q-slider').addEventListener('input', updateDWLSim);
+            
+            [1,2,3,4,5].forEach(i => document.getElementById(`slider${i}`).addEventListener('input', calculateHHI));
+            document.getElementById('kz-share-slider').addEventListener('input', updateKzGauge);
+
+            updateMRChart();
+            updateProfitSim();
+            updateDWLSim();
+            calculateHHI();
+            updateKzGauge();
+        });
+
+        function updateMRChart() {
+            const a = parseFloat(document.getElementById('dem-a-slider').value);
+            const b = parseFloat(document.getElementById('dem-b-slider').value);
+            document.getElementById('dem-a-val').innerText = a;
+            document.getElementById('dem-b-val').innerText = b.toFixed(1);
+
+            const qs = Array.from({length: 61}, (_, i) => i);
+            if (charts.mr) {
+                charts.mr.data = {
+                    datasets: [
+                        { label: 'Demand = AR', data: qs.map(q => ({x: q, y: a - b * q})), borderColor: '#3b82f6', borderWidth: 3, pointRadius: 0 },
+                        { label: 'MR', data: qs.map(q => ({x: q, y: a - 2 * b * q})), borderColor: '#ef4444', borderWidth: 2.5, pointRadius: 0 }
+                    ]
+                };
+                charts.mr.update();
+            }
+        }
+
+        function updateProfitSim() {
+            const Qm = parseFloat(document.getElementById('sim-q-slider').value);
+            const showRect = document.getElementById('chk-show-tr').checked;
+            document.getElementById('sim-q-val').innerText = Qm;
+
+            const qs = Array.from({length: 55}, (_, i) => i + 1);
+            const P = 120 - 2 * Qm;
+            const ATC = 20 + 0.4 * Qm + 200 / Qm;
+            const Profit = (P - ATC) * Qm;
+
+            document.getElementById('sim-p-out').innerText = P.toFixed(1);
+            document.getElementById('sim-atc-out').innerText = ATC.toFixed(1);
+            document.getElementById('sim-prof-out').innerText = Math.max(0, Profit).toFixed(0);
+
+            if (showRect && P > ATC) {
+                currentProfitRect = { Qm, P, ATC };
+            } else {
+                currentProfitRect = null;
+            }
+
+            let datasets = [
+                { label: 'Demand', data: qs.map(q => ({x: q, y: 120 - 2 * q})), borderColor: '#3b82f6', borderWidth: 3, pointRadius: 0 },
+                { label: 'MR', data: qs.map(q => ({x: q, y: 120 - 4 * q})), borderColor: '#ef4444', borderWidth: 2.5, pointRadius: 0 },
+                { label: 'MC', data: qs.map(q => ({x: q, y: 20 + 1.0 * q})), borderColor: '#10b981', borderWidth: 2.5, pointRadius: 0 },
+                { label: 'ATC', data: qs.map(q => ({x: q, y: 20 + 0.4 * q + 200 / q})), borderColor: '#a855f7', borderWidth: 2.5, pointRadius: 0 },
+                { label: 'Qm Line', data: [{x: Qm, y: 0}, {x: Qm, y: P}], borderColor: '#10b981', borderWidth: 2, borderDash: [4, 4], pointRadius: 0 }
+            ];
+
+            if (charts.profit) {
+                charts.profit.data.datasets = datasets;
+                charts.profit.update('none');
+            }
+        }
+
+        function updateDWLSim() {
+            const Qm = parseFloat(document.getElementById('dwl-q-slider').value);
+            document.getElementById('dwl-q-val').innerText = Qm;
+
+            const Qe = 33.33; 
+            const Pm = 120 - 2 * Qm;
+            const MCm = 20 + 1 * Qm;
+            const Pe = 120 - 2 * Qe;
+
+            const dwlArea = Qm >= Qe ? 0 : 0.5 * (Pm - MCm) * (Qe - Qm);
+            document.getElementById('dwl-area-val').innerText = dwlArea.toFixed(1);
+
+            const qs = Array.from({length: 55}, (_, i) => i);
+            
+            if (Qm < Qe) {
+                currentDWLTriangle = [
+                    {x: Qm, y: MCm},
+                    {x: Qm, y: Pm},
+                    {x: Qe, y: Pe}
+                ];
+            } else {
+                currentDWLTriangle = [];
+            }
+
+            if (charts.dwl) {
+                charts.dwl.data = {
+                    datasets: [
+                        { label: 'Demand', data: qs.map(q => ({x: q, y: 120 - 2 * q})), borderColor: '#3b82f6', borderWidth: 3, pointRadius: 0 },
+                        { label: 'MC', data: qs.map(q => ({x: q, y: 20 + 1 * q})), borderColor: '#10b981', borderWidth: 3, pointRadius: 0 }
+                    ]
+                };
+                charts.dwl.update('none');
+            }
+        }
+
+        function calculateHHI() {
+            let shares = [1,2,3,4,5].map(i => parseFloat(document.getElementById(`slider${i}`).value) || 0);
+            shares.forEach((v, i) => { document.getElementById(`val-firm${i+1}`).innerText = v + '%'; });
+
+            let hhi = Math.round(shares.reduce((sum, s) => sum + (s * s), 0));
+            document.getElementById('hhi-result').innerText = hhi;
+
+            const status = document.getElementById('hhi-status');
+            const verdict = document.getElementById('verdict-box');
+
+            if (hhi < 1500) {
+                status.innerText = currentLang === 'ru' ? "Низкая концентрация" : "Low Concentration"; 
+                status.className = "text-xs font-bold text-emerald-400";
+                verdict.innerText = currentLang === 'ru' ? "Низкий риск. Слияния обычно одобряются." : "Low risk. Mergers usually approved.";
+            } else if (hhi <= 2500) {
+                status.innerText = currentLang === 'ru' ? "Умеренная концентрация" : "Moderate Concentration"; 
+                status.className = "text-xs font-bold text-amber-400";
+                verdict.innerText = currentLang === 'ru' ? "Умеренный надзор. Требуется детальный анализ ΔHHI." : "Moderate scrutiny. ΔHHI analysis required.";
+            } else {
+                status.innerText = currentLang === 'ru' ? "Высокая концентрация" : "High Concentration"; 
+                status.className = "text-xs font-bold text-red-400";
+                verdict.innerText = currentLang === 'ru' ? "Строгий контроль! Слияния крупных игроков будут заблокированы." : "Strict scrutiny! High merger blockage risk.";
+            }
+
+            if (charts.hhi) {
+                charts.hhi.data.datasets[0].data = shares;
+                charts.hhi.update('none');
+            }
+
+            let lerner = (shares[0] / 100) / 1.5;
+            document.getElementById('lerner-val').innerText = `L ≈ ${lerner.toFixed(2)}`;
+        }
+
+        function applyPreset(arr) {
+            arr.forEach((v, i) => { document.getElementById(`slider${i+1}`).value = v; });
+            calculateHHI();
+        }
+
+        function updateKzGauge() {
+            const share = Math.min(100, Math.max(0, parseInt(document.getElementById('kz-share-slider').value) || 0));
+            document.getElementById('kz-share-val').innerText = share + '%';
+
+            const angle = (share / 100) * 180 - 90;
+            const needle = document.getElementById('gauge-needle');
+            
+            needle.style.transformOrigin = "100px 100px";
+            needle.style.transform = `rotate(${angle}deg)`;
+            needle.style.transition = "transform 0.15s ease-out";
+
+            const box = document.getElementById('kz-dom-status-box');
+            const title = document.getElementById('kz-dom-title');
+            const desc = document.getElementById('kz-dom-desc');
+
+            if (share < 10) {
+                box.className = "w-full max-w-xl p-4 rounded-xl border text-xs bg-emerald-950/40 border-emerald-500/50";
+                title.innerText = currentLang === 'ru' ? "Доля < 10% (Низкая доля рынка)" : "Share < 10% (Low Market Share)";
+                title.className = "font-bold text-sm mb-1 text-emerald-400";
+                desc.innerText = currentLang === 'ru' ? "Субъект не имеет рыночной власти и не подпадает под ограничение монополистической деятельности." : "Subject lacks market power and is not subject to monopoly activity restrictions.";
+            } else if (share < 35) {
+                box.className = "w-full max-w-xl p-4 rounded-xl border text-xs bg-blue-950/40 border-blue-500/50";
+                title.innerText = currentLang === 'ru' ? "Доля 10% - 35% (Развивающийся рынок)" : "Share 10% - 35% (Developing Market)";
+                title.className = "font-bold text-sm mb-1 text-blue-400";
+                desc.innerText = currentLang === 'ru' ? "Обычный уровень конкуренции. Доминирование возможно только в форме коллективной доминации (ст. 172 ПК РК)." : "Normal competition level. Dominance only possible as collective dominance.";
+            } else if (share < 50) {
+                box.className = "w-full max-w-xl p-4 rounded-xl border text-xs bg-amber-950/40 border-amber-500/50";
+                title.innerText = currentLang === 'ru' ? "Доля 35% - 50% (Аналитический контроль ст. 172 ПК РК)" : "Share 35% - 50% (Analytical Scrutiny)";
+                title.className = "font-bold text-sm mb-1 text-amber-400";
+                desc.innerText = currentLang === 'ru' ? "Доминирование признается АЗРК только при наличии одностороннего влияния и высоких барьеров входа." : "Recognized as dominant only if firm exerts unilateral market power with high entry barriers.";
+            } else {
+                box.className = "w-full max-w-xl p-4 rounded-xl border text-xs bg-red-950/50 border-red-500/60";
+                title.innerText = currentLang === 'ru' ? "Доля ≥ 50% (Безусловное доминирование)" : "Share ≥ 50% (Unconditional Dominance)";
+                title.className = "font-bold text-sm mb-1 text-red-400";
+                desc.innerText = currentLang === 'ru' ? "Позиция признается доминирующей без дополнительных условий. Фирма подпадает под повышенный контроль АЗРК." : "Recognized as dominant unconditionally. Subject to strict regulatory oversight by AZRK.";
+            }
+        }
+    </script>
+</body>
+</html>
