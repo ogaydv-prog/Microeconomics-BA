@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interactive bilingual dashboard for Chapter 16 on monopolistic competition">
+  <title>Монополистическая конкуренция</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0f172a;
+      --panel: rgba(30, 41, 59, 0.72);
+      --panel-solid: #111c31;
+      --card: #111827;
+      --line: #334155;
+      --muted: #94a3b8;
+      --text: #f8fafc;
+      --red: #ef4444;
+      --blue: #3b82f6;
+      --green: #10b981;
+      --amber: #f59e0b;
+      --purple: #a855f7;
+      --cyan: #38bdf8;
+      --indigo: #818cf8;
+      --radius: 16px;
+      --shadow: 0 16px 38px rgba(0, 0, 0, 0.22);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(59, 130, 246, 0.10), transparent 24rem),
+        radial-gradient(circle at 90% 15%, rgba(239, 68, 68, 0.08), transparent 25rem),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    button, input { font: inherit; }
+    button { color: inherit; }
+    .shell { width: min(1280px, calc(100% - 32px)); margin: 0 auto; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(15, 23, 42, 0.96);
+      border-bottom: 1px solid #24324a;
+      box-shadow: 0 8px 26px rgba(0, 0, 0, 0.24);
+      backdrop-filter: blur(14px);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 13px 0;
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand-icon { font-size: 28px; }
+    h1, h2, h3, h4, p { margin-top: 0; }
+    h1 { margin-bottom: 1px; font-size: 18px; letter-spacing: -0.01em; }
+    .subtitle { margin: 0; color: var(--muted); font-size: 12px; }
+
+    .lang-switch {
+      display: flex;
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #1e293b;
+      flex: 0 0 auto;
+    }
+
+    .lang-btn {
+      border: 0;
+      border-radius: 7px;
+      padding: 6px 12px;
+      cursor: pointer;
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .lang-btn.active { background: var(--red); color: white; }
+
+    .tabs-wrap { border-top: 1px solid #24324a; padding: 9px 0 11px; }
+    .tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+    .tab-btn {
+      min-height: 44px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 8px 10px;
+      background: #1e293b;
+      color: #cbd5e1;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 650;
+      cursor: pointer;
+      transition: transform 150ms ease, background 150ms ease, border-color 150ms ease;
+    }
+    .tab-btn:hover { transform: translateY(-1px); border-color: #475569; }
+    .tab-btn.active { background: var(--red); border-color: #fb7185; color: #fff; box-shadow: 0 6px 17px rgba(239, 68, 68, 0.28); }
+
+    main { padding: 26px 0 42px; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fade 180ms ease-out; }
+    @keyframes fade { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+
+    .stack { display: grid; gap: 20px; }
+    .panel {
+      padding: 24px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .panel h2 { margin-bottom: 7px; font-size: 21px; line-height: 1.25; }
+    .panel h3 { margin-bottom: 9px; font-size: 15px; }
+    .intro { color: #cbd5e1; font-size: 13px; max-width: 1100px; }
+    .small { color: #cbd5e1; font-size: 12px; }
+    .muted { color: var(--muted); }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .grid-6 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .split { display: grid; grid-template-columns: minmax(300px, 0.8fr) minmax(0, 1.55fr); gap: 20px; align-items: stretch; }
+    .split.equal { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    .card {
+      padding: 17px;
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid var(--line);
+      border-radius: 13px;
+    }
+    .card p:last-child, .card ul:last-child { margin-bottom: 0; }
+    .card-icon { font-size: 25px; margin-bottom: 6px; }
+    .blue { color: #60a5fa; }
+    .red { color: #fb7185; }
+    .green { color: #34d399; }
+    .amber { color: #fbbf24; }
+    .purple { color: #c084fc; }
+    .cyan { color: #67e8f9; }
+
+    ul.clean { margin: 7px 0 0; padding-left: 19px; color: #cbd5e1; font-size: 12px; }
+    ul.clean li + li { margin-top: 6px; }
+
+    .formula {
+      margin: 12px 0;
+      padding: 10px 12px;
+      border: 1px solid #293750;
+      border-radius: 9px;
+      background: #0b1220;
+      color: #f8fafc;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .logic-table, table.data {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+    table.data th, table.data td, .logic-table th, .logic-table td {
+      padding: 11px 12px;
+      border-bottom: 1px solid #293750;
+      vertical-align: top;
+      text-align: left;
+    }
+    table.data th, .logic-table th { background: #0b1220; color: #cbd5e1; font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; }
+    table.data tbody tr:nth-child(even), .logic-table tbody tr:nth-child(even) { background: rgba(30, 41, 59, 0.35); }
+    table.data tr:last-child td, .logic-table tr:last-child td { border-bottom: 0; }
+    .focus-row { background: rgba(239, 68, 68, 0.10) !important; outline: 1px solid rgba(239, 68, 68, 0.4); outline-offset: -1px; }
+
+    .controls { display: grid; gap: 14px; }
+    .control-box { padding: 15px; background: rgba(15, 23, 42, 0.88); border: 1px solid var(--line); border-radius: 12px; }
+    .control-row { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; font-size: 12px; }
+    .control-row + .control-row { margin-top: 7px; }
+    .value { font-family: "SFMono-Regular", Consolas, monospace; font-weight: 800; }
+    input[type="range"] { width: 100%; accent-color: var(--red); cursor: pointer; margin: 12px 0 4px; }
+    .checkline { display: flex; align-items: center; gap: 9px; color: #d1fae5; font-size: 12px; font-weight: 750; cursor: pointer; }
+    .checkline input { width: 16px; height: 16px; accent-color: var(--green); }
+
+    .status {
+      margin-top: 12px;
+      padding: 12px 13px;
+      border-left: 3px solid var(--cyan);
+      background: rgba(14, 116, 144, 0.12);
+      border-radius: 7px;
+      color: #dbeafe;
+      font-size: 12px;
+    }
+    .status.good { border-color: var(--green); background: rgba(16, 185, 129, 0.10); }
+    .status.warn { border-color: var(--amber); background: rgba(245, 158, 11, 0.10); }
+    .status.bad { border-color: var(--red); background: rgba(239, 68, 68, 0.10); }
+
+    .chart-panel { min-width: 0; }
+    .chart-title { margin-bottom: 8px; font-size: 13px; font-weight: 800; }
+    .chart-box { width: 100%; height: 420px; border-radius: 12px; overflow: hidden; background: #0b1220; border: 1px solid #26344c; }
+    .chart-box.compact { height: 330px; }
+    canvas { display: block; width: 100%; height: 100%; }
+
+    .effect-positive { border-color: rgba(16, 185, 129, 0.45); }
+    .effect-negative { border-color: rgba(239, 68, 68, 0.45); }
+    .tag { display: inline-block; padding: 4px 8px; border-radius: 7px; background: #172033; color: #cbd5e1; font-size: 11px; font-weight: 750; }
+
+    footer { padding: 18px 0; border-top: 1px solid #24324a; color: #64748b; text-align: center; font-size: 12px; }
+
+    @media (max-width: 980px) {
+      .tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .grid-3, .grid-6 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .split, .split.equal { grid-template-columns: 1fr; }
+      .chart-box { height: 390px; }
+    }
+    @media (max-width: 640px) {
+      .shell { width: min(100% - 20px, 1280px); }
+      .topbar { align-items: flex-start; }
+      .brand-icon { display: none; }
+      h1 { font-size: 16px; }
+      .subtitle { font-size: 10px; }
+      .tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .tab-btn { font-size: 11px; }
+      main { padding-top: 16px; }
+      .panel { padding: 17px; }
+      .grid-2, .grid-3, .grid-6 { grid-template-columns: 1fr; }
+      .chart-box, .chart-box.compact { height: 340px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="shell topbar">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">🏪</div>
+        <div>
+          <h1 id="main-title" data-ru="Монополистическая конкуренция" data-en="Monopolistic Competition">Монополистическая конкуренция</h1>
+          <p class="subtitle" data-ru="Интерактивный академический дашборд | SDTE | AlmaU 2026" data-en="Interactive academic dashboard | SDTE | AlmaU 2026">Интерактивный академический дашборд | Chapter 16 | SDTE AlmaU 2026</p>
+        </div>
+      </div>
+      <div class="lang-switch" aria-label="Language switcher">
+        <button class="lang-btn active" id="lang-ru" type="button">RU</button>
+        <button class="lang-btn" id="lang-en" type="button">EN</button>
+      </div>
+    </div>
+    <div class="tabs-wrap">
+      <nav class="shell tabs" role="tablist" aria-label="Chapter sections">
+        <button class="tab-btn active" role="tab" aria-selected="true" data-tab="overview"><span aria-hidden="true">📋</span> <span data-ru="1. Обзор и цели" data-en="1. Overview and goals">1. Обзор и цели</span></button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="structure"><span aria-hidden="true">🏛️</span> <span data-ru="2. Структура рынка" data-en="2. Market structure">2. Структура рынка</span></button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="demand"><span aria-hidden="true">📉</span> <span data-ru="3. Спрос и товар" data-en="3. Demand and product">3. Спрос и товар</span></button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="profit"><span aria-hidden="true">💰</span> <span data-ru="4. Прибыль КСР" data-en="4. Short-run profit">4. Прибыль КСР</span></button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="loss"><span aria-hidden="true">📉</span> <span data-ru="5. Убыток КСР" data-en="5. Short-run loss">5. Убыток КСР</span></button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="longrun"><span aria-hidden="true">🔄</span> <span data-ru="6. Долгосрочное равновесие" data-en="6. Long-run equilibrium">6. Долгосрочное равновесие</span></button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="comparison"><span aria-hidden="true">⚖️</span> <span data-ru="7. Сравнение рынков" data-en="7. Market comparison">7. Сравнение рынков</span></button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="welfare"><span aria-hidden="true">🌐</span> <span data-ru="8. Благосостояние и вход" data-en="8. Welfare and entry">8. Благосостояние и вход</span></button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="advertising"><span aria-hidden="true">📢</span> <span data-ru="9. Реклама и бренды" data-en="9. Advertising and brands">9. Реклама и бренды</span></button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="summary"><span aria-hidden="true">📌</span> <span data-ru="10. Итоговая матрица" data-en="10. Summary matrix">10. Итоговая матрица</span></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section id="overview" class="tab-content active" role="tabpanel">
+      <div class="stack">
+        <article class="panel">
+          <h2 data-ru="Цели и результаты обучения" data-en="Learning goals and outcomes">Цели и результаты обучения</h2>
+          <p class="intro" data-ru="Глава объясняет, как дифференциация создаёт ограниченную рыночную власть, а свободный вход устраняет экономическую прибыль в долгосрочном периоде, не устраняя наценку." data-en="The chapter explains how differentiation creates limited market power while free entry removes long-run economic profit without eliminating the markup.">Глава объясняет, как дифференциация создаёт ограниченную рыночную власть, а свободный вход устраняет экономическую прибыль в долгосрочном периоде, не устраняя наценку.</p>
+          <div class="grid-6">
+            <div class="card"><div class="card-icon">🎯</div><h3 class="red" data-ru="1. Гибридная структура" data-en="1. Hybrid market structure">1. Гибридная структура</h3><p class="small" data-ru="Монопольная власть над собственной разновидностью товара сочетается с конкурентным давлением множества близких заменителей." data-en="Market power over a firm's own variety coexists with competitive pressure from many close substitutes.">Монопольная власть над собственной разновидностью товара сочетается с конкурентным давлением множества близких заменителей.</p></div>
+            <div class="card"><div class="card-icon">📉</div><h3 class="blue" data-ru="2. Двухшаговый выбор" data-en="2. Two-step firm choice">2. Двухшаговый выбор</h3><p class="small" data-ru="Сначала выпуск определяется условием MR = MC, затем цена считывается с убывающей кривой спроса." data-en="Output is chosen where MR = MC; price is then read from the downward-sloping demand curve.">Сначала выпуск определяется условием MR = MC, затем цена считывается с убывающей кривой спроса.</p></div>
+            <div class="card"><div class="card-icon">🔄</div><h3 class="green" data-ru="3. Вход и выход" data-en="3. Entry and exit">3. Вход и выход</h3><p class="small" data-ru="Прибыль вызывает вход, убыток — выход, пока спрос фирмы не станет касательной к ATC при нулевой экономической прибыли." data-en="Profit attracts entry and loss causes exit until firm demand is tangent to ATC at zero economic profit.">Прибыль вызывает вход, убыток — выход, пока спрос фирмы не станет касательной к ATC при нулевой экономической прибыли.</p></div>
+            <div class="card"><div class="card-icon">⚖️</div><h3 class="amber" data-ru="4. Мощность и наценка" data-en="4. Capacity and markup">4. Мощность и наценка</h3><p class="small" data-ru="В долгосрочном равновесии Q* меньше эффективного масштаба, а цена остаётся выше предельных издержек." data-en="In long-run equilibrium Q* is below efficient scale and price remains above marginal cost.">В долгосрочном равновесии Q* меньше эффективного масштаба, а цена остаётся выше предельных издержек.</p></div>
+            <div class="card"><div class="card-icon">🌐</div><h3 class="cyan" data-ru="5. Благосостояние" data-en="5. Welfare">5. Благосостояние</h3><p class="small" data-ru="На результат влияют наценка, ценность разнообразия и эффект переманивания бизнеса; оптимальное число фирм заранее неизвестно." data-en="Welfare reflects markup, variety gains, and business stealing; the optimal number of firms is ambiguous.">На результат влияют наценка, ценность разнообразия и эффект переманивания бизнеса; оптимальное число фирм заранее неизвестно.</p></div>
+            <div class="card"><div class="card-icon">📢</div><h3 class="purple" data-ru="6. Реклама и бренды" data-en="6. Advertising and brands">6. Реклама и бренды</h3><p class="small" data-ru="Реклама может убеждать, информировать и сигнализировать качество, а бренд может поддерживать репутацию." data-en="Advertising can persuade, inform, and signal quality, while a brand can sustain reputation.">Реклама может убеждать, информировать и сигнализировать качество, а бренд может поддерживать репутацию.</p></div>
+          </div>
+        </article>
+
+        <article class="panel">
+          <h3 data-ru="Логическая цепочка главы" data-en="Chapter logic">Логическая цепочка главы</h3>
+          <div class="table-scroll">
+            <table class="logic-table">
+              <thead><tr><th data-ru="Этап" data-en="Stage">Этап</th><th data-ru="Экономический вопрос" data-en="Economic question">Экономический вопрос</th><th data-ru="Ключевой результат" data-en="Key result">Ключевой результат</th></tr></thead>
+              <tbody>
+                <tr><td class="blue" data-ru="1. Рынок" data-en="1. Market">1. Рынок</td><td data-ru="Каковы базовые условия?" data-en="What are the defining conditions?">Каковы базовые условия?</td><td data-ru="Много продавцов, дифференцированные товары, свободный вход и выход." data-en="Many sellers, differentiated products, and free entry and exit.">Много продавцов, дифференцированные товары, свободный вход и выход.</td></tr>
+                <tr><td class="cyan" data-ru="2. Фирма" data-en="2. Firm">2. Фирма</td><td data-ru="Как выбираются цена и выпуск?" data-en="How are price and output chosen?">Как выбираются цена и выпуск?</td><td data-ru="MR = MC задаёт Q*, а кривая спроса задаёт P*." data-en="MR = MC determines Q*, and the demand curve determines P*.">MR = MC задаёт Q*, а кривая спроса задаёт P*.</td></tr>
+                <tr><td class="green" data-ru="3. Динамика" data-en="3. Dynamics">3. Динамика</td><td data-ru="Что делает свободный вход?" data-en="What does free entry do?">Что делает свободный вход?</td><td data-ru="Сдвигает спрос фирмы до касания D и ATC при P = ATC." data-en="Shifts firm demand until D is tangent to ATC and P = ATC.">Сдвигает спрос фирмы до касания D и ATC при P = ATC.</td></tr>
+                <tr><td class="amber" data-ru="4. Эффективность" data-en="4. Efficiency">4. Эффективность</td><td data-ru="Чем результат отличается от совершенной конкуренции?" data-en="How does the outcome differ from perfect competition?">Чем результат отличается от совершенной конкуренции?</td><td data-ru="Q* ниже эффективного масштаба и P > MC." data-en="Q* is below efficient scale and P > MC.">Q* ниже эффективного масштаба и P &gt; MC.</td></tr>
+                <tr><td class="purple" data-ru="5. Соперничество" data-en="5. Rivalry">5. Соперничество</td><td data-ru="Почему важна неценовая конкуренция?" data-en="Why does non-price competition matter?">Почему важна неценовая конкуренция?</td><td data-ru="Положительный маржинальный вклад P − MC стимулирует сервис, рекламу и работу с брендом." data-en="The positive contribution margin P − MC motivates service, advertising, and brand investment.">Положительный маржинальный вклад P − MC стимулирует сервис, рекламу и работу с брендом.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="structure" class="tab-content" role="tabpanel">
+      <article class="panel">
+        <h2 data-ru="Рыночная структура между двумя крайними моделями" data-en="A market structure between two benchmarks">Рыночная структура между двумя крайними моделями</h2>
+        <p class="intro" data-ru="Монополистическая конкуренция соединяет монопольное ценообразование на уровне отдельной фирмы с конкурентным входом на уровне рынка." data-en="Monopolistic competition combines monopoly-like pricing at the firm level with competition-like entry at the market level.">Монополистическая конкуренция соединяет монопольное ценообразование на уровне отдельной фирмы с конкурентным входом на уровне рынка.</p>
+        <div class="table-scroll">
+          <table class="data">
+            <thead><tr><th data-ru="Модель" data-en="Market model">Модель</th><th data-ru="Число фирм" data-en="Number of firms">Число фирм</th><th data-ru="Товар" data-en="Product">Товар</th><th data-ru="Вход" data-en="Entry">Вход</th><th data-ru="Примеры" data-en="Examples">Примеры</th></tr></thead>
+            <tbody>
+              <tr><td data-ru="Монополия" data-en="Monopoly">Монополия</td><td data-ru="Одна" data-en="One">Одна</td><td data-ru="Нет близких заменителей" data-en="No close substitute">Нет близких заменителей</td><td data-ru="Высокие или непреодолимые барьеры" data-en="High or prohibitive barriers">Высокие или непреодолимые барьеры</td><td data-ru="Местная коммунальная сеть, запатентованный препарат" data-en="Local utility network, patented drug">Местная коммунальная сеть, запатентованный препарат</td></tr>
+              <tr><td data-ru="Олигополия" data-en="Oligopoly">Олигополия</td><td data-ru="Несколько крупных" data-en="A few large firms">Несколько крупных</td><td data-ru="Однородный или дифференцированный" data-en="Identical or differentiated">Однородный или дифференцированный</td><td data-ru="Существенные барьеры" data-en="Substantial barriers">Существенные барьеры</td><td data-ru="Автомобили, мобильная связь" data-en="Cars, mobile communications">Автомобили, мобильная связь</td></tr>
+              <tr class="focus-row"><td class="red" data-ru="Монополистическая конкуренция" data-en="Monopolistic competition">Монополистическая конкуренция</td><td data-ru="Много" data-en="Many">Много</td><td data-ru="Дифференцированный" data-en="Differentiated">Дифференцированный</td><td data-ru="Достаточно свободный" data-en="Relatively free">Достаточно свободный</td><td data-ru="Рестораны, одежда, книги, парикмахерские" data-en="Restaurants, clothing, books, hair salons">Рестораны, одежда, книги, парикмахерские</td></tr>
+              <tr><td data-ru="Совершенная конкуренция" data-en="Perfect competition">Совершенная конкуренция</td><td data-ru="Много" data-en="Many">Много</td><td data-ru="Однородный" data-en="Identical">Однородный</td><td data-ru="Свободный" data-en="Free">Свободный</td><td data-ru="Стандартизированная сельскохозяйственная продукция" data-en="Standardized agricultural products">Стандартизированная сельскохозяйственная продукция</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="grid-3" style="margin-top:16px">
+          <div class="card"><h3 class="blue" data-ru="Много небольших фирм" data-en="Many small firms">Много небольших фирм</h3><p class="small" data-ru="Ни один продавец не контролирует рынок целиком; модель абстрагируется от реакции конкретных соперников." data-en="No seller controls the entire market; the model abstracts from reactions by particular rivals.">Ни один продавец не контролирует рынок целиком; модель абстрагируется от реакции конкретных соперников.</p></div>
+          <div class="card"><h3 class="green" data-ru="Дифференциация" data-en="Differentiation">Дифференциация</h3><p class="small" data-ru="Различия в качестве, стиле, месте, сервисе или репутации создают убывающий спрос фирмы." data-en="Differences in quality, style, location, service, or reputation create downward-sloping firm demand.">Различия в качестве, стиле, месте, сервисе или репутации создают убывающий спрос фирмы.</p></div>
+          <div class="card"><h3 class="amber" data-ru="Свободный вход и выход" data-en="Free entry and exit">Свободный вход и выход</h3><p class="small" data-ru="В долгосрочном периоде вход и выход устраняют экономическую прибыль, но не наценку." data-en="Entry and exit eliminate long-run economic profit, but not the markup.">В долгосрочном периоде вход и выход устраняют экономическую прибыль, но не наценку.</p></div>
+        </div>
+      </article>
+    </section>
+
+    <section id="demand" class="tab-content" role="tabpanel">
+      <article class="panel">
+        <h2 data-ru="Дифференциация продукта и спрос фирмы" data-en="Product differentiation and firm demand">Дифференциация продукта и спрос фирмы</h2>
+        <p class="intro" data-ru="Дифференциация превращает фирму из получателя цены в участника, выбирающего точку на собственной убывающей кривой спроса." data-en="Differentiation changes the firm from a price taker into a seller choosing a point on its own downward-sloping demand curve.">Дифференциация превращает фирму из получателя цены в участника, выбирающего точку на собственной убывающей кривой спроса.</p>
+        <div class="grid-3">
+          <div class="card">
+            <div class="card-icon">🎨</div><h3 class="blue" data-ru="Источники дифференциации" data-en="Sources of differentiation">Источники дифференциации</h3>
+            <ul class="clean">
+              <li data-ru="Горизонтальная: покупатели предпочитают разные стили, вкусы и варианты." data-en="Horizontal: buyers prefer different styles, tastes, and varieties.">Горизонтальная: покупатели предпочитают разные стили, вкусы и варианты.</li>
+              <li data-ru="Вертикальная: покупатели согласны о качестве, но различаются готовностью платить." data-en="Vertical: buyers agree about quality but differ in willingness to pay.">Вертикальная: покупатели согласны о качестве, но различаются готовностью платить.</li>
+              <li data-ru="Местоположение, удобство, сервис, бренд и издержки переключения." data-en="Location, convenience, service, brand, and switching costs.">Местоположение, удобство, сервис, бренд и издержки переключения.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <div class="card-icon">📉</div><h3 class="red" data-ru="Убывающий спрос" data-en="Downward-sloping demand">Убывающий спрос</h3>
+            <p class="small" data-ru="Повышение цены уводит часть, но не всех покупателей. Поэтому MR находится ниже цены, а оптимум удовлетворяет P > MR = MC." data-en="A price increase loses some, but not all, buyers. Therefore MR lies below price and the optimum satisfies P > MR = MC.">Повышение цены уводит часть, но не всех покупателей. Поэтому MR находится ниже цены, а оптимум удовлетворяет P &gt; MR = MC.</p>
+            <div class="formula">P &gt; MR = MC</div>
+          </div>
+          <div class="card">
+            <div class="card-icon">🔁</div><h3 class="green" data-ru="Заменители и эластичность" data-en="Substitutes and elasticity">Заменители и эластичность</h3>
+            <p class="small" data-ru="Больше близких заменителей обычно делает спрос фирмы более эластичным; лояльность и воспринимаемая уникальность делают его менее эластичным." data-en="More close substitutes usually make firm demand more elastic; loyalty and perceived uniqueness make it less elastic.">Больше близких заменителей обычно делает спрос фирмы более эластичным; лояльность и воспринимаемая уникальность делают его менее эластичным.</p>
+          </div>
+        </div>
+        <div class="grid-2" style="margin-top:16px">
+          <div class="card"><h3 class="amber" data-ru="Не олигополия" data-en="Not oligopoly">Не олигополия</h3><p class="small" data-ru="При олигополии несколько крупных фирм стратегически реагируют друг на друга. Здесь фирм много, поэтому специфическая стратегическая взаимозависимость не моделируется." data-en="In oligopoly a few large firms react strategically to one another. Here firms are numerous, so specific strategic interdependence is not modeled.">При олигополии несколько крупных фирм стратегически реагируют друг на друга. Здесь фирм много, поэтому специфическая стратегическая взаимозависимость не моделируется.</p></div>
+          <div class="card"><h3 class="cyan" data-ru="Сдвиг и движение вдоль спроса" data-en="Shift versus movement along demand">Сдвиг и движение вдоль спроса</h3><p class="small" data-ru="Собственная цена вызывает движение вдоль D. Вход, выход, предпочтения, реклама и действия соперников сдвигают D; вход также может увеличить её эластичность." data-en="The firm's own price causes movement along D. Entry, exit, preferences, advertising, and rival actions shift D; entry may also increase its elasticity.">Собственная цена вызывает движение вдоль D. Вход, выход, предпочтения, реклама и действия соперников сдвигают D; вход также может увеличить её эластичность.</p></div>
+        </div>
+      </article>
+    </section>
+
+    <section id="profit" class="tab-content" role="tabpanel">
+      <div class="split">
+        <article class="panel">
+          <h2 data-ru="Краткосрочная экономическая прибыль" data-en="Short-run economic profit">Краткосрочная экономическая прибыль</h2>
+          <p class="intro" data-ru="Сначала найдите Q* из MR = MC. Затем поднимитесь к кривой спроса, чтобы определить P*. Прибыль существует, если P* > ATC(Q*)." data-en="First find Q* from MR = MC. Then move up to demand to determine P*. Profit exists when P* > ATC(Q*).">Сначала найдите Q* из MR = MC. Затем поднимитесь к кривой спроса, чтобы определить P*. Прибыль существует, если P* &gt; ATC(Q*).</p>
+          <div class="formula">D: P = 120 − 2Q · MR = 120 − 4Q<br>ATC = 15 + 0.625Q + 350/Q · MC = 15 + 1.25Q</div>
+          <div class="controls">
+            <div class="control-box">
+              <label class="checkline"><input id="profit-area" type="checkbox" checked><span data-ru="Показать область прибыли" data-en="Show the profit area">Показать область прибыли</span></label>
+            </div>
+            <div class="control-box">
+              <div class="control-row"><span data-ru="Выбранный выпуск Q" data-en="Selected output Q">Выбранный выпуск Q</span><span id="profit-q" class="value red">20</span></div>
+              <input id="profit-slider" type="range" min="5" max="35" step="1" value="20" aria-label="Profit quantity">
+              <div class="control-row"><span data-ru="Цена P" data-en="Price P">Цена P</span><span id="profit-p" class="value blue"></span></div>
+              <div class="control-row"><span>ATC</span><span id="profit-atc" class="value purple"></span></div>
+              <div class="control-row"><span>MC</span><span id="profit-mc" class="value green"></span></div>
+              <div class="control-row"><span data-ru="Экономическая прибыль" data-en="Economic profit">Экономическая прибыль</span><span id="profit-total" class="value green"></span></div>
+            </div>
+          </div>
+          <div id="profit-status" class="status good" aria-live="polite"></div>
+          <p class="small" style="margin-top:14px" data-ru="Важно: наценка равна P − MC, прибыль на единицу равна P − ATC. Зелёный прямоугольник показывает прибыль, а не наценку." data-en="Important: markup is P − MC, while profit per unit is P − ATC. The green rectangle shows profit, not markup.">Важно: наценка равна P − MC, прибыль на единицу равна P − ATC. Зелёный прямоугольник показывает прибыль, а не наценку.</p>
+        </article>
+        <article class="panel chart-panel">
+          <div class="chart-title" data-ru="Согласованные кривые краткосрочной прибыли" data-en="Internally consistent short-run profit curves">Согласованные кривые краткосрочной прибыли</div>
+          <div class="chart-box"><canvas id="profit-chart" role="img" aria-label="Short-run profit chart"></canvas></div>
+        </article>
+      </div>
+    </section>
+
+    <section id="loss" class="tab-content" role="tabpanel">
+      <div class="split">
+        <article class="panel">
+          <h2 data-ru="Краткосрочный убыток, остановка и выход" data-en="Short-run loss, shutdown, and exit">Краткосрочный убыток, остановка и выход</h2>
+          <p class="intro" data-ru="Фирма минимизирует убыток при MR = MC. Убыток означает P < ATC, но краткосрочная остановка требуется только при P < AVC." data-en="The firm minimizes loss where MR = MC. A loss means P < ATC, but short-run shutdown is required only when P < AVC.">Фирма минимизирует убыток при MR = MC. Убыток означает P &lt; ATC, но краткосрочная остановка требуется только при P &lt; AVC.</p>
+          <div class="formula">D: P = 92 − 1.4Q · MR = 92 − 2.8Q<br>ATC = 34 + 0.6714286Q + 586/Q · MC = 34 + 1.342857Q</div>
+          <div class="controls">
+            <div class="control-box"><label class="checkline" style="color:#fecaca"><input id="loss-area" type="checkbox" checked><span data-ru="Показать область убытка" data-en="Show the loss area">Показать область убытка</span></label></div>
+            <div class="control-box">
+              <div class="control-row"><span data-ru="Выбранный выпуск Q" data-en="Selected output Q">Выбранный выпуск Q</span><span id="loss-q" class="value red">14</span></div>
+              <input id="loss-slider" type="range" min="5" max="30" step="1" value="14" aria-label="Loss quantity">
+              <div class="control-row"><span data-ru="Цена P" data-en="Price P">Цена P</span><span id="loss-p" class="value blue"></span></div>
+              <div class="control-row"><span>ATC</span><span id="loss-atc" class="value purple"></span></div>
+              <div class="control-row"><span>AVC</span><span id="loss-avc" class="value amber"></span></div>
+              <div class="control-row"><span data-ru="Экономический убыток" data-en="Economic loss">Экономический убыток</span><span id="loss-total" class="value red"></span></div>
+            </div>
+          </div>
+          <div id="loss-status" class="status warn" aria-live="polite"></div>
+          <p class="small" style="margin-top:14px" data-ru="Остановка — краткосрочное решение о выпуске; выход — долгосрочное решение покинуть рынок и избежать всех устранимых затрат." data-en="Shutdown is a short-run production decision; exit is a long-run decision to leave the market and avoid all avoidable costs.">Остановка — краткосрочное решение о выпуске; выход — долгосрочное решение покинуть рынок и избежать всех устранимых затрат.</p>
+        </article>
+        <article class="panel chart-panel">
+          <div class="chart-title" data-ru="Минимизация убытка с кривой AVC" data-en="Loss minimization with the AVC curve">Минимизация убытка с кривой AVC</div>
+          <div class="chart-box"><canvas id="loss-chart" role="img" aria-label="Short-run loss and shutdown chart"></canvas></div>
+        </article>
+      </div>
+    </section>
+
+    <section id="longrun" class="tab-content" role="tabpanel">
+      <div class="split">
+        <article class="panel">
+          <h2 data-ru="Долгосрочное равновесие и касание" data-en="Long-run equilibrium and tangency">Долгосрочное равновесие и касание</h2>
+          <p class="intro" data-ru="Прибыль вызывает вход и сдвиг спроса фирмы влево. Убыток вызывает выход и сдвиг спроса вправо. Равновесие требует одновременно MR = MC и P = ATC." data-en="Profit attracts entry and shifts firm demand left. Loss causes exit and shifts demand right. Equilibrium requires both MR = MC and P = ATC.">Прибыль вызывает вход и сдвиг спроса фирмы влево. Убыток вызывает выход и сдвиг спроса вправо. Равновесие требует одновременно MR = MC и P = ATC.</p>
+          <div class="formula">ATC = 24 + 0.4Q + 320/Q · MC = 24 + 0.8Q<br>D: P = (79.426 + shift) − 2Q</div>
+          <div class="control-box">
+            <div class="control-row"><span data-ru="Сдвиг спроса фирмы" data-en="Shift in firm demand">Сдвиг спроса фирмы</span><span id="lr-shift" class="value blue">0</span></div>
+            <input id="lr-slider" type="range" min="-20" max="20" step="1" value="0" aria-label="Demand shift">
+            <div class="control-row"><span>Q*</span><span id="lr-q" class="value red"></span></div>
+            <div class="control-row"><span>P*</span><span id="lr-p" class="value blue"></span></div>
+            <div class="control-row"><span>ATC(Q*)</span><span id="lr-atc" class="value purple"></span></div>
+            <div class="control-row"><span data-ru="Прибыль" data-en="Profit">Прибыль</span><span id="lr-profit" class="value green"></span></div>
+          </div>
+          <div id="lr-status" class="status good" aria-live="polite"></div>
+          <ul class="clean">
+            <li data-ru="Отрицательный сдвиг моделирует вход новых фирм." data-en="A negative shift represents entry by new firms.">Отрицательный сдвиг моделирует вход новых фирм.</li>
+            <li data-ru="Положительный сдвиг моделирует выход фирм." data-en="A positive shift represents exit by firms.">Положительный сдвиг моделирует выход фирм.</li>
+            <li data-ru="При нулевом сдвиге D действительно касается ATC." data-en="At zero shift, D is genuinely tangent to ATC.">При нулевом сдвиге D действительно касается ATC.</li>
+          </ul>
+        </article>
+        <article class="panel chart-panel">
+          <div class="chart-title" data-ru="Переход к долгосрочному равновесию" data-en="Adjustment toward long-run equilibrium">Переход к долгосрочному равновесию</div>
+          <div class="chart-box"><canvas id="lr-chart" role="img" aria-label="Long-run tangency chart"></canvas></div>
+        </article>
+      </div>
+    </section>
+
+    <section id="comparison" class="tab-content" role="tabpanel">
+      <article class="panel">
+        <h2 data-ru="Монополистическая и совершенная конкуренция" data-en="Monopolistic versus perfect competition">Монополистическая и совершенная конкуренция</h2>
+        <p class="intro" data-ru="В обеих моделях свободный вход приводит к нулевой долгосрочной экономической прибыли. Различаются форма спроса, масштаб выпуска и соотношение цены с MC." data-en="In both models free entry produces zero long-run economic profit. They differ in demand shape, output scale, and the relationship between price and MC.">В обеих моделях свободный вход приводит к нулевой долгосрочной экономической прибыли. Различаются форма спроса, масштаб выпуска и соотношение цены с MC.</p>
+        <div class="split equal">
+          <div class="card chart-panel"><h3 class="red" data-ru="Монополистическая конкуренция" data-en="Monopolistic competition">Монополистическая конкуренция</h3><div class="chart-box compact"><canvas id="cmp-mc-chart" role="img" aria-label="Monopolistic competition long-run chart"></canvas></div></div>
+          <div class="card chart-panel"><h3 class="green" data-ru="Совершенная конкуренция" data-en="Perfect competition">Совершенная конкуренция</h3><div class="chart-box compact"><canvas id="cmp-pc-chart" role="img" aria-label="Perfect competition long-run chart"></canvas></div></div>
+        </div>
+        <div class="grid-2" style="margin-top:16px">
+          <div class="card"><h3 class="amber" data-ru="Избыточная мощность" data-en="Excess capacity">Избыточная мощность</h3><p class="small" data-ru="Монополистический конкурент выпускает Q* ниже эффективного масштаба Qeff, соответствующего минимуму ATC. Избыточная мощность равна Qeff − Q*." data-en="A monopolistic competitor produces Q* below efficient scale Qeff, the quantity that minimizes ATC. Excess capacity equals Qeff − Q*.">Монополистический конкурент выпускает Q* ниже эффективного масштаба Qeff, соответствующего минимуму ATC. Избыточная мощность равна Qeff − Q*.</p><div class="formula">Excess capacity = Q<sub>eff</sub> − Q*</div></div>
+          <div class="card"><h3 class="blue" data-ru="Наценка над предельными издержками" data-en="Markup over marginal cost">Наценка над предельными издержками</h3><p class="small" data-ru="Убывающий спрос означает MR < P. Поэтому при MR = MC цена остаётся выше MC даже при P = ATC и нулевой экономической прибыли." data-en="Downward-sloping demand means MR < P. Therefore price remains above MC when MR = MC, even though P = ATC and economic profit is zero.">Убывающий спрос означает MR &lt; P. Поэтому при MR = MC цена остаётся выше MC даже при P = ATC и нулевой экономической прибыли.</p><div class="formula">Markup = P* − MC(Q*)</div></div>
+        </div>
+      </article>
+    </section>
+
+    <section id="welfare" class="tab-content" role="tabpanel">
+      <article class="panel">
+        <h2 data-ru="Благосостояние, внешние эффекты входа и политика" data-en="Welfare, entry externalities, and policy">Благосостояние, внешние эффекты входа и политика</h2>
+        <p class="intro" data-ru="Модель выявляет неэффективность, но не даёт простого вывода, что меньше разновидностей всегда лучше." data-en="The model identifies inefficiency but does not imply that fewer varieties are always better.">Модель выявляет неэффективность, но не даёт простого вывода, что меньше разновидностей всегда лучше.</p>
+        <div class="grid-3">
+          <div class="card"><h3 class="amber" data-ru="Наценка и безвозвратная потеря" data-en="Markup and deadweight loss">Наценка и безвозвратная потеря</h3><p class="small" data-ru="При P > MC существуют покупатели, чья готовность платить превышает ресурсную стоимость обслуживания, но ниже цены. Взаимовыгодные сделки не происходят." data-en="When P > MC, some buyers value the product above the resource cost of serving them but below the posted price. Mutually beneficial trades do not occur.">При P &gt; MC существуют покупатели, чья готовность платить превышает ресурсную стоимость обслуживания, но ниже цены. Взаимовыгодные сделки не происходят.</p></div>
+          <div class="card effect-positive"><h3 class="green" data-ru="Положительный внешний эффект разнообразия" data-en="Positive product-variety externality">Положительный внешний эффект разнообразия</h3><p class="small" data-ru="Новая разновидность улучшает выбор и соответствие предпочтениям. Участник не может присвоить весь дополнительный потребительский излишек." data-en="A new variety improves choice and preference matching. The entrant cannot capture all additional consumer surplus.">Новая разновидность улучшает выбор и соответствие предпочтениям. Участник не может присвоить весь дополнительный потребительский излишек.</p></div>
+          <div class="card effect-negative"><h3 class="red" data-ru="Отрицательный эффект переманивания бизнеса" data-en="Negative business-stealing externality">Отрицательный эффект переманивания бизнеса</h3><p class="small" data-ru="Новая фирма отнимает клиентов и маржинальный вклад у действующих продавцов, но не учитывает эту потерю в собственном решении о входе." data-en="A new firm takes customers and contribution margin from incumbents but does not count this loss in its private entry decision.">Новая фирма отнимает клиентов и маржинальный вклад у действующих продавцов, но не учитывает эту потерю в собственном решении о входе.</p></div>
+        </div>
+        <div class="grid-2" style="margin-top:16px">
+          <div class="card"><h3 class="cyan" data-ru="Слишком мало или слишком много фирм?" data-en="Too few or too many firms?">Слишком мало или слишком много фирм?</h3><p class="small" data-ru="Если выгода разнообразия доминирует, рыночного входа может быть недостаточно. Если доминирует переманивание бизнеса, вход может быть чрезмерным. Универсального ранжирования нет." data-en="If variety gains dominate, market entry may be too low. If business stealing dominates, entry may be excessive. There is no universal ranking.">Если выгода разнообразия доминирует, рыночного входа может быть недостаточно. Если доминирует переманивание бизнеса, вход может быть чрезмерным. Универсального ранжирования нет.</p></div>
+          <div class="card"><h3 class="purple" data-ru="Ограничения политики" data-en="Limits of policy">Ограничения политики</h3><p class="small" data-ru="Регулировать каждую дифференцированную фирму по правилу P = MC трудно и это создаст убытки, поскольку в долгосрочном равновесии MC < ATC. Полезнее устранять искусственные барьеры, обман и исключающие практики." data-en="Regulating every differentiated firm at P = MC is difficult and would create losses because MC < ATC in long-run equilibrium. Policy is more useful against artificial barriers, deception, and exclusionary practices.">Регулировать каждую дифференцированную фирму по правилу P = MC трудно и это создаст убытки, поскольку в долгосрочном равновесии MC &lt; ATC. Полезнее устранять искусственные барьеры, обман и исключающие практики.</p></div>
+        </div>
+      </article>
+    </section>
+
+    <section id="advertising" class="tab-content" role="tabpanel">
+      <article class="panel">
+        <h2 data-ru="Реклама, сигналы качества и репутация бренда" data-en="Advertising, quality signals, and brand reputation">Реклама, сигналы качества и репутация бренда</h2>
+        <p class="intro" data-ru="Положительный маржинальный вклад P − MC делает привлечение ещё одного покупателя ценным даже для фирмы с нулевой долгосрочной экономической прибылью." data-en="A positive contribution margin P − MC makes one more customer valuable even for a firm earning zero long-run economic profit.">Положительный маржинальный вклад P − MC делает привлечение ещё одного покупателя ценным даже для фирмы с нулевой долгосрочной экономической прибылью.</p>
+        <div class="grid-3">
+          <div class="card"><h3 class="red" data-ru="1. Убеждение" data-en="1. Persuasion">1. Убеждение</h3><p class="small" data-ru="Связывает товар со статусом или идентичностью, усиливает лояльность, делает спрос менее эластичным и может повышать наценку." data-en="Associates a product with status or identity, strengthens loyalty, makes demand less elastic, and may raise markup.">Связывает товар со статусом или идентичностью, усиливает лояльность, делает спрос менее эластичным и может повышать наценку.</p></div>
+          <div class="card"><h3 class="green" data-ru="2. Информация" data-en="2. Information">2. Информация</h3><p class="small" data-ru="Сообщает о товаре, цене, месте продажи и характеристиках, снижает издержки поиска и может усиливать ценовую конкуренцию." data-en="Communicates product, price, location, and features, lowers search cost, and may intensify price competition.">Сообщает о товаре, цене, месте продажи и характеристиках, снижает издержки поиска и может усиливать ценовую конкуренцию.</p></div>
+          <div class="card"><h3 class="amber" data-ru="3. Сигнал качества" data-en="3. Quality signal">3. Сигнал качества</h3><p class="small" data-ru="Крупные расходы могут быть достоверным сигналом, если качественный производитель окупает их повторными продажами, а низкокачественному производителю трудно выгодно имитировать сигнал." data-en="Large spending can be credible when a high-quality producer recovers it through repeat sales and a low-quality producer cannot profitably imitate the signal.">Крупные расходы могут быть достоверным сигналом, если качественный производитель окупает их повторными продажами, а низкокачественному производителю трудно выгодно имитировать сигнал.</p></div>
+        </div>
+        <div class="table-scroll" style="margin-top:16px">
+          <table class="data">
+            <thead><tr><th data-ru="Тип" data-en="Type">Тип</th><th data-ru="Повторные продажи" data-en="Repeat sales">Повторные продажи</th><th data-ru="Окупаемость рекламы" data-en="Advertising payoff">Окупаемость рекламы</th><th data-ru="Вывод" data-en="Result">Вывод</th></tr></thead>
+            <tbody>
+              <tr><td class="green" data-ru="Высокое качество" data-en="High quality">Высокое качество</td><td data-ru="Высокая будущая ценность" data-en="High future value">Высокая будущая ценность</td><td data-ru="Дорогая кампания может окупиться" data-en="A costly campaign can pay">Дорогая кампания может окупиться</td><td data-ru="Сигнал может быть достоверным" data-en="The signal can be credible">Сигнал может быть достоверным</td></tr>
+              <tr><td class="red" data-ru="Низкое качество" data-en="Low quality">Низкое качество</td><td data-ru="Низкая будущая ценность" data-en="Low future value">Низкая будущая ценность</td><td data-ru="Та же кампания может не окупиться" data-en="The same campaign may not pay">Та же кампания может не окупиться</td><td data-ru="Фирма избегает сигнала" data-en="The firm avoids the signal">Фирма избегает сигнала</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="grid-2" style="margin-top:16px">
+          <div class="card"><h3 class="blue" data-ru="Репутация бренда" data-en="Brand reputation">Репутация бренда</h3><p class="small" data-ru="Известное имя снижает неопределённость до покупки. Владелец защищает единый стандарт, потому что один серьёзный сбой уменьшает прибыль многих будущих сделок и точек." data-en="A recognized name reduces pre-purchase uncertainty. The owner protects consistent quality because one serious failure reduces profit from many future transactions and locations.">Известное имя снижает неопределённость до покупки. Владелец защищает единый стандарт, потому что один серьёзный сбой уменьшает прибыль многих будущих сделок и точек.</p></div>
+          <div class="card"><h3 class="purple" data-ru="Критический взгляд" data-en="Critical perspective">Критический взгляд</h3><p class="small" data-ru="Бренды могут конструировать мнимые различия и продавать образ. Экономический вопрос — снижает ли репутация неопределённость и создаёт ли стимул поддерживать качество; убеждение и информация могут действовать одновременно." data-en="Brands may manufacture perceived differences and sell an image. The economic question is whether reputation reduces uncertainty and creates incentives to maintain quality; persuasion and information can coexist.">Бренды могут конструировать мнимые различия и продавать образ. Экономический вопрос — снижает ли репутация неопределённость и создаёт ли стимул поддерживать качество; убеждение и информация могут действовать одновременно.</p></div>
+        </div>
+      </article>
+    </section>
+
+    <section id="summary" class="tab-content" role="tabpanel">
+      <article class="panel">
+        <h2 data-ru="Сравнительная матрица и итог главы" data-en="Comparison matrix and chapter summary">Сравнительная матрица и итог главы</h2>
+        <p class="intro" data-ru="Главу можно организовать вокруг трёх соотношений: MR = MC, долгосрочного P = ATC и сохраняющегося P > MC при дифференцированном спросе." data-en="The chapter can be organized around three relationships: MR = MC, long-run P = ATC, and the continuing P > MC under differentiated demand.">Главу можно организовать вокруг трёх соотношений: MR = MC, долгосрочного P = ATC и сохраняющегося P &gt; MC при дифференцированном спросе.</p>
+        <div class="table-scroll">
+          <table class="data">
+            <thead><tr><th data-ru="Признак" data-en="Feature">Признак</th><th class="green" data-ru="Совершенная конкуренция" data-en="Perfect competition">Совершенная конкуренция</th><th class="red" data-ru="Монополистическая конкуренция" data-en="Monopolistic competition">Монополистическая конкуренция</th><th class="purple" data-ru="Монополия" data-en="Monopoly">Монополия</th></tr></thead>
+            <tbody>
+              <tr><td data-ru="Цель" data-en="Goal">Цель</td><td data-ru="Максимум прибыли" data-en="Maximize profit">Максимум прибыли</td><td data-ru="Максимум прибыли" data-en="Maximize profit">Максимум прибыли</td><td data-ru="Максимум прибыли" data-en="Maximize profit">Максимум прибыли</td></tr>
+              <tr><td data-ru="Правило выпуска" data-en="Output rule">Правило выпуска</td><td>MR = MC</td><td>MR = MC</td><td>MR = MC</td></tr>
+              <tr><td data-ru="Краткосрочная прибыль возможна?" data-en="Short-run profit possible?">Краткосрочная прибыль возможна?</td><td data-ru="Да" data-en="Yes">Да</td><td data-ru="Да" data-en="Yes">Да</td><td data-ru="Да" data-en="Yes">Да</td></tr>
+              <tr><td data-ru="Получатель цены?" data-en="Price taker?">Получатель цены?</td><td data-ru="Да" data-en="Yes">Да</td><td data-ru="Нет" data-en="No">Нет</td><td data-ru="Нет" data-en="No">Нет</td></tr>
+              <tr><td data-ru="Цена и MC" data-en="Price versus MC">Цена и MC</td><td>P = MC</td><td>P &gt; MC</td><td>P &gt; MC</td></tr>
+              <tr><td data-ru="Эффективный выпуск?" data-en="Efficient output?">Эффективный выпуск?</td><td data-ru="Да" data-en="Yes">Да</td><td data-ru="Нет" data-en="No">Нет</td><td data-ru="Как правило, нет" data-en="Generally no">Как правило, нет</td></tr>
+              <tr><td data-ru="Число фирм" data-en="Number of firms">Число фирм</td><td data-ru="Много" data-en="Many">Много</td><td data-ru="Много" data-en="Many">Много</td><td data-ru="Одна" data-en="One">Одна</td></tr>
+              <tr><td data-ru="Долгосрочный вход?" data-en="Long-run entry?">Долгосрочный вход?</td><td data-ru="Да" data-en="Yes">Да</td><td data-ru="Да" data-en="Yes">Да</td><td data-ru="Нет" data-en="No">Нет</td></tr>
+              <tr><td data-ru="Долгосрочная экономическая прибыль" data-en="Long-run economic profit">Долгосрочная экономическая прибыль</td><td data-ru="Нулевая" data-en="Zero">Нулевая</td><td data-ru="Нулевая" data-en="Zero">Нулевая</td><td data-ru="Положительная возможна" data-en="Positive profit is possible">Положительная возможна</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="grid-2" style="margin-top:16px">
+          <div class="card"><h3 class="green" data-ru="Краткий итог" data-en="Chapter in a nutshell">Краткий итог</h3><ul class="clean"><li data-ru="Много фирм, дифференциация и свободный вход определяют структуру." data-en="Many firms, differentiation, and free entry define the structure.">Много фирм, дифференциация и свободный вход определяют структуру.</li><li data-ru="Краткосрочно возможны прибыль и убыток; цена считывается со спроса." data-en="Profit and loss are possible in the short run; price is read from demand.">Краткосрочно возможны прибыль и убыток; цена считывается со спроса.</li><li data-ru="Долгосрочно P = ATC, но P остаётся выше MC." data-en="In the long run P = ATC, but P remains above MC.">Долгосрочно P = ATC, но P остаётся выше MC.</li><li data-ru="Разнообразие имеет ценность, поэтому вывод о благосостоянии неоднозначен." data-en="Variety has value, so the welfare conclusion is ambiguous.">Разнообразие имеет ценность, поэтому вывод о благосостоянии неоднозначен.</li></ul></div>
+          <div class="card"><h3 class="amber" data-ru="Вопрос для проверки" data-en="Review question">Вопрос для проверки</h3><p class="small" data-ru="Почему фирма с нулевой долгосрочной экономической прибылью всё равно заинтересована в ещё одном покупателе?" data-en="Why is a firm earning zero long-run economic profit still eager to acquire one more customer?">Почему фирма с нулевой долгосрочной экономической прибылью всё равно заинтересована в ещё одном покупателе?</p><div class="formula">P − MC &gt; 0</div><p class="small" data-ru="Дополнительная продажа создаёт положительный маржинальный вклад в покрытие фиксированных затрат и прибыль." data-en="An additional sale makes a positive contribution toward fixed cost and profit.">Дополнительная продажа создаёт положительный маржинальный вклад в покрытие фиксированных затрат и прибыль.</p></div>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer><div class="shell" data-ru="Академический дашборд | Бизнес-аналитика и экономика | SDTE AlmaU 2026" data-en="Academic dashboard | Business analytics and economics | SDTE AlmaU 2026">Академический дашборд | Бизнес-аналитика и экономика | SDTE AlmaU 2026</div></footer>
+
+  <script>
+    "use strict";
+
+    let currentLang = "ru";
+    const COLORS = {
+      demand: "#60a5fa", mr: "#fb7185", mc: "#34d399", atc: "#c084fc",
+      avc: "#fbbf24", grid: "#24324a", text: "#cbd5e1", muted: "#64748b",
+      green: "#22c55e", red: "#ef4444", cyan: "#38bdf8", amber: "#f59e0b"
+    };
+
+    const words = {
+      ru: {
+        demand: "Спрос D", mr: "MR", mc: "MC", atc: "ATC", avc: "AVC",
+        priceLine: "P = MR = D", quantity: "Объём Q", priceCost: "Цена, издержки",
+        optimum: "Оптимум MR = MC", below: "MR > MC: выпуск следует увеличить.",
+        above: "MR < MC: выпуск следует уменьшить.", profit: "Прибыль", loss: "Убыток",
+        produce: "P выше AVC: фирма продолжает производство и минимизирует краткосрочный убыток.",
+        shutdown: "P ниже AVC: фирме следует временно остановить производство.",
+        tangency: "Долгосрочное касание: P = ATC, MR = MC и экономическая прибыль равна нулю.",
+        entry: "Вход новых фирм сдвигает спрос влево; положительная прибыль сокращается.",
+        exit: "Выход фирм сдвигает спрос вправо; убыток сокращается.",
+        efficient: "Эффективный масштаб", excess: "Избыточная мощность", markup: "Наценка"
+      },
+      en: {
+        demand: "Demand D", mr: "MR", mc: "MC", atc: "ATC", avc: "AVC",
+        priceLine: "P = MR = D", quantity: "Output Q", priceCost: "Price, cost",
+        optimum: "Optimum MR = MC", below: "MR > MC: output should increase.",
+        above: "MR < MC: output should decrease.", profit: "Profit", loss: "Loss",
+        produce: "P is above AVC: the firm produces and minimizes its short-run loss.",
+        shutdown: "P is below AVC: the firm should temporarily shut down.",
+        tangency: "Long-run tangency: P = ATC, MR = MC, and economic profit is zero.",
+        entry: "Entry shifts firm demand left and reduces positive profit.",
+        exit: "Exit shifts firm demand right and reduces loss.",
+        efficient: "Efficient scale", excess: "Excess capacity", markup: "Markup"
+      }
+    };
+
+    const w = key => words[currentLang][key] || key;
+    const f1 = value => Number(value).toFixed(1);
+    const f2 = value => Number(value).toFixed(2);
+    const signed = value => `${value > 0 ? "+" : ""}${Number(value).toFixed(0)}`;
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang;
+      document.title = lang === "ru" ? "Монополистическая конкуренция — Глава 16" : "Monopolistic Competition — Chapter 16";
+      document.querySelectorAll("[data-ru][data-en]").forEach(el => {
+        el.textContent = el.getAttribute(`data-${lang}`);
+      });
+      document.getElementById("lang-ru").classList.toggle("active", lang === "ru");
+      document.getElementById("lang-en").classList.toggle("active", lang === "en");
+      updateAll();
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll(".tab-btn").forEach(btn => {
+        const active = btn.dataset.tab === tabId;
+        btn.classList.toggle("active", active);
+        btn.setAttribute("aria-selected", String(active));
+      });
+      document.querySelectorAll(".tab-content").forEach(panel => panel.classList.toggle("active", panel.id === tabId));
+      requestAnimationFrame(() => setTimeout(updateAll, 20));
+    }
+
+    function canvasSetup(canvas) {
+      const rect = canvas.getBoundingClientRect();
+      if (rect.width < 80 || rect.height < 80) return null;
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+      const ctx = canvas.getContext("2d");
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      return { ctx, width: rect.width, height: rect.height };
+    }
+
+    function drawChart(canvasId, cfg) {
+      const canvas = document.getElementById(canvasId);
+      const setup = canvasSetup(canvas);
+      if (!setup) return;
+      const { ctx, width, height } = setup;
+      const pad = { left: 58, right: 18, top: 47, bottom: 47 };
+      const plotW = width - pad.left - pad.right;
+      const plotH = height - pad.top - pad.bottom;
+      const xMax = cfg.xMax || 50;
+      const yMax = cfg.yMax || 130;
+      const X = q => pad.left + (q / xMax) * plotW;
+      const Y = value => pad.top + (1 - value / yMax) * plotH;
+
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "#0b1220";
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.lineWidth = 1;
+      ctx.font = "11px system-ui, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "top";
+      for (let q = 0; q <= xMax; q += 10) {
+        ctx.strokeStyle = COLORS.grid;
+        ctx.beginPath(); ctx.moveTo(X(q), pad.top); ctx.lineTo(X(q), pad.top + plotH); ctx.stroke();
+        ctx.fillStyle = COLORS.muted; ctx.fillText(String(q), X(q), pad.top + plotH + 7);
+      }
+      ctx.textAlign = "right";
+      ctx.textBaseline = "middle";
+      for (let value = 0; value <= yMax; value += 20) {
+        ctx.strokeStyle = COLORS.grid;
+        ctx.beginPath(); ctx.moveTo(pad.left, Y(value)); ctx.lineTo(pad.left + plotW, Y(value)); ctx.stroke();
+        ctx.fillStyle = COLORS.muted; ctx.fillText(String(value), pad.left - 8, Y(value));
+      }
+
+      ctx.strokeStyle = "#64748b";
+      ctx.lineWidth = 1.2;
+      ctx.beginPath(); ctx.moveTo(pad.left, pad.top); ctx.lineTo(pad.left, pad.top + plotH); ctx.lineTo(pad.left + plotW, pad.top + plotH); ctx.stroke();
+
+      ctx.fillStyle = COLORS.text;
+      ctx.font = "11px system-ui, sans-serif";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "bottom";
+      ctx.fillText(w("quantity"), pad.left + plotW / 2, height - 6);
+      ctx.save();
+      ctx.translate(14, pad.top + plotH / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.fillText(w("priceCost"), 0, 0);
+      ctx.restore();
+
+      if (cfg.area) {
+        const x0 = X(0), x1 = X(cfg.area.q);
+        const yTop = Y(Math.max(cfg.area.top, cfg.area.bottom));
+        const yBottom = Y(Math.min(cfg.area.top, cfg.area.bottom));
+        ctx.fillStyle = cfg.area.fill;
+        ctx.fillRect(x0, yTop, x1 - x0, yBottom - yTop);
+        ctx.strokeStyle = cfg.area.stroke;
+        ctx.setLineDash([5, 4]);
+        ctx.strokeRect(x0, yTop, x1 - x0, yBottom - yTop);
+        ctx.setLineDash([]);
+        ctx.fillStyle = cfg.area.stroke;
+        ctx.font = "bold 11px system-ui, sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(cfg.area.label, (x0 + x1) / 2, (yTop + yBottom) / 2);
+      }
+
+      cfg.curves.forEach(curve => {
+        ctx.strokeStyle = curve.color;
+        ctx.lineWidth = curve.width || 2.4;
+        ctx.setLineDash(curve.dash || []);
+        ctx.beginPath();
+        let drawing = false;
+        const start = curve.start || 0.5;
+        for (let i = 0; i <= 320; i++) {
+          const q = start + (xMax - start) * i / 320;
+          const value = curve.fn(q);
+          if (!Number.isFinite(value) || value < 0 || value > yMax * 1.05) { drawing = false; continue; }
+          const px = X(q), py = Y(value);
+          if (!drawing) { ctx.moveTo(px, py); drawing = true; } else ctx.lineTo(px, py);
+        }
+        ctx.stroke();
+        ctx.setLineDash([]);
+      });
+
+      if (cfg.marker) {
+        const { q, p, atc, mc, label } = cfg.marker;
+        ctx.strokeStyle = "#e2e8f0";
+        ctx.lineWidth = 1.2;
+        ctx.setLineDash([5, 4]);
+        ctx.beginPath(); ctx.moveTo(X(q), Y(0)); ctx.lineTo(X(q), Y(p)); ctx.lineTo(X(0), Y(p)); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = "#f8fafc";
+        ctx.beginPath(); ctx.arc(X(q), Y(p), 4.2, 0, Math.PI * 2); ctx.fill();
+        ctx.font = "bold 11px system-ui, sans-serif";
+        ctx.textAlign = "left"; ctx.textBaseline = "bottom";
+        ctx.fillText(label || "P*", X(q) + 7, Y(p) - 5);
+        ctx.textAlign = "center"; ctx.textBaseline = "top";
+        ctx.fillText("Q*", X(q), Y(0) + 9);
+        if (Number.isFinite(atc) && Math.abs(atc - p) > 1) {
+          ctx.fillStyle = COLORS.atc; ctx.beginPath(); ctx.arc(X(q), Y(atc), 3.6, 0, Math.PI * 2); ctx.fill();
+        }
+        if (Number.isFinite(mc)) {
+          ctx.fillStyle = COLORS.mc; ctx.beginPath(); ctx.arc(X(q), Y(mc), 3.2, 0, Math.PI * 2); ctx.fill();
+        }
+      }
+
+      if (cfg.efficientQ) {
+        ctx.strokeStyle = COLORS.amber;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath(); ctx.moveTo(X(cfg.efficientQ), Y(0)); ctx.lineTo(X(cfg.efficientQ), Y(cfg.efficientY || 0)); ctx.stroke();
+        ctx.setLineDash([]);
+        ctx.fillStyle = COLORS.amber;
+        ctx.font = "bold 10px system-ui, sans-serif";
+        ctx.textAlign = "center"; ctx.textBaseline = "bottom";
+        ctx.fillText(w("efficient"), X(cfg.efficientQ), pad.top + plotH - 8);
+      }
+
+      if (cfg.excess && cfg.excess.to > cfg.excess.from) {
+        const y = pad.top + plotH - 18;
+        ctx.strokeStyle = COLORS.cyan; ctx.fillStyle = COLORS.cyan; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(X(cfg.excess.from), y); ctx.lineTo(X(cfg.excess.to), y); ctx.stroke();
+        [[X(cfg.excess.from), 1], [X(cfg.excess.to), -1]].forEach(([x, direction]) => {
+          ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + 6 * direction, y - 4); ctx.lineTo(x + 6 * direction, y + 4); ctx.closePath(); ctx.fill();
+        });
+        ctx.font = "bold 10px system-ui, sans-serif"; ctx.textAlign = "center"; ctx.textBaseline = "bottom";
+        ctx.fillText(w("excess"), (X(cfg.excess.from) + X(cfg.excess.to)) / 2, y - 4);
+      }
+
+      if (cfg.annotation) {
+        ctx.fillStyle = cfg.annotation.color || COLORS.text;
+        ctx.font = "bold 11px system-ui, sans-serif";
+        ctx.textAlign = "left";
+        ctx.textBaseline = "top";
+        ctx.fillText(cfg.annotation.text, X(cfg.annotation.q) + 10, Y(cfg.annotation.y) - 26);
+      }
+
+      let legendX = pad.left;
+      const legendY = 17;
+      ctx.font = "11px system-ui, sans-serif";
+      ctx.textAlign = "left";
+      ctx.textBaseline = "middle";
+      cfg.curves.forEach(curve => {
+        ctx.strokeStyle = curve.color; ctx.lineWidth = 2.5; ctx.setLineDash(curve.dash || []);
+        ctx.beginPath(); ctx.moveTo(legendX, legendY); ctx.lineTo(legendX + 18, legendY); ctx.stroke(); ctx.setLineDash([]);
+        ctx.fillStyle = COLORS.text; ctx.fillText(curve.label, legendX + 23, legendY);
+        legendX += 31 + ctx.measureText(curve.label).width;
+      });
+    }
+
+    function profitModel(q) {
+      const p = 120 - 2 * q;
+      const mr = 120 - 4 * q;
+      const atc = 15 + 0.625 * q + 350 / q;
+      const mc = 15 + 1.25 * q;
+      const avc = 15 + 0.625 * q;
+      return { q, p, mr, atc, mc, avc, profit: (p - atc) * q };
+    }
+
+    function lossModel(q) {
+      const k = 47 / 70;
+      const p = 92 - 1.4 * q;
+      const mr = 92 - 2.8 * q;
+      const atc = 34 + k * q + 586 / q;
+      const mc = 34 + 2 * k * q;
+      const avc = 34 + k * q;
+      return { q, p, mr, atc, mc, avc, profit: (p - atc) * q };
+    }
+
+    function updateProfit() {
+      const q = Number(document.getElementById("profit-slider").value);
+      const m = profitModel(q);
+      document.getElementById("profit-q").textContent = q === 20 ? `${q} · ${w("optimum")}` : String(q);
+      document.getElementById("profit-p").textContent = f1(m.p);
+      document.getElementById("profit-atc").textContent = f1(m.atc);
+      document.getElementById("profit-mc").textContent = f1(m.mc);
+      document.getElementById("profit-total").textContent = f1(m.profit);
+      const status = document.getElementById("profit-status");
+      status.className = `status ${q === 20 ? "good" : "warn"}`;
+      status.textContent = q === 20
+        ? `${w("optimum")}: Q* = 20, P* = 80.0, ATC = 45.0, π = 700.0.`
+        : (q < 20 ? w("below") : w("above"));
+      const show = document.getElementById("profit-area").checked;
+      drawChart("profit-chart", {
+        xMax: 40, yMax: 130,
+        curves: [
+          { label: w("demand"), color: COLORS.demand, fn: x => 120 - 2 * x, width: 3 },
+          { label: w("mr"), color: COLORS.mr, fn: x => 120 - 4 * x },
+          { label: w("mc"), color: COLORS.mc, fn: x => 15 + 1.25 * x },
+          { label: w("atc"), color: COLORS.atc, fn: x => 15 + 0.625 * x + 350 / x },
+          { label: w("avc"), color: COLORS.avc, fn: x => 15 + 0.625 * x, dash: [5, 4] }
+        ],
+        area: show && m.p > m.atc ? { q, top: m.p, bottom: m.atc, fill: "rgba(34,197,94,.20)", stroke: COLORS.green, label: w("profit") } : null,
+        marker: { q, p: m.p, atc: m.atc, mc: m.mc }
+      });
+    }
+
+    function updateLoss() {
+      const q = Number(document.getElementById("loss-slider").value);
+      const m = lossModel(q);
+      const loss = Math.max(0, -m.profit);
+      document.getElementById("loss-q").textContent = q === 14 ? `${q} · ${w("optimum")}` : String(q);
+      document.getElementById("loss-p").textContent = f1(m.p);
+      document.getElementById("loss-atc").textContent = f1(m.atc);
+      document.getElementById("loss-avc").textContent = f1(m.avc);
+      document.getElementById("loss-total").textContent = `−${f1(loss)}`;
+      const status = document.getElementById("loss-status");
+      const direction = q === 14 ? "" : ` ${q < 14 ? w("below") : w("above")}`;
+      status.className = `status ${m.p >= m.avc ? "warn" : "bad"}`;
+      status.textContent = `${m.p >= m.avc ? w("produce") : w("shutdown")}${direction}`;
+      const show = document.getElementById("loss-area").checked;
+      const k = 47 / 70;
+      drawChart("loss-chart", {
+        xMax: 40, yMax: 130,
+        curves: [
+          { label: w("demand"), color: COLORS.demand, fn: x => 92 - 1.4 * x, width: 3 },
+          { label: w("mr"), color: COLORS.mr, fn: x => 92 - 2.8 * x },
+          { label: w("mc"), color: COLORS.mc, fn: x => 34 + 2 * k * x },
+          { label: w("atc"), color: COLORS.atc, fn: x => 34 + k * x + 586 / x },
+          { label: w("avc"), color: COLORS.avc, fn: x => 34 + k * x, dash: [5, 4] }
+        ],
+        area: show && m.atc > m.p ? { q, top: m.atc, bottom: m.p, fill: "rgba(239,68,68,.20)", stroke: COLORS.red, label: w("loss") } : null,
+        marker: { q, p: m.p, atc: m.atc, mc: m.mc }
+      });
+    }
+
+    const LR_Q = Math.sqrt(320 / 2.4);
+    const LR_ATC = q => 24 + 0.4 * q + 320 / q;
+    const LR_A0 = LR_ATC(LR_Q) + 2 * LR_Q;
+
+    function updateLongRun() {
+      const shift = Number(document.getElementById("lr-slider").value);
+      const a = LR_A0 + shift;
+      const q = Math.max(0.5, (a - 24) / 4.8);
+      const p = a - 2 * q;
+      const atc = LR_ATC(q);
+      const mc = 24 + 0.8 * q;
+      const rawProfit = (p - atc) * q;
+      const profit = Math.abs(rawProfit) < 0.005 ? 0 : rawProfit;
+      document.getElementById("lr-shift").textContent = shift === 0 ? "0" : signed(shift);
+      document.getElementById("lr-q").textContent = f2(q);
+      document.getElementById("lr-p").textContent = f2(p);
+      document.getElementById("lr-atc").textContent = f2(atc);
+      document.getElementById("lr-profit").textContent = f2(profit);
+      const status = document.getElementById("lr-status");
+      status.className = `status ${shift === 0 ? "good" : "warn"}`;
+      status.textContent = shift === 0 ? w("tangency") : (shift < 0 ? w("entry") : w("exit"));
+      drawChart("lr-chart", {
+        xMax: 45, yMax: 120,
+        curves: [
+          { label: w("demand"), color: COLORS.demand, fn: x => a - 2 * x, width: 3 },
+          { label: w("mr"), color: COLORS.mr, fn: x => a - 4 * x },
+          { label: w("mc"), color: COLORS.mc, fn: x => 24 + 0.8 * x },
+          { label: w("atc"), color: COLORS.atc, fn: x => LR_ATC(x) }
+        ],
+        marker: { q, p, atc, mc },
+        annotation: shift === 0 ? { q, y: p, text: "D tangent to ATC · P = ATC", color: COLORS.amber } : null
+      });
+    }
+
+    function updateComparison() {
+      const atc = q => 20 + 0.5 * q + 400 / q;
+      const mc = q => 20 + q;
+      const qEff = Math.sqrt(800);
+      const pPC = atc(qEff);
+      const qMC = Math.sqrt(400 / 2.3);
+      const pMC = atc(qMC);
+      const aMC = pMC + 1.8 * qMC;
+      drawChart("cmp-mc-chart", {
+        xMax: 50, yMax: 120,
+        curves: [
+          { label: w("demand"), color: COLORS.demand, fn: x => aMC - 1.8 * x, width: 3 },
+          { label: w("mr"), color: COLORS.mr, fn: x => aMC - 3.6 * x },
+          { label: w("mc"), color: COLORS.mc, fn: mc },
+          { label: w("atc"), color: COLORS.atc, fn: atc }
+        ],
+        marker: { q: qMC, p: pMC, atc: pMC, mc: mc(qMC) },
+        efficientQ: qEff, efficientY: atc(qEff),
+        excess: { from: qMC, to: qEff }
+      });
+      drawChart("cmp-pc-chart", {
+        xMax: 50, yMax: 120,
+        curves: [
+          { label: w("priceLine"), color: COLORS.demand, fn: () => pPC, width: 3 },
+          { label: w("mc"), color: COLORS.mc, fn: mc },
+          { label: w("atc"), color: COLORS.atc, fn: atc }
+        ],
+        marker: { q: qEff, p: pPC, atc: pPC, mc: pPC },
+        annotation: { q: qEff, y: pPC, text: "P = MC = min ATC", color: COLORS.green }
+      });
+    }
+
+    function updateAll() {
+      updateProfit();
+      updateLoss();
+      updateLongRun();
+      updateComparison();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".tab-btn").forEach(btn => btn.addEventListener("click", () => switchTab(btn.dataset.tab)));
+      document.getElementById("lang-ru").addEventListener("click", () => setLanguage("ru"));
+      document.getElementById("lang-en").addEventListener("click", () => setLanguage("en"));
+      ["profit-slider", "profit-area"].forEach(id => document.getElementById(id).addEventListener("input", updateProfit));
+      ["loss-slider", "loss-area"].forEach(id => document.getElementById(id).addEventListener("input", updateLoss));
+      document.getElementById("lr-slider").addEventListener("input", updateLongRun);
+      setLanguage("ru");
+    });
+
+    let resizeTimer;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(updateAll, 100);
+    });
+  </script>
+</body>
+</html>
