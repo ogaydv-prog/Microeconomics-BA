@@ -32,40 +32,45 @@
             position: relative;
         }
 
-        .top-left-logo {
-            position: absolute;
-            top: 25px;
-            left: 30px;
-            width: 55px;
-            height: 55px;
-            object-fit: contain;
-        }
-
-        header {
+        /* Шапка страницы */
+        .header-container {
+            width: 100%;
+            max-width: 1150px;
+            position: relative;
             text-align: center;
             margin-top: 10px;
             margin-bottom: 25px;
         }
 
+        .top-left-logo {
+            position: absolute;
+            top: 5px;
+            left: 0;
+            width: 55px;
+            height: 55px;
+            object-fit: contain;
+        }
+
         h1 {
-            font-size: 38px;
+            font-size: 40px;
             font-weight: 900;
             color: #001e50;
             margin-bottom: 8px;
-            margin-top: 15px;
+            margin-top: 5px;
             letter-spacing: 0.5px;
             text-transform: uppercase;
         }
 
         .subtitle {
             font-size: 15px;
-            color: #555555;
+            color: #64748b;
             max-width: 750px;
             line-height: 1.5;
             margin: 0 auto;
             font-weight: 500;
         }
 
+        /* Сетка карточек */
         .grid-container {
             display: flex;
             flex-wrap: wrap;
@@ -78,7 +83,7 @@
         }
 
         .card {
-            display: inline-block;
+            display: block;
             text-decoration: none;
             background: #ffffff;
             border: 2px solid #e2e8f0;
@@ -91,6 +96,7 @@
             position: relative;
             padding: 0;
             cursor: pointer;
+            flex-shrink: 0;
         }
 
         .card img {
@@ -130,8 +136,10 @@
             padding-bottom: 20px;
             text-align: center;
             line-height: 1.6;
+            width: 100%;
         }
 
+        /* МОДАЛЬНОЕ ОКНО ПАРОЛЯ */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -245,69 +253,79 @@
             display: none;
         }
 
+        /* ПОЛНАЯ АДАПТИВНОСТЬ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ */
         @media (max-width: 768px) {
             body {
-                padding: 10px 15px;
+                padding: 12px 10px;
             }
 
-            .top-left-logo {
-                position: relative;
-                top: 0;
-                left: 0;
-                margin: 10px auto 5px auto;
-                display: block;
-            }
-
-            header {
+            .header-container {
                 margin-top: 0;
                 margin-bottom: 20px;
             }
 
+            .top-left-logo {
+                position: static;
+                display: block;
+                margin: 0 auto 10px auto;
+                width: 50px;
+                height: 50px;
+            }
+
             h1 {
-                font-size: 26px !important;
-                margin-top: 5px;
+                font-size: clamp(22px, 7vw, 32px) !important;
+                margin-top: 0;
+                margin-bottom: 6px;
             }
 
             .subtitle {
-                text-indent: 0 !important;
                 font-size: 13px !important;
-                padding: 0 10px;
+                line-height: 1.4;
+                padding: 0 5px;
             }
 
+            /* Четкая сетка из 2 колонок для всех смартфонов */
             .grid-container {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
                 gap: 12px;
                 padding-bottom: 20px;
+                max-width: 420px;
             }
 
             .card {
-                width: calc(50% - 6px);
+                width: 100%;
                 height: auto;
                 aspect-ratio: 195 / 255;
+                border-radius: 12px;
+            }
+
+            footer {
+                font-size: 12px;
+                padding-top: 20px;
+                padding-bottom: 15px;
             }
         }
 
-        @media (max-width: 380px) {
-            .card {
-                width: 100%;
-                max-width: 240px;
+        @media (max-width: 360px) {
+            .grid-container {
+                gap: 8px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Логотип AlmaU -->
-    <img src="https://ogaydv-prog.github.io/Microeconomics-BA/almau.jpg" alt="AlmaU Logo" class="top-left-logo">
+    <header class="header-container">
+        <!-- Логотип AlmaU (по центру на смартфонах, слева на ПК) -->
+        <img src="https://ogaydv-prog.github.io/Microeconomics-BA/almau.jpg" alt="AlmaU Logo" class="top-left-logo">
 
-    <header>
-        <h1 style="color: #001e50 !important; text-transform: uppercase !important; font-weight: 700 !important; font-size: 42px !important; letter-spacing: 1px;">
-            МИКРОЭКОНОМИКА
-        </h1>
+        <h1>МИКРОЭКОНОМИКА</h1>
         <div style="max-width: 800px; margin: 0 auto; line-height: 1.6;">
-            <p class="subtitle" style="color: #94a3b8; font-weight: 400;">
+            <p class="subtitle">
                 Интерактивный образовательный портал <span style="color: #cbd5e1; font-weight: 300; margin: 0 6px;">|</span> Бизнес-Аналитика и Экономика
             </p>
-            <p style="color: #94a3b8; font-size: 15px; font-weight: 400; margin-top: 4px; text-align: center;">
+            <p style="color: #94a3b8; font-size: 14px; font-weight: 500; margin-top: 4px; text-align: center;">
                 AlmaU 2026
             </p>
         </div>
@@ -411,7 +429,6 @@
 
             if (cleanEntered === TARGET_KEY) {
                 closeMC1Modal();
-                // Точный путь с заглавной папкой MC1
                 window.location.href = "MC1/index_mc1.html";
             } else {
                 err.style.display = 'block';
