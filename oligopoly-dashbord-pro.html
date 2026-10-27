@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Interactive bilingual dashboard for Chapter 17 on Oligopoly">
+  <title>Олигополия </title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0f172a;
+      --panel: rgba(30, 41, 59, 0.72);
+      --panel-solid: #111c31;
+      --card: #111827;
+      --line: #334155;
+      --muted: #94a3b8;
+      --text: #f8fafc;
+      --red: #ef4444;
+      --blue: #3b82f6;
+      --green: #10b981;
+      --amber: #f59e0b;
+      --purple: #a855f7;
+      --cyan: #38bdf8;
+      --indigo: #818cf8;
+      --radius: 16px;
+      --shadow: 0 16px 38px rgba(0, 0, 0, 0.22);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(59, 130, 246, 0.10), transparent 24rem),
+        radial-gradient(circle at 90% 15%, rgba(239, 68, 68, 0.08), transparent 25rem),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    button, input { font: inherit; }
+    button { color: inherit; }
+    .shell { width: min(1280px, calc(100% - 32px)); margin: 0 auto; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(15, 23, 42, 0.96);
+      border-bottom: 1px solid #24324a;
+      box-shadow: 0 8px 26px rgba(0, 0, 0, 0.24);
+      backdrop-filter: blur(14px);
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 13px 0;
+    }
+
+    .brand { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .brand-icon { font-size: 28px; }
+    h1, h2, h3, h4, p { margin-top: 0; }
+    h1 { margin-bottom: 1px; font-size: 18px; letter-spacing: -0.01em; }
+    .subtitle { margin: 0; color: var(--muted); font-size: 12px; }
+
+    .lang-switch {
+      display: flex;
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #1e293b;
+      flex: 0 0 auto;
+    }
+
+    .lang-btn {
+      border: 0;
+      border-radius: 7px;
+      padding: 6px 12px;
+      cursor: pointer;
+      background: transparent;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .lang-btn.active { background: var(--red); color: white; }
+
+    .tabs-wrap { border-top: 1px solid #24324a; padding: 9px 0 11px; }
+    .tabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; }
+    .tab-btn {
+      min-height: 44px;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      padding: 8px 10px;
+      background: #1e293b;
+      color: #cbd5e1;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 650;
+      cursor: pointer;
+      transition: transform 150ms ease, background 150ms ease, border-color 150ms ease;
+    }
+    .tab-btn:hover { transform: translateY(-1px); border-color: #475569; }
+    .tab-btn.active { background: var(--red); border-color: #fb7185; color: #fff; box-shadow: 0 6px 17px rgba(239, 68, 68, 0.28); }
+
+    main { padding: 26px 0 42px; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fade 180ms ease-out; }
+    @keyframes fade { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
+
+    .stack { display: grid; gap: 20px; }
+    .panel {
+      padding: 24px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .panel h2 { margin-bottom: 7px; font-size: 21px; line-height: 1.25; }
+    .panel h3 { margin-bottom: 9px; font-size: 15px; }
+    .intro { color: #cbd5e1; font-size: 13px; max-width: 1100px; }
+    .small { color: #cbd5e1; font-size: 12px; }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .grid-6 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .split { display: grid; grid-template-columns: minmax(300px, 0.8fr) minmax(0, 1.55fr); gap: 20px; align-items: stretch; }
+    .split.equal { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+    .card {
+      padding: 17px;
+      background: rgba(15, 23, 42, 0.82);
+      border: 1px solid var(--line);
+      border-radius: 13px;
+    }
+    .card p:last-child, .card ul:last-child { margin-bottom: 0; }
+    .card-icon { font-size: 25px; margin-bottom: 6px; }
+    .blue { color: #60a5fa; }
+    .red { color: #fb7185; }
+    .green { color: #34d399; }
+    .amber { color: #fbbf24; }
+    .purple { color: #c084fc; }
+    .cyan { color: #67e8f9; }
+
+    ul.clean { margin: 7px 0 0; padding-left: 19px; color: #cbd5e1; font-size: 12px; }
+    ul.clean li + li { margin-top: 6px; }
+
+    .formula {
+      margin: 12px 0;
+      padding: 10px 12px;
+      border: 1px solid #293750;
+      border-radius: 9px;
+      background: #0b1220;
+      color: #f8fafc;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 12px;
+      text-align: center;
+    }
+
+    .logic-table, table.data {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 12px; }
+    table.data th, table.data td, .logic-table th, .logic-table td {
+      padding: 11px 12px;
+      border-bottom: 1px solid #293750;
+      vertical-align: middle;
+      text-align: left;
+    }
+    table.data th, .logic-table th { background: #0b1220; color: #cbd5e1; font-size: 10px; text-transform: uppercase; letter-spacing: 0.04em; }
+    table.data tbody tr:nth-child(even), .logic-table tbody tr:nth-child(even) { background: rgba(30, 41, 59, 0.35); }
+    table.data tr:last-child td, .logic-table tr:last-child td { border-bottom: 0; }
+    
+    .matrix-table { width: 100%; border-collapse: collapse; text-align: center; font-size: 13px; }
+    .matrix-table th, .matrix-table td { padding: 14px; border: 1px solid var(--line); }
+    .matrix-table th { background: #0b1220; }
+    .cell-nash { background: rgba(239, 68, 68, 0.2) !important; border: 2px solid var(--red) !important; }
+    .cell-coop { background: rgba(16, 185, 129, 0.2) !important; border: 2px solid var(--green) !important; }
+
+    .controls { display: grid; gap: 14px; }
+    .control-box { padding: 15px; background: rgba(15, 23, 42, 0.88); border: 1px solid var(--line); border-radius: 12px; }
+    .control-row { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; font-size: 12px; }
+    .control-row + .control-row { margin-top: 7px; }
+    .value { font-family: "SFMono-Regular", Consolas, monospace; font-weight: 800; }
+    input[type="range"] { width: 100%; accent-color: var(--red); cursor: pointer; margin: 12px 0 4px; }
+
+    .status {
+      margin-top: 12px;
+      padding: 12px 13px;
+      border-left: 3px solid var(--cyan);
+      background: rgba(14, 116, 144, 0.12);
+      border-radius: 7px;
+      color: #dbeafe;
+      font-size: 12px;
+    }
+    .status.good { border-color: var(--green); background: rgba(16, 185, 129, 0.10); }
+    .status.warn { border-color: var(--amber); background: rgba(245, 158, 11, 0.10); }
+    .status.bad { border-color: var(--red); background: rgba(239, 68, 68, 0.11); }
+
+    .case-note {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border: 1px solid #3b4d68;
+      border-radius: 10px;
+      background: rgba(30, 41, 59, 0.62);
+      color: #dbeafe;
+      font-size: 12px;
+    }
+    .case-note.warning { border-color: #92400e; background: rgba(146, 64, 14, 0.16); }
+    .case-note strong { color: #f8fafc; }
+    .source-list a { color: #7dd3fc; text-underline-offset: 2px; }
+
+    .chart-panel { min-width: 0; }
+    .chart-title { margin-bottom: 8px; font-size: 13px; font-weight: 800; }
+    .chart-box { width: 100%; height: 400px; border-radius: 12px; overflow: hidden; background: #0b1220; border: 1px solid #26344c; }
+    .chart-box.compact { height: 320px; }
+    canvas { display: block; width: 100%; height: 100%; }
+
+    footer { padding: 18px 0; border-top: 1px solid #24324a; color: #64748b; text-align: center; font-size: 12px; }
+
+    @media (max-width: 980px) {
+      .tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .grid-3, .grid-6 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .split, .split.equal { grid-template-columns: 1fr; }
+      .chart-box { height: 360px; }
+    }
+    @media (max-width: 640px) {
+      .shell { width: min(100% - 20px, 1280px); }
+      .topbar { align-items: flex-start; }
+      .brand-icon { display: none; }
+      h1 { font-size: 16px; }
+      .subtitle { font-size: 10px; }
+      .tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .tab-btn { font-size: 11px; }
+      main { padding-top: 16px; }
+      .panel { padding: 17px; }
+      .grid-2, .grid-3, .grid-6 { grid-template-columns: 1fr; }
+      .chart-box, .chart-box.compact { height: 320px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="shell topbar">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">🏭</div>
+        <div>
+          <h1 id="main-title" data-ru="Олигополия" data-en="Oligopoly">Олигополия</h1>
+          <p class="subtitle" data-ru="Интерактивный академический дашборд | SDTE |  AlmaU 2026" data-en="Interactive academic dashboard | SDTE |AlmaU 2026">Интерактивный академический дашборд | Глава 17 | SDTE AlmaU 2026</p>
+        </div>
+      </div>
+      <div class="lang-switch" aria-label="Language switcher">
+        <button class="lang-btn active" id="lang-ru" type="button">RU</button>
+        <button class="lang-btn" id="lang-en" type="button">EN</button>
+      </div>
+    </div>
+    <div class="tabs-wrap">
+      <nav class="shell tabs" role="tablist" aria-label="Chapter sections">
+        <button class="tab-btn active" role="tab" aria-selected="true" data-tab="overview"><span aria-hidden="true">📋</span> <span data-ru="1. Обзор и цели" data-en="1. Overview & Goals">1. Обзор и цели</span></button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="framework"><span aria-hidden="true">🏛️</span> <span data-ru="2. Базовая логика" data-en="2. Core Framework">2. Базовая логика</span></button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="duopoly"><span aria-hidden="true">💧</span> <span data-ru="3. Дуополия" data-en="3. Duopoly Model">3. Дуополия</span></button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="firms-size"><span aria-hidden="true">📈</span> <span data-ru="4. Число фирм" data-en="4. Size & Output">4. Число фирм</span></button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="gametheory"><span aria-hidden="true">🎲</span> <span data-ru="5. Теория игр" data-en="5. Game Theory">5. Теория игр</span></button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="applications"><span aria-hidden="true">⚔️</span> <span data-ru="6. Гонка вооружений" data-en="6. Arms Race & Applications">6. Гонка вооружений</span></button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="repeated"><span aria-hidden="true">🔄</span> <span data-ru="7. Повторные игры" data-en="7. Repeated Games">7. Повторные игры</span></button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="policy"><span aria-hidden="true">⚖️</span> <span data-ru="8. Антитраст" data-en="8. Public Policy">8. Антитраст</span></button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="cases"><span aria-hidden="true">💼</span> <span data-ru="9. Споры и кейсы" data-en="9. Controversies">9. Споры и кейсы</span></button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="summary"><span aria-hidden="true">📌</span> <span data-ru="10. Итоги и глоссарий" data-en="10. Summary">10. Итоги и глоссарий</span></button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="shell">
+    <!-- 1. OVERVIEW -->
+    <section id="overview" class="tab-content active" role="tabpanel">
+      <div class="stack">
+        <article class="panel">
+          <h2 data-ru="Цели и результаты обучения (Глава 17)" data-en="Learning Objectives and Outcomes (Chapter 17)">Цели и результаты обучения (Глава 17)</h2>
+          <p class="intro" data-ru="Глава раскрывает механику стратегической взаимозависимости фирм на олигопольном рынке, фундаментальное противоречие между коллективным сотрудничеством и личным интересом, а также роли теории игр и антимонопольного регулирования." data-en="This chapter explores strategic interdependence among oligopolists, the fundamental tension between cooperation and self-interest, game theory applications, and antitrust policies.">Глава раскрывает механику стратегической взаимозависимости фирм на олигопольном рынке, фундаментальное противоречие между коллективным сотрудничеством и личным интересом, а также роли теории игр и антимонопольного регулирования.</p>
+          <div class="grid-6">
+            <div class="card"><div class="card-icon">🎯</div><h3 class="red" data-ru="1. Понятия рынков" data-en="1. Key Concepts">1. Понятия рынков</h3><p class="small" data-ru="Определение олигополии, дуополии, сговора, картеля, равновесия Нэша и доминирующей стратегии." data-en="Define oligopoly, duopoly, collusion, cartel, Nash equilibrium, and dominant strategy.">Определение олигополии, дуополии, сговора, картеля, равновесия Нэша и доминирующей стратегии.</p></div>
+            <div class="card"><div class="card-icon">⚖️</div><h3 class="blue" data-ru="2. Ориентиры рынка" data-en="2. Market Benchmarks">2. Ориентиры рынка</h3><p class="small" data-ru="Сравнение монополии, олигополии и конкуренции по цене, выпуску и благосостоянию." data-en="Compare monopoly, oligopoly, and perfect competition in terms of output, price, and surplus.">Сравнение монополии, олигополии и конкуренции по цене, выпуску и благосостоянию.</p></div>
+            <div class="card"><div class="card-icon">💧</div><h3 class="green" data-ru="3. Хрупкость картеля" data-en="3. Cartel Instability">3. Хрупкость картеля</h3><p class="small" data-ru="Причины, почему картель максимизирует общую прибыль, но неустойчив при независимом выборе." data-en="Explain why cartels maximize joint profit but fail when firms act in self-interest.">Причины, почему картель максимизирует общую прибыль, но неустойчив при независимом выборе.</p></div>
+            <div class="card"><div class="card-icon">🎲</div><h3 class="amber" data-ru="4. Теория игр" data-en="4. Game Theory">4. Теория игр</h3><p class="small" data-ru="Чтение матриц выигрышей, поиск доминирующих стратегий и равновесия Нэша в дилемме заключённых." data-en="Read payoff matrices, identify dominant strategies, and locate Nash equilibria.">Чтение матриц выигрышей, поиск доминирующих стратегий и равновесия Нэша в дилемме заключённых.</p></div>
+            <div class="card"><div class="card-icon">📈</div><h3 class="cyan" data-ru="5. Эффекты размера" data-en="5. Number of Firms">5. Эффекты размера</h3><p class="small" data-ru="Анализ эффекта выпуска и ценового эффекта при изменении числа продавцов на рынке." data-en="Explain how the number of firms alters the output effect and price effect.">Анализ эффекта выпуска и ценового эффекта при изменении числа продавцов на рынке.</p></div>
+            <div class="card"><div class="card-icon">🛡️</div><h3 class="purple" data-ru="6. Антимонопольный анализ" data-en="6. Antitrust Policy">6. Антимонопольный анализ</h3><p class="small" data-ru="Оценка фиксации цен, вертикальных ограничений, хищнических цен и пакетирования товаров." data-en="Evaluate price-fixing, vertical restraints, predatory pricing, and product bundling.">Оценка фиксации цен, вертикальных ограничений, хищнических цен и пакетирования товаров.</p></div>
+          </div>
+        </article>
+
+        <article class="panel">
+          <h3 data-ru="Логическая структура лекции" data-en="Lecture Structural Framework">Логическая структура лекции</h3>
+          <div class="table-scroll">
+            <table class="logic-table">
+              <thead><tr><th data-ru="Этап" data-en="Stage">Этап</th><th data-ru="Экономический вопрос" data-en="Economic Question">Экономический вопрос</th><th data-ru="Ключевой результат" data-en="Key Result">Ключевой результат</th></tr></thead>
+              <tbody>
+                <tr><td class="blue" data-ru="1. Структура" data-en="1. Structure">1. Структура</td><td data-ru="Чем олигополия отличается от других рынков?" data-en="How does oligopoly differ from other structures?">Чем олигополия отличается от других рынков?</td><td data-ru="Небольшое число продавцов и стратегическая взаимозависимость участников." data-en="Small number of sellers with strategic interdependence.">Небольшое число продавцов и стратегическая взаимозависимость участников.</td></tr>
+                <tr><td class="cyan" data-ru="2. Модель дуополии" data-en="2. Duopoly">2. Модель дуополии</td><td data-ru="Почему соглашения сговора разрушаются?" data-en="Why do collusive cartel agreements break down?">Почему соглашения сговора разрушаются?</td><td data-ru="Индивидуальный стимул превысить квоту приводит к промежуточному равновесию Нэша: Qmon ниже QNash, а QNash ниже Qcompetition." data-en="Individual cheating leads to an intermediate Nash outcome: Qmon is below QNash, and QNash is below Qcompetition.">Индивидуальный стимул превысить квоту приводит к промежуточному равновесию Нэша: Qmon ниже QNash, а QNash ниже Qcompetition.</td></tr>
+                <tr><td class="green" data-ru="3. Число фирм" data-en="3. Market Size">3. Число фирм</td><td data-ru="Что происходит при росте числа участников?" data-en="What happens as more sellers enter the market?">Что происходит при росте числа участников?</td><td data-ru="Ценовой эффект ослабевает, и рынок приближается к совершенной конкуренции (P → MC)." data-en="Price effect weakens, driving market outcome toward perfect competition (P → MC).">Ценовой эффект ослабевает, и рынок приближается к совершенной конкуренции (P → MC).</td></tr>
+                <tr><td class="amber" data-ru="4. Теория игр" data-en="4. Game Theory">4. Теория игр</td><td data-ru="Как моделируется конфликт интересов?" data-en="How to model conflict between individual & joint interest?">Как моделируется конфликт интересов?</td><td data-ru="Дилемма заключённых показывает, почему индивидуальная рациональность вредит общему благу." data-en="Prisoners dilemma shows how private incentives destroy mutually beneficial outcomes.">Дилемма заключённых показывает, почему индивидуальная рациональность вредит общему благу.</td></tr>
+                <tr><td class="purple" data-ru="5. Повторные игры" data-en="5. Repeated Games">5. Повторные игры</td><td data-ru="Как сохранить сотрудничество без закона?" data-en="How can cooperation be sustained over time?">Как сохранить сотрудничество без закона?</td><td data-ru="Угроза наказания в будущем (например, стратегия «Око за око») поддерживает сговор." data-en="Threat of future retaliation (e.g. Tit-for-tat strategy) sustains long-term collusion.">Угроза наказания в будущем (например, стратегия «Око за око») поддерживает сговор.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 2. CORE FRAMEWORK -->
+    <section id="framework" class="tab-content" role="tabpanel">
+      <article class="panel">
+        <h2 data-ru="Базовая логика и соотношение рыночных структур" data-en="Core Framework & Market Ranking">Базовая логика и соотношение рыночных структур</h2>
+        <p class="intro" data-ru="Олигополия занимает промежуточное положение между монополией и совершенной конкуренцией. Главная черта — стратегическая взаимозависимость." data-en="Oligopoly stands between monopoly and perfect competition. Its defining feature is strategic interdependence.">Олигополия занимает промежуточное положение между монополией и совершенной конкуренцией. Главная черта — стратегическая взаимозависимость.</p>
+        
+        <div class="table-scroll">
+          <table class="data">
+            <thead>
+              <tr>
+                <th data-ru="Модель рынка" data-en="Market Structure">Модель рынка</th>
+                <th data-ru="Число фирм" data-en="Number of Firms">Число фирм</th>
+                <th data-ru="Стратегическое взаимодействие" data-en="Strategic Interaction">Стратегическое взаимодействие</th>
+                <th data-ru="Объём выпуска (Q)" data-en="Output Level (Q)">Объём выпуска (Q)</th>
+                <th data-ru="Уровень цены (P)" data-en="Price Level (P)">Уровень цены (P)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td data-ru="Монополия" data-en="Monopoly">Монополия</td>
+                <td data-ru="Одна" data-en="One">Одна</td>
+                <td data-ru="Отсутствует" data-en="None">Отсутствует</td>
+                <td data-ru="Минимальный (Qmon)" data-en="Lowest (Qmon)">Минимальный (Qmon)</td>
+                <td data-ru="Максимальная (Pmon)" data-en="Highest (Pmon)">Максимальная (Pmon)</td>
+              </tr>
+              <tr class="focus-row">
+                <td class="red" data-ru="Олигополия" data-en="Oligopoly">Олигополия</td>
+                <td data-ru="Несколько" data-en="Few">Несколько</td>
+                <td data-ru="Критически важное" data-en="Central & Critical">Критически важное</td>
+                <td data-ru="Промежуточный (QNash)" data-en="Intermediate (QNash)">Промежуточный (QNash)</td>
+                <td data-ru="Промежуточная (PNash)" data-en="Intermediate (PNash)">Промежуточная (PNash)</td>
+              </tr>
+              <tr>
+                <td data-ru="Совершенная конкуренция" data-en="Perfect Competition">Совершенная конкуренция</td>
+                <td data-ru="Много" data-en="Many">Много</td>
+                <td data-ru="Пренебрежимо малое" data-en="Negligible">Пренебрежимо малое</td>
+                <td data-ru="Максимальный (Qcompetition)" data-en="Highest (Qcompetition)">Максимальный (Qcompetition)</td>
+                <td data-ru="Минимальная (P = MC)" data-en="Lowest (P = MC)">Минимальная (P = MC)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="formula">
+          <span data-ru="Главный порядок выпуска:" data-en="Central Output Ranking:">Главный порядок выпуска:</span> 
+          <b>Q<sub>monopoly</sub> &lt; Q<sub>oligopoly</sub> &lt; Q<sub>competition</sub></b>
+          &nbsp;|&nbsp;
+          <span data-ru="Главный порядок цен:" data-en="Central Price Ranking:">Главный порядок цен:</span> 
+          <b>P<sub>monopoly</sub> &gt; P<sub>oligopoly</sub> &gt; P<sub>competition</sub> = MC</b>
+        </div>
+
+        <div class="grid-3" style="margin-top:16px">
+          <div class="card">
+            <h3 class="blue" data-ru="Стратегическая связь" data-en="Strategic Interdependence">Стратегическая связь</h3>
+            <p class="small" data-ru="Решение одной фирмы о цене или выпуске напрямую влияет на прибыль конкурентов и вызывает немедленный ответный ход." data-en="Each firm's decision directly affects rivals' profits, triggering immediate strategic responses.">Решение одной фирмы о цене или выпуске напрямую влияет на прибыль конкурентов и вызывает немедленный ответный ход.</p>
+          </div>
+          <div class="card">
+            <h3 class="red" data-ru="Конфликт интересов" data-en="Cooperation Tension">Конфликт интересов</h3>
+            <p class="small" data-ru="Коллективно фирмам выгодно действовать как монополия, но индивидуально каждой выгодно нарушить соглашение." data-en="Firms collectively benefit from monopoly output, but individual self-interest leads to overproduction.">Коллективно фирмам выгодно действовать как монополия, но индивидуально каждой выгодно нарушить соглашение.</p>
+          </div>
+          <div class="card">
+            <h3 class="green" data-ru="Равновесие Нэша" data-en="Nash Equilibrium">Равновесие Нэша</h3>
+            <p class="small" data-ru="Состояние, при котором ни один участник не имеет стимула в одностороннем порядке изменить свое решение." data-en="A situation where no player has an incentive to unilaterally change their chosen strategy.">Состояние, при котором ни один участник не имеет стимула в одностороннем порядке изменить свое решение.</p>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- 3. DUOPOLY MODEL -->
+    <section id="duopoly" class="tab-content" role="tabpanel">
+      <div class="split">
+        <article class="panel">
+          <h2 data-ru="Модель дуополии на рынке воды" data-en="Water Duopoly Numerical Model">Модель дуополии на рынке воды</h2>
+          <p class="intro" data-ru="Базовый пример из главы 17 Мэнкью: два поставщика, нулевые предельные издержки (MC = 0). Спрос задан формулой P = 120 − Q." data-en="Benchmark example from Mankiw Chapter 17: two suppliers, zero marginal cost (MC = 0), with demand P = 120 − Q.">Базовый пример из главы 17 Мэнкью: два поставщика, нулевые предельные издержки (MC = 0). Спрос задан формулой P = 120 − Q.</p>
+
+          <div class="controls">
+            <div class="control-box">
+              <div class="control-row"><span data-ru="Выбранный общий выпуск Q" data-en="Total Industry Output Q">Выбранный общий выпуск Q</span><span id="duo-q-val" class="value red">80</span></div>
+              <input id="duo-slider" type="range" min="0" max="120" step="10" value="80" aria-label="Duopoly quantity slider">
+              <div class="control-row"><span data-ru="Рыночная цена P" data-en="Market Price P">Рыночная цена P</span><span id="duo-p-val" class="value blue">40</span></div>
+              <div class="control-row"><span data-ru="Общая выручка TR" data-en="Total Revenue TR">Общая выручка TR</span><span id="duo-tr-val" class="value green">3200</span></div>
+              <div class="control-row"><span data-ru="Выручка одной фирмы (50%)" data-en="Revenue per Firm (50%)">Выручка одной фирмы (50%)</span><span id="duo-firm-val" class="value purple">1600</span></div>
+            </div>
+          </div>
+
+          <div id="duo-status" class="status good" aria-live="polite"></div>
+
+          <div class="table-scroll" style="margin-top:14px">
+            <table class="data">
+              <thead>
+                <tr>
+                  <th data-ru="Режим" data-en="Mode">Режим</th>
+                  <th data-ru="Выпуск Q" data-en="Output Q">Выпуск Q</th>
+                  <th data-ru="Цена P" data-en="Price P">Цена P</th>
+                  <th data-ru="Совокупная прибыль" data-en="Total Profit">Совокупная прибыль</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td data-ru="Монополия / Картель" data-en="Monopoly / Cartel">Монополия / Картель</td><td>60</td><td>60</td><td>3,600</td></tr>
+                <tr class="focus-row"><td class="red" data-ru="Равновесие Нэша (Дуополия)" data-en="Duopoly Nash Equilibrium">Равновесие Нэша (Дуополия)</td><td>80</td><td>40</td><td>3,200</td></tr>
+                <tr><td data-ru="Совершенная конкуренция" data-en="Perfect Competition">Совершенная конкуренция</td><td>120</td><td>0</td><td>0</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel chart-panel">
+          <div class="chart-title" data-ru="Кривая спроса и общая выручка TR" data-en="Demand Curve and Total Revenue TR">Кривая спроса и общая выручка TR</div>
+          <div class="grid-2">
+            <div class="chart-box compact"><canvas id="duo-demand-chart" role="img" aria-label="Duopoly demand curve"></canvas></div>
+            <div class="chart-box compact"><canvas id="duo-tr-chart" role="img" aria-label="Total revenue parabola"></canvas></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 4. NUMBER OF FIRMS -->
+    <section id="firms-size" class="tab-content" role="tabpanel">
+      <div class="split">
+        <article class="panel">
+          <h2 data-ru="Размер олигополии и рыночный результат" data-en="Oligopoly Size & Market Outcome">Размер олигополии и рыночный результат</h2>
+          <p class="intro" data-ru="При выборе объёма выпуска каждая фирма взвешивает два эффекта: положительный Эффект выпуска и отрицательный Ценовой эффект." data-en="When deciding output, each oligopolist weighs the Output Effect against the Price Effect.">При выборе объёма выпуска каждая фирма взвешивает два эффекта: положительный Эффект выпуска и отрицательный Ценовой эффект.</p>
+          
+          <div class="grid-2">
+            <div class="card">
+              <h3 class="green" data-ru="1. Эффект выпуска" data-en="1. Output Effect">1. Эффект выпуска</h3>
+              <p class="small" data-ru="Поскольку P > MC, продажа дополнительной единицы товара увеличивает прибыль фирмы." data-en="Since P > MC, selling one more unit at the current price raises profit.">Поскольку P &gt; MC, продажа дополнительной единицы товара увеличивает прибыль фирмы.</p>
+            </div>
+            <div class="card">
+              <h3 class="red" data-ru="2. Ценовой эффект" data-en="2. Price Effect">2. Ценовой эффект</h3>
+              <p class="small" data-ru="Рост выпуска снижает рыночную цену, что уменьшает выручку от всех ранее продаваемых единиц." data-en="Increasing output reduces the market price, lowering profit on all existing units sold.">Рост выпуска снижает рыночную цену, что уменьшает выручку от всех ранее продаваемых единиц.</p>
+            </div>
+          </div>
+
+          <div class="controls" style="margin-top:16px">
+            <div class="control-box">
+              <div class="control-row"><span data-ru="Количество фирм на рынке (N)" data-en="Number of Firms (N)">Количество фирм на рынке (N)</span><span id="firms-count" class="value red">2</span></div>
+              <input id="firms-slider" type="range" min="1" max="20" step="1" value="2" aria-label="Firms count slider">
+              <div class="control-row"><span data-ru="Относительный выпуск (к конкурентному)" data-en="Output Relative to Competition">Относительный выпуск (к конкурентному)</span><span id="firms-q" class="value blue">0.67</span></div>
+              <div class="control-row"><span data-ru="Относительная наценка над MC" data-en="Relative Markup above MC">Относительная наценка над MC</span><span id="firms-markup" class="value amber">0.33</span></div>
+            </div>
+          </div>
+          <div id="firms-status" class="status good" aria-live="polite"></div>
+          <div class="case-note" data-ru="Методическое уточнение: формулы N/(N+1) и 1/(N+1) относятся к нормированной симметричной модели Курно с линейным спросом и постоянными предельными издержками. Это иллюстрация, а не универсальный закон для любой олигополии." data-en="Teaching note: N/(N+1) and 1/(N+1) come from a normalized symmetric Cournot model with linear demand and constant marginal cost. They illustrate a mechanism; they are not universal laws for every oligopoly.">Методическое уточнение: формулы N/(N+1) и 1/(N+1) относятся к нормированной симметричной модели Курно с линейным спросом и постоянными предельными издержками. Это иллюстрация, а не универсальный закон для любой олигополии.</div>
+        </article>
+
+        <article class="panel chart-panel">
+          <div class="chart-title" data-ru="Сближение с конкуренцией при росте N" data-en="Convergence to Competition as N Increases">Сближение с конкуренцией при росте N</div>
+          <div class="chart-box"><canvas id="firms-chart" role="img" aria-label="Firms size chart"></canvas></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 5. GAME THEORY -->
+    <section id="gametheory" class="tab-content" role="tabpanel">
+      <article class="panel">
+        <h2 data-ru="Теория игр и Дилемма заключённых" data-en="Game Theory & The Prisoners' Dilemma">Теория игр и Дилемма заключённых</h2>
+        <p class="intro" data-ru="Теория игр изучает стратегическое поведение участников. В Дилемме заключённых доминирующие стратегии приводят к некооперативному исходу, который хуже взаимного сотрудничества." data-en="Game theory studies strategic interaction. In the Prisoners' Dilemma, dominant strategies lead to a noncooperative outcome inferior to mutual cooperation.">Теория игр изучает стратегическое поведение участников. В Дилемме заключённых доминирующие стратегии приводят к некооперативному исходу, который хуже взаимного сотрудничества.</p>
+
+        <div class="grid-2">
+          <div class="card">
+            <h3 class="red" data-ru="Матрица 1: Классическая Дилемма Заключённых" data-en="Matrix 1: Classic Prisoners' Dilemma">Матрица 1: Классическая Дилемма Заключённых</h3>
+            <p class="small" data-ru="Выигрыши: годы заключения (чем меньше, тем лучше). Красным — Равновесие Нэша, Зеленым — Кооперация." data-en="Payoffs: Years in prison (lower is better). Red = Nash Eq, Green = Cooperative optimum.">Выигрыши: годы заключения (чем меньше, тем лучше). Красным — Равновесие Нэша, Зеленым — Кооперация.</p>
+            <div class="table-scroll" style="margin-top:10px">
+              <table class="matrix-table">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th data-ru="Игрок 2: Признаться" data-en="Player 2: Confess">Игрок 2: Признаться</th>
+                    <th data-ru="Игрок 2: Молчать" data-en="Player 2: Silent">Игрок 2: Молчать</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th data-ru="Игрок 1: Признаться" data-en="Player 1: Confess">Игрок 1: Признаться</th>
+                    <td class="cell-nash" data-html data-ru="<b>8 лет / 8 лет</b><br><span class='small'>(Нэш)</span>" data-en="<b>8 years / 8 years</b><br><span class='small'>(Nash)</span>"><b>8 лет / 8 лет</b><br><span class="small">(Нэш)</span></td>
+                    <td data-ru="0 лет / 20 лет" data-en="0 years / 20 years">0 лет / 20 лет</td>
+                  </tr>
+                  <tr>
+                    <th data-ru="Игрок 1: Молчать" data-en="Player 1: Silent">Игрок 1: Молчать</th>
+                    <td data-ru="20 лет / 0 лет" data-en="20 years / 0 years">20 лет / 0 лет</td>
+                    <td class="cell-coop" data-html data-ru="<b>1 год / 1 год</b><br><span class='small'>(кооперация)</span>" data-en="<b>1 year / 1 year</b><br><span class='small'>(cooperation)</span>"><b>1 год / 1 год</b><br><span class="small">(кооперация)</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3 class="blue" data-ru="Матрица 2: Олигопольный дуопольный картель" data-en="Matrix 2: Oligopoly Duopoly Cartel">Матрица 2: Олигопольный дуопольный картель</h3>
+            <p class="small" data-ru="Выигрыши: прибыль фирм в тыс. $. Красным — Равновесие Нэша, Зеленым — Кооперация." data-en="Payoffs: Profits in $ thousands. Red = Nash Eq, Green = Cooperative optimum.">Выигрыши: прибыль фирм в тыс. $. Красным — Равновесие Нэша, Зеленым — Кооперация.</p>
+            <div class="table-scroll" style="margin-top:10px">
+              <table class="matrix-table">
+                <thead>
+                  <tr>
+                    <th></th>
+                    <th data-ru="Фирма 2: Высокий выпуск (40)" data-en="Firm 2: High Output (40)">Фирма 2: Высокий (40)</th>
+                    <th data-ru="Фирма 2: Низкий выпуск (30)" data-en="Firm 2: Low Output (30)">Фирма 2: Низкий (30)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th data-ru="Фирма 1: Высокий выпуск (40)" data-en="Firm 1: High Output (40)">Фирма 1: Высокий (40)</th>
+                    <td class="cell-nash" data-html data-ru="<b>1600 / 1600</b><br><span class='small'>(Нэш)</span>" data-en="<b>1600 / 1600</b><br><span class='small'>(Nash)</span>"><b>1600 / 1600</b><br><span class="small">(Нэш)</span></td>
+                    <td>2000 / 1500</td>
+                  </tr>
+                  <tr>
+                    <th data-ru="Фирма 1: Низкий выпуск (30)" data-en="Firm 1: Low Output (30)">Фирма 1: Низкий (30)</th>
+                    <td>1500 / 2000</td>
+                    <td class="cell-coop" data-html data-ru="<b>1800 / 1800</b><br><span class='small'>(картель)</span>" data-en="<b>1800 / 1800</b><br><span class='small'>(cartel)</span>"><b>1800 / 1800</b><br><span class="small">(картель)</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- 6. APPLICATIONS -->
+    <section id="applications" class="tab-content" role="tabpanel">
+      <div class="stack">
+        <article class="panel">
+          <h2 data-ru="Гонка вооружений: точный кейс США—СССР из Мэнкью" data-en="Arms Race: Mankiw's Exact US–USSR Case">Гонка вооружений: точный кейс США—СССР из Мэнкью</h2>
+          <p class="intro" data-ru="Это матрица выбора «вооружаться или разоружаться», а не матрица выбора «нападать или не нападать». Строки показывают решение СССР, столбцы — решение США; в каждой ячейке сначала дан результат СССР, затем США." data-en="This is an Arm-or-Disarm matrix, not an Attack-or-Do-Not-Attack matrix. Rows show the Soviet choice, columns the US choice; each cell reports the Soviet outcome first and the US outcome second.">Это матрица выбора «вооружаться или разоружаться», а не матрица выбора «нападать или не нападать». Строки показывают решение СССР, столбцы — решение США; в каждой ячейке сначала дан результат СССР, затем США.</p>
+
+          <div class="table-scroll" style="margin-top:14px">
+            <table class="matrix-table">
+              <thead>
+                <tr>
+                  <th data-ru="СССР ↓ / США →" data-en="Soviet Union ↓ / United States →">СССР ↓ / США →</th>
+                  <th data-ru="Вооружаться" data-en="Arm">Вооружаться</th>
+                  <th data-ru="Разоружиться" data-en="Disarm">Разоружиться</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th data-ru="Вооружаться" data-en="Arm">Вооружаться</th>
+                  <td class="cell-nash" data-html data-ru="СССР: в опасности<br>США: в опасности<br><b>Равновесие Нэша</b>" data-en="USSR: at risk<br>US: at risk<br><b>Nash equilibrium</b>">СССР: в опасности<br>США: в опасности<br><b>Равновесие Нэша</b></td>
+                  <td data-html data-ru="СССР: в безопасности и силён<br>США: в опасности и слабы" data-en="USSR: safe and powerful<br>US: at risk and weak">СССР: в безопасности и силён<br>США: в опасности и слабы</td>
+                </tr>
+                <tr>
+                  <th data-ru="Разоружиться" data-en="Disarm">Разоружиться</th>
+                  <td data-html data-ru="СССР: в опасности и слаб<br>США: в безопасности и сильны" data-en="USSR: at risk and weak<br>US: safe and powerful">СССР: в опасности и слаб<br>США: в безопасности и сильны</td>
+                  <td class="cell-coop" data-html data-ru="СССР: в безопасности<br>США: в безопасности<br><b>Совместно лучший исход</b>" data-en="USSR: safe<br>US: safe<br><b>Mutually better outcome</b>">СССР: в безопасности<br>США: в безопасности<br><b>Совместно лучший исход</b></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="grid-2" style="margin-top:16px">
+            <div class="card">
+              <h3 class="amber" data-ru="Почему «вооружаться» доминирует" data-en="Why Arm Is Dominant">Почему «вооружаться» доминирует</h3>
+              <ul class="clean">
+                <li data-ru="Если соперник вооружается, вооружение избегает положения «слаб и в опасности»." data-en="If the rival arms, arming avoids being weak and at risk.">Если соперник вооружается, вооружение избегает положения «слаб и в опасности».</li>
+                <li data-ru="Если соперник разоружается, вооружение даёт одностороннее преимущество." data-en="If the rival disarms, arming yields unilateral advantage.">Если соперник разоружается, вооружение даёт одностороннее преимущество.</li>
+                <li data-ru="Поэтому обе стороны выбирают вооружение независимо от решения другой." data-en="Therefore both sides choose Arm regardless of the other's action.">Поэтому обе стороны выбирают вооружение независимо от решения другой.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3 class="green" data-ru="Нэш — не общественный оптимум" data-en="Nash Is Not the Social Optimum">Нэш — не общественный оптимум</h3>
+              <p class="small" data-ru="Исход «вооружаться / вооружаться» устойчив: ни одной стороне невыгодно разоружаться в одиночку. Но «разоружиться / разоружиться» лучше для обеих. В реальности договоры, инспекции, связь и повторение игры нужны, чтобы сделать сотрудничество проверяемым и менее рискованным." data-en="Arm/Arm is stable because neither side wants to disarm alone, yet Disarm/Disarm is better for both. In reality, treaties, inspections, communication and repeated interaction can make cooperation verifiable and less risky.">Исход «вооружаться / вооружаться» устойчив: ни одной стороне невыгодно разоружаться в одиночку. Но «разоружиться / разоружиться» лучше для обеих. В реальности договоры, инспекции, связь и повторение игры нужны, чтобы сделать сотрудничество проверяемым и менее рискованным.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="panel">
+          <h2 data-ru="Современное учебное продолжение: Россия и европейские государства НАТО" data-en="Contemporary Teaching Extension: Russia and European NATO States">Современное учебное продолжение: Россия и европейские государства НАТО</h2>
+          <p class="intro" data-ru="Ниже — условная порядковая матрица, показывающая дилемму безопасности. Числа обозначают только порядок предпочтений (4 — лучше, 1 — хуже), а не вероятности, военную мощь или моральную оценку. Первый выигрыш — России, второй — европейских государств НАТО." data-en="The matrix below is an illustrative ordinal security-dilemma model. Numbers rank outcomes only (4 best, 1 worst); they are not probabilities, military strength or moral judgments. Russia's payoff appears first and European NATO states' payoff second.">Ниже — условная порядковая матрица, показывающая дилемму безопасности. Числа обозначают только порядок предпочтений (4 — лучше, 1 — хуже), а не вероятности, военную мощь или моральную оценку. Первый выигрыш — России, второй — европейских государств НАТО.</p>
+
+          <div class="table-scroll" style="margin-top:14px">
+            <table class="matrix-table">
+              <thead>
+                <tr>
+                  <th data-ru="Россия ↓ / Европейские государства НАТО →" data-en="Russia ↓ / European NATO states →">Россия ↓ / Европейские государства НАТО →</th>
+                  <th data-ru="Усиление" data-en="Build up">Усиление</th>
+                  <th data-ru="Сдержанность" data-en="Restraint">Сдержанность</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <th data-ru="Усиление" data-en="Build up">Усиление</th>
+                  <td class="cell-nash"><b>2 / 2</b><br><span data-ru="взаимное усиление" data-en="mutual buildup">взаимное усиление</span></td>
+                  <td><b>4 / 1</b><br><span data-ru="одностороннее преимущество" data-en="unilateral advantage">одностороннее преимущество</span></td>
+                </tr>
+                <tr>
+                  <th data-ru="Сдержанность" data-en="Restraint">Сдержанность</th>
+                  <td><b>1 / 4</b><br><span data-ru="односторонняя уязвимость" data-en="unilateral vulnerability">односторонняя уязвимость</span></td>
+                  <td class="cell-coop"><b>3 / 3</b><br><span data-ru="взаимная сдержанность" data-en="mutual restraint">взаимная сдержанность</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="case-note warning">
+            <strong data-ru="Что матрица не может сказать:" data-en="What the matrix cannot tell us:">Что матрица не может сказать:</strong>
+            <span data-ru=" она не определяет, кто нападёт первым, и не доказывает, что нападение обязательно или невозможно. Для прогноза нужна динамическая игра с отдельными этапами вооружения, сигналов, переговоров, сдержанности и возможного нападения, а также данными о намерениях, возможностях, единстве союзов, статье 5, географии, мобилизации, ядерной эскалации, ошибках восприятия и гибридных действиях." data-en=" it does not identify who would attack first and cannot prove that an attack is inevitable or impossible. A forecast needs a dynamic game with separate stages for armament, signaling, negotiation, restraint and possible attack, plus evidence on intentions, capabilities, alliance cohesion, Article 5, geography, mobilization, nuclear escalation, misperception and hybrid action."> она не определяет, кто нападёт первым, и не доказывает, что нападение обязательно или невозможно. Для прогноза нужна динамическая игра с отдельными этапами вооружения, сигналов, переговоров, сдержанности и возможного нападения, а также данными о намерениях, возможностях, единстве союзов, статье 5, географии, мобилизации, ядерной эскалации, ошибках восприятия и гибридных действиях.</span>
+          </div>
+
+          <div class="grid-2" style="margin-top:16px">
+            <div class="card">
+              <h3 class="cyan" data-ru="Что говорят публичные оценки" data-en="What Public Assessments Say">Что говорят публичные оценки</h3>
+              <ul class="clean">
+                <li data-ru="НАТО называет Россию наиболее значительной и прямой угрозой безопасности союзников." data-en="NATO calls Russia the most significant and direct threat to Allied security.">НАТО называет Россию наиболее значительной и прямой угрозой безопасности союзников.</li>
+                <li data-ru="Российские официальные лица заявляют, что Россия не намерена нападать на НАТО или ЕС." data-en="Russian officials state that Russia does not intend to attack NATO or the EU.">Российские официальные лица заявляют, что Россия не намерена нападать на НАТО или ЕС.</li>
+                <li data-ru="Разведка Эстонии не видит намерения атаковать государство НАТО в ближайший год." data-en="Estonian intelligence assesses no intention to attack a NATO state in the coming year.">Разведка Эстонии не видит намерения атаковать государство НАТО в ближайший год.</li>
+                <li data-ru="Разведка Дании оценивает риск ограниченной атаки как низкий, но растущий, а полномасштабное вторжение — как маловероятное." data-en="Danish intelligence assesses a low but growing risk of a limited attack and an outright invasion as highly unlikely.">Разведка Дании оценивает риск ограниченной атаки как низкий, но растущий, а полномасштабное вторжение — как маловероятное.</li>
+              </ul>
+            </div>
+            <div class="card">
+              <h3 class="purple" data-ru="Корректный вопрос для семинара" data-en="A Better Seminar Question">Корректный вопрос для семинара</h3>
+              <p class="small" data-ru="Не «кто нападёт первым?», а: «При каких условиях сдерживание сохраняет мир, а при каких взаимное усиление создаёт риск ошибочного расчёта или эскалации?». Это позволяет сравнить альтернативные предпосылки и проверить, как меняется равновесие." data-en="Ask not “Who attacks first?” but “Under what conditions does deterrence preserve peace, and when can mutual buildup create miscalculation or escalation?” This lets students vary assumptions and test how equilibrium changes.">Не «кто нападёт первым?», а: «При каких условиях сдерживание сохраняет мир, а при каких взаимное усиление создаёт риск ошибочного расчёта или эскалации?». Это позволяет сравнить альтернативные предпосылки и проверить, как меняется равновесие.</p>
+              <p class="small" data-ru="Важно: если под Европой понимать Украину, Россия уже начала полномасштабное вторжение в 2022 году. Вопрос о нападении на государство ЕС или НАТО — отдельный и требует другой модели." data-en="Important: if Europe includes Ukraine, Russia already launched its full-scale invasion in 2022. A possible attack on an EU or NATO member is a separate question requiring a different model.">Важно: если под Европой понимать Украину, Россия уже начала полномасштабное вторжение в 2022 году. Вопрос о нападении на государство ЕС или НАТО — отдельный и требует другой модели.</p>
+            </div>
+          </div>
+
+          <div class="case-note source-list">
+            <strong data-ru="Публичные источники, проверено 27 октября 2026 года:" data-en="Public sources checked 27 October 2026:">Публичные источники, проверено 27 октября 2026 года:</strong>
+            <a href="https://www.nato.int/en/what-we-do/deterrence-and-defence/strengthening-natos-eastern-flank" target="_blank" rel="noreferrer">NATO</a> ·
+            <a href="https://ireland.mid.ru/en/press-centre/news/statement_by_the_embassy_of_russia_in_ireland_september_29_2026/" target="_blank" rel="noreferrer">Russian Embassy statement</a> ·
+            <a href="https://valisluureamet.ee/en.html" target="_blank" rel="noreferrer">Estonian Foreign Intelligence Service</a> ·
+            <a href="https://www.fe-ddis.dk/globalassets/fe/dokumenter/2026/trusselsvurderinger/-assessment-of-the-threat-from-russia-.pdf" target="_blank" rel="noreferrer">Danish Defence Intelligence Service</a>
+          </div>
+        </article>
+
+        <article class="panel">
+          <div class="grid-2">
+            <div class="card">
+              <h3 class="cyan" data-ru="Общие ресурсы: нефтяные скважины" data-en="Common Resources: Oil Wells">Общие ресурсы: нефтяные скважины</h3>
+              <p class="small" data-ru="Две компании бурят скважины на одном пласту. Каждая бурит дополнительную скважину, растрачивая ресурсы и снижая общую прибыль." data-en="Two firms drill in the same pool. Excess drilling wastes capital and reduces joint profits.">Две компании бурят скважины на одном пласту. Каждая бурит дополнительную скважину, растрачивая ресурсы и снижая общую прибыль.</p>
+              <div class="table-scroll" style="margin-top:10px">
+                <table class="matrix-table">
+                  <tbody>
+                    <tr><th></th><th data-ru="Фирма 2: две" data-en="Firm 2: two">Фирма 2: две</th><th data-ru="Фирма 2: одна" data-en="Firm 2: one">Фирма 2: одна</th></tr>
+                    <tr><th data-ru="Фирма 1: две" data-en="Firm 1: two">Фирма 1: две</th><td class="cell-nash" data-ru="4 / 4 млн $" data-en="$4m / $4m">4 / 4 млн $</td><td data-ru="6 / 3 млн $" data-en="$6m / $3m">6 / 3 млн $</td></tr>
+                    <tr><th data-ru="Фирма 1: одна" data-en="Firm 1: one">Фирма 1: одна</th><td data-ru="3 / 6 млн $" data-en="$3m / $6m">3 / 6 млн $</td><td class="cell-coop" data-ru="5 / 5 млн $" data-en="$5m / $5m">5 / 5 млн $</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card">
+              <h3 class="purple" data-ru="Общественное благосостояние" data-en="Social Welfare">Общественное благосостояние</h3>
+              <p class="small" data-ru="В гонке вооружений и общей эксплуатации ресурса отказ от сотрудничества создаёт потери. В олигополии разрушение картеля, напротив, обычно полезно потребителям: выпуск растёт, а цена приближается к конкурентной. Следовательно, сотрудничество нельзя автоматически считать общественно желательным — важно, кто сотрудничает и какие внешние эффекты возникают." data-en="Noncooperation is wasteful in an arms race or common-resource problem. In an oligopoly, breaking a cartel usually benefits consumers by expanding output and moving price toward competition. Cooperation is therefore not automatically socially desirable; the key questions are who cooperates and what external effects follow.">В гонке вооружений и общей эксплуатации ресурса отказ от сотрудничества создаёт потери. В олигополии разрушение картеля, напротив, обычно полезно потребителям: выпуск растёт, а цена приближается к конкурентной. Следовательно, сотрудничество нельзя автоматически считать общественно желательным — важно, кто сотрудничает и какие внешние эффекты возникают.</p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 7. REPEATED GAMES -->
+    <section id="repeated" class="tab-content" role="tabpanel">
+      <div class="split">
+        <article class="panel">
+          <h2 data-ru="Повторяющиеся игры и стратегия «Око за око»" data-en="Repeated Games & Tit-for-Tat Strategy">Повторяющиеся игры и стратегия «Око за око»</h2>
+          <p class="intro" data-ru="В однократной игре силен стимул обмануть. В повторяющейся игре угроза наказания в будущих периодах позволяет поддерживать сговор." data-en="While cheating dominates in single-shot games, threat of future retaliation can sustain cooperation in repeated interactions.">В однократной игре силен стимул обмануть. В повторяющейся игре угроза наказания в будущих периодах позволяет поддерживать сговор.</p>
+
+          <div class="card">
+            <h3 class="green" data-ru="Стратегия «Око за око» (Tit-for-Tat)" data-en="Tit-for-Tat Strategy">Стратегия «Око за око» (Tit-for-Tat)</h3>
+            <p class="small" data-ru="Игрок начинает с сотрудничества, а затем точно повторяет предыдущий ход соперника (наказывает за обман и прощает при возврате к сговору)." data-en="A player starts by cooperating, then mimics the rival's preceding move (punishing defects, forgiving cooperation).">Игрок начинает с сотрудничества, а затем точно повторяет предыдущий ход соперника (наказывает за обман и прощает при возврате к сговору).</p>
+          </div>
+
+          <ul class="clean" style="margin-top:14px">
+            <li data-ru="Выгода от нарушения разовые: +200 $ в текущей неделе." data-en="Immediate gain from defection: +$200 in week 1.">Выгода от нарушения разовая: +200 $ в текущей неделе.</li>
+            <li data-ru="Потери в будущем: -200 $ каждую последующую неделю бессрочно." data-en="Future losses from punishment: -$200 every subsequent week.">Потери в будущем: -200 $ каждую последующую неделю бессрочно.</li>
+            <li data-ru="Сотрудничество устойчиво, если участники ценят будущую прибыль." data-en="Cooperation is sustained when firms value future profits sufficiently.">Сотрудничество устойчиво, если участники ценят будущую прибыль.</li>
+          </ul>
+        </article>
+
+        <article class="panel chart-panel">
+          <div class="chart-title" data-ru="Логическая блок-схема стратегии Tit-for-Tat" data-en="Tit-for-Tat Logic Flowchart">Логическая блок-схема стратегии Tit-for-Tat</div>
+          <div class="chart-box"><canvas id="tft-chart" role="img" aria-label="Tit for tat flowchart"></canvas></div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 8. PUBLIC POLICY -->
+    <section id="policy" class="tab-content" role="tabpanel">
+      <article class="panel">
+        <h2 data-ru="Государственная антимонопольная политика" data-en="Public Policy & Antitrust Laws">Государственная антимонопольная политика</h2>
+        <p class="intro" data-ru="Законодательство запрещает явный сговор и фиксацию цен, чтобы защитить конкуренцию и потребительский излишек." data-en="Antitrust policy prohibits explicit collusion and price-fixing to protect competition and consumer welfare.">Законодательство запрещает явный сговор и фиксацию цен, чтобы защитить конкуренцию и потребительский излишек.</p>
+
+        <div class="grid-2">
+          <div class="card">
+            <h3 class="red" data-ru="1. Закон Шермана (1890)" data-en="1. Sherman Antitrust Act (1890)">1. Закон Шермана (1890)</h3>
+            <p class="small" data-ru="Объявил соглашения, ограничивающие торговлю между штатами или с иностранными государствами, уголовным преступлением." data-en="Made agreements in restraint of trade illegal, converting price-fixing cartels into criminal offenses.">Объявил соглашения, ограничивающие торговлю между штатами или с иностранными государствами, уголовным преступлением.</p>
+          </div>
+          <div class="card">
+            <h3 class="blue" data-ru="2. Закон Клейтона (1914)" data-en="2. Clayton Act (1914)">2. Закон Клейтона (1914)</h3>
+            <p class="small" data-ru="Усилил антимонопольный контроль, разрешил частные иски с требованием тройного возмещения ущерба и запретил антиконкурентные слияния." data-en="Strengthened enforcement, allowed private treble-damage suits, and restricted anticompetitive mergers.">Усилил антимонопольный контроль, разрешил частные иски с требованием тройного возмещения ущерба и запретил антиконкурентные слияния.</p>
+          </div>
+        </div>
+
+        <div class="table-scroll" style="margin-top:16px">
+          <table class="data">
+            <thead>
+              <tr>
+                <th data-ru="Практика" data-en="Business Practice">Практика</th>
+                <th data-ru="Аргумент «Опасно»" data-en="Anticompetitive Concern">Аргумент «Опасно»</th>
+                <th data-ru="Оправдание эффективности" data-en="Efficiency Justification">Оправдание эффективности</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="amber" data-ru="Поддержание перепродажной цены" data-en="Resale Price Maintenance">Поддержание перепродажной цены</td>
+                <td data-ru="Ограничивает ценовую конкуренцию между розничными продавцами." data-en="Limits intra-brand price competition among retailers.">Ограничивает ценовую конкуренцию между розничными продавцами.</td>
+                <td data-ru="Предотвращает фрирайдинг дисконтеров на сервисе и демонстрациях полноформатных магазинов." data-en="Prevents discounters from free-riding on service-oriented retail showrooms.">Предотвращает фрирайдинг дисконтеров на сервисе и демонстрациях полноформатных магазинов.</td>
+              </tr>
+              <tr>
+                <td class="red" data-ru="Хищническое ценообразование" data-en="Predatory Pricing">Хищническое ценообразование</td>
+                <td data-ru="Продажи ниже издержек вытесняют конкурентов для последующего установления монопольных цен." data-en="Below-cost pricing drives out rivals to establish future monopoly power.">Продажи ниже издержек вытесняют конкурентов для последующего установления монопольных цен.</td>
+                <td data-ru="Низкие цены полезны потребителям; компенсация потерь в будущем часто невозможна." data-en="Low prices directly benefit consumers; future recoupment is rarely feasible.">Низкие цены полезны потребителям; компенсация потерь в будущем часто невозможна.</td>
+              </tr>
+              <tr>
+                <td class="purple" data-ru="Связывание и пакетирование" data-en="Tying & Bundling">Связывание и пакетирование</td>
+                <td data-ru="Перенос рыночной власти с одного товара на другой рыночный сегмент." data-en="Leverages monopoly power from one product market into another.">Перенос рыночной власти с одного товара на другой рыночный сегмент.</td>
+                <td data-ru="Форма ценовой дискриминации, увеличивающая объём продаж и удобство комплектации." data-en="A form of price discrimination that can increase output and consumer convenience.">Форма ценовой дискриминации, увеличивающая объём продаж и удобство комплектации.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <!-- 9. CONTROVERSIES & CASES -->
+    <section id="cases" class="tab-content" role="tabpanel">
+      <article class="panel">
+        <h2 data-ru="Антимонопольные споры и современные кейсы" data-en="Antitrust Controversies & Corporate Cases">Антимонопольные споры и современные кейсы</h2>
+        <p class="intro" data-ru="Судебная практика показывает сложность разграничения антиконкурентного поведения и легитимной высокой эффективности фирм." data-en="Real-world cases highlight the difficulty of distinguishing anticompetitive conduct from legitimate business efficiency.">Судебная практика показывает сложность разграничения антиконкурентного поведения и легитимной высокой эффективности фирм.</p>
+
+        <div class="grid-3">
+          <div class="card">
+            <h3 class="blue" data-ru="Дело Microsoft (ПО)" data-en="Microsoft Case (Software)">Дело Microsoft (ПО)</h3>
+            <p class="small" data-ru="Обвинение в связывании браузера с операционной системой Windows. Правительство усмотрело барьер для входа; Microsoft настаивала на технологической интеграции и удобстве для пользователей." data-en="The government challenged browser–OS tying; Microsoft argued that integration delivered convenience and lower costs.">Обвинение в связывании браузера с операционной системой Windows. Правительство усмотрело барьер для входа; Microsoft настаивала на технологической интеграции и удобстве для пользователей.</p>
+          </div>
+          <div class="card">
+            <h3 class="amber" data-ru="Дело Amazon (Платформы)" data-en="Amazon Case (Platforms)">Дело Amazon (Платформы)</h3>
+            <p class="small" data-ru="Смещение акцента от цен к масштабу платформ. Низкие цены выигрышны для потребителей, но контроль над данными и инфраструктурой может подавлять независимых продавцов." data-en="Shifts focus from prices to platform power. Low prices benefit users, but data control may exclude third-party sellers.">Смещение акцента от цен к масштабу платформ. Низкие цены выигрышны для потребителей, но контроль над данными и инфраструктурой может подавлять независимых продавцов.</p>
+          </div>
+          <div class="card">
+            <h3 class="purple" data-ru="Публичные сигналы цен" data-en="Public Price Signaling">Публичные сигналы цен</h3>
+            <p class="small" data-ru="Публичные заявления для инвесторов могут служить неявным сигналом для конкурентов поднять цены без прямого физического сговора за закрытыми дверями." data-en="Public statements to investors can serve as tacit price coordination signals without secret meetings.">Публичные заявления для инвесторов могут служить неявным сигналом для конкурентов поднять цены без прямого физического сговора за закрытыми дверями.</p>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- 10. SUMMARY & GLOSSARY -->
+    <section id="summary" class="tab-content" role="tabpanel">
+      <article class="panel">
+        <h2 data-ru="Сравнительная матрица и глоссарий" data-en="Summary Comparison Matrix & Glossary">Сравнительная матрица и глоссарий</h2>
+        <p class="intro" data-ru="Итоговое обобщение ключевых экономических параметров всех изученных рыночных структур." data-en="Final synthesis comparing economic characteristics across all market models.">Итоговое обобщение ключевых экономических параметров всех изученных рыночных структур.</p>
+
+        <div class="table-scroll">
+          <table class="data">
+            <thead>
+              <tr>
+                <th data-ru="Признак" data-en="Feature">Признак</th>
+                <th class="green" data-ru="Совершенная конкуренция" data-en="Perfect Competition">Совершенная конкуренция</th>
+                <th class="red" data-ru="Олигополия" data-en="Oligopoly">Олигополия</th>
+                <th class="purple" data-ru="Монополия" data-en="Monopoly">Монополия</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td data-ru="Цель фирмы" data-en="Firm Goal">Цель фирмы</td><td data-ru="Максимизация прибыли" data-en="Profit maximization">Максимизация прибыли</td><td data-ru="Максимизация прибыли" data-en="Profit maximization">Максимизация прибыли</td><td data-ru="Максимизация прибыли" data-en="Profit maximization">Максимизация прибыли</td></tr>
+              <tr><td data-ru="Правило выпуска" data-en="Output Rule">Правило выпуска</td><td>MR = MC</td><td>MR = MC</td><td>MR = MC</td></tr>
+              <tr><td data-ru="Получатель цены?" data-en="Price Taker?">Получатель цены?</td><td data-ru="Да" data-en="Yes">Да</td><td data-ru="Нет" data-en="No">Нет</td><td data-ru="Нет" data-en="No">Нет</td></tr>
+              <tr><td data-ru="Соотношение P и MC" data-en="Price vs MC">Соотношение P и MC</td><td>P = MC</td><td>P > MC</td><td>P > MC</td></tr>
+              <tr><td data-ru="Долгосрочная прибыль" data-en="Long-run Profit">Долгосрочная прибыль</td><td data-ru="Нулевая" data-en="Zero">Нулевая</td><td data-ru="Положительная возможна" data-en="Can be positive">Положительная возможна</td><td data-ru="Положительная" data-en="Positive">Положительная</td></tr>
+              <tr><td data-ru="Число продавцов" data-en="Number of Sellers">Число продавцов</td><td data-ru="Много" data-en="Many">Много</td><td data-ru="Несколько" data-en="A few">Несколько</td><td data-ru="Один" data-en="One">Один</td></tr>
+              <tr><td data-ru="Стратегическое поведение" data-en="Strategic Behavior">Стратегическое поведение</td><td data-ru="Отсутствует" data-en="Absent">Отсутствует</td><td data-ru="Критически важное" data-en="Crucial">Критически важное</td><td data-ru="Не стратегическое взаимодействие с соперниками" data-en="No strategic interaction with rivals">Не стратегическое взаимодействие с соперниками</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 style="margin-top:24px" data-ru="Двуязычный глоссарий терминов" data-en="Bilingual Glossary of Terms">Двуязычный глоссарий терминов</h3>
+        <div class="table-scroll">
+          <table class="data">
+            <thead>
+              <tr>
+                <th data-ru="Английский термин" data-en="English Term">Английский термин</th>
+                <th data-ru="Русский термин" data-en="Russian Term">Русский термин</th>
+                <th data-ru="Определение" data-en="Definition">Определение</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Oligopoly</td><td>Олигополия</td><td data-ru="Рынок с небольшим числом стратегически взаимозависимых продавцов." data-en="A market with a small number of strategically interdependent sellers.">Рынок с небольшим числом стратегически взаимозависимых продавцов.</td></tr>
+              <tr><td>Duopoly</td><td>Дуополия</td><td data-ru="Олигополия с двумя продавцами." data-en="An oligopoly with two sellers.">Олигополия с двумя продавцами.</td></tr>
+              <tr><td>Collusion</td><td>Сговор</td><td data-ru="Соглашение фирм о ценах, выпуске или разделе рынка." data-en="An agreement among firms about prices, output or market allocation.">Соглашение фирм о ценах, выпуске или разделе рынка.</td></tr>
+              <tr><td>Cartel</td><td>Картель</td><td data-ru="Группа фирм, совместно воспроизводящая монопольный результат." data-en="A group of firms acting together to approximate a monopoly outcome.">Группа фирм, совместно воспроизводящая монопольный результат.</td></tr>
+              <tr><td>Game Theory</td><td>Теория игр</td><td data-ru="Изучение стратегического взаимодействия участников." data-en="The study of strategic interaction among decision-makers.">Изучение стратегического взаимодействия участников.</td></tr>
+              <tr><td>Nash Equilibrium</td><td>Равновесие Нэша</td><td data-ru="Набор стратегий, где каждый выбирает лучший ответ на действия других." data-en="A strategy profile in which each player is best-responding to the others.">Набор стратегий, где каждый выбирает лучший ответ на действия других.</td></tr>
+              <tr><td>Dominant Strategy</td><td>Доминирующая стратегия</td><td data-ru="Стратегия, являющаяся наилучшей независимо от действий соперников." data-en="A strategy that is best regardless of what rivals do.">Стратегия, являющаяся наилучшей независимо от действий соперников.</td></tr>
+              <tr><td>Prisoners' Dilemma</td><td>Дилемма заключённых</td><td data-ru="Игра, в которой личные стимулы разрушают взаимно лучший исход." data-en="A game in which individual incentives undermine a mutually better outcome.">Игра, в которой личные стимулы разрушают взаимно лучший исход.</td></tr>
+              <tr><td>Security Dilemma</td><td>Дилемма безопасности</td><td data-ru="Ситуация, в которой оборонительное усиление одной стороны уменьшает ощущение безопасности другой." data-en="A situation in which one side's defensive buildup reduces the other side's perceived security.">Ситуация, в которой оборонительное усиление одной стороны уменьшает ощущение безопасности другой.</td></tr>
+              <tr><td>Deterrence</td><td>Сдерживание</td><td data-ru="Предотвращение действия путём повышения его ожидаемых издержек выше ожидаемой выгоды." data-en="Discouraging an action by making its expected cost exceed its expected benefit.">Предотвращение действия путём повышения его ожидаемых издержек выше ожидаемой выгоды.</td></tr>
+              <tr><td>Tit-for-Tat</td><td>Око за око</td><td data-ru="Стратегия: сначала сотрудничать, затем повторять предыдущий ход соперника." data-en="Cooperate first, then copy the rival's previous action.">Стратегия: сначала сотрудничать, затем повторять предыдущий ход соперника.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    <div class="shell" data-ru="Академический дашборд | Бизнес-аналитика и экономика | SDTE AlmaU 2026" data-en="Academic Dashboard | Business Analytics & Economics | SDTE AlmaU 2026">Академический дашборд | Бизнес-аналитика и экономика | SDTE AlmaU 2026</div>
+  </footer>
+
+  <script>
+    "use strict";
+
+    let currentLang = "ru";
+    const COLORS = {
+      demand: "#60a5fa", mr: "#fb7185", mc: "#34d399", atc: "#c084fc",
+      grid: "#24324a", text: "#cbd5e1", muted: "#64748b",
+      green: "#22c55e", red: "#ef4444", cyan: "#38bdf8", amber: "#f59e0b"
+    };
+
+    const words = {
+      ru: {
+        demand: "Спрос D", price: "Цена P", quantity: "Общий выпуск Q",
+        tr: "Общая выручка TR", monopoly: "Монополия", nash: "Равновесие Нэша",
+        comp: "Конкуренция", markup: "Наценка над MC", relativeQ: "Выпуск к конкурентному",
+        optimum: "Картельный оптимум", NashEq: "Равновесие Нэша (дуополия)", CompEq: "Конкурентный предел",
+        demandEq: "Спрос: P = 120 − Q", totalRevenue: "Общая выручка TR"
+      },
+      en: {
+        demand: "Demand D", price: "Price P", quantity: "Total Quantity Q",
+        tr: "Total Revenue TR", monopoly: "Monopoly", nash: "Nash Equilibrium",
+        comp: "Competition", markup: "Markup above MC", relativeQ: "Output relative to Competition",
+        optimum: "Cartel Optimum", NashEq: "Nash Equilibrium (Duopoly)", CompEq: "Competitive Limit",
+        demandEq: "Demand: P = 120 − Q", totalRevenue: "Total Revenue TR"
+      }
+    };
+
+    const w = key => words[currentLang][key] || key;
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      document.documentElement.lang = lang;
+      document.title = lang === "ru" ? "Олигополия — Глава 17" : "Oligopoly — Chapter 17";
+      document.querySelectorAll("[data-ru][data-en]").forEach(el => {
+        const translated = el.getAttribute(`data-${lang}`);
+        if (el.hasAttribute("data-html")) el.innerHTML = translated;
+        else el.textContent = translated;
+      });
+      document.getElementById("lang-ru").classList.toggle("active", lang === "ru");
+      document.getElementById("lang-en").classList.toggle("active", lang === "en");
+      updateAll();
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll(".tab-btn").forEach(btn => {
+        const active = btn.dataset.tab === tabId;
+        btn.classList.toggle("active", active);
+        btn.setAttribute("aria-selected", String(active));
+      });
+      document.querySelectorAll(".tab-content").forEach(panel => panel.classList.toggle("active", panel.id === tabId));
+      requestAnimationFrame(() => setTimeout(updateAll, 20));
+    }
+
+    function canvasSetup(canvas) {
+      const rect = canvas.getBoundingClientRect();
+      if (rect.width < 50 || rect.height < 50) return null;
+      const dpr = Math.max(1, window.devicePixelRatio || 1);
+      canvas.width = Math.round(rect.width * dpr);
+      canvas.height = Math.round(rect.height * dpr);
+      const ctx = canvas.getContext("2d");
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      return { ctx, width: rect.width, height: rect.height };
+    }
+
+    // CHART 1 & 2: DUOPOLY DEMAND & TR
+    function updateDuopoly() {
+      const qVal = Number(document.getElementById("duo-slider").value);
+      const pVal = Math.max(0, 120 - qVal);
+      const trVal = qVal * pVal;
+      const firmVal = trVal / 2;
+
+      document.getElementById("duo-q-val").textContent = qVal;
+      document.getElementById("duo-p-val").textContent = pVal;
+      document.getElementById("duo-tr-val").textContent = trVal;
+      document.getElementById("duo-firm-val").textContent = firmVal;
+
+      const status = document.getElementById("duo-status");
+      if (qVal === 60) {
+        status.className = "status good";
+        status.textContent = `${w("optimum")}: Q = 60, P = 60, TR = 3600 $. ${currentLang === "ru" ? "Максимум совместной прибыли." : "Joint profit is maximized."}`;
+      } else if (qVal === 80) {
+        status.className = "status warn";
+        status.textContent = `${w("NashEq")}: Q = 80, P = 40, TR = 3200 $. ${currentLang === "ru" ? "Устойчивое равновесие Нэша." : "A stable Nash equilibrium."}`;
+      } else if (qVal === 120) {
+        status.className = "status bad";
+        status.textContent = `${w("CompEq")}: Q = 120, P = 0, TR = 0 $. ${currentLang === "ru" ? "Конкурентный предел P = MC = 0." : "Competitive limit P = MC = 0."}`;
+      } else {
+        status.className = "status";
+        status.textContent = currentLang === "ru"
+          ? `Выбранный выпуск Q = ${qVal}, P = ${pVal}, TR = ${trVal} $.`
+          : `Selected output Q = ${qVal}, P = ${pVal}, TR = $${trVal}.`;
+      }
+
+      // Draw Demand Chart
+      const dSetup = canvasSetup(document.getElementById("duo-demand-chart"));
+      if (dSetup) {
+        const { ctx, width, height } = dSetup;
+        const pad = { left: 45, right: 15, top: 25, bottom: 35 };
+        const pW = width - pad.left - pad.right;
+        const pH = height - pad.top - pad.bottom;
+
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = "#0b1220"; ctx.fillRect(0, 0, width, height);
+
+        // Axes
+        ctx.strokeStyle = "#334155"; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(pad.left, pad.top); ctx.lineTo(pad.left, pad.top + pH); ctx.lineTo(pad.left + pW, pad.top + pH); ctx.stroke();
+
+        // Line P = 120 - Q
+        ctx.strokeStyle = COLORS.demand; ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(pad.left, pad.top);
+        ctx.lineTo(pad.left + pW, pad.top + pH);
+        ctx.stroke();
+
+        // Selected point
+        const px = pad.left + (qVal / 120) * pW;
+        const py = pad.top + (1 - pVal / 120) * pH;
+
+        ctx.strokeStyle = COLORS.red; ctx.setLineDash([4, 4]);
+        ctx.beginPath(); ctx.moveTo(px, pad.top + pH); ctx.lineTo(px, py); ctx.lineTo(pad.left, py); ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = COLORS.red;
+        ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.fill();
+
+        ctx.fillStyle = COLORS.text; ctx.font = "11px sans-serif"; ctx.textAlign = "center";
+        ctx.fillText(w("demandEq"), pad.left + pW / 2, pad.top - 8);
+      }
+
+      // Draw TR Chart
+      const trSetup = canvasSetup(document.getElementById("duo-tr-chart"));
+      if (trSetup) {
+        const { ctx, width, height } = trSetup;
+        const pad = { left: 45, right: 15, top: 25, bottom: 35 };
+        const pW = width - pad.left - pad.right;
+        const pH = height - pad.top - pad.bottom;
+
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = "#0b1220"; ctx.fillRect(0, 0, width, height);
+
+        // Axes
+        ctx.strokeStyle = "#334155"; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.moveTo(pad.left, pad.top); ctx.lineTo(pad.left, pad.top + pH); ctx.lineTo(pad.left + pW, pad.top + pH); ctx.stroke();
+
+        // Curve TR = 120Q - Q^2 (Max 3600 at Q=60)
+        ctx.strokeStyle = COLORS.amber; ctx.lineWidth = 3;
+        ctx.beginPath();
+        for (let q = 0; q <= 120; q += 2) {
+          const tr = 120 * q - q * q;
+          const x = pad.left + (q / 120) * pW;
+          const y = pad.top + (1 - tr / 3600) * pH;
+          if (q === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.stroke();
+
+        // Selected point
+        const px = pad.left + (qVal / 120) * pW;
+        const py = pad.top + (1 - trVal / 3600) * pH;
+
+        ctx.fillStyle = COLORS.amber;
+        ctx.beginPath(); ctx.arc(px, py, 5, 0, Math.PI * 2); ctx.fill();
+
+        ctx.fillStyle = COLORS.text; ctx.font = "11px sans-serif"; ctx.textAlign = "center";
+        ctx.fillText(w("totalRevenue"), pad.left + pW / 2, pad.top - 8);
+      }
+    }
+
+    // CHART 3: NUMBER OF FIRMS EFFECT
+    function updateFirms() {
+      const n = Number(document.getElementById("firms-slider").value);
+      const qRel = n / (n + 1);
+      const markupRel = 1 / (n + 1);
+
+      document.getElementById("firms-count").textContent = n;
+      document.getElementById("firms-q").textContent = qRel.toFixed(2);
+      document.getElementById("firms-markup").textContent = markupRel.toFixed(2);
+
+      const status = document.getElementById("firms-status");
+      status.textContent = currentLang === "ru"
+        ? `При N = ${n}: выпуск составляет ${(qRel * 100).toFixed(0)}% конкурентного уровня, а относительная наценка — ${(markupRel * 100).toFixed(0)}%.`
+        : `At N = ${n}: output is ${(qRel * 100).toFixed(0)}% of the competitive level and the relative markup is ${(markupRel * 100).toFixed(0)}%.`;
+
+      const setup = canvasSetup(document.getElementById("firms-chart"));
+      if (!setup) return;
+      const { ctx, width, height } = setup;
+      const pad = { left: 45, right: 20, top: 30, bottom: 40 };
+      const pW = width - pad.left - pad.right;
+      const pH = height - pad.top - pad.bottom;
+
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "#0b1220"; ctx.fillRect(0, 0, width, height);
+
+      // Grid & Axes
+      ctx.strokeStyle = "#24324a"; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(pad.left, pad.top); ctx.lineTo(pad.left, pad.top + pH); ctx.lineTo(pad.left + pW, pad.top + pH); ctx.stroke();
+
+      // Output curve: N / (N + 1)
+      ctx.strokeStyle = COLORS.demand; ctx.lineWidth = 3;
+      ctx.beginPath();
+      for (let i = 1; i <= 20; i += 0.5) {
+        const x = pad.left + ((i - 1) / 19) * pW;
+        const y = pad.top + (1 - (i / (i + 1))) * pH;
+        if (i === 1) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      // Markup curve: 1 / (N + 1)
+      ctx.strokeStyle = COLORS.amber; ctx.lineWidth = 3;
+      ctx.beginPath();
+      for (let i = 1; i <= 20; i += 0.5) {
+        const x = pad.left + ((i - 1) / 19) * pW;
+        const y = pad.top + (1 - (1 / (i + 1))) * pH;
+        if (i === 1) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      // Active N marker
+      const nx = pad.left + ((n - 1) / 19) * pW;
+      ctx.strokeStyle = "#ffffff"; ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.moveTo(nx, pad.top); ctx.lineTo(nx, pad.top + pH); ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Legend
+      ctx.font = "11px sans-serif"; ctx.textAlign = "left";
+      ctx.fillStyle = COLORS.demand; ctx.fillText(w("relativeQ"), pad.left + 10, pad.top + 15);
+      ctx.fillStyle = COLORS.amber; ctx.fillText(w("markup"), pad.left + 10, pad.top + 32);
+    }
+
+    // CHART 4: TFT FLOWCHART
+    function drawTFTFlowchart() {
+      const setup = canvasSetup(document.getElementById("tft-chart"));
+      if (!setup) return;
+      const { ctx, width, height } = setup;
+
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = "#0b1220"; ctx.fillRect(0, 0, width, height);
+
+      const labels = currentLang === "ru"
+        ? ["1. Начать с сотрудничества", "2. Наблюдать за соперником", "3. Повторить прошлый ход", "4. Простить возврат к сотрудничеству"]
+        : ["1. Start by cooperating", "2. Observe the rival", "3. Copy the previous move", "4. Forgive renewed cooperation"];
+      const steps = [
+        { title: labels[0], color: COLORS.green, x: 0.15 },
+        { title: labels[1], color: COLORS.cyan, x: 0.38 },
+        { title: labels[2], color: COLORS.amber, x: 0.62 },
+        { title: labels[3], color: COLORS.purple, x: 0.85 }
+      ];
+
+      const boxW = 160;
+      const boxH = 60;
+      const cy = height / 2;
+
+      steps.forEach((step, idx) => {
+        const cx = width * step.x;
+        ctx.fillStyle = "rgba(30, 41, 59, 0.8)";
+        ctx.strokeStyle = step.color;
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.roundRect(cx - boxW / 2, cy - boxH / 2, boxW, boxH, 10);
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.fillStyle = "#f8fafc";
+        ctx.font = "bold 11px sans-serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(step.title, cx, cy);
+
+        if (idx < steps.length - 1) {
+          const nextCx = width * steps[idx + 1].x;
+          ctx.strokeStyle = "#64748b"; ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(cx + boxW / 2, cy);
+          ctx.lineTo(nextCx - boxW / 2, cy);
+          ctx.stroke();
+        }
+      });
+    }
+
+    function updateAll() {
+      updateDuopoly();
+      updateFirms();
+      drawTFTFlowchart();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll(".tab-btn").forEach(btn => btn.addEventListener("click", () => switchTab(btn.dataset.tab)));
+      document.getElementById("lang-ru").addEventListener("click", () => setLanguage("ru"));
+      document.getElementById("lang-en").addEventListener("click", () => setLanguage("en"));
+      
+      document.getElementById("duo-slider").addEventListener("input", updateDuopoly);
+      document.getElementById("firms-slider").addEventListener("input", updateFirms);
+
+      setLanguage("ru");
+    });
+
+    let resizeTimer;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(updateAll, 100);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1347 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Дашборд рынка какао и шоколада</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <!-- Chart.js Sankey Plugin -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-sankey@0.12.1/dist/chartjs-chart-sankey.min.js"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <style>
+    /* ЗАГОЛОВОК ДАШБОРДА */
+    .dashboard-main-title {
+      font-size: 1.75rem; 
+      font-weight: 800;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      transition: color 0.3s ease;
+    }
+
+    body.light-theme .dashboard-main-title { color: #3b1808; }
+    body.dark-theme .dashboard-main-title { color: #fbbf24; }
+
+    /* ПРЯМОУГОЛЬНЫЕ ВИНТАЖНЫЕ СЛАЙДЕРЫ */
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      background: transparent;
+    }
+    input[type=range]:focus { outline: none; }
+
+    input[type=range]::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 8px;
+      cursor: pointer;
+      border-radius: 2px;
+      border: 1px solid #94a3b8;
+      background: linear-gradient(90deg, #d97706 0%, #fef3c7 100%);
+    }
+
+    body.dark-theme input[type=range]::-webkit-slider-runnable-track {
+      border-color: #475569;
+      background: linear-gradient(90deg, #b45309 0%, #451a03 100%);
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      height: 22px;
+      width: 12px;
+      border-radius: 2px;
+      background: linear-gradient(180deg, #fef08a 0%, #d97706 50%, #78350f 100%);
+      cursor: pointer;
+      -webkit-appearance: none;
+      margin-top: -8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.8);
+      border: 1px solid #451a03;
+    }
+
+    input[type=range]::-webkit-slider-thumb:hover {
+      background: linear-gradient(180deg, #fffbeb 0%, #f59e0b 50%, #92400e 100%);
+      box-shadow: 0 0 8px rgba(245, 158, 11, 0.8);
+    }
+
+    /* ТЕМАТИЧЕСКИЕ КЛАССЫ */
+    body.light-theme { background-color: #f8fafc; color: #1e293b; }
+    body.dark-theme { background-color: #0f172a; color: #f1f5f9; }
+
+    body.light-theme .theme-card { background-color: #ffffff; border-color: #e2e8f0; color: #1e293b; }
+    body.dark-theme .theme-card { background-color: #1e293b; border-color: #334155; color: #f8fafc; }
+
+    body.light-theme .theme-header { background-color: #ffffff; border-color: #e2e8f0; }
+    body.dark-theme .theme-header { background-color: #0f172a; border-color: #1e293b; }
+
+    body.light-theme .theme-box { background-color: #f1f5f9; border-color: #cbd5e1; color: #334155; }
+    body.dark-theme .theme-box { background-color: #334155; border-color: #475569; color: #e2e8f0; }
+
+    /* УСТОЙЧИВАЯ ИСХОДНАЯ КОМПОЗИЦИЯ: УПРАВЛЕНИЕ СЛЕВА, ГРАФИК СПРАВА */
+    .dashboard-split {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 1.5rem;
+      align-items: stretch;
+    }
+    .dashboard-split > * { min-width: 0; }
+    @media (min-width: 1024px) {
+      .dashboard-split-1-3 { grid-template-columns: minmax(240px, 1fr) minmax(0, 3fr); }
+      .dashboard-split-5-7 { grid-template-columns: minmax(320px, 5fr) minmax(0, 7fr); }
+    }
+
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #1e293b; }
+    ::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
+  </style>
+</head>
+<body class="dark-theme font-sans min-h-screen flex flex-col transition-colors duration-300">
+
+  <!-- ШАПКА ДАШБОРДА -->
+  <header class="theme-header border-b sticky top-0 z-50 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
+      
+      <div>
+        <h1 class="dashboard-main-title" id="txt-app-title">Дашборд рынка какао и шоколада</h1>
+        <p class="text-xs text-slate-400 font-medium" id="txt-app-subtitle">Аналитическая микроэкономическая модель цепочки стоимости и ценового лага</p>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button onclick="toggleTheme()" class="px-3 py-1.5 text-xs font-bold rounded-lg border flex items-center gap-2 transition theme-card hover:border-amber-500">
+          <i id="theme-icon" class="fa-solid fa-moon text-amber-400"></i>
+          <span id="theme-btn-text">Bloomberg Тёмный</span>
+        </button>
+
+        <div class="flex items-center gap-1 bg-slate-800 p-1 rounded-lg border border-slate-700">
+          <button id="lang-ru" onclick="setLanguage('ru')" class="px-2.5 py-1 text-xs font-bold rounded bg-amber-600 text-white shadow-sm transition">РУС</button>
+          <button id="lang-en" onclick="setLanguage('en')" class="px-2.5 py-1 text-xs font-bold rounded text-slate-400 hover:text-white transition">ENG</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Навигационные вкладки -->
+    <div class="max-w-7xl mx-auto px-4 flex space-x-1 overflow-x-auto border-t border-slate-800 text-sm font-semibold">
+      <button onclick="switchTab('overview')" id="tab-btn-overview" class="tab-btn py-2.5 px-4 text-amber-400 border-b-2 border-amber-500 whitespace-nowrap"><i class="fa-solid fa-chart-pie mr-1.5"></i><span id="txt-tab-overview">Обзор рынка</span></button>
+      <button onclick="switchTab('simulator')" id="tab-btn-simulator" class="tab-btn py-2.5 px-4 text-slate-400 hover:text-white border-b-2 border-transparent whitespace-nowrap"><i class="fa-solid fa-sliders mr-1.5"></i><span id="txt-tab-simulator">Симулятор лага</span></button>
+      <button onclick="switchTab('cases')" id="tab-btn-cases" class="tab-btn py-2.5 px-4 text-slate-400 hover:text-white border-b-2 border-transparent whitespace-nowrap"><i class="fa-solid fa-newspaper mr-1.5"></i><span id="txt-tab-cases">Сценарии 2026</span></button>
+      <button onclick="switchTab('recipe')" id="tab-btn-recipe" class="tab-btn py-2.5 px-4 text-slate-400 hover:text-white border-b-2 border-transparent whitespace-nowrap"><i class="fa-solid fa-cookie-bite mr-1.5"></i><span id="txt-tab-recipe">Калькуляция плитки</span></button>
+      <button onclick="switchTab('sankey')" id="tab-btn-sankey" class="tab-btn py-2.5 px-4 text-slate-400 hover:text-white border-b-2 border-transparent whitespace-nowrap"><i class="fa-solid fa-diagram-project mr-1.5"></i><span id="txt-tab-sankey">Диаграмма Санки</span></button>
+      <button onclick="switchTab('math')" id="tab-btn-math" class="tab-btn py-2.5 px-4 text-slate-400 hover:text-white border-b-2 border-transparent whitespace-nowrap"><i class="fa-solid fa-square-root-variable mr-1.5"></i><span id="txt-tab-math">Формулы и спецификация</span></button>
+    </div>
+  </header>
+
+  <!-- ОСНОВНОЙ КОНТЕНТ -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 space-y-6">
+
+    <!-- ВКЛАДКА 1: ОБЗОР РЫНКА -->
+    <section id="tab-overview" class="tab-content space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="theme-card p-5 rounded-xl border shadow-sm relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-2 h-full bg-emerald-500"></div>
+          <span class="text-xs font-bold tracking-wider text-emerald-400 uppercase" id="lbl-ov-a-stage">Этап A • Выращивание</span>
+          <h3 class="text-lg font-bold mt-1" id="lbl-ov-a-title">Фрагментированное предложение</h3>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed" id="lbl-ov-a-desc">Производство основано преимущественно на мелких хозяйствах; маркетинг и цены в ведущих странах регулируются по-разному, поэтому термин «государственная монопсония» нельзя применять ко всему рынку.</p>
+        </div>
+
+        <div class="theme-card p-5 rounded-xl border shadow-sm relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-2 h-full bg-amber-500"></div>
+          <span class="text-xs font-bold tracking-wider text-amber-400 uppercase" id="lbl-ov-b-stage">Этап B • Переработка B2B</span>
+          <h3 class="text-lg font-bold mt-1" id="lbl-ov-b-title">Концентрированная переработка</h3>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed" id="lbl-ov-b-desc">Глобальная торговля и переработка концентрированы у крупных компаний, но точные доли зависят от продукта и географии. Вход требует значительного капитала и масштаба.</p>
+        </div>
+
+        <div class="theme-card p-5 rounded-xl border shadow-sm relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-2 h-full bg-indigo-500"></div>
+          <span class="text-xs font-bold tracking-wider text-indigo-400 uppercase" id="lbl-ov-c-stage">Этап C • Продажи B2C</span>
+          <h3 class="text-lg font-bold mt-1" id="lbl-ov-c-title">Олигополия + Крафт</h3>
+          <p class="text-xs text-slate-400 mt-2 leading-relaxed" id="lbl-ov-c-desc">Массовый рынок удерживают транснациональные корпорации, а премиум и крафтовый сегменты развиваются в условиях монополистической конкуренции.</p>
+        </div>
+      </div>
+
+      <div class="theme-card p-6 rounded-xl border shadow-sm">
+        <h3 class="text-base font-bold mb-1" id="lbl-ov-chart-title">Иллюстративное распределение конечной цены плитки (%)</h3>
+        <p class="text-xs text-slate-400 mb-4" id="lbl-ov-chart-sub">Учебная декомпозиция, сумма каждого сценария равна 100%; это не аудированные отраслевые счета.</p>
+        <div class="h-64">
+          <canvas id="chart-value-chain"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ВКЛАДКА 2: СИМУЛЯТОР ЛАГА ИЗДЕРЖЕК -->
+    <section id="tab-simulator" class="tab-content hidden space-y-6">
+      <div class="dashboard-split dashboard-split-1-3">
+        <div class="theme-card p-5 rounded-xl border shadow-sm space-y-4">
+          <h3 class="text-sm font-bold border-b border-slate-700 pb-2" id="lbl-sim-params">Параметры хеджирования</h3>
+          
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="text-slate-400" id="lbl-sim-win">Окно хеджирования:</span>
+              <span class="text-amber-400 font-bold" id="val-sim-window">6 мес.</span>
+            </div>
+            <input type="range" id="slider-sim-window" min="1" max="18" value="6" oninput="updateSimulator()">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="text-slate-400" id="lbl-sim-pk">Пик фьючерса ($/т):</span>
+              <span class="text-amber-400 font-bold" id="val-sim-peak">9 500 $</span>
+            </div>
+            <input type="range" id="slider-sim-peak" min="3000" max="12000" step="500" value="9500" oninput="updateSimulator()">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="text-slate-400" id="lbl-sim-el">Эластичность спроса (Ed):</span>
+              <span class="text-amber-400 font-bold" id="val-sim-elasticity">-1.2</span>
+            </div>
+            <input type="range" id="slider-sim-elasticity" min="-2.0" max="-0.2" step="0.1" value="-1.2" oninput="updateSimulator()">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="text-slate-400" id="lbl-sim-sh">Фактор шринкфляции:</span>
+              <span class="text-amber-400 font-bold" id="val-sim-shrink">0.5</span>
+            </div>
+            <input type="range" id="slider-sim-shrink" min="0" max="1" step="0.1" value="0.5" oninput="updateSimulator()">
+          </div>
+
+          <div class="pt-2">
+            <button onclick="resetSimulator()" class="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold rounded-lg transition border border-slate-700" id="btn-reset-sim">Сбросить настройки</button>
+          </div>
+        </div>
+
+        <div class="theme-card p-5 rounded-xl border shadow-sm space-y-4">
+          <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+            <h3 class="text-sm font-bold" id="lbl-sim-chart-title">Динамика цен: Биржевой фьючерс против Розничной цены (MSRP)</h3>
+            <span class="text-xs bg-amber-950 text-amber-300 font-bold px-2.5 py-1 rounded border border-amber-800" id="sim-lag-badge">Окно закупочной стоимости: 6 мес.</span>
+          </div>
+
+          <div class="h-64">
+            <canvas id="chart-simulator-lag"></canvas>
+          </div>
+
+          <div class="h-40 pt-2 border-t border-slate-700/50">
+            <canvas id="chart-simulator-margin"></canvas>
+          </div>
+          <p id="sim-model-note" class="text-[11px] text-slate-400">Шринкфляция уменьшает массу плитки, а эластичность рассчитывает индекс объёма продаж по цене за 100 г.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ВКЛАДКА 3: СЦЕНАРИИ 2026 ГОДА -->
+    <section id="tab-cases" class="tab-content hidden space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="theme-card p-5 rounded-xl border shadow-sm hover:border-amber-500 transition cursor-pointer flex flex-col justify-between" onclick="loadCase('easter')">
+          <div>
+            <span class="text-xs font-bold text-amber-400 uppercase" id="c1-tag">Март 2026 • Анализ RMIT</span>
+            <h3 class="text-base font-bold mt-1" id="c1-title">Парадокс пасхального лага</h3>
+            <p class="text-xs text-slate-400 mt-2 leading-relaxed" id="c1-desc">Какао отступило от пика свыше 12 220 долларов за тонну в апреле 2024 года, но полочные цены остаются высокими из-за ранее закупленного дорогого сырья и других затрат.</p>
+          </div>
+          <button class="mt-4 w-full py-1.5 bg-amber-950 text-amber-300 font-bold text-xs rounded border border-amber-800 hover:bg-amber-900 transition" id="btn-case-1">Загрузить сценарий</button>
+        </div>
+
+        <div class="theme-card p-5 rounded-xl border shadow-sm hover:border-emerald-500 transition cursor-pointer flex flex-col justify-between" onclick="loadCase('hershey')">
+          <div>
+            <span class="text-xs font-bold text-emerald-400 uppercase" id="c2-tag">Май 2026 • Данные Reuters</span>
+            <h3 class="text-base font-bold mt-1" id="c2-title">Качественный разворот Hershey</h3>
+            <p class="text-xs text-slate-400 mt-2 leading-relaxed" id="c2-desc">Снижение цен на бобы на 70 процентов делает производство настоящего какао-масла выгоднее заменителей. Производитель возвращает оригинальные рецептуры.</p>
+          </div>
+          <button class="mt-4 w-full py-1.5 bg-emerald-950 text-emerald-300 font-bold text-xs rounded border border-emerald-800 hover:bg-emerald-900 transition" id="btn-case-2">Загрузить сценарий</button>
+        </div>
+
+        <div class="theme-card p-5 rounded-xl border shadow-sm hover:border-indigo-500 transition cursor-pointer flex flex-col justify-between" onclick="loadCase('anz')">
+          <div>
+            <span class="text-xs font-bold text-indigo-400 uppercase" id="c3-tag">Октябрь 2026 • Аналитика ANZ</span>
+            <h3 class="text-base font-bold mt-1" id="c3-title">Двойное сжатие на Хеллоуин</h3>
+            <p class="text-xs text-slate-400 mt-2 leading-relaxed" id="c3-desc">Какао снова растет до 8300 долларов за тонну, а сахар подорожал на 45 процентов. Фабрики используют шринкфляцию перед пиковым сезонным спросом.</p>
+          </div>
+          <button class="mt-4 w-full py-1.5 bg-indigo-950 text-indigo-300 font-bold text-xs rounded border border-indigo-800 hover:bg-indigo-900 transition" id="btn-case-3">Загрузить сценарий</button>
+        </div>
+      </div>
+
+      <div id="case-details-box" class="theme-card p-5 rounded-xl border border-amber-500/40 text-xs leading-relaxed">
+        <h4 class="font-bold text-amber-400 text-sm mb-1" id="case-title">Выберите сценарий для анализа</h4>
+        <p id="case-desc" class="text-slate-300">Кликните на одну из карточек выше, чтобы автоматически применить параметры реального рынка 2026 года в модель симулятора.</p>
+      </div>
+    </section>
+
+    <!-- ВКЛАДКА 4: КАЛЬКУЛЯЦИЯ ПЛИТКИ -->
+    <section id="tab-recipe" class="tab-content hidden space-y-6">
+      <div class="dashboard-split dashboard-split-5-7">
+        
+        <div class="theme-card p-5 rounded-xl border shadow-sm space-y-4">
+          <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+            <h3 class="text-sm font-bold" id="lbl-rcp-title"><i class="fa-solid fa-sliders text-amber-400 mr-1.5"></i>Параметры и рецептура плитки</h3>
+            <span class="text-[10px] bg-amber-950 text-amber-300 font-bold px-2 py-0.5 rounded border border-amber-800" id="badge-rcp-autobalance">Авто-Баланс</span>
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="text-slate-400" id="lbl-rcp-pr">Целевая цена плитки (MSRP):</span>
+              <span class="text-amber-400 font-bold" id="val-rcp-price">1.80 $</span>
+            </div>
+            <input type="range" id="slider-rcp-price" min="0.80" max="4.00" step="0.05" value="1.80" oninput="onRecipePriceChange()">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="text-slate-400" id="lbl-rcp-fut">Биржа какао-бобов ($/т):</span>
+              <span class="text-amber-400 font-bold" id="val-rcp-futures">6 500 $</span>
+            </div>
+            <input type="range" id="slider-rcp-futures" min="2000" max="12000" step="250" value="6500" oninput="onRecipeLinkedChange()">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="text-slate-400" id="lbl-rcp-w">Установленный вес плитки:</span>
+              <span class="text-amber-400 font-bold" id="val-rcp-weight">90 г</span>
+            </div>
+            <input type="range" id="slider-rcp-weight" min="60" max="120" step="5" value="90" oninput="onRecipeWeightChange()">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="text-slate-400" id="lbl-rcp-c">Общее содержание какао (%):</span>
+              <span class="text-amber-400 font-bold" id="val-rcp-cocoa-pct">55%</span>
+            </div>
+            <input type="range" id="slider-rcp-cocoa-pct" min="20" max="85" step="1" value="55" oninput="onRecipeCocoaChange()">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="text-slate-400" id="lbl-rcp-b">Какао-масло (от доли какао):</span>
+              <span class="text-amber-400 font-bold" id="val-rcp-butter-ratio">40%</span>
+            </div>
+            <input type="range" id="slider-rcp-butter-ratio" min="20" max="80" step="5" value="40" oninput="onRecipeLinkedChange()">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="text-slate-400" id="lbl-rcp-af">Дополнительные растительные жиры:</span>
+              <span class="text-amber-400 font-bold" id="val-rcp-alt-fat">5%</span>
+            </div>
+            <input type="range" id="slider-rcp-alt-fat" min="0" max="20" step="1" value="5" oninput="onRecipeAltFatChange()">
+          </div>
+
+          <div class="p-3 theme-box rounded-lg text-xs space-y-1.5">
+            <div class="font-bold border-b border-slate-600 pb-1" id="lbl-rcp-bal-title">Авто-баланс рецептуры (Баланс до 100%):</div>
+            <div class="flex justify-between">
+              <span id="lbl-rcp-milk">Сухое молоко / Наполнители:</span>
+              <span class="font-bold text-amber-400" id="txt-rcp-milk-val">20%</span>
+            </div>
+            <div class="flex justify-between">
+              <span id="lbl-rcp-sugar">Сахар:</span>
+              <span class="font-bold text-amber-400" id="txt-rcp-sugar-val">20%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="theme-card p-5 rounded-xl border shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center border-b border-slate-700 pb-2 mb-4">
+              <h3 class="text-sm font-bold" id="lbl-rcp-chart-title"><i class="fa-solid fa-chart-pie text-amber-400 mr-1.5"></i>Структура состава и себестоимости</h3>
+              <div class="flex gap-2">
+                <button onclick="setRecipeChartMode('composition')" id="btn-chart-comp" class="px-2.5 py-1 text-xs font-bold rounded bg-amber-600 text-white">Состав (%)</button>
+                <button onclick="setRecipeChartMode('cogs')" id="btn-chart-cogs" class="px-2.5 py-1 text-xs font-bold rounded bg-slate-800 text-slate-300">Издержки ($)</button>
+              </div>
+            </div>
+
+            <div class="h-64 relative flex items-center justify-center">
+              <canvas id="chart-recipe-donut"></canvas>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-700/50 flex items-center justify-between text-xs">
+            <span class="text-slate-400" id="lbl-rcp-shrink-lbl">Индикативный вес для целевой маржи:</span>
+            <span class="font-bold text-amber-300 bg-amber-950 px-2 py-0.5 rounded border border-amber-800" id="txt-shrink-status">Для маржи 30%: 90 г</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="theme-card p-4 rounded-xl border shadow-sm">
+          <span class="text-xs text-slate-400 font-medium" id="lbl-kpi-cogs">Себестоимость сырья (Raw COGS):</span>
+          <div class="text-xl font-extrabold text-amber-400 mt-1" id="kpi-rcp-cogs">0.68 $</div>
+          <p class="text-[11px] text-slate-400 mt-1" id="kpi-rcp-cogs-sub">Доля какао в сырье: 74%</p>
+        </div>
+
+        <div class="theme-card p-4 rounded-xl border shadow-sm">
+          <span class="text-xs text-slate-400 font-medium" id="lbl-kpi-ebitda">Маржа покрытия фабрики:</span>
+          <div class="text-xl font-extrabold text-emerald-400 mt-1" id="kpi-rcp-margin">18.4%</div>
+          <p class="text-[11px] text-slate-400 mt-1" id="kpi-rcp-margin-sub">Прибыль: 0.33 $ / шт</p>
+        </div>
+
+        <div class="theme-card p-4 rounded-xl border shadow-sm">
+          <span class="text-xs text-slate-400 font-medium" id="lbl-kpi-status">Нормативный тест ЕС:</span>
+          <div class="text-sm font-bold text-emerald-400 mt-1 flex items-center gap-1.5" id="kpi-rcp-status">
+            <i class="fa-solid fa-circle-check"></i> <span>Шоколад (Стандарт)</span>
+          </div>
+          <p class="text-[11px] text-slate-400 mt-1" id="kpi-rcp-status-sub">Проверяются 35% какао, 18% какао-масла, 14% обезжиренных сухих веществ и ≤5% иных растительных жиров.</p>
+        </div>
+      </div>
+
+      <div class="theme-card p-5 rounded-xl border border-slate-700 text-xs leading-relaxed space-y-2">
+        <h4 class="font-bold text-amber-400 text-sm flex items-center gap-2" id="lbl-rcp-exp-title">
+          <i class="fa-solid fa-lightbulb"></i> Экономическое пояснение взаимосвязи параметров
+        </h4>
+        <p id="txt-recipe-explanation" class="text-slate-300">
+          При изменении розничной цены или биржевой стоимости какао-бобов система автобалансировки демонстрирует компромисс между тремя стратегиями производителя.
+        </p>
+      </div>
+    </section>
+
+    <!-- ВКЛАДКА 5: ДИАГРАММА САНКИ С ПАНЕЛЬЮ СЛАЙДЕРОВ СЛЕВА -->
+    <section id="tab-sankey" class="tab-content hidden space-y-6">
+      
+      <div class="dashboard-split dashboard-split-5-7">
+        
+        <!-- ЛЕВАЯ КОЛОНКА: СЛАЙДЕРЫ УПРАВЛЕНИЯ -->
+        <div class="theme-card p-5 rounded-xl border shadow-sm space-y-4">
+          <div class="flex justify-between items-center border-b border-slate-700 pb-2">
+            <h3 class="text-sm font-bold" id="lbl-snk-ctrl-title"><i class="fa-solid fa-sliders text-amber-400 mr-1.5"></i>Параметры потоков Санки</h3>
+            <span class="text-[10px] bg-amber-950 text-amber-300 font-bold px-2 py-0.5 rounded border border-amber-800">Live Sankey</span>
+          </div>
+
+          <!-- Слайдер 1: Цена -->
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="text-slate-400" id="lbl-snk-msrp">Розничная цена (MSRP):</span>
+              <span class="text-amber-400 font-bold" id="val-snk-price">1.80 $</span>
+            </div>
+            <input type="range" id="slider-snk-price" min="0.80" max="4.00" step="0.05" value="1.80" oninput="syncSankeyFromLeft()">
+          </div>
+
+          <!-- Слайдер 2: Биржа -->
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="text-slate-400" id="lbl-snk-futures">Биржа какао ($/т):</span>
+              <span class="text-amber-400 font-bold" id="val-snk-futures">6 500 $</span>
+            </div>
+            <input type="range" id="slider-snk-futures" min="2000" max="12000" step="250" value="6500" oninput="syncSankeyFromLeft()">
+          </div>
+
+          <!-- Слайдер 3: Масса плитки -->
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="text-slate-400" id="lbl-snk-weight">Масса плитки:</span>
+              <span class="text-amber-400 font-bold" id="val-snk-weight">90 г</span>
+            </div>
+            <input type="range" id="slider-snk-weight" min="60" max="120" step="5" value="90" oninput="syncSankeyFromLeft()">
+          </div>
+
+          <!-- Слайдер 3: Какао % -->
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="text-slate-400" id="lbl-snk-cocoa">Содержание какао (%):</span>
+              <span class="text-amber-400 font-bold" id="val-snk-cocoa">55%</span>
+            </div>
+            <input type="range" id="slider-snk-cocoa" min="20" max="85" step="1" value="55" oninput="syncSankeyFromLeft()">
+          </div>
+
+          <!-- Слайдер 4: Доля масла в какао -->
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="text-slate-400" id="lbl-snk-butter">Доля какао-масла (%):</span>
+              <span class="text-amber-400 font-bold" id="val-snk-butter">40%</span>
+            </div>
+            <input type="range" id="slider-snk-butter" min="20" max="80" step="5" value="40" oninput="syncSankeyFromLeft()">
+          </div>
+
+          <!-- Слайдер 5: Заменители -->
+          <div>
+            <div class="flex justify-between text-xs font-semibold mb-1">
+              <span class="text-slate-400" id="lbl-snk-alt">Доп. растительные жиры:</span>
+              <span class="text-amber-400 font-bold" id="val-snk-alt">5%</span>
+            </div>
+            <input type="range" id="slider-snk-alt" min="0" max="20" step="1" value="5" oninput="syncSankeyFromLeft()">
+          </div>
+
+          <div class="p-3 theme-box rounded-lg text-xs space-y-1 border border-slate-700">
+            <div class="font-bold border-b border-slate-600 pb-1" id="lbl-snk-legend-title">Легенда цветов компонентов:</div>
+            <div class="grid grid-cols-2 gap-1 text-[11px] pt-1">
+              <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-[#3d2314]"></span> <span id="leg-liquor">Какао тертое</span></div>
+              <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-[#a8894d]"></span> <span id="leg-butter">Какао-масло</span></div>
+              <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-[#d1b86e]"></span> <span id="leg-alt">Растит. жиры</span></div>
+              <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-[#cbd5e1]"></span> <span id="leg-milk">Сухое молоко</span></div>
+              <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-[#64748b]"></span> <span id="leg-sugar">Сахар</span></div>
+              <div class="flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-[#b89248]"></span> <span id="leg-bar">Плитка / Выручка</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ПРАВАЯ КОЛОНКА: ДИАГРАММА САНКИ -->
+        <div class="theme-card p-5 rounded-xl border shadow-sm flex flex-col justify-between">
+          <div>
+            <div class="flex justify-between items-center border-b border-slate-700 pb-2 mb-3">
+              <h3 class="text-sm font-bold" id="lbl-snk-title"><i class="fa-solid fa-diagram-project text-amber-400 mr-1.5"></i>Диаграмма потоков сырья и ценности</h3>
+              <div class="flex gap-2">
+                <button onclick="setSankeyMode('mass')" id="btn-snk-mass" class="px-2.5 py-1 text-xs font-bold rounded bg-amber-600 text-white shadow">Масса (г)</button>
+                <button onclick="setSankeyMode('value')" id="btn-snk-value" class="px-2.5 py-1 text-xs font-bold rounded bg-slate-800 text-slate-300">Стоимость ($)</button>
+              </div>
+            </div>
+
+            <div class="h-72 w-full relative">
+              <canvas id="chart-sankey"></canvas>
+            </div>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-700/50 flex justify-between items-center text-xs">
+            <span class="text-slate-400" id="lbl-snk-dyn-title">Динамика потоков при изменении ползунков:</span>
+            <span class="font-bold text-amber-300 bg-amber-950 px-2 py-0.5 rounded border border-amber-800" id="txt-snk-kpi">Расчет параметров...</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ПОЯСНЕНИЕ САНКИ -->
+      <div class="theme-card p-5 rounded-xl border border-slate-700 text-xs leading-relaxed space-y-1">
+        <h4 class="font-bold text-amber-400 text-sm flex items-center gap-2" id="lbl-snk-exp-title">
+          <i class="fa-solid fa-lightbulb"></i> Интерпретация потоков Санки
+        </h4>
+        <p id="txt-sankey-explanation" class="text-slate-300">
+          При изменении розничной цены или биржевой стоимости какао-бобов диаграмма Санки пересчитывает распределение каждого доллара или грамма сырья.
+        </p>
+      </div>
+    </section>
+
+    <!-- ВКЛАДКА 6: МАТЕМАТИЧЕСКАЯ МОДЕЛЬ И СПЕЦИФИКАЦИЯ -->
+    <section id="tab-math" class="tab-content hidden space-y-6">
+      <div class="theme-card p-6 rounded-xl border shadow-sm space-y-6">
+        <div>
+          <h3 class="text-base font-bold mb-2" id="lbl-mth-title">Полная математическая спецификация симулятора</h3>
+          <p class="text-xs text-slate-400 leading-relaxed" id="lbl-mth-sub">Модель объединяет алгоритмы скользящего окна хеджирования фьючерсов, мультипликаторы переработки какао, трансферное ценообразование и функции эластичности спроса без сырых служебных символов.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+          <div class="p-4 theme-box rounded-lg border space-y-2">
+            <span class="font-bold text-amber-400" id="lbl-mth-eq1">1. Скользящая закупочная стоимость какао:</span>
+            <div class="font-mono text-amber-300 py-1" id="formula-1">P<sub>hedged</sub>(t) = Среднее [ Futures(t), …, Futures(t − H + 1) ]</div>
+            <p class="text-slate-400" id="lbl-mth-eq1-sub">H — учебное окно покрытия. Это простая скользящая средняя, а не WACC и не точная модель контрактного портфеля.</p>
+          </div>
+
+          <div class="p-4 theme-box rounded-lg border space-y-2">
+            <span class="font-bold text-amber-400" id="lbl-mth-eq2">2. Себестоимость какао-микса:</span>
+            <div class="font-mono text-amber-300 py-1" id="formula-2">C<sub>raw</sub> = Доля масла × Цена масла + Доля тёртого какао × Цена тёртого какао</div>
+            <p class="text-slate-400" id="lbl-mth-eq2-sub">Где цены продуктов переработки задаются через коэффициенты Butter Ratio (~2.2) и Liquor Ratio (~1.4).</p>
+          </div>
+
+          <div class="p-4 theme-box rounded-lg border space-y-2">
+            <span class="font-bold text-amber-400" id="lbl-mth-eq3">3. Корректировка веса (Шринкфляция):</span>
+            <div class="font-mono text-amber-300 py-1" id="formula-3">Вес(t) = Базовый вес × [ 1 − 0.20 × Фактор шринкфляции × Давление издержек ]</div>
+            <p class="text-slate-400" id="lbl-mth-eq3-sub">При максимальном факторе и полном давлении масса снижается до 80% базового веса; розничная цена рассчитывается отдельно.</p>
+          </div>
+
+          <div class="p-4 theme-box rounded-lg border space-y-2">
+            <span class="font-bold text-amber-400" id="lbl-mth-eq4">4. Функция объёма продаж (Q):</span>
+            <div class="font-mono text-amber-300 py-1" id="formula-4">Q(t) = Q<sub>0</sub> × [ (MSRP(t) ÷ Вес(t)) ÷ (MSRP<sub>0</sub> ÷ Вес<sub>0</sub>) ]<sup>E<sub>d</sub></sup></div>
+            <p class="text-slate-400" id="lbl-mth-eq4-sub">Эластичность применяется к относительному изменению цены за 100 г, поэтому шринкфляция также влияет на спрос.</p>
+          </div>
+        </div>
+
+        <div class="p-4 theme-box rounded-lg border text-xs leading-relaxed space-y-2">
+          <h4 class="font-bold text-amber-400" id="lbl-method-note">Границы модели и источники</h4>
+          <p id="txt-method-note" class="text-slate-400">Модель учебная: коэффициенты переработки, упаковки и торговой наценки — прозрачные калибровочные допущения, а не котировки. Рыночный контекст сверялся с ICCO, World Bank, RMIT, ANZ, JRC и Директивой ЕС 2000/36/EC.</p>
+        </div>
+
+        <div class="pt-4 border-t border-slate-700/50 flex justify-between items-center">
+          <span class="text-xs text-slate-400" id="lbl-spec-ver">Версия спецификации: 2026.4 (аудит) • Совместимо с JS и Python</span>
+          <button onclick="downloadSpecJSON()" class="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs rounded transition shadow" id="btn-export-spec">Экспорт JSON спецификации</button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ПОДВАЛ -->
+  <footer class="theme-header border-t mt-auto py-4 text-center text-xs text-slate-400">
+    <p id="lbl-footer">Симулятор рынка какао и шоколада • Разработано для курса микроэкономика • SDTE</p>
+  </footer>
+
+  <!-- СКРИПТЫ И ЛОГИКА -->
+  <script>
+    let currentTheme = 'dark';
+    let currentLang = 'ru';
+    let currentTab = 'overview';
+    let recipeChartMode = 'composition';
+    let sankeyMode = 'mass';
+    let activeCase = null;
+
+    let charts = {};
+
+    const MODEL = Object.freeze({
+      retailMarkupOnWholesale: 0.35,
+      packagingPer100g: 0.28,
+      butterMultiplier: 2.25,
+      liquorMultiplier: 1.35,
+      altFatCostPerKg: 2.40,
+      milkCostPerKg: 3.20,
+      sugarCostPerKg: 0.85,
+      cocoaLiquorButterFraction: 0.54,
+      targetContributionMargin: 0.30,
+      simulatorBaseFutures: 3000,
+      simulatorBaseRetail: 1.50,
+      simulatorBaseWeight: 100,
+      cocoaRetailPassThrough: 0.45,
+      maximumWeightReduction: 0.20
+    });
+
+    const i18n = {
+      ru: {
+        appTitle: "Дашборд рынка какао и шоколада",
+        appSubtitle: "Аналитическая микроэкономическая модель цепочки стоимости и ценового лага",
+        tabs: { overview: "Обзор рынка", simulator: "Симулятор лага", cases: "Сценарии 2026", recipe: "Калькуляция плитки", sankey: "Диаграмма Санки", math: "Формулы и спецификация" },
+        ovStageA: "Этап A • Выращивание", ovTitleA: "Фрагментированное предложение", ovDescA: "Производство основано преимущественно на мелких хозяйствах; маркетинг и цены в ведущих странах регулируются по-разному, поэтому термин «государственная монопсония» нельзя применять ко всему рынку.",
+        ovStageB: "Этап B • Переработка B2B", ovTitleB: "Концентрированная переработка", ovDescB: "Глобальная торговля и переработка концентрированы у крупных компаний, но точные доли зависят от продукта и географии. Вход требует значительного капитала и масштаба.",
+        ovStageC: "Этап C • Продажи B2C", ovTitleC: "Олигополия + Крафт", ovDescC: "Массовый рынок удерживают транснациональные корпорации, а премиум и крафтовый сегменты развиваются в условиях монополистической конкуренции.",
+        ovChartTitle: "Иллюстративное распределение конечной цены плитки (%)", ovChartSub: "Учебная декомпозиция, сумма каждого сценария равна 100%; это не аудированные отраслевые счета.",
+        ovChartLabels: ['Нормальный рынок', 'Сырьевой шок'],
+        ovChartDatasets: ['Фермер', 'B2B-переработка', 'Бренд / фабрика', 'Логистика и налоги', 'Ритейл'],
+        
+        simParams: "Параметры хеджирования", simWin: "Окно хеджирования:", simPk: "Пик фьючерса ($/т):", simEl: "Эластичность спроса (Ed):", simSh: "Фактор шринкфляции:", btnReset: "Сбросить настройки", simChartTitle: "Динамика цен: Биржевой фьючерс против Розничной цены (MSRP)",
+        simLagBadge: "Окно закупочной стоимости: 6 мес.",
+        simChartDatasets: ['Биржевой фьючерс ($/т)', 'Розничная цена плитки ($)', 'Маржа покрытия (%)', 'Индекс объёма продаж (100 = база)'],
+        simNote: "Шринкфляция уменьшает массу плитки, а эластичность рассчитывает индекс объёма продаж по цене за 100 г.",
+        
+        c1Tag: "Март 2026 • Анализ RMIT", c1Title: "Парадокс пасхального лага", c1Desc: "Какао отступило от пика свыше 12 220 долларов за тонну в апреле 2024 года, но полочные цены остаются высокими из-за ранее закупленного дорогого сырья и других затрат.", btnCase1: "Загрузить сценарий",
+        c2Tag: "Май 2026 • Данные Reuters", c2Title: "Качественный разворот Hershey", c2Desc: "Снижение цен на бобы на 70 процентов делает производство настоящего какао-масла выгоднее заменителей. Производитель возвращает оригинальные рецептуры.", btnCase2: "Загрузить сценарий",
+        c3Tag: "Октябрь 2026 • Аналитика ANZ", c3Title: "Двойное сжатие на Хеллоуин", c3Desc: "Какао снова растет до 8300 долларов за тонну, а сахар подорожал на 45 процентов. Фабрики используют шринкфляцию перед пиковым сезонным спросом.", btnCase3: "Загрузить сценарий",
+        caseBoxTitle: "Выберите сценарий для анализа", caseBoxDesc: "Кликните на одну из карточек выше, чтобы автоматически применить параметры реального рынка 2026 года в модель симулятора.",
+
+        rcpTitle: "Параметры и рецептура плитки", rcpBadgeAuto: "Авто-Баланс", rcpPrice: "Целевая цена плитки (MSRP):", rcpFut: "Биржа какао-бобов ($/т):", rcpW: "Установленный вес плитки:", rcpC: "Общее содержание какао (%):", rcpB: "Какао-масло (от доли какао):", rcpAF: "Дополнительные растительные жиры:", rcpBalTitle: "Авто-баланс рецептуры (Баланс до 100%):", rcpMilk: "Сухое молоко / Наполнители:", rcpSugar: "Сахар:", rcpChartTitle: "Структура состава и себестоимости", rcpShrinkLbl: "Индикативный вес для целевой маржи:",
+        kpiCogs: "Производственная себестоимость:", kpiEbitda: "Маржа покрытия фабрики:", kpiStatus: "Нормативный тест ЕС:", rcpExpTitle: "Экономическое пояснение взаимосвязи параметров",
+        btnChartComp: "Состав (%)", btnChartCogs: "Издержки ($)",
+        rcpDonutLabels: ['Какао-продукты', 'Заменители жира', 'Сухое молоко', 'Сахар'],
+        rcpBarLabels: ['Издержки unit ($)'],
+        rcpBarDatasets: ['Закупка сырья', 'Упаковка и энергия', 'Маржа покрытия'],
+
+        snkCtrlTitle: "Параметры потоков Санки", snkMsrp: "Розничная цена (MSRP):", snkFutures: "Биржа какао ($/т):", snkWeight: "Масса плитки:", snkCocoa: "Содержание какао (%):", snkButter: "Доля какао-масла (%):", snkAlt: "Доп. растительные жиры:", snkLegendTitle: "Легенда цветов компонентов:",
+        legLiquor: "Какао тертое", legButter: "Какао-масло", legAlt: "Растит. жиры", legMilk: "Сухое молоко", legSugar: "Сахар", legBar: "Плитка / Выручка",
+        snkTitle: "Диаграмма потоков сырья и ценности", snkDynTitle: "Динамика потоков при изменении ползунков:", snkExpTitle: "Интерпретация потоков Санки",
+        btnSnkMass: "Масса (г)", btnSnkVal: "Стоимость ($)",
+
+        mthTitle: "Полная математическая спецификация симулятора", mthSub: "Учебная модель объединяет скользящую закупочную стоимость, калибровочные коэффициенты переработки, торговую наценку, шринкфляцию и эластичность спроса.",
+        mthEq1: "1. Скользящая закупочная стоимость какао:", mthEq1Sub: "H — учебное окно покрытия. Это простая скользящая средняя, а не WACC и не точная модель контрактного портфеля.",
+        mthEq2: "2. Себестоимость какао-микса:", mthEq2Sub: "Где цены продуктов переработки задаются через коэффициенты Butter Ratio (~2.2) и Liquor Ratio (~1.4).",
+        mthEq3: "3. Корректировка веса (шринкфляция):", mthEq3Sub: "При максимальном факторе и полном давлении масса снижается до 80% базового веса; розничная цена рассчитывается отдельно.",
+        mthEq4: "4. Функция объёма продаж (Q):", mthEq4Sub: "Эластичность применяется к относительному изменению цены за 100 г, поэтому шринкфляция также влияет на спрос.",
+        mthFormula1: "P<sub>hedged</sub>(t) = Среднее [ Futures(t), …, Futures(t − H + 1) ]",
+        mthFormula2: "C<sub>raw</sub> = Доля масла × Цена масла + Доля тёртого какао × Цена тёртого какао",
+        mthFormula3: "Вес(t) = Базовый вес × [ 1 − 0.20 × Фактор шринкфляции × Давление издержек ]",
+        mthFormula4: "Q(t) = Q<sub>0</sub> × [ (MSRP(t) ÷ Вес(t)) ÷ (MSRP<sub>0</sub> ÷ Вес<sub>0</sub>) ]<sup>E<sub>d</sub></sup>",
+        methodNoteTitle: "Границы модели и источники", methodNote: "Модель учебная: коэффициенты переработки, упаковки и торговой наценки — прозрачные калибровочные допущения, а не котировки. Рыночный контекст сверялся с ICCO, World Bank, RMIT, ANZ, JRC и Директивой ЕС 2000/36/EC.",
+        mthSpecVer: "Версия спецификации: 2026.4 (аудит) • Совместимо с JS и Python", btnExportSpec: "Экспорт JSON спецификации",
+
+        footer: "Симулятор рынка какао и шоколада • Разработано для курса микроэкономики • SDTE"
+      },
+      en: {
+        appTitle: "Cocoa & Chocolate Market Dashboard",
+        appSubtitle: "Analytical Microeconomic Model of Value Chain & Cost Pass-Through Lag",
+        tabs: { overview: "Market Overview", simulator: "Cost Lag Simulator", cases: "2026 Industry Cases", recipe: "Unit Economics", sankey: "Sankey Flow", math: "Formulas & Specs" },
+        ovStageA: "Stage A • Farming", ovTitleA: "Fragmented Supply", ovDescA: "Production is predominantly smallholder-based. Marketing and pricing systems differ across leading origins, so 'state monopsony' should not be applied to the whole market.",
+        ovStageB: "Stage B • B2B Processing", ovTitleB: "Concentrated Processing", ovDescB: "Global trading and processing are concentrated among large firms, but exact shares differ by product and geography. Entry requires substantial capital and scale.",
+        ovStageC: "Stage C • B2C Confectionery", ovTitleC: "Oligopoly + Craft", ovDescC: "Mass market dominated by multinational conglomerates, while craft segments operate under monopolistic competition.",
+        ovChartTitle: "Illustrative Split of Final Bar Price (%)", ovChartSub: "Teaching decomposition; each scenario sums to 100% and is not an audited industry account.",
+        ovChartLabels: ['Normal Market', 'Raw Cocoa Shock'],
+        ovChartDatasets: ['Farmer', 'B2B Processing', 'Brand / Factory', 'Logistics & Taxes', 'Retail'],
+
+        simParams: "Hedging Parameters", simWin: "Hedge Window:", simPk: "Peak Futures ($/t):", simEl: "Demand Elasticity (Ed):", simSh: "Shrinkflation Factor:", btnReset: "Reset Parameters", simChartTitle: "Price Dynamics: Commodity Futures vs Retail Price (MSRP)",
+        simLagBadge: "Procurement Cost Window: 6 Months",
+        simChartDatasets: ['Commodity Futures ($/t)', 'Retail Bar Price ($)', 'Factory Contribution Margin (%)', 'Sales Volume Index (100 = base)'],
+        simNote: "Shrinkflation reduces bar weight; elasticity converts the change in price per 100g into a sales-volume index.",
+
+        c1Tag: "March 2026 • RMIT Analysis", c1Title: "Easter Cost Lag Paradox", c1Desc: "Cocoa retreated from its April 2024 peak above $12,220/t, but shelf prices remained elevated because of previously purchased high-cost inputs and other costs.", btnCase1: "Load Scenario",
+        c2Tag: "May 2026 • Reuters Data", c2Title: "Hershey Formulation Pivot", c2Desc: "A 70% drop in bean prices makes real cocoa butter viable again. Manufacturers restore authentic recipes replacing palm oil.", btnCase2: "Load Scenario",
+        c3Tag: "October 2026 • ANZ Insights", c3Title: "Halloween Double-Squeeze", c3Desc: "Cocoa rebounds to $8,300/t while sugar rises 45%. Confectioners deploy aggressive shrinkflation ahead of peak seasonal demand.", btnCase3: "Load Scenario",
+        caseBoxTitle: "Select a Case Study for Analysis", caseBoxDesc: "Click any card above to apply real 2026 market scenarios into the lag simulator.",
+
+        rcpTitle: "Bar Parameters & Formulation", rcpBadgeAuto: "Auto-Balanced", rcpPrice: "Target Retail Price (MSRP):", rcpFut: "Cocoa Futures Price ($/t):", rcpW: "Selected Bar Weight:", rcpC: "Total Cocoa Content (%):", rcpB: "Added Cocoa Butter Ratio:", rcpAF: "Additional Vegetable Fats:", rcpBalTitle: "Auto-Balanced Formulation (100% total):", rcpMilk: "Milk Powder / Fillers:", rcpSugar: "Sugar:", rcpChartTitle: "Recipe & Cost Structure Breakdown", rcpShrinkLbl: "Indicative Weight for Target Margin:",
+        kpiCogs: "Factory Production Cost:", kpiEbitda: "Factory Contribution Margin:", kpiStatus: "EU Regulatory Test:", rcpExpTitle: "Economic Insight into Parameter Interdependence",
+        btnChartComp: "Formulation (%)", btnChartCogs: "Unit COGS ($)",
+        rcpDonutLabels: ['Cocoa Solids', 'Alt Fats', 'Milk Powder', 'Sugar'],
+        rcpBarLabels: ['Unit Economics Breakdown ($)'],
+        rcpBarDatasets: ['Raw Material COGS', 'Packaging & Energy', 'Contribution Margin'],
+
+        snkCtrlTitle: "Sankey Flow Parameters", snkMsrp: "Retail Price (MSRP):", snkFutures: "Cocoa Futures ($/t):", snkWeight: "Bar Weight:", snkCocoa: "Total Cocoa Content (%):", snkButter: "Added Cocoa Butter Ratio (%):", snkAlt: "Additional Vegetable Fats:", snkLegendTitle: "Component Color Legend:",
+        legLiquor: "Cocoa Liquor", legButter: "Cocoa Butter", legAlt: "Alt Fats", legMilk: "Milk Powder", legSugar: "Sugar", legBar: "Bar / Wholesale",
+        snkTitle: "Raw Material & Value Flow Diagram", snkDynTitle: "Flow Dynamics on Slider Shift:", snkExpTitle: "Interpreting Sankey Flow",
+        btnSnkMass: "Mass (g)", btnSnkVal: "Value ($)",
+
+        mthTitle: "Full Mathematical Model Specification", mthSub: "Teaching model combining rolling procurement cost, transparent processing calibrations, retail markup, shrinkflation and demand elasticity.",
+        mthEq1: "1. Rolling Cocoa Procurement Cost:", mthEq1Sub: "H is the teaching coverage window. This is a simple moving average, not WACC and not a precise contract-portfolio model.",
+        mthEq2: "2. Raw Blend Cost Function:", mthEq2Sub: "Where processing prices use Butter Ratio (~2.2) and Liquor Ratio (~1.4).",
+        mthEq3: "3. Shrinkflation Weight Adjustment:", mthEq3Sub: "At the maximum factor and full cost pressure, weight falls to 80% of the base; retail price is modelled separately.",
+        mthEq4: "4. Demand Elasticity & Sales Volume (Q):", mthEq4Sub: "Elasticity applies to the relative change in price per 100g, so shrinkflation also affects demand.",
+        mthFormula1: "P<sub>hedged</sub>(t) = Average [ Futures(t), …, Futures(t − H + 1) ]",
+        mthFormula2: "C<sub>raw</sub> = Butter share × Butter price + Liquor share × Liquor price",
+        mthFormula3: "Weight(t) = Base weight × [ 1 − 0.20 × Shrink factor × Cost pressure ]",
+        mthFormula4: "Q(t) = Q<sub>0</sub> × [ (MSRP(t) ÷ Weight(t)) ÷ (MSRP<sub>0</sub> ÷ Weight<sub>0</sub>) ]<sup>E<sub>d</sub></sup>",
+        methodNoteTitle: "Model Boundaries & Sources", methodNote: "This is a teaching model: processing, packaging and retail-markup coefficients are transparent calibration assumptions, not live quotes. Market context was checked against ICCO, World Bank, RMIT, ANZ, JRC and EU Directive 2000/36/EC.",
+        mthSpecVer: "Specification Version: 2026.4 (audited) • JS & Python Compatible", btnExportSpec: "Export JSON Spec",
+
+        footer: "Educational Cocoa Market Dashboard • Designed for Economics Courses • SDTE"
+      }
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initCharts();
+      calculateUnitEconomics();
+      updateSimulator();
+    });
+
+    function toggleTheme() {
+      currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.body.className = currentTheme === 'dark' ? 'dark-theme font-sans min-h-screen flex flex-col transition-colors duration-300' : 'light-theme font-sans min-h-screen flex flex-col transition-colors duration-300';
+
+      document.getElementById('theme-icon').className = currentTheme === 'dark' ? 'fa-solid fa-moon text-amber-400' : 'fa-solid fa-sun text-amber-600';
+      document.getElementById('theme-btn-text').innerText = currentTheme === 'dark'
+        ? (currentLang === 'ru' ? 'Bloomberg Тёмный' : 'Bloomberg Dark')
+        : (currentLang === 'ru' ? 'Светлый режим' : 'Light Mode');
+
+      updateChartThemeColors();
+    }
+
+    function updateChartThemeColors() {
+      const textColor = currentTheme === 'dark' ? '#94a3b8' : '#475569';
+      const gridColor = currentTheme === 'dark' ? '#334155' : '#e2e8f0';
+
+      Object.values(charts).forEach(chart => {
+        if (chart && chart.options) {
+          if (chart.options.scales) {
+          Object.values(chart.options.scales).forEach(scale => {
+            if (scale.ticks) scale.ticks.color = textColor;
+            if (scale.grid) scale.grid.color = gridColor;
+          });
+          }
+          if (chart.options.plugins && chart.options.plugins.legend) {
+            chart.options.plugins.legend.labels.color = textColor;
+          }
+          chart.update();
+        }
+      });
+      updateSankeyChart();
+    }
+
+    function setLanguage(lang) {
+      currentLang = lang;
+      const dict = i18n[lang];
+
+      document.getElementById('lang-ru').className = lang === 'ru' ? "px-2.5 py-1 text-xs font-bold rounded bg-amber-600 text-white shadow-sm transition" : "px-2.5 py-1 text-xs font-bold rounded text-slate-400 hover:text-white transition";
+      document.getElementById('lang-en').className = lang === 'en' ? "px-2.5 py-1 text-xs font-bold rounded bg-amber-600 text-white shadow-sm transition" : "px-2.5 py-1 text-xs font-bold rounded text-slate-400 hover:text-white transition";
+
+      document.getElementById('txt-app-title').innerText = dict.appTitle;
+      document.getElementById('txt-app-subtitle').innerText = dict.appSubtitle;
+      document.getElementById('txt-tab-overview').innerText = dict.tabs.overview;
+      document.getElementById('txt-tab-simulator').innerText = dict.tabs.simulator;
+      document.getElementById('txt-tab-cases').innerText = dict.tabs.cases;
+      document.getElementById('txt-tab-recipe').innerText = dict.tabs.recipe;
+      document.getElementById('txt-tab-sankey').innerText = dict.tabs.sankey;
+      document.getElementById('txt-tab-math').innerText = dict.tabs.math;
+
+      document.getElementById('lbl-ov-a-stage').innerText = dict.ovStageA;
+      document.getElementById('lbl-ov-a-title').innerText = dict.ovTitleA;
+      document.getElementById('lbl-ov-a-desc').innerText = dict.ovDescA;
+      document.getElementById('lbl-ov-b-stage').innerText = dict.ovStageB;
+      document.getElementById('lbl-ov-b-title').innerText = dict.ovTitleB;
+      document.getElementById('lbl-ov-b-desc').innerText = dict.ovDescB;
+      document.getElementById('lbl-ov-c-stage').innerText = dict.ovStageC;
+      document.getElementById('lbl-ov-c-title').innerText = dict.ovTitleC;
+      document.getElementById('lbl-ov-c-desc').innerText = dict.ovDescC;
+      document.getElementById('lbl-ov-chart-title').innerText = dict.ovChartTitle;
+      document.getElementById('lbl-ov-chart-sub').innerText = dict.ovChartSub;
+
+      if (charts.valueChain) {
+        charts.valueChain.data.labels = dict.ovChartLabels;
+        charts.valueChain.data.datasets.forEach((dataset, index) => { dataset.label = dict.ovChartDatasets[index]; });
+        charts.valueChain.update();
+      }
+
+      document.getElementById('lbl-sim-params').innerText = dict.simParams;
+      document.getElementById('lbl-sim-win').innerText = dict.simWin;
+      document.getElementById('lbl-sim-pk').innerText = dict.simPk;
+      document.getElementById('lbl-sim-el').innerText = dict.simEl;
+      document.getElementById('lbl-sim-sh').innerText = dict.simSh;
+      document.getElementById('btn-reset-sim').innerText = dict.btnReset;
+      document.getElementById('lbl-sim-chart-title').innerText = dict.simChartTitle;
+      document.getElementById('sim-model-note').innerText = dict.simNote;
+
+      if (charts.lag) {
+        charts.lag.data.datasets[0].label = dict.simChartDatasets[0];
+        charts.lag.data.datasets[1].label = dict.simChartDatasets[1];
+        charts.lag.update();
+      }
+      if (charts.margin) {
+        charts.margin.data.datasets[0].label = dict.simChartDatasets[2];
+        charts.margin.data.datasets[1].label = dict.simChartDatasets[3];
+        charts.margin.update();
+      }
+
+      document.getElementById('c1-tag').innerText = dict.c1Tag;
+      document.getElementById('c1-title').innerText = dict.c1Title;
+      document.getElementById('c1-desc').innerText = dict.c1Desc;
+      document.getElementById('btn-case-1').innerText = dict.btnCase1;
+      document.getElementById('c2-tag').innerText = dict.c2Tag;
+      document.getElementById('c2-title').innerText = dict.c2Title;
+      document.getElementById('c2-desc').innerText = dict.c2Desc;
+      document.getElementById('btn-case-2').innerText = dict.btnCase2;
+      document.getElementById('c3-tag').innerText = dict.c3Tag;
+      document.getElementById('c3-title').innerText = dict.c3Title;
+      document.getElementById('c3-desc').innerText = dict.c3Desc;
+      document.getElementById('btn-case-3').innerText = dict.btnCase3;
+      document.getElementById('case-title').innerText = dict.caseBoxTitle;
+      document.getElementById('case-desc').innerText = dict.caseBoxDesc;
+
+      document.getElementById('lbl-rcp-title').innerHTML = `<i class="fa-solid fa-sliders text-amber-400 mr-1.5"></i>${dict.rcpTitle}`;
+      document.getElementById('badge-rcp-autobalance').innerText = dict.rcpBadgeAuto;
+      document.getElementById('lbl-rcp-pr').innerText = dict.rcpPrice;
+      document.getElementById('lbl-rcp-fut').innerText = dict.rcpFut;
+      document.getElementById('lbl-rcp-w').innerText = dict.rcpW;
+      document.getElementById('lbl-rcp-c').innerText = dict.rcpC;
+      document.getElementById('lbl-rcp-b').innerText = dict.rcpB;
+      document.getElementById('lbl-rcp-af').innerText = dict.rcpAF;
+      document.getElementById('lbl-rcp-bal-title').innerText = dict.rcpBalTitle;
+      document.getElementById('lbl-rcp-milk').innerText = dict.rcpMilk;
+      document.getElementById('lbl-rcp-sugar').innerText = dict.rcpSugar;
+      document.getElementById('lbl-rcp-chart-title').innerHTML = `<i class="fa-solid fa-chart-pie text-amber-400 mr-1.5"></i>${dict.rcpChartTitle}`;
+      document.getElementById('btn-chart-comp').innerText = dict.btnChartComp;
+      document.getElementById('btn-chart-cogs').innerText = dict.btnChartCogs;
+      document.getElementById('lbl-rcp-shrink-lbl').innerText = dict.rcpShrinkLbl;
+
+      document.getElementById('lbl-kpi-cogs').innerText = dict.kpiCogs;
+      document.getElementById('lbl-kpi-ebitda').innerText = dict.kpiEbitda;
+      document.getElementById('lbl-kpi-status').innerText = dict.kpiStatus;
+      document.getElementById('lbl-rcp-exp-title').innerHTML = `<i class="fa-solid fa-lightbulb"></i>${dict.rcpExpTitle}`;
+
+      document.getElementById('lbl-snk-ctrl-title').innerHTML = `<i class="fa-solid fa-sliders text-amber-400 mr-1.5"></i>${dict.snkCtrlTitle}`;
+      document.getElementById('lbl-snk-msrp').innerText = dict.snkMsrp;
+      document.getElementById('lbl-snk-futures').innerText = dict.snkFutures;
+      document.getElementById('lbl-snk-weight').innerText = dict.snkWeight;
+      document.getElementById('lbl-snk-cocoa').innerText = dict.snkCocoa;
+      document.getElementById('lbl-snk-butter').innerText = dict.snkButter;
+      document.getElementById('lbl-snk-alt').innerText = dict.snkAlt;
+      document.getElementById('lbl-snk-legend-title').innerText = dict.snkLegendTitle;
+      document.getElementById('leg-liquor').innerText = dict.legLiquor;
+      document.getElementById('leg-butter').innerText = dict.legButter;
+      document.getElementById('leg-alt').innerText = dict.legAlt;
+      document.getElementById('leg-milk').innerText = dict.legMilk;
+      document.getElementById('leg-sugar').innerText = dict.legSugar;
+      document.getElementById('leg-bar').innerText = dict.legBar;
+      document.getElementById('lbl-snk-title').innerHTML = `<i class="fa-solid fa-diagram-project text-amber-400 mr-1.5"></i>${dict.snkTitle}`;
+      document.getElementById('btn-snk-mass').innerText = dict.btnSnkMass;
+      document.getElementById('btn-snk-value').innerText = dict.btnSnkVal;
+      document.getElementById('lbl-snk-dyn-title').innerText = dict.snkDynTitle;
+      document.getElementById('lbl-snk-exp-title').innerHTML = `<i class="fa-solid fa-lightbulb"></i>${dict.snkExpTitle}`;
+
+      document.getElementById('lbl-mth-title').innerText = dict.mthTitle;
+      document.getElementById('lbl-mth-sub').innerText = dict.mthSub;
+      document.getElementById('lbl-mth-eq1').innerText = dict.mthEq1;
+      document.getElementById('lbl-mth-eq1-sub').innerText = dict.mthEq1Sub;
+      document.getElementById('lbl-mth-eq2').innerText = dict.mthEq2;
+      document.getElementById('lbl-mth-eq2-sub').innerText = dict.mthEq2Sub;
+      document.getElementById('lbl-mth-eq3').innerText = dict.mthEq3;
+      document.getElementById('lbl-mth-eq3-sub').innerText = dict.mthEq3Sub;
+      document.getElementById('lbl-mth-eq4').innerText = dict.mthEq4;
+      document.getElementById('lbl-mth-eq4-sub').innerText = dict.mthEq4Sub;
+      document.getElementById('formula-1').innerHTML = dict.mthFormula1;
+      document.getElementById('formula-2').innerHTML = dict.mthFormula2;
+      document.getElementById('formula-3').innerHTML = dict.mthFormula3;
+      document.getElementById('formula-4').innerHTML = dict.mthFormula4;
+      document.getElementById('lbl-spec-ver').innerText = dict.mthSpecVer;
+      document.getElementById('btn-export-spec').innerText = dict.btnExportSpec;
+      document.getElementById('lbl-method-note').innerText = dict.methodNoteTitle;
+      document.getElementById('txt-method-note').innerText = dict.methodNote;
+      document.getElementById('theme-btn-text').innerText = currentTheme === 'dark'
+        ? (lang === 'ru' ? 'Bloomberg Тёмный' : 'Bloomberg Dark')
+        : (lang === 'ru' ? 'Светлый режим' : 'Light Mode');
+
+      document.getElementById('lbl-footer').innerText = dict.footer;
+
+      updateSimulator();
+      calculateUnitEconomics();
+    }
+
+    function switchTab(tabId) {
+      currentTab = tabId;
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.className = "tab-btn py-2.5 px-4 text-slate-400 hover:text-white border-b-2 border-transparent whitespace-nowrap";
+      });
+      document.getElementById(`tab-btn-${tabId}`).className = "tab-btn py-2.5 px-4 text-amber-400 border-b-2 border-amber-500 font-bold whitespace-nowrap";
+
+      if (tabId === 'sankey') {
+        updateSankeyChart();
+      }
+    }
+
+    function unitLabel() { return currentLang === 'ru' ? 'г' : 'g'; }
+
+    function getRecipeState() {
+      return {
+        price: parseFloat(document.getElementById('slider-rcp-price').value),
+        futures: parseFloat(document.getElementById('slider-rcp-futures').value),
+        weight: parseInt(document.getElementById('slider-rcp-weight').value),
+        cocoaPct: parseInt(document.getElementById('slider-rcp-cocoa-pct').value),
+        butterRatio: parseInt(document.getElementById('slider-rcp-butter-ratio').value) / 100,
+        altFatPct: parseInt(document.getElementById('slider-rcp-alt-fat').value)
+      };
+    }
+
+    function computeRecipeEconomics(state) {
+      state = {
+        ...state,
+        cocoaPct: Math.min(100, Math.max(0, state.cocoaPct)),
+        altFatPct: Math.min(Math.max(0, 100 - state.cocoaPct), Math.max(0, state.altFatPct))
+      };
+      const remainingPct = Math.max(0, 100 - state.cocoaPct - state.altFatPct);
+      const milkPct = Math.round(remainingPct * 0.45);
+      const sugarPct = remainingPct - milkPct;
+      const addedButterShare = (state.cocoaPct / 100) * state.butterRatio;
+      const liquorShare = (state.cocoaPct / 100) * (1 - state.butterRatio);
+      const cocoaButterCostPerKg = (state.futures / 1000) * MODEL.butterMultiplier;
+      const cocoaLiquorCostPerKg = (state.futures / 1000) * MODEL.liquorMultiplier;
+      const rawCostPerKg =
+        addedButterShare * cocoaButterCostPerKg +
+        liquorShare * cocoaLiquorCostPerKg +
+        (state.altFatPct / 100) * MODEL.altFatCostPerKg +
+        (milkPct / 100) * MODEL.milkCostPerKg +
+        (sugarPct / 100) * MODEL.sugarCostPerKg;
+      const unitRawCost = rawCostPerKg * state.weight / 1000;
+      const unitPackCost = MODEL.packagingPer100g * state.weight / 100;
+      const unitTotalCost = unitRawCost + unitPackCost;
+      const factoryRevenue = state.price / (1 + MODEL.retailMarkupOnWholesale);
+      const retailMargin = state.price - factoryRevenue;
+      const contribution = factoryRevenue - unitTotalCost;
+      const contributionMargin = factoryRevenue === 0 ? 0 : contribution / factoryRevenue * 100;
+      const totalCocoaButterPct = state.cocoaPct * state.butterRatio + state.cocoaPct * (1 - state.butterRatio) * MODEL.cocoaLiquorButterFraction;
+      const nonFatCocoaSolidsPct = state.cocoaPct * (1 - state.butterRatio) * (1 - MODEL.cocoaLiquorButterFraction);
+      const euCompliant = state.cocoaPct >= 35 && totalCocoaButterPct >= 18 && nonFatCocoaSolidsPct >= 14 && state.altFatPct <= 5;
+      const costPerGramAtFactory = rawCostPerKg / 1000 + MODEL.packagingPer100g / 100;
+      const idealWeight = factoryRevenue * (1 - MODEL.targetContributionMargin) / costPerGramAtFactory;
+      return { ...state, remainingPct, milkPct, sugarPct, addedButterShare, liquorShare, rawCostPerKg, unitRawCost, unitPackCost, unitTotalCost, factoryRevenue, retailMargin, contribution, contributionMargin, totalCocoaButterPct, nonFatCocoaSolidsPct, euCompliant, idealWeight };
+    }
+
+    function syncSankeyFromLeft() {
+      const mappings = [
+        ['slider-snk-price', 'slider-rcp-price'], ['slider-snk-futures', 'slider-rcp-futures'],
+        ['slider-snk-weight', 'slider-rcp-weight'], ['slider-snk-cocoa', 'slider-rcp-cocoa-pct'],
+        ['slider-snk-butter', 'slider-rcp-butter-ratio'], ['slider-snk-alt', 'slider-rcp-alt-fat']
+      ];
+      mappings.forEach(([source, target]) => { document.getElementById(target).value = document.getElementById(source).value; });
+      calculateUnitEconomics();
+    }
+
+    function syncLeftToSankey() {
+      const state = getRecipeState();
+      document.getElementById('slider-snk-price').value = state.price;
+      document.getElementById('slider-snk-futures').value = state.futures;
+      document.getElementById('slider-snk-weight').value = state.weight;
+      document.getElementById('slider-snk-cocoa').value = state.cocoaPct;
+      document.getElementById('slider-snk-butter').value = Math.round(state.butterRatio * 100);
+      document.getElementById('slider-snk-alt').value = state.altFatPct;
+      document.getElementById('val-snk-price').innerText = `${state.price.toFixed(2)} $`;
+      document.getElementById('val-snk-futures').innerText = `${state.futures.toLocaleString()} $`;
+      document.getElementById('val-snk-weight').innerText = `${state.weight} ${unitLabel()}`;
+      document.getElementById('val-snk-cocoa').innerText = `${state.cocoaPct}%`;
+      document.getElementById('val-snk-butter').innerText = `${Math.round(state.butterRatio * 100)}%`;
+      document.getElementById('val-snk-alt').innerText = `${state.altFatPct}%`;
+    }
+
+    function onRecipePriceChange() { syncLeftToSankey(); calculateUnitEconomics(); }
+    function onRecipeWeightChange() { syncLeftToSankey(); calculateUnitEconomics(); }
+    function onRecipeCocoaChange() { syncLeftToSankey(); calculateUnitEconomics(); }
+    function onRecipeAltFatChange() { syncLeftToSankey(); calculateUnitEconomics(); }
+    function onRecipeLinkedChange() { syncLeftToSankey(); calculateUnitEconomics(); }
+
+    function enforceRecipeCompositionBounds() {
+      const cocoaEl = document.getElementById('slider-rcp-cocoa-pct');
+      const altEl = document.getElementById('slider-rcp-alt-fat');
+      const maxAltFat = Math.max(0, 100 - Number(cocoaEl.value));
+      if (Number(altEl.value) > maxAltFat) altEl.value = maxAltFat;
+    }
+
+    function calculateUnitEconomics() {
+      enforceRecipeCompositionBounds();
+      const m = computeRecipeEconomics(getRecipeState());
+      document.getElementById('val-rcp-price').innerText = `${m.price.toFixed(2)} $`;
+      document.getElementById('val-rcp-futures').innerText = `${m.futures.toLocaleString()} $`;
+      document.getElementById('val-rcp-weight').innerText = `${m.weight} ${unitLabel()}`;
+      document.getElementById('val-rcp-cocoa-pct').innerText = `${m.cocoaPct}%`;
+      document.getElementById('val-rcp-butter-ratio').innerText = `${Math.round(m.butterRatio * 100)}%`;
+      document.getElementById('val-rcp-alt-fat').innerText = `${m.altFatPct}%`;
+      document.getElementById('txt-rcp-milk-val').innerText = `${m.milkPct}%`;
+      document.getElementById('txt-rcp-sugar-val').innerText = `${m.sugarPct}%`;
+      syncLeftToSankey();
+
+      document.getElementById('kpi-rcp-cogs').innerText = `${m.unitTotalCost.toFixed(2)} $`;
+      document.getElementById('kpi-rcp-cogs-sub').innerText = currentLang === 'ru'
+        ? `Сырьё: ${m.unitRawCost.toFixed(2)} $ | Производство/упаковка: ${m.unitPackCost.toFixed(2)} $`
+        : `Raw: ${m.unitRawCost.toFixed(2)} $ | Processing/packaging: ${m.unitPackCost.toFixed(2)} $`;
+
+      const marginEl = document.getElementById('kpi-rcp-margin');
+      marginEl.innerText = `${m.contributionMargin.toFixed(1)}%`;
+      marginEl.className = m.contributionMargin >= 15 ? "text-xl font-extrabold text-emerald-400 mt-1" : m.contributionMargin >= 5 ? "text-xl font-extrabold text-amber-400 mt-1" : "text-xl font-extrabold text-rose-500 mt-1";
+      document.getElementById('kpi-rcp-margin-sub').innerText = currentLang === 'ru'
+        ? `Вклад после переменных затрат: ${m.contribution.toFixed(2)} $ / шт`
+        : `Contribution after variable cost: ${m.contribution.toFixed(2)} $ / unit`;
+
+      const statusEl = document.getElementById('kpi-rcp-status');
+      if (m.euCompliant) {
+        statusEl.innerHTML = `<i class="fa-solid fa-circle-check"></i> <span>${currentLang === 'ru' ? 'Проходит учебный тест ЕС' : 'Passes EU teaching test'}</span>`;
+        statusEl.className = "text-sm font-bold text-emerald-400 mt-1 flex items-center gap-1.5";
+      } else {
+        statusEl.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> <span>${currentLang === 'ru' ? 'Не проходит тест ЕС' : 'Fails EU teaching test'}</span>`;
+        statusEl.className = "text-sm font-bold text-amber-400 mt-1 flex items-center gap-1.5";
+      }
+      document.getElementById('kpi-rcp-status-sub').innerText = currentLang === 'ru'
+        ? `Какао ${m.cocoaPct.toFixed(0)}%; масло ${m.totalCocoaButterPct.toFixed(1)}%; обезжиренные сухие вещества ${m.nonFatCocoaSolidsPct.toFixed(1)}%; иные жиры ${m.altFatPct.toFixed(0)}%.`
+        : `Cocoa ${m.cocoaPct.toFixed(0)}%; cocoa butter ${m.totalCocoaButterPct.toFixed(1)}%; non-fat cocoa solids ${m.nonFatCocoaSolidsPct.toFixed(1)}%; other fats ${m.altFatPct.toFixed(0)}%.`;
+
+      const recommendedWeight = Math.min(120, Math.max(60, Math.round(m.idealWeight / 5) * 5));
+      document.getElementById('txt-shrink-status').innerText = currentLang === 'ru'
+        ? `Для маржи 30%: около ${recommendedWeight} г (не применяется автоматически)`
+        : `For a 30% margin: about ${recommendedWeight} g (not auto-applied)`;
+      document.getElementById('txt-recipe-explanation').innerText = currentLang === 'ru'
+        ? `При фьючерсе ${m.futures.toLocaleString()} $/т производственная себестоимость плитки ${m.weight} г составляет ${m.unitTotalCost.toFixed(2)} $. Цена не меняет массу автоматически; маржа покрытия равна ${m.contributionMargin.toFixed(1)}% и не является EBITDA.`
+        : `At cocoa futures of ${m.futures.toLocaleString()} $/t, factory production cost for a ${m.weight}g bar is ${m.unitTotalCost.toFixed(2)} USD. Price no longer changes weight automatically; the ${m.contributionMargin.toFixed(1)}% figure is contribution margin, not EBITDA.`;
+
+      updateRecipeChart(m.cocoaPct, m.altFatPct, m.milkPct, m.sugarPct, m.unitRawCost, m.unitPackCost, m.contribution);
+      if (currentTab === 'sankey') updateSankeyChart();
+      return m;
+    }
+
+    function setRecipeChartMode(mode) {
+      recipeChartMode = mode;
+      document.getElementById('btn-chart-comp').className = mode === 'composition' ? "px-2.5 py-1 text-xs font-bold rounded bg-amber-600 text-white" : "px-2.5 py-1 text-xs font-bold rounded bg-slate-800 text-slate-300";
+      document.getElementById('btn-chart-cogs').className = mode === 'cogs' ? "px-2.5 py-1 text-xs font-bold rounded bg-amber-600 text-white" : "px-2.5 py-1 text-xs font-bold rounded bg-slate-800 text-slate-300";
+      calculateUnitEconomics();
+    }
+
+    function setSankeyMode(mode) {
+      sankeyMode = mode;
+      document.getElementById('btn-snk-mass').className = mode === 'mass' ? "px-2.5 py-1 text-xs font-bold rounded bg-amber-600 text-white shadow" : "px-2.5 py-1 text-xs font-bold rounded bg-slate-800 text-slate-300";
+      document.getElementById('btn-snk-value').className = mode === 'value' ? "px-2.5 py-1 text-xs font-bold rounded bg-amber-600 text-white shadow" : "px-2.5 py-1 text-xs font-bold rounded bg-slate-800 text-slate-300";
+      updateSankeyChart();
+    }
+
+    function initCharts() {
+      const textColor = '#94a3b8';
+      const gridColor = '#334155';
+      const dict = i18n[currentLang];
+
+      const ctxValueChain = document.getElementById('chart-value-chain').getContext('2d');
+      charts.valueChain = new Chart(ctxValueChain, {
+        type: 'bar',
+        data: {
+          labels: dict.ovChartLabels,
+          datasets: [
+            { label: dict.ovChartDatasets[0], data: [7, 18], backgroundColor: '#10b981' },
+            { label: dict.ovChartDatasets[1], data: [8, 12], backgroundColor: '#f59e0b' },
+            { label: dict.ovChartDatasets[2], data: [35, 30], backgroundColor: '#b45309' },
+            { label: dict.ovChartDatasets[3], data: [15, 15], backgroundColor: '#64748b' },
+            { label: dict.ovChartDatasets[4], data: [35, 25], backgroundColor: '#38bdf8' }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, color: textColor, font: { size: 11 } } } },
+          scales: {
+            x: { stacked: true, ticks: { color: textColor }, grid: { color: gridColor } },
+            y: { stacked: true, beginAtZero: true, max: 100, ticks: { color: textColor, callback: value => `${value}%` }, grid: { color: gridColor } }
+          }
+        }
+      });
+
+      const ctxLag = document.getElementById('chart-simulator-lag').getContext('2d');
+      charts.lag = new Chart(ctxLag, {
+        type: 'line',
+        data: {
+          labels: ['M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M7', 'M8', 'M9', 'M10', 'M11', 'M12'],
+          datasets: [
+            { label: dict.simChartDatasets[0], data: [3000, 4500, 7000, 9500, 11000, 10000, 8500, 7000, 6000, 5500, 5200, 5000], borderColor: '#f43f5e', backgroundColor: 'rgba(244, 63, 94, 0.1)', yAxisID: 'y', tension: 0.3 },
+            { label: dict.simChartDatasets[1], data: [1.50, 1.50, 1.52, 1.58, 1.68, 1.82, 1.98, 2.10, 2.15, 2.12, 2.05, 1.98], borderColor: '#fbbf24', borderDash: [5, 5], yAxisID: 'y1', tension: 0.3 }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, color: textColor, font: { size: 11 } } } },
+          scales: {
+            x: { ticks: { color: textColor }, grid: { color: gridColor } },
+            y: { type: 'linear', position: 'left', ticks: { color: textColor }, grid: { color: gridColor } },
+            y1: { type: 'linear', position: 'right', ticks: { color: textColor }, grid: { drawOnChartArea: false } }
+          }
+        }
+      });
+
+      const ctxMargin = document.getElementById('chart-simulator-margin').getContext('2d');
+      charts.margin = new Chart(ctxMargin, {
+        type: 'bar',
+        data: {
+          labels: ['M1', 'M2', 'M3', 'M4', 'M5', 'M6', 'M7', 'M8', 'M9', 'M10', 'M11', 'M12'],
+          datasets: [
+            { label: dict.simChartDatasets[2], data: [], backgroundColor: '#10b981', yAxisID: 'y' },
+            { type: 'line', label: dict.simChartDatasets[3], data: [], borderColor: '#38bdf8', backgroundColor: '#38bdf8', pointRadius: 2, tension: 0.3, yAxisID: 'y1' }
+          ]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false,
+          plugins: { legend: { display: true, position: 'bottom', labels: { boxWidth: 12, color: textColor, font: { size: 10 } } } },
+          scales: {
+            x: { ticks: { color: textColor }, grid: { color: gridColor } },
+            y: { position: 'left', ticks: { color: textColor, callback: value => `${value}%` }, grid: { color: gridColor } },
+            y1: { position: 'right', beginAtZero: true, ticks: { color: textColor }, grid: { drawOnChartArea: false } }
+          }
+        }
+      });
+
+      const ctxRecipe = document.getElementById('chart-recipe-donut').getContext('2d');
+      charts.recipe = new Chart(ctxRecipe, {
+        type: 'doughnut',
+        data: { labels: dict.rcpDonutLabels, datasets: [{ data: [55, 5, 18, 22], backgroundColor: ['#b45309', '#eab308', '#cbd5e1', '#38bdf8'] }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { boxWidth: 12, color: textColor, font: { size: 11 } } } } }
+      });
+
+      const ctxSankey = document.getElementById('chart-sankey').getContext('2d');
+      charts.sankey = new Chart(ctxSankey, {
+        type: 'sankey',
+        data: { datasets: [{ data: [], colorFrom: () => '#a8894d', colorTo: () => '#a8894d' }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+      });
+    }
+
+    function updateRecipeChart(cocoa, altFat, milk, sugar, rawCost, packCost, profit) {
+      if (!charts.recipe) return;
+      const dict = i18n[currentLang];
+
+      if (recipeChartMode === 'composition') {
+        charts.recipe.config.type = 'doughnut';
+        charts.recipe.data = { labels: dict.rcpDonutLabels, datasets: [{ data: [cocoa, altFat, milk, sugar], backgroundColor: ['#b45309', '#eab308', '#cbd5e1', '#38bdf8'] }] };
+      } else {
+        charts.recipe.config.type = 'bar';
+        charts.recipe.data = { labels: dict.rcpBarLabels, datasets: [{ label: dict.rcpBarDatasets[0], data: [rawCost], backgroundColor: '#b45309' }, { label: dict.rcpBarDatasets[1], data: [packCost], backgroundColor: '#64748b' }, { label: dict.rcpBarDatasets[2], data: [profit], backgroundColor: '#10b981' }] };
+      }
+      charts.recipe.update();
+    }
+
+    function updateSankeyChart() {
+      if (!charts.sankey) return;
+      const m = computeRecipeEconomics(getRecipeState());
+      const L = {
+        liquor: currentLang === 'ru' ? 'Какао тёртое' : 'Cocoa Liquor',
+        butter: currentLang === 'ru' ? 'Какао-масло' : 'Cocoa Butter',
+        alt: currentLang === 'ru' ? 'Доп. растит. жиры' : 'Additional Fats',
+        milk: currentLang === 'ru' ? 'Сухое молоко' : 'Milk Powder',
+        sugar: currentLang === 'ru' ? 'Сахар' : 'Sugar',
+        bar: currentLang === 'ru' ? 'Плитка' : 'Chocolate Bar',
+        msrp: currentLang === 'ru' ? 'Полка (MSRP)' : 'Retail Shelf (MSRP)',
+        factory: currentLang === 'ru' ? 'Выручка фабрики' : 'Factory Revenue',
+        retail: currentLang === 'ru' ? 'Торговая наценка' : 'Retail Margin',
+        raw: currentLang === 'ru' ? 'Сырьё' : 'Raw Ingredients',
+        pack: currentLang === 'ru' ? 'Производство/упаковка' : 'Processing/Packaging',
+        contribution: currentLang === 'ru' ? 'Маржа покрытия' : 'Contribution Margin',
+        gap: currentLang === 'ru' ? 'Дефицит покрытия' : 'Funding Gap',
+        costPool: currentLang === 'ru' ? 'Переменные затраты' : 'Variable Costs'
+      };
+      let sankeyData = [];
+      let colors = {};
+
+      if (sankeyMode === 'mass') {
+        const massFlows = [
+          [L.liquor, m.weight * m.liquorShare], [L.butter, m.weight * m.addedButterShare],
+          [L.alt, m.weight * m.altFatPct / 100], [L.milk, m.weight * m.milkPct / 100],
+          [L.sugar, m.weight * m.sugarPct / 100]
+        ];
+        sankeyData = massFlows.filter(([, flow]) => flow > 0).map(([from, flow]) => ({ from, to: L.bar, flow }));
+        colors = { [L.liquor]: '#3d2314', [L.butter]: '#a8894d', [L.alt]: '#d1b86e', [L.milk]: '#cbd5e1', [L.sugar]: '#64748b', [L.bar]: '#b89248' };
+        document.getElementById('txt-snk-kpi').innerText = currentLang === 'ru' ? `Баланс массы: ${m.weight} г = ${m.weight} г` : `Mass balance: ${m.weight}g = ${m.weight}g`;
+        document.getElementById('txt-sankey-explanation').innerText = currentLang === 'ru'
+          ? `Это баланс рецептурной массы без технологических потерь: положительные потоки суммируются ровно в ${m.weight} г. Нулевые ингредиенты больше не превращаются в фиктивный поток 1 г.`
+          : `This is a recipe mass balance before manufacturing losses: positive flows sum exactly to ${m.weight}g. Zero ingredients no longer become phantom 1g flows.`;
+      } else {
+        if (m.contribution >= 0) {
+          sankeyData = [
+            { from: L.msrp, to: L.factory, flow: m.factoryRevenue }, { from: L.msrp, to: L.retail, flow: m.retailMargin },
+            { from: L.factory, to: L.raw, flow: m.unitRawCost }, { from: L.factory, to: L.pack, flow: m.unitPackCost },
+            { from: L.factory, to: L.contribution, flow: m.contribution }
+          ].filter(item => item.flow > 0);
+        } else {
+          sankeyData = [
+            { from: L.msrp, to: L.factory, flow: m.factoryRevenue }, { from: L.msrp, to: L.retail, flow: m.retailMargin },
+            { from: L.factory, to: L.costPool, flow: m.factoryRevenue }, { from: L.gap, to: L.costPool, flow: -m.contribution },
+            { from: L.costPool, to: L.raw, flow: m.unitRawCost }, { from: L.costPool, to: L.pack, flow: m.unitPackCost }
+          ].filter(item => item.flow > 0);
+        }
+        colors = { [L.msrp]: '#b89248', [L.factory]: '#a8894d', [L.retail]: '#64748b', [L.raw]: '#3d2314', [L.pack]: '#475569', [L.contribution]: '#10b981', [L.gap]: '#f43f5e', [L.costPool]: '#92400e' };
+        const result = m.contribution >= 0
+          ? (currentLang === 'ru' ? `маржа $${m.contribution.toFixed(2)}` : `contribution $${m.contribution.toFixed(2)}`)
+          : (currentLang === 'ru' ? `дефицит $${(-m.contribution).toFixed(2)}` : `gap $${(-m.contribution).toFixed(2)}`);
+        document.getElementById('txt-snk-kpi').innerText = currentLang === 'ru'
+          ? `Полка $${m.price.toFixed(2)} | фабрика $${m.factoryRevenue.toFixed(2)} | ${result}`
+          : `MSRP $${m.price.toFixed(2)} | factory $${m.factoryRevenue.toFixed(2)} | ${result}`;
+        document.getElementById('txt-sankey-explanation').innerText = currentLang === 'ru'
+          ? `Стоимостный режим сохраняет баланс: MSRP = выручка фабрики + торговая наценка; переменные затраты = сырьё + производство/упаковка. При убытке отдельный поток показывает дефицит покрытия.`
+          : `Value mode conserves value: MSRP equals factory revenue plus retail margin; variable cost equals raw ingredients plus processing/packaging. A separate flow shows any funding gap.`;
+      }
+
+      charts.sankey.data.datasets[0].data = sankeyData;
+      charts.sankey.data.datasets[0].colorFrom = context => colors[context.dataset.data[context.dataIndex].from] || '#a8894d';
+      charts.sankey.data.datasets[0].colorTo = context => colors[context.dataset.data[context.dataIndex].to] || '#a8894d';
+      charts.sankey.data.datasets[0].colorMode = 'gradient';
+      charts.sankey.update();
+    }
+
+    function updateSimulator() {
+      const windowMonths = parseInt(document.getElementById('slider-sim-window').value);
+      const peakFutures = parseInt(document.getElementById('slider-sim-peak').value);
+      const elasticity = parseFloat(document.getElementById('slider-sim-elasticity').value);
+      const shrinkFactor = parseFloat(document.getElementById('slider-sim-shrink').value);
+
+      document.getElementById('val-sim-window').innerText = currentLang === 'ru' ? `${windowMonths} мес.` : `${windowMonths} mo.`;
+      document.getElementById('val-sim-peak').innerText = `${peakFutures.toLocaleString()} $`;
+      document.getElementById('val-sim-elasticity').innerText = elasticity.toFixed(1);
+      document.getElementById('val-sim-shrink').innerText = shrinkFactor.toFixed(1);
+      document.getElementById('sim-lag-badge').innerText = currentLang === 'ru'
+        ? `Окно закупочной стоимости: ${windowMonths} мес.`
+        : `Procurement Cost Window: ${windowMonths} Months`;
+
+      const pathShape = [0, 0.05, 0.20, 0.55, 1.00, 0.90, 0.72, 0.55, 0.38, 0.28, 0.22, 0.18];
+      const baseFutures = pathShape.map(factor => MODEL.simulatorBaseFutures + (peakFutures - MODEL.simulatorBaseFutures) * factor);
+      const retailPrices = [];
+      const margins = [];
+      const volumeIndex = [];
+      const weights = [];
+
+      for (let i = 0; i < 12; i++) {
+        const startIdx = Math.max(0, i - windowMonths + 1);
+        let sum = 0;
+        let count = 0;
+        for (let j = startIdx; j <= i; j++) { sum += baseFutures[j]; count++; }
+        const effectiveCost = sum / count;
+        const costPressure = Math.max(0, (effectiveCost - MODEL.simulatorBaseFutures) / MODEL.simulatorBaseFutures);
+        const normalizedPressure = Math.min(1, costPressure);
+        const weight = MODEL.simulatorBaseWeight * (1 - MODEL.maximumWeightReduction * shrinkFactor * normalizedPressure);
+        const retail = MODEL.simulatorBaseRetail * (1 + costPressure * MODEL.cocoaRetailPassThrough);
+        const unitPriceRatio = (retail / weight) / (MODEL.simulatorBaseRetail / MODEL.simulatorBaseWeight);
+        const volume = 100 * Math.pow(unitPriceRatio, elasticity);
+        const economics = computeRecipeEconomics({ price: retail, futures: effectiveCost, weight, cocoaPct: 55, butterRatio: 0.40, altFatPct: 5 });
+
+        retailPrices.push(retail);
+        margins.push(economics.contributionMargin);
+        volumeIndex.push(volume);
+        weights.push(weight);
+      }
+
+      if (charts.lag) {
+        charts.lag.data.datasets[0].data = baseFutures;
+        charts.lag.data.datasets[1].data = retailPrices;
+        charts.lag.update();
+      }
+
+      if (charts.margin) {
+        charts.margin.data.datasets[0].data = margins;
+        charts.margin.data.datasets[1].data = volumeIndex;
+        charts.margin.update();
+      }
+      const caseLabels = {
+        easter: currentLang === 'ru' ? 'Сценарий: пасхальный лаг' : 'Scenario: Easter lag',
+        hershey: currentLang === 'ru' ? 'Сценарий: нормализация какао' : 'Scenario: cocoa normalization',
+        anz: currentLang === 'ru' ? 'Сценарий: двойное сжатие' : 'Scenario: double squeeze'
+      };
+      const endpoint = currentLang === 'ru'
+        ? `К M12: масса ${weights[11].toFixed(0)} г, индекс продаж ${volumeIndex[11].toFixed(0)}.`
+        : `At M12: weight ${weights[11].toFixed(0)}g, sales index ${volumeIndex[11].toFixed(0)}.`;
+      document.getElementById('sim-model-note').innerText = `${i18n[currentLang].simNote} ${endpoint}${activeCase ? ` ${caseLabels[activeCase]}.` : ''}`;
+    }
+
+    function resetSimulator() {
+      activeCase = null;
+      document.getElementById('slider-sim-window').value = 6;
+      document.getElementById('slider-sim-peak').value = 9500;
+      document.getElementById('slider-sim-elasticity').value = -1.2;
+      document.getElementById('slider-sim-shrink').value = 0.5;
+      updateSimulator();
+    }
+
+    function loadCase(caseType) {
+      activeCase = caseType;
+      switchTab('simulator');
+      if (caseType === 'easter') {
+        document.getElementById('slider-sim-window').value = 10;
+        document.getElementById('slider-sim-peak').value = 12000;
+        document.getElementById('slider-sim-elasticity').value = -1.1;
+        document.getElementById('slider-sim-shrink').value = 0.2;
+        document.getElementById('case-title').innerText = currentLang === 'ru' ? "Загружен кейс: Парадокс пасхального лага" : "Case Loaded: Easter Lag Paradox";
+      } else if (caseType === 'hershey') {
+        document.getElementById('slider-sim-window').value = 6;
+        document.getElementById('slider-sim-peak').value = 4200;
+        document.getElementById('slider-sim-elasticity').value = -1.2;
+        document.getElementById('slider-sim-shrink').value = 0.0;
+        document.getElementById('case-title').innerText = currentLang === 'ru' ? "Загружен кейс: Разворот Hershey" : "Case Loaded: Hershey Pivot";
+      } else if (caseType === 'anz') {
+        document.getElementById('slider-sim-window').value = 4;
+        document.getElementById('slider-sim-peak').value = 8300;
+        document.getElementById('slider-sim-elasticity').value = -1.3;
+        document.getElementById('slider-sim-shrink').value = 0.8;
+        document.getElementById('case-title').innerText = currentLang === 'ru' ? "Загружен кейс: Двойное сжатие Хеллоуин" : "Case Loaded: ANZ Halloween Double-Squeeze";
+      }
+      updateSimulator();
+    }
+
+    function downloadSpecJSON() {
+      const recipeState = getRecipeState();
+      const recipeMetrics = computeRecipeEconomics(recipeState);
+      const specData = {
+        title: "Cocoa & Chocolate Teaching Model Specification",
+        version: "2026.4-audited",
+        generatedAt: new Date().toISOString(),
+        units: { currency: "USD", futures: "USD per metric tonne", mass: "grams", percentage: "percent" },
+        simulator: {
+          inputs: {
+            procurementWindowMonths: Number(document.getElementById('slider-sim-window').value),
+            scenarioPeakFutures: Number(document.getElementById('slider-sim-peak').value),
+            demandElasticity: Number(document.getElementById('slider-sim-elasticity').value),
+            shrinkflationFactor: Number(document.getElementById('slider-sim-shrink').value)
+          },
+          equations: {
+            procurementCost: "Hedged price at t = arithmetic mean of the current and previous H-1 futures observations",
+            retailPrice: "MSRP(t) = MSRP0 * [1 + positive cost pressure * pass-through]",
+            weight: "Weight(t) = Weight0 * [1 - maximum reduction * shrink factor * normalized cost pressure]",
+            demand: "Quantity at t = base quantity multiplied by the relative price per gram raised to demand elasticity"
+          }
+        },
+        recipe: {
+          inputs: recipeState,
+          outputs: {
+            milkPct: recipeMetrics.milkPct,
+            sugarPct: recipeMetrics.sugarPct,
+            rawCostPerUnit: recipeMetrics.unitRawCost,
+            processingPackagingPerUnit: recipeMetrics.unitPackCost,
+            totalVariableCostPerUnit: recipeMetrics.unitTotalCost,
+            factoryRevenuePerUnit: recipeMetrics.factoryRevenue,
+            contributionPerUnit: recipeMetrics.contribution,
+            contributionMarginPct: recipeMetrics.contributionMargin,
+            totalCocoaButterPct: recipeMetrics.totalCocoaButterPct,
+            nonFatCocoaSolidsPct: recipeMetrics.nonFatCocoaSolidsPct,
+            passesEUChocolateTeachingTest: recipeMetrics.euCompliant
+          }
+        },
+        assumptions: MODEL,
+        caveats: [
+          "Educational scenario model; not a forecasting or valuation model.",
+          "Futures path is synthetic and processing multipliers are calibration assumptions, not live quotes.",
+          "Contribution margin excludes fixed factory overhead, distribution, marketing, SG&A, financing and tax; it is not EBITDA.",
+          "Mass Sankey excludes manufacturing losses; value Sankey covers retail markup and factory variable economics only."
+        ],
+        evidenceCheckedAgainst: ["ICCO", "World Bank Commodity Markets", "European Commission JRC", "EU Directive 2000/36/EC", "RMIT University", "ANZ Research", "Reuters"]
+      };
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(specData, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "cocoa_model_spec_2026_4_audited.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+  </script>
+</body>
+</html>
