@@ -30,13 +30,17 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 0px;
+            padding-top: 10px;
         }
 
+        /* Логотип: опущен точно на уровень заголовка Тема 9 и прижат влево */
         .top-left-logo {
-            width: 55px;
-            height: 55px;
+            width: 60px;
+            height: 60px;
             object-fit: contain;
+            margin-top: 25px; /* Опускает логотип ровно на уровень заголовка Тема 9 */
+            margin-left: -5px; /* Легкий сдвиг влево */
         }
 
         .back-button {
@@ -61,6 +65,7 @@
             text-align: center;
             margin-bottom: 30px;
             padding: 0 10px;
+            margin-top: -15px; /* Корректировка высоты заголовка */
         }
 
         h1 {
@@ -68,7 +73,6 @@
             font-weight: 700;
             color: #001e50;
             margin-bottom: 8px;
-            margin-top: 10px;
         }
 
         .subtitle {
@@ -91,7 +95,7 @@
             padding-bottom: 40px;
         }
 
-        /* Карточка с подгонкой и янтарно-бронзовой подсветкой (Velasquez) */
+        /* Карточка с точной подгонкой и плотным обтеканием (без белых зазоров) */
         .card {
             display: flex;
             justify-content: center;
@@ -106,7 +110,7 @@
             width: 175px; 
             height: 262px; 
             position: relative;
-            padding: 4px;
+            padding: 1px; /* Поджато вплотную к рамочке */
         }
 
         .card img {
@@ -114,7 +118,7 @@
             height: 100%;
             object-fit: cover;
             object-position: center top;
-            border-radius: 8px;
+            border-radius: 10px; /* Идеальное повторение внутреннего радиуса */
             display: block;
         }
 
@@ -151,6 +155,12 @@
             .top-left-logo {
                 width: 50px;
                 height: 50px;
+                margin-top: 0;
+                margin-left: 0;
+            }
+
+            header {
+                margin-top: 0;
             }
 
             .back-button {
@@ -209,17 +219,17 @@
             <img src="pic-lecture9.png" alt="Лекция-ридер Олигополия">
         </a>
 
-        <!-- 3. Симулятор: 4 модели олигополии (Курно, Штакельберг, Бертран, Суизи) -->
+        <!-- 3. Симулятор: 4 модели олигополии -->
         <a href="sim-oligopoly-4models-mic.html" class="card" title="Симулятор 4 моделей олигополии">
             <img src="pic-sim-oligopoly-mic.png" alt="Симулятор 4 моделей">
         </a>
 
-        <!-- 4. Симулятор: Цепочка стоимости и лаг цен рынка какао -->
+        <!-- 4. Симулятор: Рынок какао и шоколада -->
         <a href="sim-choco-mic-pro-g.html" class="card" title="Симулятор рынка какао и шоколада">
             <img src="pic-sim-cacao-mic.png" alt="Симулятор рынка какао">
         </a>
 
-        <!-- 5. Материалы для чтения / Лекционный ридер -->
+        <!-- 5. Материалы для чтения -->
         <a href="https://docs.google.com/document/d/1r7V_t7yZL1TbHgzxm0J8EN69NaH8l1tW/edit?usp=sharing&ouid=109725301150629205728&rtpof=true&sd=true" 
            target="_blank" rel="noopener noreferrer" class="card" title="Материалы для чтения">
             <img src="pic-reading9-mic.png" alt="Материалы для чтения">
