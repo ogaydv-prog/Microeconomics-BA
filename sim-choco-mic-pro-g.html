@@ -78,8 +78,8 @@
     body.dark-theme .theme-box { background-color: #334155; border-color: #475569; color: #e2e8f0; }
 
     /* АДАПТИВНАЯ ПОДЛОЖКА ДЛЯ ЛОГОТИПОВ */
-    body.light-theme .logo-container { background-color: #f8fafc; border-color: #e2e8f0; }
-    body.dark-theme .logo-container { background-color: #ffffff; border-color: #334155; }
+    body.light-theme .logo-container { background-color: #ffffff; border-color: #cbd5e1; }
+    body.dark-theme .logo-container { background-color: #ffffff; border-color: #ffffff; }
 
     /* УСТОЙЧИВАЯ ИСХОДНАЯ КОМПОЗИЦИЯ: УПРАВЛЕНИЕ СЛЕВА, ГРАФИК СПРАВА */
     .dashboard-split {
@@ -211,6 +211,7 @@
         </div>
       </div>
 
+      <!-- КАРТОЧКИ КОМПАНИЙ С УВЕЛИЧЕННЫМИ ЛОГОТИПАМИ -->
       <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
         <!-- Barry Callebaut -->
         <article class="theme-card p-5 rounded-xl border shadow-sm relative overflow-hidden flex flex-col justify-between">
@@ -218,8 +219,8 @@
           <div>
             <div class="flex justify-between items-start gap-3">
               <div class="flex items-center gap-3">
-                <div class="logo-container shrink-0 w-12 h-12 p-1.5 rounded-lg border flex items-center justify-center shadow-sm">
-                  <img src="barry.png" alt="Barry Callebaut Logo" class="max-h-full max-w-full object-contain">
+                <div class="logo-container shrink-0 px-2 py-1 rounded border flex items-center justify-center shadow-sm bg-white">
+                  <img src="barry.png" alt="Barry Callebaut Logo" class="h-12 w-auto max-w-[160px] object-contain">
                 </div>
                 <div>
                   <div class="text-[10px] uppercase tracking-wider text-amber-400 font-bold">B2B • №1</div>
@@ -240,8 +241,8 @@
           <div>
             <div class="flex justify-between items-start gap-3">
               <div class="flex items-center gap-3">
-                <div class="logo-container shrink-0 w-12 h-12 p-1.5 rounded-lg border flex items-center justify-center shadow-sm">
-                  <img src="ofi.png" alt="ofi Logo" class="max-h-full max-w-full object-contain">
+                <div class="shrink-0 flex items-center justify-center">
+                  <img src="ofi.png" alt="ofi Logo" class="h-12 w-auto max-w-[140px] object-contain">
                 </div>
                 <div>
                   <div class="text-[10px] uppercase tracking-wider text-emerald-400 font-bold">B2B • TOP 3</div>
@@ -262,8 +263,8 @@
           <div>
             <div class="flex justify-between items-start gap-3">
               <div class="flex items-center gap-3">
-                <div class="logo-container shrink-0 w-12 h-12 p-1.5 rounded-lg border flex items-center justify-center shadow-sm">
-                  <img src="car.png" alt="Cargill Logo" class="max-h-full max-w-full object-contain">
+                <div class="logo-container shrink-0 px-3 py-1.5 rounded border flex items-center justify-center shadow-sm bg-white">
+                  <img src="car.png" alt="Cargill Logo" class="h-12 w-auto max-w-[150px] object-contain">
                 </div>
                 <div>
                   <div class="text-[10px] uppercase tracking-wider text-sky-400 font-bold">B2B • TOP 3</div>
@@ -827,10 +828,10 @@
           brandsTitle: "Кто расположен ниже по цепочке?", brandGlobalTitle: "Глобальные владельцы брендов", brandGlobal: "Mars: M&M’s, Snickers, Twix; Mondelēz: Cadbury, Milka, Toblerone; Ferrero: Kinder, Ferrero Rocher, Nutella; Nestlé: KitKat; Hershey: Hershey’s, Reese’s.",
           brandNicheTitle: "Нишевые и премиальные производители", brandNiche: "Camille Bloch — независимая швейцарская семейная компания (Ragusa, Torino), около 3.5 тыс. т в год. Anthon Berg — датский премиальный бренд Toms Group, известный шоколадными бутылочками с ликёром.",
           brandTakeaway: "Вывод: известность бренда на полке не означает контроль над переработкой какао. Один и тот же B2B-поставщик может снабжать нескольких конкурирующих производителей готового шоколада.",
-          retailChartTitle: "Мировой рынок потребительского шоколада: доли по стоимости", retailChartSub: "2025; здесь измеряется продажа готового шоколада потребителю, а не объём переработки бобов.", retailSource: "Источник: Euromonitor 2025 через презентацию Lindt & Sprüngli",
+          retailChartTitle: "Мировой рынок потребительского шоколада: доли по стоимости", retailChartSub: "2025; здесь измеряется продажа готового шоколада потребителю, а не объём переработки бобов.", retailSource: "Источник: Euromonitor 2025 через презентацию Lindt &amp; Sprüngli",
           hhiFloor: "Нижняя граница HHI", others: "Другие компании", retailNote: "584 — только вклад шести раскрытых компаний. Полный HHI выше, но его нельзя честно вычислить без распределения 42.7% между остальными фирмами.",
           historyTitle: "Почему «третья компания» вызывает путаницу: короткая история", history1996: "Callebaut и Cacao Barry объединяются в Barry Callebaut.", history2015a: "ADM разделяет активы: Olam договаривается купить мировой какао-бизнес — порошок, масло и тёртое какао.", history2015b: "Cargill приобретает шоколадный бизнес ADM; Еврокомиссия требует уступок для защиты конкуренции.", historyNowYear: "Сегодня", historyNow: "Поэтому в какао-переработке обычно называют Barry Callebaut, ofi и Cargill, а в старых материалах по промышленному шоколаду третьим игроком могла быть ADM.",
-          methodTitle: "Методика и ограничения данных", method: "Объёмы переработчиков взяты из Cocoa Barometer 2025 и нормированы только внутри раскрытой выборки из 12 компаний. Исторические доли мощностей — UNCTAD (2015). Потребительские доли — Euromonitor 2025, опубликованные Lindt & Sprüngli. Эти наборы нельзя напрямую складывать или сравнивать как один рынок: у них разные продукты, единицы измерения и границы.",
+          methodTitle: "Методика и ограничения данных", method: "Объёмы переработчиков взяты из Cocoa Barometer 2025 и нормированы только внутри раскрытой выборки из 12 компаний. Исторические доли мощностей — UNCTAD (2015). Потребительские доли — Euromonitor 2025, опубликованные Lindt &amp; Sprüngli. Эти наборы нельзя напрямую складывать или сравнивать как один рынок: у них разные продукты, единицы измерения и границы.",
           starNote: "* Объёмы рядом с карточками — раскрытые потоки/тоннажи в эквиваленте какао-бобов, а не доли рынка и не обязательно собственный объём помола.",
           processingLabels: ['Barry Callebaut', 'ofi', 'Cargill', 'ECOM', 'Sucden', 'GCB Cocoa', 'Touton', 'JB Foods', 'Blommer/Fuji', 'Puratos', 'ETG', 'Cémoi'],
           processingDataset: "Раскрытый объём (тыс. т)", retailLabels: ['Mars', 'Mondelēz', 'Ferrero', 'Nestlé', 'Hershey', 'Lindt & Sprüngli', 'Другие'], retailDataset: "Доля по стоимости (%)"
