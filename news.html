@@ -24,6 +24,10 @@
         .bar-row { cursor: pointer; transition: all 0.15s ease; }
         .bar-row:hover { opacity: 0.9; filter: brightness(1.2); }
         .active-row { outline: 2px solid #3b82f6; outline-offset: 1px; }
+        .beef-tab-btn { color: #94a3b8; border-bottom: 2px solid transparent; }
+        .beef-tab-btn:hover { color: #f8fafc; background: rgba(255,255,255,0.03); }
+        .beef-tab-btn.active { color: #fbbf24; border-bottom-color: #f59e0b; background: rgba(245,158,11,0.08); }
+        .beef-chart-wrap { position: relative; min-height: 290px; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-red-600 selection:text-white border-t-4 border-brand-red">
@@ -399,21 +403,28 @@
                     </div>
                 </div>
 
-                <!-- Card 4: Monopolistic Competition & Retail -->
-                <div class="bg-[#131922] border border-slate-800 p-4 rounded-lg flex flex-col justify-between hover:border-slate-700 transition-all">
+                <!-- Card 4: US Beef Packing Oligopoly -->
+                <div class="bg-[#131922] border border-slate-800 p-4 rounded-lg flex flex-col justify-between hover:border-amber-600/70 transition-all relative overflow-hidden">
+                    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 via-red-600 to-amber-500"></div>
                     <div>
-                        <span class="text-xs font-bold text-brand-red uppercase tracking-widest">Monopolistic Competition</span>
+                        <span class="text-xs font-bold text-amber-400 uppercase tracking-widest" id="news4-tag">Oligopoly • Buyer &amp; Seller Power</span>
                         <h3 class="text-base font-bold text-white serif leading-snug mt-1.5" id="news4-title">
-                            Retail & FMCG Brands Leverage Product Differentiation Amid Price Elasticity Shifts
+                            The “Big Four” and the U.S. Beef-Processing Oligopoly
                         </h3>
                         <p class="text-xs text-slate-400 leading-relaxed mt-2" id="news4-desc">
-                            Major consumer brands balance price increases with private-label substitute threats, deploying brand equity strategies to protect operating margins in differentiated markets...
+                            Tyson, JBS, Cargill and National Beef handle about 85% of fed-cattle processing while steak prices rose far faster than the general CPI. Explore concentration, prices, capacity and antitrust claims.
                         </p>
+                        <div class="grid grid-cols-3 gap-1.5 mt-3 text-center font-mono">
+                            <div class="bg-slate-950/70 border border-slate-800 rounded p-1.5"><div class="text-[9px] text-slate-500">CR4</div><div class="text-sm font-black text-amber-400">85%</div></div>
+                            <div class="bg-slate-950/70 border border-slate-800 rounded p-1.5"><div class="text-[9px] text-slate-500">STEAK</div><div class="text-sm font-black text-rose-400">+63%</div></div>
+                            <div class="bg-slate-950/70 border border-slate-800 rounded p-1.5"><div class="text-[9px] text-slate-500">JOBS</div><div class="text-sm font-black text-sky-400">3,212</div></div>
+                        </div>
                     </div>
-                    <div class="pt-4 font-sans border-t border-slate-800/80 mt-4">
-                        <a href="https://www.reuters.com/business/retail-consumer/" target="_blank" rel="noopener noreferrer" class="text-xs text-brand-red font-bold hover:underline flex items-center space-x-1">
-                            <span id="news4-link">Read Full Original Article →</span>
-                        </a>
+                    <div class="pt-4 font-sans border-t border-slate-800/80 mt-4 flex flex-col gap-2">
+                        <button type="button" onclick="openBeefModal()" class="w-full px-3 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs font-black rounded-sm transition flex justify-center items-center gap-2">
+                            <i class="fa-solid fa-chart-column"></i><span id="news4-link">Open Interactive Case Dashboard →</span>
+                        </button>
+                        <a href="https://www.theguardian.com/us-news/ng-interactive/2026/feb/25/beef-packers-under-fire-prices-soar" target="_blank" rel="noopener noreferrer" class="text-[10px] text-slate-400 hover:text-white text-center" id="news4-original">Guardian original article ↗</a>
                     </div>
                 </div>
             </div>
@@ -526,12 +537,206 @@
 
 
     <!-- ========================================================= -->
+    <!-- MODAL 3: U.S. BEEF-PACKING OLIGOPOLY CASE DASHBOARD -->
+    <!-- ========================================================= -->
+    <div id="beefModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-md hidden flex items-center justify-center p-2 sm:p-4">
+        <div class="bg-[#0b0f14] text-white w-full max-w-7xl h-[94vh] rounded-xl border border-amber-700/60 shadow-2xl flex flex-col overflow-hidden relative">
+            <div class="bg-[#111821] px-4 sm:px-6 py-3 border-b border-slate-800 flex justify-between items-center shrink-0">
+                <div class="min-w-0">
+                    <div class="text-[10px] text-amber-400 font-black uppercase tracking-[0.18em]" data-beef-en="Guardian Case • Industrial Organization" data-beef-ru="Кейс Guardian • Отраслевая организация">Guardian Case • Industrial Organization</div>
+                    <h3 class="font-black text-sm sm:text-lg serif truncate" data-beef-en="The Big Four and the U.S. Beef-Processing Oligopoly" data-beef-ru="«Большая четвёрка» и олигополия переработки говядины в США">The Big Four and the U.S. Beef-Processing Oligopoly</h3>
+                </div>
+                <button onclick="closeBeefModal()" class="ml-3 text-slate-400 hover:text-white bg-slate-800 hover:bg-red-600 px-3 py-1.5 rounded text-xs font-bold transition-all shrink-0">
+                    <i class="fa-solid fa-xmark mr-1"></i><span data-beef-en="Close" data-beef-ru="Закрыть">Close</span>
+                </button>
+            </div>
+
+            <div class="bg-[#0f141c] border-b border-slate-800 grid grid-cols-2 md:grid-cols-4 shrink-0">
+                <button class="beef-tab-btn active px-3 py-2.5 text-xs font-extrabold" data-beef-tab="overview" onclick="switchBeefTab('overview')"><i class="fa-solid fa-gauge-high mr-1"></i><span data-beef-en="1. Overview" data-beef-ru="1. Обзор">1. Overview</span></button>
+                <button class="beef-tab-btn px-3 py-2.5 text-xs font-extrabold" data-beef-tab="firms" onclick="switchBeefTab('firms')"><i class="fa-solid fa-industry mr-1"></i><span data-beef-en="2. The Big Four" data-beef-ru="2. Большая четвёрка">2. The Big Four</span></button>
+                <button class="beef-tab-btn px-3 py-2.5 text-xs font-extrabold" data-beef-tab="prices" onclick="switchBeefTab('prices')"><i class="fa-solid fa-chart-line mr-1"></i><span data-beef-en="3. Prices & Spread" data-beef-ru="3. Цены и спред">3. Prices & Spread</span></button>
+                <button class="beef-tab-btn px-3 py-2.5 text-xs font-extrabold" data-beef-tab="antitrust" onclick="switchBeefTab('antitrust')"><i class="fa-solid fa-scale-balanced mr-1"></i><span data-beef-en="4. Antitrust Case" data-beef-ru="4. Антимонопольный кейс">4. Antitrust Case</span></button>
+            </div>
+
+            <div class="flex-grow overflow-y-auto p-4 sm:p-6">
+                <!-- BEEF TAB 1: OVERVIEW -->
+                <section id="beef-tab-overview" class="beef-tab-content space-y-5">
+                    <div class="grid grid-cols-2 lg:grid-cols-5 gap-3">
+                        <div class="bg-[#131922] border border-slate-800 rounded-lg p-3 border-l-4 border-l-amber-500">
+                            <div class="text-[9px] uppercase font-bold text-slate-500" data-beef-en="Big Four CR4" data-beef-ru="CR4 большой четвёрки">Big Four CR4</div><div class="text-2xl font-black text-amber-400 font-mono">85%</div><div class="text-[10px] text-slate-500" data-beef-en="fed-cattle processing" data-beef-ru="переработка откормленного скота">fed-cattle processing</div>
+                        </div>
+                        <div class="bg-[#131922] border border-slate-800 rounded-lg p-3 border-l-4 border-l-rose-500">
+                            <div class="text-[9px] uppercase font-bold text-slate-500" data-beef-en="Steak price, 2020–25" data-beef-ru="Цена стейка, 2020–25">Steak price, 2020–25</div><div class="text-2xl font-black text-rose-400 font-mono">+63.5%</div><div class="text-[10px] text-slate-500">$7.65 → $12.51/lb</div>
+                        </div>
+                        <div class="bg-[#131922] border border-slate-800 rounded-lg p-3 border-l-4 border-l-sky-500">
+                            <div class="text-[9px] uppercase font-bold text-slate-500" data-beef-en="General CPI, 2020–25" data-beef-ru="Общий CPI, 2020–25">General CPI, 2020–25</div><div class="text-2xl font-black text-sky-400 font-mono">+25.8%</div><div class="text-[10px] text-slate-500" data-beef-en="normalized comparison" data-beef-ru="нормированное сравнение">normalized comparison</div>
+                        </div>
+                        <div class="bg-[#131922] border border-slate-800 rounded-lg p-3 border-l-4 border-l-violet-500">
+                            <div class="text-[9px] uppercase font-bold text-slate-500" data-beef-en="Lexington direct jobs" data-beef-ru="Рабочие места Lexington">Lexington direct jobs</div><div class="text-2xl font-black text-violet-400 font-mono">3,212</div><div class="text-[10px] text-slate-500" data-beef-en="Tyson plant closure" data-beef-ru="закрытие завода Tyson">Tyson plant closure</div>
+                        </div>
+                        <div class="bg-[#131922] border border-slate-800 rounded-lg p-3 border-l-4 border-l-emerald-500 col-span-2 lg:col-span-1">
+                            <div class="text-[9px] uppercase font-bold text-slate-500" data-beef-en="Statewide annual impact" data-beef-ru="Годовой эффект для штата">Statewide annual impact</div><div class="text-2xl font-black text-emerald-400 font-mono">$3.28B</div><div class="text-[10px] text-slate-500" data-beef-en="UNL model estimate" data-beef-ru="оценка модели UNL">UNL model estimate</div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                        <div class="lg:col-span-7 bg-[#131922] border border-slate-800 rounded-lg p-4">
+                            <h4 class="text-sm font-black serif" data-beef-en="Why this is a two-sided market-power case" data-beef-ru="Почему здесь действует двусторонняя рыночная власть">Why this is a two-sided market-power case</h4>
+                            <p class="text-xs text-slate-400 mt-2 leading-relaxed" data-beef-en="The same packers buy cattle from ranchers and sell boxed beef to wholesalers, restaurants and retailers. Concentration can therefore create monopsony power upstream and oligopoly power downstream. Concentration alone is not proof of collusion, but it can make coordination easier and reduce outside options on both sides." data-beef-ru="Одни и те же переработчики покупают скот у ранчеров и продают разделанную говядину оптовикам, ресторанам и ритейлерам. Поэтому концентрация может создавать монопсоническую власть на входе и олигопольную власть на выходе. Сама концентрация не доказывает сговор, но облегчает координацию и сокращает альтернативы для обеих сторон.">The same packers buy cattle from ranchers and sell boxed beef to wholesalers, restaurants and retailers. Concentration can therefore create monopsony power upstream and oligopoly power downstream. Concentration alone is not proof of collusion, but it can make coordination easier and reduce outside options on both sides.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-5 gap-2 items-center mt-4 text-center text-xs">
+                                <div class="bg-emerald-950/30 border border-emerald-800 p-3 rounded"><i class="fa-solid fa-cow text-emerald-400 block text-lg mb-1"></i><strong data-beef-en="Ranchers" data-beef-ru="Ранчеры">Ranchers</strong><div class="text-[10px] text-slate-500" data-beef-en="many sellers" data-beef-ru="много продавцов">many sellers</div></div>
+                                <i class="fa-solid fa-arrow-right text-slate-600 hidden md:block"></i>
+                                <div class="bg-amber-950/30 border border-amber-700 p-3 rounded"><i class="fa-solid fa-industry text-amber-400 block text-lg mb-1"></i><strong data-beef-en="4 packers" data-beef-ru="4 переработчика">4 packers</strong><div class="text-[10px] text-slate-500">CR4 ≈ 85%</div></div>
+                                <i class="fa-solid fa-arrow-right text-slate-600 hidden md:block"></i>
+                                <div class="bg-sky-950/30 border border-sky-800 p-3 rounded"><i class="fa-solid fa-store text-sky-400 block text-lg mb-1"></i><strong data-beef-en="Retail & foodservice" data-beef-ru="Ритейл и общепит">Retail & foodservice</strong><div class="text-[10px] text-slate-500" data-beef-en="buyers of boxed beef" data-beef-ru="покупатели мяса">buyers of boxed beef</div></div>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-5 bg-[#131922] border border-slate-800 rounded-lg p-4">
+                            <h4 class="text-sm font-black serif" data-beef-en="Concentration history" data-beef-ru="История концентрации">Concentration history</h4>
+                            <div class="space-y-3 mt-3 text-xs">
+                                <div class="flex gap-3"><span class="font-mono font-black text-amber-400 w-12">1980</span><div><strong>CR4 36%</strong><p class="text-slate-500" data-beef-en="Four largest firms' steer and heifer purchases." data-beef-ru="Закупки бычков и тёлок четырьмя крупнейшими фирмами.">Four largest firms' steer and heifer purchases.</p></div></div>
+                                <div class="flex gap-3"><span class="font-mono font-black text-amber-400 w-12">1995</span><div><strong>CR4 81%</strong><p class="text-slate-500" data-beef-en="Scale economies and larger plants reshape the industry." data-beef-ru="Экономия масштаба и крупные заводы меняют отрасль.">Scale economies and larger plants reshape the industry.</p></div></div>
+                                <div class="flex gap-3"><span class="font-mono font-black text-amber-400 w-12">2022</span><div><strong>23 plants ≈ 83% capacity</strong><p class="text-slate-500" data-beef-en="Research estimate for the four largest firms." data-beef-ru="Исследовательская оценка четырёх крупнейших фирм.">Research estimate for the four largest firms.</p></div></div>
+                                <div class="flex gap-3"><span class="font-mono font-black text-amber-400 w-12">2026</span><div><strong>DOJ investigation</strong><p class="text-slate-500" data-beef-en="Potential collusion and price manipulation; no outcome prejudged." data-beef-ru="Проверка возможного сговора и манипулирования ценами; выводы пока не сделаны.">Potential collusion and price manipulation; no outcome prejudged.</p></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- BEEF TAB 2: FIRMS -->
+                <section id="beef-tab-firms" class="beef-tab-content hidden space-y-5">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                        <div class="lg:col-span-7 bg-[#131922] border border-slate-800 rounded-lg p-4">
+                            <div class="flex justify-between gap-3 items-end mb-3">
+                                <div><h4 class="text-sm font-black serif" data-beef-en="Estimated daily fed-cattle capacity shares (2022)" data-beef-ru="Оценка долей суточных мощностей (2022)">Estimated daily fed-cattle capacity shares (2022)</h4><p class="text-[10px] text-slate-500" data-beef-en="43 plants; 106,565 head/day total. Capacity is not identical to actual output or revenue share." data-beef-ru="43 завода; всего 106 565 голов в сутки. Мощность не равна фактическому выпуску или доле выручки.">43 plants; 106,565 head/day total. Capacity is not identical to actual output or revenue share.</p></div>
+                                <span class="text-[10px] text-slate-500 shrink-0">Moschini &amp; Smith</span>
+                            </div>
+                            <div class="beef-chart-wrap"><canvas id="beefShareChart"></canvas></div>
+                        </div>
+                        <div class="lg:col-span-5 space-y-3">
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="bg-[#131922] border border-slate-800 p-4 rounded-lg"><div class="text-[9px] uppercase text-slate-500" data-beef-en="Capacity-based CR4" data-beef-ru="CR4 по мощностям">Capacity-based CR4</div><div class="text-3xl font-black text-amber-400 font-mono">82.7%</div></div>
+                                <div class="bg-[#131922] border border-slate-800 p-4 rounded-lg"><div class="text-[9px] uppercase text-slate-500" data-beef-en="HHI lower bound" data-beef-ru="Нижняя граница HHI">HHI lower bound</div><div class="text-3xl font-black text-rose-400 font-mono">≥1,815</div></div>
+                            </div>
+                            <div class="bg-[#131922] border border-slate-800 p-4 rounded-lg text-xs leading-relaxed text-slate-400">
+                                <strong class="text-white" data-beef-en="Interpretation:" data-beef-ru="Интерпретация:">Interpretation:</strong>
+                                <span data-beef-en="The lower bound squares only the four disclosed company shares. The full HHI is higher because smaller firms also contribute. Under the 2023 U.S. Merger Guidelines, HHI above 1,800 is highly concentrated — but precise antitrust analysis still requires a correctly defined product and geographic market." data-beef-ru="Нижняя граница учитывает квадраты долей только четырёх раскрытых компаний. Полный HHI выше, поскольку вклад дают и малые фирмы. По Руководству США по слияниям 2023 года HHI выше 1 800 означает высокую концентрацию, однако для антимонопольного вывода всё равно нужны корректные товарные и географические границы рынка.">The lower bound squares only the four disclosed company shares. The full HHI is higher because smaller firms also contribute. Under the 2023 U.S. Merger Guidelines, HHI above 1,800 is highly concentrated — but precise antitrust analysis still requires a correctly defined product and geographic market.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+                        <div class="bg-[#131922] border border-slate-800 rounded-lg p-4 border-t-4 border-t-blue-500"><h4 class="font-black">Tyson Foods</h4><div class="text-xl font-mono font-black text-blue-400">27,600/day</div><p class="text-[11px] text-slate-500 mt-2" data-beef-en="Six plants in the 2022 dataset. Q1 FY2026 adjusted beef operating loss: $143m; the company cites a historically small cattle herd and high cattle costs." data-beef-ru="Шесть заводов в выборке 2022 года. Скорректированный операционный убыток beef-сегмента в I квартале 2026 финансового года — $143 млн; компания указывает на исторически малое поголовье и высокую стоимость скота.">Six plants in the 2022 dataset. Q1 FY2026 adjusted beef operating loss: $143m; the company cites a historically small cattle herd and high cattle costs.</p></div>
+                        <div class="bg-[#131922] border border-slate-800 rounded-lg p-4 border-t-4 border-t-red-500"><h4 class="font-black">JBS USA</h4><div class="text-xl font-mono font-black text-red-400">25,150/day</div><p class="text-[11px] text-slate-500 mt-2" data-beef-en="Eight plants in the 2022 dataset. Brazilian-owned JBS Beef North America reported record Q3 2025 revenue of $7.2bn, while also reporting margin pressure from expensive cattle." data-beef-ru="Восемь заводов в выборке 2022 года. Принадлежащая бразильской группе JBS Beef North America сообщила о рекордной выручке $7,2 млрд в III квартале 2025 года, одновременно отмечая давление дорогого скота на маржу.">Eight plants in the 2022 dataset. Brazilian-owned JBS Beef North America reported record Q3 2025 revenue of $7.2bn, while also reporting margin pressure from expensive cattle.</p></div>
+                        <div class="bg-[#131922] border border-slate-800 rounded-lg p-4 border-t-4 border-t-emerald-500"><h4 class="font-black">Cargill</h4><div class="text-xl font-mono font-black text-emerald-400">22,200/day</div><p class="text-[11px] text-slate-500 mt-2" data-beef-en="Six plants in the 2022 dataset. A privately held diversified agribusiness; beef segment financial detail is less visible than for listed peers." data-beef-ru="Шесть заводов в выборке 2022 года. Частная диверсифицированная агрокорпорация; финансовая детализация beef-сегмента менее прозрачна, чем у публичных конкурентов.">Six plants in the 2022 dataset. A privately held diversified agribusiness; beef segment financial detail is less visible than for listed peers.</p></div>
+                        <div class="bg-[#131922] border border-slate-800 rounded-lg p-4 border-t-4 border-t-amber-500"><h4 class="font-black">National Beef</h4><div class="text-xl font-mono font-black text-amber-400">13,200/day</div><p class="text-[11px] text-slate-500 mt-2" data-beef-en="Three plants in the 2022 dataset. The fourth-largest processor and part of Marfrig's North American operation." data-beef-ru="Три завода в выборке 2022 года. Четвёртый по величине переработчик, входящий в североамериканское подразделение Marfrig.">Three plants in the 2022 dataset. The fourth-largest processor and part of Marfrig's North American operation.</p></div>
+                    </div>
+                </section>
+
+                <!-- BEEF TAB 3: PRICES -->
+                <section id="beef-tab-prices" class="beef-tab-content hidden space-y-5">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                        <div class="lg:col-span-8 bg-[#131922] border border-slate-800 rounded-lg p-4">
+                            <h4 class="text-sm font-black serif" data-beef-en="Steak prices rose much faster than the overall CPI" data-beef-ru="Цены на стейки росли значительно быстрее общего CPI">Steak prices rose much faster than the overall CPI</h4>
+                            <p class="text-[10px] text-slate-500 mt-1" data-beef-en="Index: January 2020 = 100. Steak line uses BLS average-price levels; BLS recommends category CPI indexes for pure inflation measurement, so this is a transparent price-level comparison, not a causal estimate." data-beef-ru="Индекс: январь 2020 = 100. Для стейков используются средние ценовые уровни BLS; для чистого измерения инфляции BLS рекомендует категориальные CPI, поэтому это прозрачное сравнение уровней цен, а не оценка причинности.">Index: January 2020 = 100. Steak line uses BLS average-price levels; BLS recommends category CPI indexes for pure inflation measurement, so this is a transparent price-level comparison, not a causal estimate.</p>
+                            <div class="beef-chart-wrap mt-3"><canvas id="beefPriceChart"></canvas></div>
+                        </div>
+                        <div class="lg:col-span-4 bg-[#131922] border border-slate-800 rounded-lg p-4">
+                            <h4 class="text-sm font-black serif" data-beef-en="Pandemic shock described in litigation" data-beef-ru="Пандемический шок в материалах исков">Pandemic shock described in litigation</h4>
+                            <p class="text-[10px] text-slate-500 mt-1" data-beef-en="Directional index, pre-shock = 100; figures summarize claims and observed disruption reported in the Guardian, not a structural causal decomposition." data-beef-ru="Направленный индекс, до шока = 100; показатели суммируют утверждения и наблюдавшийся сбой, описанные Guardian, а не представляют структурную причинную оценку.">Directional index, pre-shock = 100; figures summarize claims and observed disruption reported in the Guardian, not a structural causal decomposition.</p>
+                            <div class="beef-chart-wrap mt-3"><canvas id="beefShockChart"></canvas></div>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <div class="bg-rose-950/20 border border-rose-900/60 rounded-lg p-4"><div class="text-[10px] uppercase font-bold text-rose-400" data-beef-en="Consumer side" data-beef-ru="Сторона потребителя">Consumer side</div><p class="text-xs text-slate-400 mt-1" data-beef-en="January 2020 to December 2025: average uncooked steak price rose from $7.653 to $12.512 per pound." data-beef-ru="С января 2020 по декабрь 2025 года средняя цена сырых стейков выросла с $7,653 до $12,512 за фунт.">January 2020 to December 2025: average uncooked steak price rose from $7.653 to $12.512 per pound.</p></div>
+                        <div class="bg-amber-950/20 border border-amber-900/60 rounded-lg p-4"><div class="text-[10px] uppercase font-bold text-amber-400" data-beef-en="Meat margin" data-beef-ru="Мясной спред">Meat margin</div><p class="text-xs text-slate-400 mt-1" data-beef-en="The key economic variable is the spread between the price paid for slaughter-ready cattle and the wholesale price received for boxed beef. A wider spread can reflect market power, supply shocks, capacity constraints, costs — or several factors together." data-beef-ru="Ключевая экономическая переменная — разница между ценой, уплаченной за готовый к убою скот, и оптовой ценой разделанной говядины. Расширение спреда может отражать рыночную власть, шоки предложения, ограничения мощностей, издержки — или сочетание факторов.">The key economic variable is the spread between the price paid for slaughter-ready cattle and the wholesale price received for boxed beef. A wider spread can reflect market power, supply shocks, capacity constraints, costs — or several factors together.</p></div>
+                        <div class="bg-sky-950/20 border border-sky-900/60 rounded-lg p-4"><div class="text-[10px] uppercase font-bold text-sky-400" data-beef-en="Identification problem" data-beef-ru="Проблема идентификации">Identification problem</div><p class="text-xs text-slate-400 mt-1" data-beef-en="Parallel output cuts do not by themselves prove an agreement: firms facing the same cattle shortage and plant economics may react similarly. Antitrust analysis asks whether evidence shows coordination rather than common response." data-beef-ru="Параллельное сокращение выпуска само по себе не доказывает соглашение: фирмы, столкнувшиеся с одинаковым дефицитом скота и экономикой заводов, могут реагировать сходно. Антимонопольный анализ выясняет, есть ли доказательства координации, а не просто общей реакции.">Parallel output cuts do not by themselves prove an agreement: firms facing the same cattle shortage and plant economics may react similarly. Antitrust analysis asks whether evidence shows coordination rather than common response.</p></div>
+                    </div>
+                </section>
+
+                <!-- BEEF TAB 4: ANTITRUST -->
+                <section id="beef-tab-antitrust" class="beef-tab-content hidden space-y-5">
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        <div class="bg-rose-950/15 border border-rose-900/60 rounded-lg p-4">
+                            <h4 class="text-sm font-black text-rose-300" data-beef-en="Plaintiffs' and critics' theory" data-beef-ru="Версия истцов и критиков">Plaintiffs' and critics' theory</h4>
+                            <ul class="mt-3 space-y-2 text-xs text-slate-400 list-disc pl-4">
+                                <li data-beef-en="Temporary reductions in cattle buying and slaughter allegedly depressed cattle prices." data-beef-ru="Предполагаемое временное сокращение закупок и убоя снижало цены на скот.">Temporary reductions in cattle buying and slaughter allegedly depressed cattle prices.</li>
+                                <li data-beef-en="Capacity closures allegedly restricted boxed-beef supply and supported higher wholesale prices." data-beef-ru="Предполагаемое закрытие мощностей ограничивало предложение мяса и поддерживало более высокие оптовые цены.">Capacity closures allegedly restricted boxed-beef supply and supported higher wholesale prices.</li>
+                                <li data-beef-en="Similar production movements and communications are cited as possible evidence of coordination." data-beef-ru="Сходная динамика выпуска и коммуникации приводятся как возможные доказательства координации.">Similar production movements and communications are cited as possible evidence of coordination.</li>
+                                <li data-beef-en="Ranchers, grocers, distributors and McDonald's have brought private claims; allegations remain contested." data-beef-ru="Частные иски подавали ранчеры, ритейлеры, дистрибьюторы и McDonald’s; обвинения оспариваются.">Ranchers, grocers, distributors and McDonald's have brought private claims; allegations remain contested.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-sky-950/15 border border-sky-900/60 rounded-lg p-4">
+                            <h4 class="text-sm font-black text-sky-300" data-beef-en="Packers' and market-fundamentals explanation" data-beef-ru="Объяснение компаний и рыночных факторов">Packers' and market-fundamentals explanation</h4>
+                            <ul class="mt-3 space-y-2 text-xs text-slate-400 list-disc pl-4">
+                                <li data-beef-en="The U.S. cattle herd is historically small after drought and herd liquidation, raising cattle input costs." data-beef-ru="Поголовье скота в США исторически мало после засухи и сокращения стад, что повышает закупочные издержки.">The U.S. cattle herd is historically small after drought and herd liquidation, raising cattle input costs.</li>
+                                <li data-beef-en="Plants below efficient utilization face high fixed cost per animal; closing a plant may be unilateral cost rationalization." data-beef-ru="При низкой загрузке заводов постоянные издержки на голову высоки; закрытие может быть односторонней рационализацией затрат.">Plants below efficient utilization face high fixed cost per animal; closing a plant may be unilateral cost rationalization.</li>
+                                <li data-beef-en="Common shocks can produce parallel conduct without an illegal agreement." data-beef-ru="Общие шоки способны вызывать параллельное поведение без незаконного соглашения.">Common shocks can produce parallel conduct without an illegal agreement.</li>
+                                <li data-beef-en="Tyson's beef segment reported an adjusted $143m Q1 FY2026 loss, illustrating that high retail prices do not imply every packer is profitable." data-beef-ru="Beef-сегмент Tyson сообщил о скорректированном убытке $143 млн в I квартале 2026 финансового года: высокие розничные цены не означают прибыльность каждого переработчика.">Tyson's beef segment reported an adjusted $143m Q1 FY2026 loss, illustrating that high retail prices do not imply every packer is profitable.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                        <div class="lg:col-span-7 bg-[#131922] border border-slate-800 rounded-lg p-4">
+                            <h4 class="text-sm font-black serif" data-beef-en="Evidence map: what is established and what remains disputed" data-beef-ru="Карта доказательств: что установлено, а что остаётся спорным">Evidence map: what is established and what remains disputed</h4>
+                            <div class="overflow-x-auto mt-3">
+                                <table class="w-full text-xs border-collapse">
+                                    <thead><tr class="text-left text-slate-500 border-b border-slate-700"><th class="p-2" data-beef-en="Fact / claim" data-beef-ru="Факт / утверждение">Fact / claim</th><th class="p-2" data-beef-en="Status" data-beef-ru="Статус">Status</th><th class="p-2" data-beef-en="Economic meaning" data-beef-ru="Экономический смысл">Economic meaning</th></tr></thead>
+                                    <tbody class="text-slate-400">
+                                        <tr class="border-b border-slate-800"><td class="p-2">CR4 ≈ 83–85%</td><td class="p-2 text-emerald-400 font-bold" data-beef-en="Documented" data-beef-ru="Подтверждено">Documented</td><td class="p-2" data-beef-en="High structural concentration" data-beef-ru="Высокая структурная концентрация">High structural concentration</td></tr>
+                                        <tr class="border-b border-slate-800"><td class="p-2" data-beef-en="Steak prices outpaced CPI" data-beef-ru="Стейки обогнали CPI">Steak prices outpaced CPI</td><td class="p-2 text-emerald-400 font-bold" data-beef-en="Documented" data-beef-ru="Подтверждено">Documented</td><td class="p-2" data-beef-en="Outcome requiring explanation, not proof of cause" data-beef-ru="Результат, требующий объяснения, но не доказательство причины">Outcome requiring explanation, not proof of cause</td></tr>
+                                        <tr class="border-b border-slate-800"><td class="p-2" data-beef-en="Coordinated restriction" data-beef-ru="Координированное ограничение">Coordinated restriction</td><td class="p-2 text-amber-400 font-bold" data-beef-en="Alleged / under investigation" data-beef-ru="Заявлено / расследуется">Alleged / under investigation</td><td class="p-2" data-beef-en="Would indicate cartel conduct if proven" data-beef-ru="При доказанности означало бы картельное поведение">Would indicate cartel conduct if proven</td></tr>
+                                        <tr><td class="p-2" data-beef-en="Small cattle herd and low utilization" data-beef-ru="Малое стадо и низкая загрузка">Small cattle herd and low utilization</td><td class="p-2 text-emerald-400 font-bold" data-beef-en="Documented" data-beef-ru="Подтверждено">Documented</td><td class="p-2" data-beef-en="Alternative cost-and-capacity mechanism" data-beef-ru="Альтернативный механизм издержек и мощностей">Alternative cost-and-capacity mechanism</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-5 bg-[#131922] border border-slate-800 rounded-lg p-4">
+                            <h4 class="text-sm font-black serif" data-beef-en="Lexington closure: local shock" data-beef-ru="Закрытие Lexington: локальный шок">Lexington closure: local shock</h4>
+                            <div class="grid grid-cols-2 gap-2 mt-3 font-mono text-center">
+                                <div class="bg-slate-950 border border-slate-800 p-3 rounded"><div class="text-xl font-black text-violet-400">3,212</div><div class="text-[9px] text-slate-500" data-beef-en="direct jobs" data-beef-ru="прямых рабочих мест">direct jobs</div></div>
+                                <div class="bg-slate-950 border border-slate-800 p-3 rounded"><div class="text-xl font-black text-sky-400">~4.8%</div><div class="text-[9px] text-slate-500" data-beef-en="U.S. daily slaughter capacity" data-beef-ru="суточной мощности США">U.S. daily slaughter capacity</div></div>
+                                <div class="bg-slate-950 border border-slate-800 p-3 rounded"><div class="text-xl font-black text-rose-400">7,003</div><div class="text-[9px] text-slate-500" data-beef-en="statewide jobs affected" data-beef-ru="рабочих мест с учётом мультипликатора">statewide jobs affected</div></div>
+                                <div class="bg-slate-950 border border-slate-800 p-3 rounded"><div class="text-xl font-black text-emerald-400">$3.283B</div><div class="text-[9px] text-slate-500" data-beef-en="annual output impact" data-beef-ru="годовой эффект выпуска">annual output impact</div></div>
+                            </div>
+                            <p class="text-[10px] text-slate-500 mt-3" data-beef-en="These are input-output model estimates from the University of Nebraska–Lincoln, not observed completed losses. The estimate includes direct and multiplier effects." data-beef-ru="Это оценки межотраслевой модели Университета Небраски–Линкольна, а не уже наблюдавшиеся окончательные потери. В расчёт входят прямые и мультипликативные эффекты.">These are input-output model estimates from the University of Nebraska–Lincoln, not observed completed losses. The estimate includes direct and multiplier effects.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#131922] border border-slate-800 rounded-lg p-4 text-[11px] text-slate-400 leading-relaxed">
+                        <strong class="text-amber-400" data-beef-en="Sources and reading:" data-beef-ru="Источники и дополнительное чтение:">Sources and reading:</strong>
+                        <div class="flex flex-wrap gap-x-4 gap-y-2 mt-2">
+                            <a class="text-sky-400 hover:underline" target="_blank" rel="noopener" href="https://www.theguardian.com/us-news/ng-interactive/2026/feb/25/beef-packers-under-fire-prices-soar">Guardian investigation</a>
+                            <a class="text-sky-400 hover:underline" target="_blank" rel="noopener" href="https://ers.usda.gov/amber-waves/2024/january/concentration-in-u-s-meatpacking-industry-and-how-it-affects-competition-and-cattle-prices">USDA ERS concentration</a>
+                            <a class="text-sky-400 hover:underline" target="_blank" rel="noopener" href="https://fred.stlouisfed.org/data/APU0000FC3101">BLS/FRED steak prices</a>
+                            <a class="text-sky-400 hover:underline" target="_blank" rel="noopener" href="https://fred.stlouisfed.org/data/CPIAUCSL">BLS/FRED general CPI</a>
+                            <a class="text-sky-400 hover:underline" target="_blank" rel="noopener" href="https://cap.unl.edu/news/economic-impacts-tyson-beef-plant-closure-lexington-nebraska/">UNL Lexington impact</a>
+                            <a class="text-sky-400 hover:underline" target="_blank" rel="noopener" href="https://www.justice.gov/opa/speech/deputy-assistant-attorney-general-nicole-sarrine-delivers-remarks-r-calf-usa-2026-annual">DOJ 2026 investigation</a>
+                            <a class="text-sky-400 hover:underline" target="_blank" rel="noopener" href="https://ir.tyson.com/news/news-details/2026/Tyson-Foods-Reports-First-Quarter-2026-Results/default.aspx">Tyson Q1 FY2026</a>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="bg-[#111821] px-4 sm:px-6 py-2.5 border-t border-slate-800 text-[10px] text-slate-500 flex flex-wrap justify-between gap-2 shrink-0">
+                <span data-beef-en="Teaching case: concentration does not by itself prove collusion." data-beef-ru="Учебный кейс: концентрация сама по себе не доказывает сговор.">Teaching case: concentration does not by itself prove collusion.</span>
+                <span data-beef-en="Data checked: 28 October 2026" data-beef-ru="Данные проверены: 28 октября 2026 года">Data checked: 28 October 2026</span>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- ========================================================= -->
     <!-- SCRIPTS: BILINGUAL TRANSLATIONS & ALL 4 DASHBOARDS -->
     <!-- ========================================================= -->
     <script>
         const clockUrl = "https://ogaydv-prog.github.io/KZ-economic-clock/index-en.html";
         let currentLang = 'en';
         let dairyChartInstance = null;
+        let beefShareChart = null;
+        let beefPriceChart = null;
+        let beefShockChart = null;
+        let activeBeefTab = 'overview';
 
         const i18n = {
             en: {
@@ -595,9 +800,11 @@
                 news3Title: "Global Corporate Mergers Encounter Scrutiny Over Market Concentration Indices",
                 news3Desc: "Regulatory authorities (FTC and EU Commission) step up investigations into multi-billion M&A deals to prevent artificial entry barriers and preserve horizontal market competition...",
                 news3Link: "Read Full Original Article →",
-                news4Title: "Retail & FMCG Brands Leverage Product Differentiation Amid Price Elasticity Shifts",
-                news4Desc: "Major consumer brands balance price increases with private-label substitute threats, deploying brand equity strategies to protect operating margins in differentiated markets...",
-                news4Link: "Read Full Original Article →"
+                news4Tag: "Oligopoly • Buyer & Seller Power",
+                news4Title: "The ‘Big Four’ and the U.S. Beef-Processing Oligopoly",
+                news4Desc: "Tyson, JBS, Cargill and National Beef handle about 85% of fed-cattle processing while steak prices rose far faster than the general CPI. Explore concentration, prices, capacity and antitrust claims.",
+                news4Link: "Open Interactive Case Dashboard →",
+                news4Original: "Guardian original article ↗"
             },
             ru: {
                 hubTitle: "Академический аналитический хаб",
@@ -660,9 +867,11 @@
                 news3Title: "Слияния и поглощения (M&A): Регуляторы проверяют индексы концентрации рынков",
                 news3Desc: "Антимонопольные органы (FTC и ЕК) усиливают контроль над крупнейшими сделками M&A, предотвращая создание искусственных барьеров входа и защищая горизонтальную конкуренцию...",
                 news3Link: "Читать оригинал статьи →",
-                news4Title: "Монополистическая конкуренция в ритейле: Дифференциация и эластичность цен",
-                news4Desc: "Крупнейшие потребительские бренды реагируют на угрозу товаров-заменителей (Private Labels), используя дифференциацию продукции для защиты операционной маржи...",
-                news4Link: "Читать оригинал статьи →"
+                news4Tag: "Олигополия • Власть покупателя и продавца",
+                news4Title: "«Большая четвёрка» и олигополия переработки говядины в США",
+                news4Desc: "Tyson, JBS, Cargill и National Beef контролируют около 85% переработки откормленного скота, а цены на стейки росли намного быстрее общего CPI. Изучите концентрацию, цены, мощности и антимонопольные претензии.",
+                news4Link: "Открыть интерактивный кейс →",
+                news4Original: "Оригинальная статья Guardian ↗"
             }
         };
 
@@ -718,7 +927,10 @@
             document.getElementById('news1-title').innerText = l.news1Title; document.getElementById('news1-desc').innerText = l.news1Desc; document.getElementById('news1-link').innerText = l.news1Link;
             document.getElementById('news2-title').innerText = l.news2Title; document.getElementById('news2-desc').innerText = l.news2Desc; document.getElementById('news2-link').innerText = l.news2Link;
             document.getElementById('news3-title').innerText = l.news3Title; document.getElementById('news3-desc').innerText = l.news3Desc; document.getElementById('news3-link').innerText = l.news3Link;
+            document.getElementById('news4-tag').innerText = l.news4Tag;
             document.getElementById('news4-title').innerText = l.news4Title; document.getElementById('news4-desc').innerText = l.news4Desc; document.getElementById('news4-link').innerText = l.news4Link;
+            document.getElementById('news4-original').innerText = l.news4Original;
+            updateBeefLanguage();
 
             renderDairyChart();
             updateKpis();
@@ -781,9 +993,107 @@
         function closeClockModal() { document.getElementById('clockModal').classList.add('hidden'); document.body.style.overflow = 'auto'; }
         function openCaseModal() { document.getElementById('caseModal').classList.remove('hidden'); document.body.style.overflow = 'hidden'; }
         function closeCaseModal() { document.getElementById('caseModal').classList.add('hidden'); document.body.style.overflow = 'auto'; }
+        function openBeefModal() {
+            document.getElementById('beefModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            updateBeefLanguage();
+            switchBeefTab('overview');
+        }
+        function closeBeefModal() {
+            document.getElementById('beefModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }
+
+        function updateBeefLanguage() {
+            document.querySelectorAll('[data-beef-en][data-beef-ru]').forEach(element => {
+                element.textContent = currentLang === 'ru' ? element.dataset.beefRu : element.dataset.beefEn;
+            });
+            if (!document.getElementById('beefModal').classList.contains('hidden')) {
+                requestAnimationFrame(() => renderBeefCharts(activeBeefTab));
+            }
+        }
+
+        function switchBeefTab(tabId) {
+            activeBeefTab = tabId;
+            document.querySelectorAll('.beef-tab-content').forEach(section => section.classList.add('hidden'));
+            document.getElementById(`beef-tab-${tabId}`).classList.remove('hidden');
+            document.querySelectorAll('.beef-tab-btn').forEach(button => button.classList.toggle('active', button.dataset.beefTab === tabId));
+            requestAnimationFrame(() => renderBeefCharts(tabId));
+        }
+
+        function destroyBeefChart(chart) {
+            if (chart) chart.destroy();
+            return null;
+        }
+
+        function renderBeefCharts(tabId) {
+            if (typeof Chart === 'undefined') return;
+            const gridColor = '#243041';
+            const textColor = '#94a3b8';
+            const isRu = currentLang === 'ru';
+
+            if (tabId === 'firms') {
+                beefShareChart = destroyBeefChart(beefShareChart);
+                beefShareChart = new Chart(document.getElementById('beefShareChart'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Tyson Foods', 'JBS USA', 'Cargill', 'National Beef', isRu ? 'Другие' : 'Others'],
+                        datasets: [{
+                            label: isRu ? 'Доля мощности (%)' : 'Capacity share (%)',
+                            data: [25.9, 23.6, 20.8, 12.4, 17.3],
+                            backgroundColor: ['#3b82f6', '#ef4444', '#10b981', '#f59e0b', '#475569'],
+                            borderColor: '#131922', borderWidth: 3
+                        }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false, cutout: '52%',
+                        plugins: {
+                            legend: { position: 'right', labels: { color: textColor, boxWidth: 12, font: { size: 10 } } },
+                            tooltip: { callbacks: { label: context => `${context.label}: ${context.raw.toFixed(1)}%` } }
+                        }
+                    }
+                });
+            }
+
+            if (tabId === 'prices') {
+                beefPriceChart = destroyBeefChart(beefPriceChart);
+                beefShockChart = destroyBeefChart(beefShockChart);
+                beefPriceChart = new Chart(document.getElementById('beefPriceChart'), {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan 2020', 'Dec 2020', 'Dec 2021', 'Dec 2022', 'Dec 2023', 'Dec 2024', 'Dec 2025'],
+                        datasets: [
+                            { label: isRu ? 'Средняя цена стейка' : 'Average steak price', data: [100, 105.6, 129.8, 123.6, 139.1, 138.8, 163.5], borderColor: '#f43f5e', backgroundColor: 'rgba(244,63,94,.12)', fill: true, tension: .25, pointRadius: 3 },
+                            { label: isRu ? 'Общий CPI' : 'General CPI', data: [100, 101.1, 108.4, 115.3, 119.1, 122.6, 125.8], borderColor: '#38bdf8', backgroundColor: 'rgba(56,189,248,.08)', fill: true, tension: .25, pointRadius: 3 }
+                        ]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom', labels: { color: textColor, boxWidth: 12, font: { size: 10 } } } },
+                        scales: {
+                            x: { ticks: { color: textColor, font: { size: 9 } }, grid: { color: gridColor } },
+                            y: { beginAtZero: false, suggestedMin: 95, ticks: { color: textColor, callback: value => value }, grid: { color: gridColor }, title: { display: true, text: isRu ? 'Индекс (янв. 2020 = 100)' : 'Index (Jan 2020 = 100)', color: textColor } }
+                        }
+                    }
+                });
+
+                beefShockChart = new Chart(document.getElementById('beefShockChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: [isRu ? 'Отборная говядина' : 'Choice beef', isRu ? 'Цена скота' : 'Cattle price', isRu ? 'Работающая мощность' : 'Active capacity'],
+                        datasets: [{ label: isRu ? 'Индекс: до шока = 100' : 'Index: pre-shock = 100', data: [200, 70, 60], backgroundColor: ['#f43f5e', '#10b981', '#f59e0b'], borderRadius: 5 }]
+                    },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { display: false }, tooltip: { callbacks: { label: context => `${context.raw}` } } },
+                        scales: { x: { ticks: { color: textColor, font: { size: 9 } }, grid: { display: false } }, y: { beginAtZero: true, ticks: { color: textColor }, grid: { color: gridColor } } }
+                    }
+                });
+            }
+        }
 
         document.addEventListener('keydown', function(event) {
-            if (event.key === "Escape") { closeClockModal(); closeCaseModal(); }
+            if (event.key === "Escape") { closeClockModal(); closeCaseModal(); closeBeefModal(); }
         });
 
         let countInterval = null;
