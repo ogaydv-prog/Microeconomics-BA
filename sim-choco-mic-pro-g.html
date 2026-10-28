@@ -77,6 +77,10 @@
     body.light-theme .theme-box { background-color: #f1f5f9; border-color: #cbd5e1; color: #334155; }
     body.dark-theme .theme-box { background-color: #334155; border-color: #475569; color: #e2e8f0; }
 
+    /* АДАПТИВНАЯ ПОДЛОЖКА ДЛЯ ЛОГОТИПОВ */
+    body.light-theme .logo-container { background-color: #f8fafc; border-color: #e2e8f0; }
+    body.dark-theme .logo-container { background-color: #ffffff; border-color: #334155; }
+
     /* УСТОЙЧИВАЯ ИСХОДНАЯ КОМПОЗИЦИЯ: УПРАВЛЕНИЕ СЛЕВА, ГРАФИК СПРАВА */
     .dashboard-split {
       display: grid;
@@ -208,46 +212,70 @@
       </div>
 
       <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
-        <article class="theme-card p-5 rounded-xl border shadow-sm relative overflow-hidden">
+        <!-- Barry Callebaut -->
+        <article class="theme-card p-5 rounded-xl border shadow-sm relative overflow-hidden flex flex-col justify-between">
           <div class="absolute top-0 left-0 w-full h-1 bg-amber-500"></div>
-          <div class="flex justify-between items-start gap-3">
-            <div>
-              <div class="text-[10px] uppercase tracking-wider text-amber-400 font-bold">B2B • №1</div>
-              <h3 class="text-lg font-extrabold">Barry Callebaut</h3>
-              <p class="text-xs text-slate-500" id="lbl-str-bc-pron">«Бэрри Каллебо» • Швейцария</p>
+          <div>
+            <div class="flex justify-between items-start gap-3">
+              <div class="flex items-center gap-3">
+                <div class="logo-container shrink-0 w-12 h-12 p-1.5 rounded-lg border flex items-center justify-center shadow-sm">
+                  <img src="barry.png" alt="Barry Callebaut Logo" class="max-h-full max-w-full object-contain">
+                </div>
+                <div>
+                  <div class="text-[10px] uppercase tracking-wider text-amber-400 font-bold">B2B • №1</div>
+                  <h3 class="text-lg font-extrabold">Barry Callebaut</h3>
+                  <p class="text-xs text-slate-500" id="lbl-str-bc-pron">«Бэрри Каллебо» • Швейцария</p>
+                </div>
+              </div>
+              <span class="text-xs px-2 py-1 rounded bg-amber-950 text-amber-300 border border-amber-800 shrink-0">1.015 млн т*</span>
             </div>
-            <span class="text-xs px-2 py-1 rounded bg-amber-950 text-amber-300 border border-amber-800">1.015 млн т*</span>
+            <p class="text-xs text-slate-400 mt-3 leading-relaxed" id="lbl-str-bc-desc">Создана в 1996 году слиянием бельгийской Callebaut и французской Cacao Barry. Вертикально интегрированный B2B-лидер: от закупки бобов и какао-продуктов до промышленного шоколада, начинок и декора.</p>
           </div>
-          <p class="text-xs text-slate-400 mt-3 leading-relaxed" id="lbl-str-bc-desc">Создана в 1996 году слиянием бельгийской Callebaut и французской Cacao Barry. Вертикально интегрированный B2B-лидер: от закупки бобов и какао-продуктов до промышленного шоколада, начинок и декора.</p>
-          <div class="mt-3 text-[11px] text-slate-500" id="lbl-str-bc-fact">2024/25: 2.125 млн т общего объёма группы; продажи CHF 14.8 млрд.</div>
+          <div class="mt-3 text-[11px] text-slate-500 pt-2 border-t border-slate-700/30" id="lbl-str-bc-fact">2024/25: 2.125 млн т общего объёма группы; продажи CHF 14.8 млрд.</div>
         </article>
 
-        <article class="theme-card p-5 rounded-xl border shadow-sm relative overflow-hidden">
+        <!-- ofi -->
+        <article class="theme-card p-5 rounded-xl border shadow-sm relative overflow-hidden flex flex-col justify-between">
           <div class="absolute top-0 left-0 w-full h-1 bg-emerald-500"></div>
-          <div class="flex justify-between items-start gap-3">
-            <div>
-              <div class="text-[10px] uppercase tracking-wider text-emerald-400 font-bold">B2B • TOP 3</div>
-              <h3 class="text-lg font-extrabold">ofi</h3>
-              <p class="text-xs text-slate-500" id="lbl-str-ofi-pron">Olam Food Ingredients • Сингапур</p>
+          <div>
+            <div class="flex justify-between items-start gap-3">
+              <div class="flex items-center gap-3">
+                <div class="logo-container shrink-0 w-12 h-12 p-1.5 rounded-lg border flex items-center justify-center shadow-sm">
+                  <img src="ofi.png" alt="ofi Logo" class="max-h-full max-w-full object-contain">
+                </div>
+                <div>
+                  <div class="text-[10px] uppercase tracking-wider text-emerald-400 font-bold">B2B • TOP 3</div>
+                  <h3 class="text-lg font-extrabold">ofi</h3>
+                  <p class="text-xs text-slate-500" id="lbl-str-ofi-pron">Olam Food Ingredients • Сингапур</p>
+                </div>
+              </div>
+              <span class="text-xs px-2 py-1 rounded bg-emerald-950 text-emerald-300 border border-emerald-800 shrink-0">1.000 млн т*</span>
             </div>
-            <span class="text-xs px-2 py-1 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">1.000 млн т*</span>
+            <p class="text-xs text-slate-400 mt-3 leading-relaxed" id="lbl-str-ofi-desc">Современное название ингредиентного бизнеса Olam. В 2015 году Olam приобрела глобальный какао-бизнес ADM, получив крупные мощности по производству тёртого какао, масла и порошка.</p>
           </div>
-          <p class="text-xs text-slate-400 mt-3 leading-relaxed" id="lbl-str-ofi-desc">Современное название ингредиентного бизнеса Olam. В 2015 году Olam приобрела глобальный какао-бизнес ADM, получив крупные мощности по производству тёртого какао, масла и порошка.</p>
-          <div class="mt-3 text-[11px] text-slate-500" id="lbl-str-ofi-fact">Более 2 000 клиентов по какао-порошку; поставки в 100 стран; компания называет себя переработчиком глобального top-3.</div>
+          <div class="mt-3 text-[11px] text-slate-500 pt-2 border-t border-slate-700/30" id="lbl-str-ofi-fact">Более 2 000 клиентов по какао-порошку; поставки в 100 стран; компания называет себя переработчиком глобального top-3.</div>
         </article>
 
-        <article class="theme-card p-5 rounded-xl border shadow-sm relative overflow-hidden">
+        <!-- Cargill -->
+        <article class="theme-card p-5 rounded-xl border shadow-sm relative overflow-hidden flex flex-col justify-between">
           <div class="absolute top-0 left-0 w-full h-1 bg-sky-500"></div>
-          <div class="flex justify-between items-start gap-3">
-            <div>
-              <div class="text-[10px] uppercase tracking-wider text-sky-400 font-bold">B2B • TOP 3</div>
-              <h3 class="text-lg font-extrabold">Cargill</h3>
-              <p class="text-xs text-slate-500" id="lbl-str-cargill-pron">Частная диверсифицированная группа • США</p>
+          <div>
+            <div class="flex justify-between items-start gap-3">
+              <div class="flex items-center gap-3">
+                <div class="logo-container shrink-0 w-12 h-12 p-1.5 rounded-lg border flex items-center justify-center shadow-sm">
+                  <img src="car.png" alt="Cargill Logo" class="max-h-full max-w-full object-contain">
+                </div>
+                <div>
+                  <div class="text-[10px] uppercase tracking-wider text-sky-400 font-bold">B2B • TOP 3</div>
+                  <h3 class="text-lg font-extrabold">Cargill</h3>
+                  <p class="text-xs text-slate-500" id="lbl-str-cargill-pron">Частная диверсифицированная группа • США</p>
+                </div>
+              </div>
+              <span class="text-xs px-2 py-1 rounded bg-sky-950 text-sky-300 border border-sky-800 shrink-0">0.888 млн т*</span>
             </div>
-            <span class="text-xs px-2 py-1 rounded bg-sky-950 text-sky-300 border border-sky-800">0.888 млн т*</span>
+            <p class="text-xs text-slate-400 mt-3 leading-relaxed" id="lbl-str-cargill-desc">Глобальный агротрейдер с мощностями по переработке какао и промышленному шоколаду. В 2015 году приобрёл шоколадный бизнес ADM; Еврокомиссия разрешила сделку с обязательствами из-за рисков концентрации.</p>
           </div>
-          <p class="text-xs text-slate-400 mt-3 leading-relaxed" id="lbl-str-cargill-desc">Глобальный агротрейдер с мощностями по переработке какао и промышленному шоколаду. В 2015 году приобрёл шоколадный бизнес ADM; Еврокомиссия разрешила сделку с обязательствами из-за рисков концентрации.</p>
-          <div class="mt-3 text-[11px] text-slate-500" id="lbl-str-cargill-fact">Переработка и шоколадные мощности в Европе, Западной Африке и Индонезии; сильная B2B-позиция, но сегментные доли публично раскрываются не полностью.</div>
+          <div class="mt-3 text-[11px] text-slate-500 pt-2 border-t border-slate-700/30" id="lbl-str-cargill-fact">Переработка и шоколадные мощности в Европе, Западной Африке и Индонезии; сильная B2B-позиция, но сегментные доли публично раскрываются не полностью.</div>
         </article>
       </div>
 
