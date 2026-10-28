@@ -122,6 +122,7 @@
     <!-- Навигационные вкладки -->
     <div class="max-w-7xl mx-auto px-4 flex space-x-1 overflow-x-auto border-t border-slate-800 text-sm font-semibold">
       <button onclick="switchTab('overview')" id="tab-btn-overview" class="tab-btn py-2.5 px-4 text-amber-400 border-b-2 border-amber-500 whitespace-nowrap"><i class="fa-solid fa-chart-pie mr-1.5"></i><span id="txt-tab-overview">Обзор рынка</span></button>
+      <button onclick="switchTab('structure')" id="tab-btn-structure" class="tab-btn py-2.5 px-4 text-slate-400 hover:text-white border-b-2 border-transparent whitespace-nowrap"><i class="fa-solid fa-sitemap mr-1.5"></i><span id="txt-tab-structure">Структура и лидеры</span></button>
       <button onclick="switchTab('simulator')" id="tab-btn-simulator" class="tab-btn py-2.5 px-4 text-slate-400 hover:text-white border-b-2 border-transparent whitespace-nowrap"><i class="fa-solid fa-sliders mr-1.5"></i><span id="txt-tab-simulator">Симулятор лага</span></button>
       <button onclick="switchTab('cases')" id="tab-btn-cases" class="tab-btn py-2.5 px-4 text-slate-400 hover:text-white border-b-2 border-transparent whitespace-nowrap"><i class="fa-solid fa-newspaper mr-1.5"></i><span id="txt-tab-cases">Сценарии 2026</span></button>
       <button onclick="switchTab('recipe')" id="tab-btn-recipe" class="tab-btn py-2.5 px-4 text-slate-400 hover:text-white border-b-2 border-transparent whitespace-nowrap"><i class="fa-solid fa-cookie-bite mr-1.5"></i><span id="txt-tab-recipe">Калькуляция плитки</span></button>
@@ -167,7 +168,190 @@
       </div>
     </section>
 
-    <!-- ВКЛАДКА 2: СИМУЛЯТОР ЛАГА ИЗДЕРЖЕК -->
+    <!-- ВКЛАДКА 2: СТРУКТУРА РЫНКА И ЛИДЕРЫ -->
+    <section id="tab-structure" class="tab-content hidden space-y-6">
+      <div class="theme-card p-5 rounded-xl border shadow-sm border-l-4 border-l-amber-500">
+        <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+          <div>
+            <span class="text-xs font-bold tracking-wider text-amber-400 uppercase" id="lbl-str-kicker">Главная идея • не смешивать уровни цепочки</span>
+            <h2 class="text-xl font-extrabold mt-1" id="lbl-str-title">Один продукт — три разных конкурентных рынка</h2>
+            <p class="text-sm text-slate-400 mt-2 max-w-4xl leading-relaxed" id="lbl-str-intro">Barry Callebaut, ofi и Cargill прежде всего конкурируют в торговле, переработке какао и B2B-ингредиентах. Mars, Mondelēz, Ferrero, Nestlé и Hershey конкурируют за потребителя через бренды. Camille Bloch и Anthon Berg — не сопоставимые по масштабу переработчики, а нишевые производители и бренды готового шоколада.</p>
+          </div>
+          <div class="shrink-0 px-4 py-3 rounded-lg theme-box border text-xs leading-relaxed lg:max-w-xs">
+            <div class="font-bold text-amber-400" id="lbl-str-pron-title"></div>
+            <div class="mt-1" id="lbl-str-pron"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-3">
+        <div class="theme-card p-4 rounded-xl border shadow-sm border-t-4 border-t-emerald-500">
+          <div class="text-[10px] uppercase tracking-wider font-bold text-emerald-400" id="lbl-str-level1">Уровень 1 • сырьё</div>
+          <h3 class="font-bold mt-1" id="lbl-str-level1-title">Миллионы фермеров</h3>
+          <p class="text-xs text-slate-400 mt-2" id="lbl-str-level1-desc">Фрагментированное предложение; высокая зависимость от погоды, урожайности и национальных систем сбыта.</p>
+        </div>
+        <div class="theme-card p-4 rounded-xl border shadow-sm border-t-4 border-t-amber-500">
+          <div class="text-[10px] uppercase tracking-wider font-bold text-amber-400" id="lbl-str-level2">Уровень 2 • midstream B2B</div>
+          <h3 class="font-bold mt-1" id="lbl-str-level2-title">Крупные трейдеры и переработчики</h3>
+          <p class="text-xs text-slate-400 mt-2" id="lbl-str-level2-desc">Масштаб, заводы, оборотный капитал, хеджирование и глобальная логистика создают высокие барьеры входа.</p>
+        </div>
+        <div class="theme-card p-4 rounded-xl border shadow-sm border-t-4 border-t-indigo-500">
+          <div class="text-[10px] uppercase tracking-wider font-bold text-indigo-400" id="lbl-str-level3">Уровень 3 • глобальные бренды</div>
+          <h3 class="font-bold mt-1" id="lbl-str-level3-title">Олигополия производителей</h3>
+          <p class="text-xs text-slate-400 mt-2" id="lbl-str-level3-desc">Mars, Mondelēz, Ferrero, Nestlé, Hershey и Lindt конкурируют брендами, рецептурами, рекламой и полочным пространством.</p>
+        </div>
+        <div class="theme-card p-4 rounded-xl border shadow-sm border-t-4 border-t-pink-500">
+          <div class="text-[10px] uppercase tracking-wider font-bold text-pink-400" id="lbl-str-level4">Уровень 4 • ниши</div>
+          <h3 class="font-bold mt-1" id="lbl-str-level4-title">Премиум и крафт</h3>
+          <p class="text-xs text-slate-400 mt-2" id="lbl-str-level4-desc">Множество дифференцированных марок: ближе к монополистической конкуренции, но с локальной лояльностью и ценовой премией.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        <article class="theme-card p-5 rounded-xl border shadow-sm relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-1 bg-amber-500"></div>
+          <div class="flex justify-between items-start gap-3">
+            <div>
+              <div class="text-[10px] uppercase tracking-wider text-amber-400 font-bold">B2B • №1</div>
+              <h3 class="text-lg font-extrabold">Barry Callebaut</h3>
+              <p class="text-xs text-slate-500" id="lbl-str-bc-pron">«Бэрри Каллебо» • Швейцария</p>
+            </div>
+            <span class="text-xs px-2 py-1 rounded bg-amber-950 text-amber-300 border border-amber-800">1.015 млн т*</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-3 leading-relaxed" id="lbl-str-bc-desc">Создана в 1996 году слиянием бельгийской Callebaut и французской Cacao Barry. Вертикально интегрированный B2B-лидер: от закупки бобов и какао-продуктов до промышленного шоколада, начинок и декора.</p>
+          <div class="mt-3 text-[11px] text-slate-500" id="lbl-str-bc-fact">2024/25: 2.125 млн т общего объёма группы; продажи CHF 14.8 млрд.</div>
+        </article>
+
+        <article class="theme-card p-5 rounded-xl border shadow-sm relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-1 bg-emerald-500"></div>
+          <div class="flex justify-between items-start gap-3">
+            <div>
+              <div class="text-[10px] uppercase tracking-wider text-emerald-400 font-bold">B2B • TOP 3</div>
+              <h3 class="text-lg font-extrabold">ofi</h3>
+              <p class="text-xs text-slate-500" id="lbl-str-ofi-pron">Olam Food Ingredients • Сингапур</p>
+            </div>
+            <span class="text-xs px-2 py-1 rounded bg-emerald-950 text-emerald-300 border border-emerald-800">1.000 млн т*</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-3 leading-relaxed" id="lbl-str-ofi-desc">Современное название ингредиентного бизнеса Olam. В 2015 году Olam приобрела глобальный какао-бизнес ADM, получив крупные мощности по производству тёртого какао, масла и порошка.</p>
+          <div class="mt-3 text-[11px] text-slate-500" id="lbl-str-ofi-fact">Более 2 000 клиентов по какао-порошку; поставки в 100 стран; компания называет себя переработчиком глобального top-3.</div>
+        </article>
+
+        <article class="theme-card p-5 rounded-xl border shadow-sm relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-1 bg-sky-500"></div>
+          <div class="flex justify-between items-start gap-3">
+            <div>
+              <div class="text-[10px] uppercase tracking-wider text-sky-400 font-bold">B2B • TOP 3</div>
+              <h3 class="text-lg font-extrabold">Cargill</h3>
+              <p class="text-xs text-slate-500" id="lbl-str-cargill-pron">Частная диверсифицированная группа • США</p>
+            </div>
+            <span class="text-xs px-2 py-1 rounded bg-sky-950 text-sky-300 border border-sky-800">0.888 млн т*</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-3 leading-relaxed" id="lbl-str-cargill-desc">Глобальный агротрейдер с мощностями по переработке какао и промышленному шоколаду. В 2015 году приобрёл шоколадный бизнес ADM; Еврокомиссия разрешила сделку с обязательствами из-за рисков концентрации.</p>
+          <div class="mt-3 text-[11px] text-slate-500" id="lbl-str-cargill-fact">Переработка и шоколадные мощности в Европе, Западной Африке и Индонезии; сильная B2B-позиция, но сегментные доли публично раскрываются не полностью.</div>
+        </article>
+      </div>
+
+      <div class="dashboard-split dashboard-split-5-7">
+        <div class="theme-card p-5 rounded-xl border shadow-sm space-y-4">
+          <div>
+            <h3 class="font-bold" id="lbl-str-hhi-title">Концентрация переработчиков: как читать цифры</h3>
+            <p class="text-xs text-slate-400 mt-1" id="lbl-str-hhi-desc">Показатель ниже нормирует раскрытые потоки 12 крупнейших компаний. Это полезный учебный индикатор, но не юридический HHI всего мирового рынка: компании могут торговать друг с другом, а охват данных неполный.</p>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="theme-box p-4 rounded-lg border">
+              <div class="text-[10px] uppercase tracking-wide text-slate-500" id="lbl-str-cr3">CR3 раскрытых потоков</div>
+              <div class="text-2xl font-extrabold text-amber-400">54.2%</div>
+              <div class="text-[11px] text-slate-500 mt-1" id="lbl-str-cr3-note">Barry Callebaut + ofi + Cargill</div>
+            </div>
+            <div class="theme-box p-4 rounded-lg border">
+              <div class="text-[10px] uppercase tracking-wide text-slate-500" id="lbl-str-hhi-current">HHI-подобный индикатор</div>
+              <div class="text-2xl font-extrabold text-sky-400">1 370</div>
+              <div class="text-[11px] text-slate-500 mt-1" id="lbl-str-hhi-current-note">только среди 12 раскрытых потоков</div>
+            </div>
+          </div>
+          <div class="theme-box p-4 rounded-lg border">
+            <div class="flex items-center justify-between gap-2">
+              <div class="font-bold text-sm" id="lbl-str-hhi-hist">Исторический HHI мощностей, 2015</div>
+              <span class="text-lg font-extrabold text-rose-400">1 758</span>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-2" id="lbl-str-hhi-hist-note">Рассчитано по опубликованным UNCTAD долям мощностей. После последующих сделок состав лидеров изменился, поэтому показатель — исторический ориентир, а не текущая оценка.</p>
+          </div>
+          <div class="text-[11px] text-slate-500 leading-relaxed" id="lbl-str-hhi-formula">HHI = сумма квадратов рыночных долей. Например, доля 20% даёт 400 пунктов. Чем выше индекс, тем более концентрирован рынок — но результат имеет смысл только при корректно определённых товарных и географических границах.</div>
+        </div>
+        <div class="theme-card p-5 rounded-xl border shadow-sm">
+          <div class="flex flex-wrap justify-between items-end gap-2 mb-3">
+            <div>
+              <h3 class="font-bold" id="lbl-str-flow-chart-title">Раскрытые объёмы крупнейших трейдеров/переработчиков</h3>
+              <p class="text-xs text-slate-400" id="lbl-str-flow-chart-sub">2025, тыс. т в эквиваленте какао-бобов; объёмы не складываются в мировой рынок без двойного счёта.</p>
+            </div>
+            <span class="text-[10px] text-slate-500" id="lbl-str-flow-source">Источник: Cocoa Barometer 2025</span>
+          </div>
+          <div class="h-80"><canvas id="chart-processing-structure"></canvas></div>
+        </div>
+      </div>
+
+      <div class="dashboard-split dashboard-split-5-7">
+        <div class="theme-card p-5 rounded-xl border shadow-sm space-y-4">
+          <h3 class="font-bold" id="lbl-str-brands-title">Кто расположен ниже по цепочке?</h3>
+          <div class="space-y-3 text-xs">
+            <div class="theme-box p-3 rounded-lg border">
+              <div class="font-bold text-indigo-400" id="lbl-str-brand-global-title">Глобальные владельцы брендов</div>
+              <p class="text-slate-400 mt-1" id="lbl-str-brand-global">Mars: M&M’s, Snickers, Twix; Mondelēz: Cadbury, Milka, Toblerone; Ferrero: Kinder, Ferrero Rocher, Nutella; Nestlé: KitKat; Hershey: Hershey’s, Reese’s.</p>
+            </div>
+            <div class="theme-box p-3 rounded-lg border">
+              <div class="font-bold text-pink-400" id="lbl-str-brand-niche-title">Нишевые и премиальные производители</div>
+              <p class="text-slate-400 mt-1" id="lbl-str-brand-niche">Camille Bloch — независимая швейцарская семейная компания (Ragusa, Torino), около 3.5 тыс. т в год. Anthon Berg — датский премиальный бренд Toms Group, известный шоколадными бутылочками с ликёром.</p>
+            </div>
+          </div>
+          <div class="p-3 rounded-lg border border-amber-800 bg-amber-950/30 text-xs text-amber-200 leading-relaxed" id="lbl-str-brand-takeaway">Вывод: известность бренда на полке не означает контроль над переработкой какао. Один и тот же B2B-поставщик может снабжать нескольких конкурирующих производителей готового шоколада.</div>
+        </div>
+        <div class="theme-card p-5 rounded-xl border shadow-sm">
+          <div class="flex flex-wrap justify-between items-end gap-2 mb-3">
+            <div>
+              <h3 class="font-bold" id="lbl-str-retail-chart-title">Мировой рынок потребительского шоколада: доли по стоимости</h3>
+              <p class="text-xs text-slate-400" id="lbl-str-retail-chart-sub">2025; здесь измеряется продажа готового шоколада потребителю, а не объём переработки бобов.</p>
+            </div>
+            <span class="text-[10px] text-slate-500" id="lbl-str-retail-source">Источник: Euromonitor 2025 через презентацию Lindt &amp; Sprüngli</span>
+          </div>
+          <div class="h-72"><canvas id="chart-retail-structure"></canvas></div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4 text-center">
+            <div class="theme-box p-3 rounded-lg border"><div class="text-[10px] uppercase text-slate-500">CR6</div><div class="text-xl font-extrabold text-indigo-400">57.3%</div></div>
+            <div class="theme-box p-3 rounded-lg border"><div class="text-[10px] uppercase text-slate-500" id="lbl-str-hhi-floor">Нижняя граница HHI</div><div class="text-xl font-extrabold text-emerald-400">584</div></div>
+            <div class="theme-box p-3 rounded-lg border"><div class="text-[10px] uppercase text-slate-500" id="lbl-str-others">Другие компании</div><div class="text-xl font-extrabold text-slate-400">42.7%</div></div>
+          </div>
+          <p class="text-[11px] text-slate-500 mt-3" id="lbl-str-retail-note">584 — только вклад шести раскрытых компаний. Полный HHI выше, но его нельзя честно вычислить без распределения 42.7% между остальными фирмами.</p>
+        </div>
+      </div>
+
+      <div class="theme-card p-5 rounded-xl border shadow-sm">
+        <h3 class="font-bold mb-3" id="lbl-str-history-title">Почему «третья компания» вызывает путаницу: короткая история</h3>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3 text-xs">
+          <div class="theme-box p-4 rounded-lg border"><div class="font-extrabold text-amber-400">1996</div><p class="text-slate-400 mt-1" id="lbl-str-history-1996">Callebaut и Cacao Barry объединяются в Barry Callebaut.</p></div>
+          <div class="theme-box p-4 rounded-lg border"><div class="font-extrabold text-amber-400">2014–2015</div><p class="text-slate-400 mt-1" id="lbl-str-history-2015a">ADM разделяет активы: Olam договаривается купить мировой какао-бизнес — порошок, масло и тёртое какао.</p></div>
+          <div class="theme-box p-4 rounded-lg border"><div class="font-extrabold text-amber-400">2015–2016</div><p class="text-slate-400 mt-1" id="lbl-str-history-2015b">Cargill приобретает шоколадный бизнес ADM; Еврокомиссия требует уступок для защиты конкуренции.</p></div>
+          <div class="theme-box p-4 rounded-lg border"><div class="font-extrabold text-amber-400" id="lbl-str-history-now-year">Сегодня</div><p class="text-slate-400 mt-1" id="lbl-str-history-now">Поэтому в какао-переработке обычно называют Barry Callebaut, ofi и Cargill, а в старых материалах по промышленному шоколаду третьим игроком могла быть ADM.</p></div>
+        </div>
+      </div>
+
+      <div class="theme-card p-5 rounded-xl border shadow-sm text-xs leading-relaxed">
+        <h3 class="font-bold text-amber-400 mb-2" id="lbl-str-method-title">Методика и ограничения данных</h3>
+        <p class="text-slate-400" id="lbl-str-method">Объёмы переработчиков взяты из Cocoa Barometer 2025 и нормированы только внутри раскрытой выборки из 12 компаний. Исторические доли мощностей — UNCTAD (2015). Потребительские доли — Euromonitor 2025, опубликованные Lindt &amp; Sprüngli. Эти наборы нельзя напрямую складывать или сравнивать как один рынок: у них разные продукты, единицы измерения и границы.</p>
+        <div class="flex flex-wrap gap-x-4 gap-y-2 mt-3">
+          <a class="text-sky-400 hover:underline" target="_blank" rel="noopener" href="https://www.cocoabarometer.org/en/">Cocoa Barometer 2025</a>
+          <a class="text-sky-400 hover:underline" target="_blank" rel="noopener" href="https://unctad.org/system/files/official-document/tdb63d2_en.pdf">UNCTAD: cocoa concentration</a>
+          <a class="text-sky-400 hover:underline" target="_blank" rel="noopener" href="https://competition-cases.ec.europa.eu/cases/M.7408">European Commission M.7408</a>
+          <a class="text-sky-400 hover:underline" target="_blank" rel="noopener" href="https://www.barry-callebaut.com/en/about-us">Barry Callebaut</a>
+          <a class="text-sky-400 hover:underline" target="_blank" rel="noopener" href="https://www.ofi.com/en-us/cocoa/cocoa-powder">ofi</a>
+          <a class="text-sky-400 hover:underline" target="_blank" rel="noopener" href="https://www.cargill.com/food-beverage/cocoa-chocolate/responsible-supply-chain">Cargill Cocoa &amp; Chocolate</a>
+          <a class="text-sky-400 hover:underline" target="_blank" rel="noopener" href="https://www.lindt-spruengli.com/amfile/file/download/id/10542/file/2026.03.10_LS_FY2025_Results_Presentation.pdf">Lindt &amp; Sprüngli / Euromonitor 2025</a>
+          <a class="text-sky-400 hover:underline" target="_blank" rel="noopener" href="https://camillebloch.ch/en/our-passion/production/">Camille Bloch</a>
+          <a class="text-sky-400 hover:underline" target="_blank" rel="noopener" href="https://tomsgroup.com/">Toms Group / Anthon Berg</a>
+        </div>
+        <div class="mt-3 text-[11px] text-slate-500" id="lbl-str-star-note">* Объёмы рядом с карточками — раскрытые потоки/тоннажи в эквиваленте какао-бобов, а не доли рынка и не обязательно собственный объём помола.</div>
+      </div>
+    </section>
+
+    <!-- ВКЛАДКА 3: СИМУЛЯТОР ЛАГА ИЗДЕРЖЕК -->
     <section id="tab-simulator" class="tab-content hidden space-y-6">
       <div class="dashboard-split dashboard-split-1-3">
         <div class="theme-card p-5 rounded-xl border shadow-sm space-y-4">
@@ -589,13 +773,40 @@
       ru: {
         appTitle: "Дашборд рынка какао и шоколада",
         appSubtitle: "Аналитическая микроэкономическая модель цепочки стоимости и ценового лага",
-        tabs: { overview: "Обзор рынка", simulator: "Симулятор лага", cases: "Сценарии 2026", recipe: "Калькуляция плитки", sankey: "Диаграмма Санки", math: "Формулы и спецификация" },
+        tabs: { overview: "Обзор рынка", structure: "Структура и лидеры", simulator: "Симулятор лага", cases: "Сценарии 2026", recipe: "Калькуляция плитки", sankey: "Диаграмма Санки", math: "Формулы и спецификация" },
         ovStageA: "Этап A • Выращивание", ovTitleA: "Фрагментированное предложение", ovDescA: "Производство основано преимущественно на мелких хозяйствах; маркетинг и цены в ведущих странах регулируются по-разному, поэтому термин «государственная монопсония» нельзя применять ко всему рынку.",
         ovStageB: "Этап B • Переработка B2B", ovTitleB: "Концентрированная переработка", ovDescB: "Глобальная торговля и переработка концентрированы у крупных компаний, но точные доли зависят от продукта и географии. Вход требует значительного капитала и масштаба.",
         ovStageC: "Этап C • Продажи B2C", ovTitleC: "Олигополия + Крафт", ovDescC: "Массовый рынок удерживают транснациональные корпорации, а премиум и крафтовый сегменты развиваются в условиях монополистической конкуренции.",
         ovChartTitle: "Иллюстративное распределение конечной цены плитки (%)", ovChartSub: "Учебная декомпозиция, сумма каждого сценария равна 100%; это не аудированные отраслевые счета.",
         ovChartLabels: ['Нормальный рынок', 'Сырьевой шок'],
         ovChartDatasets: ['Фермер', 'B2B-переработка', 'Бренд / фабрика', 'Логистика и налоги', 'Ритейл'],
+        str: {
+          kicker: "Главная идея • не смешивать уровни цепочки", title: "Один продукт — три разных конкурентных рынка",
+          intro: "Barry Callebaut, ofi и Cargill прежде всего конкурируют в торговле, переработке какао и B2B-ингредиентах. Mars, Mondelēz, Ferrero, Nestlé и Hershey конкурируют за потребителя через бренды. Camille Bloch и Anthon Berg — не сопоставимые по масштабу переработчики, а нишевые производители и бренды готового шоколада.",
+          pronTitle: "Как произносить", pron: "Barry Callebaut ≈ «Бэрри Каллебо»; ofi читается по буквам: «оу-эф-ай».",
+          level1: "Уровень 1 • сырьё", level1Title: "Миллионы фермеров", level1Desc: "Фрагментированное предложение; высокая зависимость от погоды, урожайности и национальных систем сбыта.",
+          level2: "Уровень 2 • midstream B2B", level2Title: "Крупные трейдеры и переработчики", level2Desc: "Масштаб, заводы, оборотный капитал, хеджирование и глобальная логистика создают высокие барьеры входа.",
+          level3: "Уровень 3 • глобальные бренды", level3Title: "Олигополия производителей", level3Desc: "Mars, Mondelēz, Ferrero, Nestlé, Hershey и Lindt конкурируют брендами, рецептурами, рекламой и полочным пространством.",
+          level4: "Уровень 4 • ниши", level4Title: "Премиум и крафт", level4Desc: "Множество дифференцированных марок: ближе к монополистической конкуренции, но с локальной лояльностью и ценовой премией.",
+          bcPron: "«Бэрри Каллебо» • Швейцария", bcDesc: "Создана в 1996 году слиянием бельгийской Callebaut и французской Cacao Barry. Вертикально интегрированный B2B-лидер: от закупки бобов и какао-продуктов до промышленного шоколада, начинок и декора.", bcFact: "2024/25: 2.125 млн т общего объёма группы; продажи CHF 14.8 млрд.",
+          ofiPron: "Olam Food Ingredients • Сингапур", ofiDesc: "Современное название ингредиентного бизнеса Olam. В 2015 году Olam приобрела глобальный какао-бизнес ADM, получив крупные мощности по производству тёртого какао, масла и порошка.", ofiFact: "Более 2 000 клиентов по какао-порошку; поставки в 100 стран; компания называет себя переработчиком глобального top-3.",
+          cargillPron: "Частная диверсифицированная группа • США", cargillDesc: "Глобальный агротрейдер с мощностями по переработке какао и промышленному шоколаду. В 2015 году приобрёл шоколадный бизнес ADM; Еврокомиссия разрешила сделку с обязательствами из-за рисков концентрации.", cargillFact: "Переработка и шоколадные мощности в Европе, Западной Африке и Индонезии; сильная B2B-позиция, но сегментные доли публично раскрываются не полностью.",
+          hhiTitle: "Концентрация переработчиков: как читать цифры", hhiDesc: "Показатель ниже нормирует раскрытые потоки 12 крупнейших компаний. Это полезный учебный индикатор, но не юридический HHI всего мирового рынка: компании могут торговать друг с другом, а охват данных неполный.",
+          cr3: "CR3 раскрытых потоков", cr3Note: "Barry Callebaut + ofi + Cargill", hhiCurrent: "HHI-подобный индикатор", hhiCurrentNote: "только среди 12 раскрытых потоков",
+          hhiHist: "Исторический HHI мощностей, 2015", hhiHistNote: "Рассчитано по опубликованным UNCTAD долям мощностей. После последующих сделок состав лидеров изменился, поэтому показатель — исторический ориентир, а не текущая оценка.",
+          hhiFormula: "HHI = сумма квадратов рыночных долей. Например, доля 20% даёт 400 пунктов. Чем выше индекс, тем более концентрирован рынок — но результат имеет смысл только при корректно определённых товарных и географических границах.",
+          flowChartTitle: "Раскрытые объёмы крупнейших трейдеров/переработчиков", flowChartSub: "2025, тыс. т в эквиваленте какао-бобов; объёмы не складываются в мировой рынок без двойного счёта.", flowSource: "Источник: Cocoa Barometer 2025",
+          brandsTitle: "Кто расположен ниже по цепочке?", brandGlobalTitle: "Глобальные владельцы брендов", brandGlobal: "Mars: M&M’s, Snickers, Twix; Mondelēz: Cadbury, Milka, Toblerone; Ferrero: Kinder, Ferrero Rocher, Nutella; Nestlé: KitKat; Hershey: Hershey’s, Reese’s.",
+          brandNicheTitle: "Нишевые и премиальные производители", brandNiche: "Camille Bloch — независимая швейцарская семейная компания (Ragusa, Torino), около 3.5 тыс. т в год. Anthon Berg — датский премиальный бренд Toms Group, известный шоколадными бутылочками с ликёром.",
+          brandTakeaway: "Вывод: известность бренда на полке не означает контроль над переработкой какао. Один и тот же B2B-поставщик может снабжать нескольких конкурирующих производителей готового шоколада.",
+          retailChartTitle: "Мировой рынок потребительского шоколада: доли по стоимости", retailChartSub: "2025; здесь измеряется продажа готового шоколада потребителю, а не объём переработки бобов.", retailSource: "Источник: Euromonitor 2025 через презентацию Lindt & Sprüngli",
+          hhiFloor: "Нижняя граница HHI", others: "Другие компании", retailNote: "584 — только вклад шести раскрытых компаний. Полный HHI выше, но его нельзя честно вычислить без распределения 42.7% между остальными фирмами.",
+          historyTitle: "Почему «третья компания» вызывает путаницу: короткая история", history1996: "Callebaut и Cacao Barry объединяются в Barry Callebaut.", history2015a: "ADM разделяет активы: Olam договаривается купить мировой какао-бизнес — порошок, масло и тёртое какао.", history2015b: "Cargill приобретает шоколадный бизнес ADM; Еврокомиссия требует уступок для защиты конкуренции.", historyNowYear: "Сегодня", historyNow: "Поэтому в какао-переработке обычно называют Barry Callebaut, ofi и Cargill, а в старых материалах по промышленному шоколаду третьим игроком могла быть ADM.",
+          methodTitle: "Методика и ограничения данных", method: "Объёмы переработчиков взяты из Cocoa Barometer 2025 и нормированы только внутри раскрытой выборки из 12 компаний. Исторические доли мощностей — UNCTAD (2015). Потребительские доли — Euromonitor 2025, опубликованные Lindt & Sprüngli. Эти наборы нельзя напрямую складывать или сравнивать как один рынок: у них разные продукты, единицы измерения и границы.",
+          starNote: "* Объёмы рядом с карточками — раскрытые потоки/тоннажи в эквиваленте какао-бобов, а не доли рынка и не обязательно собственный объём помола.",
+          processingLabels: ['Barry Callebaut', 'ofi', 'Cargill', 'ECOM', 'Sucden', 'GCB Cocoa', 'Touton', 'JB Foods', 'Blommer/Fuji', 'Puratos', 'ETG', 'Cémoi'],
+          processingDataset: "Раскрытый объём (тыс. т)", retailLabels: ['Mars', 'Mondelēz', 'Ferrero', 'Nestlé', 'Hershey', 'Lindt & Sprüngli', 'Другие'], retailDataset: "Доля по стоимости (%)"
+        },
         
         simParams: "Параметры хеджирования", simWin: "Окно хеджирования:", simPk: "Пик фьючерса ($/т):", simEl: "Эластичность спроса (Ed):", simSh: "Фактор шринкфляции:", btnReset: "Сбросить настройки", simChartTitle: "Динамика цен: Биржевой фьючерс против Розничной цены (MSRP)",
         simLagBadge: "Окно закупочной стоимости: 6 мес.",
@@ -636,13 +847,40 @@
       en: {
         appTitle: "Cocoa & Chocolate Market Dashboard",
         appSubtitle: "Analytical Microeconomic Model of Value Chain & Cost Pass-Through Lag",
-        tabs: { overview: "Market Overview", simulator: "Cost Lag Simulator", cases: "2026 Industry Cases", recipe: "Unit Economics", sankey: "Sankey Flow", math: "Formulas & Specs" },
+        tabs: { overview: "Market Overview", structure: "Structure & Leaders", simulator: "Cost Lag Simulator", cases: "2026 Industry Cases", recipe: "Unit Economics", sankey: "Sankey Flow", math: "Formulas & Specs" },
         ovStageA: "Stage A • Farming", ovTitleA: "Fragmented Supply", ovDescA: "Production is predominantly smallholder-based. Marketing and pricing systems differ across leading origins, so 'state monopsony' should not be applied to the whole market.",
         ovStageB: "Stage B • B2B Processing", ovTitleB: "Concentrated Processing", ovDescB: "Global trading and processing are concentrated among large firms, but exact shares differ by product and geography. Entry requires substantial capital and scale.",
         ovStageC: "Stage C • B2C Confectionery", ovTitleC: "Oligopoly + Craft", ovDescC: "Mass market dominated by multinational conglomerates, while craft segments operate under monopolistic competition.",
         ovChartTitle: "Illustrative Split of Final Bar Price (%)", ovChartSub: "Teaching decomposition; each scenario sums to 100% and is not an audited industry account.",
         ovChartLabels: ['Normal Market', 'Raw Cocoa Shock'],
         ovChartDatasets: ['Farmer', 'B2B Processing', 'Brand / Factory', 'Logistics & Taxes', 'Retail'],
+        str: {
+          kicker: "Core idea • do not mix value-chain levels", title: "One product — three distinct competitive markets",
+          intro: "Barry Callebaut, ofi and Cargill compete primarily in cocoa trading, processing and B2B ingredients. Mars, Mondelēz, Ferrero, Nestlé and Hershey compete for consumers through brands. Camille Bloch and Anthon Berg are not processors of comparable scale; they are niche makers and finished-chocolate brands.",
+          pronTitle: "Pronunciation", pron: "Barry Callebaut ≈ “BAIR-ee KAL-uh-boh”; ofi is pronounced by its letters: “O-F-I”.",
+          level1: "Level 1 • raw cocoa", level1Title: "Millions of farmers", level1Desc: "Fragmented supply with high exposure to weather, yields and national marketing systems.",
+          level2: "Level 2 • midstream B2B", level2Title: "Large traders and processors", level2Desc: "Scale, plants, working capital, hedging and global logistics create high barriers to entry.",
+          level3: "Level 3 • global brands", level3Title: "Producer oligopoly", level3Desc: "Mars, Mondelēz, Ferrero, Nestlé, Hershey and Lindt compete through brands, recipes, advertising and shelf space.",
+          level4: "Level 4 • niches", level4Title: "Premium and craft", level4Desc: "Many differentiated brands: closer to monopolistic competition, with local loyalty and price premia.",
+          bcPron: "BAIR-ee KAL-uh-boh • Switzerland", bcDesc: "Created in 1996 through the merger of Belgian Callebaut and French Cacao Barry. A vertically integrated B2B leader spanning bean sourcing and cocoa products through industrial chocolate, fillings and decorations.", bcFact: "FY 2024/25: 2.125 million tonnes of total group volume; CHF 14.8 billion in sales.",
+          ofiPron: "Olam Food Ingredients • Singapore", ofiDesc: "The current name of Olam's ingredients business. In 2015 Olam acquired ADM's global cocoa business, adding major cocoa-liquor, butter and powder capacity.", ofiFact: "More than 2,000 cocoa-powder customers, supply to 100 countries, and self-described as a global top-three processor.",
+          cargillPron: "Private diversified group • United States", cargillDesc: "A global agricultural trader with cocoa-processing and industrial-chocolate assets. It acquired ADM's chocolate business in 2015; the European Commission cleared the deal subject to commitments over concentration concerns.", cargillFact: "Cocoa and chocolate capacity across Europe, West Africa and Indonesia; strong B2B position, but segment shares are not fully disclosed publicly.",
+          hhiTitle: "Processor concentration: how to read the numbers", hhiDesc: "The indicator below normalizes disclosed flows for 12 large firms. It is a useful teaching metric, not a legal HHI for the entire world market: firms may trade with one another and coverage is incomplete.",
+          cr3: "CR3 of disclosed flows", cr3Note: "Barry Callebaut + ofi + Cargill", hhiCurrent: "HHI-like indicator", hhiCurrentNote: "only among 12 disclosed flows",
+          hhiHist: "Historical capacity HHI, 2015", hhiHistNote: "Calculated from UNCTAD's published capacity shares. Subsequent transactions changed the leader set, so this is a historical benchmark, not a current estimate.",
+          hhiFormula: "HHI is the sum of squared market shares. A 20% share contributes 400 points. A higher index means greater concentration, but only when product and geographic market boundaries are defined correctly.",
+          flowChartTitle: "Disclosed volumes of major traders/processors", flowChartSub: "2025, thousand tonnes of cocoa-bean equivalent; volumes cannot be added into a world-market total without double counting.", flowSource: "Source: Cocoa Barometer 2025",
+          brandsTitle: "Who sits downstream?", brandGlobalTitle: "Global brand owners", brandGlobal: "Mars: M&M’s, Snickers, Twix; Mondelēz: Cadbury, Milka, Toblerone; Ferrero: Kinder, Ferrero Rocher, Nutella; Nestlé: KitKat; Hershey: Hershey’s, Reese’s.",
+          brandNicheTitle: "Niche and premium producers", brandNiche: "Camille Bloch is an independent Swiss family company (Ragusa, Torino), producing about 3.5 thousand tonnes a year. Anthon Berg is a Danish premium Toms Group brand known for liquor-filled chocolate bottles.",
+          brandTakeaway: "Takeaway: shelf-brand awareness does not equal control over cocoa processing. The same B2B supplier may serve several competing finished-chocolate manufacturers.",
+          retailChartTitle: "Global consumer chocolate market: value shares", retailChartSub: "2025; this measures finished chocolate sold to consumers, not cocoa-bean processing volume.", retailSource: "Source: Euromonitor 2025 via Lindt & Sprüngli presentation",
+          hhiFloor: "HHI lower bound", others: "Other companies", retailNote: "584 is only the contribution of the six disclosed firms. The full HHI is higher, but cannot be calculated honestly without splitting the remaining 42.7% among other firms.",
+          historyTitle: "Why the “third company” is confusing: a short history", history1996: "Callebaut and Cacao Barry combine to form Barry Callebaut.", history2015a: "ADM separates assets: Olam agrees to buy the global cocoa business — powder, butter and liquor.", history2015b: "Cargill acquires ADM's chocolate business; the European Commission requires remedies to protect competition.", historyNowYear: "Today", historyNow: "This is why cocoa-processing discussions commonly name Barry Callebaut, ofi and Cargill, while older industrial-chocolate materials may list ADM as the third player.",
+          methodTitle: "Method and data limitations", method: "Processor volumes come from Cocoa Barometer 2025 and are normalized only within the disclosed sample of 12 firms. Historical capacity shares are from UNCTAD (2015). Consumer shares are Euromonitor 2025 figures published by Lindt & Sprüngli. These datasets cannot be directly added or treated as one market: they use different products, units and boundaries.",
+          starNote: "* Volumes on the company cards are disclosed flows/tonnages in cocoa-bean equivalent, not market shares and not necessarily own grinding volume.",
+          processingLabels: ['Barry Callebaut', 'ofi', 'Cargill', 'ECOM', 'Sucden', 'GCB Cocoa', 'Touton', 'JB Foods', 'Blommer/Fuji', 'Puratos', 'ETG', 'Cémoi'],
+          processingDataset: "Disclosed volume (thousand t)", retailLabels: ['Mars', 'Mondelēz', 'Ferrero', 'Nestlé', 'Hershey', 'Lindt & Sprüngli', 'Others'], retailDataset: "Value share (%)"
+        },
 
         simParams: "Hedging Parameters", simWin: "Hedge Window:", simPk: "Peak Futures ($/t):", simEl: "Demand Elasticity (Ed):", simSh: "Shrinkflation Factor:", btnReset: "Reset Parameters", simChartTitle: "Price Dynamics: Commodity Futures vs Retail Price (MSRP)",
         simLagBadge: "Procurement Cost Window: 6 Months",
@@ -718,6 +956,10 @@
           chart.update();
         }
       });
+      if (charts.retailStructure) {
+        charts.retailStructure.data.datasets[0].borderColor = currentTheme === 'dark' ? '#1e293b' : '#ffffff';
+        charts.retailStructure.update();
+      }
       updateSankeyChart();
     }
 
@@ -731,6 +973,7 @@
       document.getElementById('txt-app-title').innerText = dict.appTitle;
       document.getElementById('txt-app-subtitle').innerText = dict.appSubtitle;
       document.getElementById('txt-tab-overview').innerText = dict.tabs.overview;
+      document.getElementById('txt-tab-structure').innerText = dict.tabs.structure;
       document.getElementById('txt-tab-simulator').innerText = dict.tabs.simulator;
       document.getElementById('txt-tab-cases').innerText = dict.tabs.cases;
       document.getElementById('txt-tab-recipe').innerText = dict.tabs.recipe;
@@ -754,6 +997,7 @@
         charts.valueChain.data.datasets.forEach((dataset, index) => { dataset.label = dict.ovChartDatasets[index]; });
         charts.valueChain.update();
       }
+      updateStructureLanguage(dict.str);
 
       document.getElementById('lbl-sim-params').innerText = dict.simParams;
       document.getElementById('lbl-sim-win').innerText = dict.simWin;
@@ -859,6 +1103,46 @@
       calculateUnitEconomics();
     }
 
+    function updateStructureLanguage(str) {
+      const idMap = {
+        'lbl-str-kicker': 'kicker', 'lbl-str-title': 'title', 'lbl-str-intro': 'intro',
+        'lbl-str-pron-title': 'pronTitle', 'lbl-str-pron': 'pron',
+        'lbl-str-level1': 'level1', 'lbl-str-level1-title': 'level1Title', 'lbl-str-level1-desc': 'level1Desc',
+        'lbl-str-level2': 'level2', 'lbl-str-level2-title': 'level2Title', 'lbl-str-level2-desc': 'level2Desc',
+        'lbl-str-level3': 'level3', 'lbl-str-level3-title': 'level3Title', 'lbl-str-level3-desc': 'level3Desc',
+        'lbl-str-level4': 'level4', 'lbl-str-level4-title': 'level4Title', 'lbl-str-level4-desc': 'level4Desc',
+        'lbl-str-bc-pron': 'bcPron', 'lbl-str-bc-desc': 'bcDesc', 'lbl-str-bc-fact': 'bcFact',
+        'lbl-str-ofi-pron': 'ofiPron', 'lbl-str-ofi-desc': 'ofiDesc', 'lbl-str-ofi-fact': 'ofiFact',
+        'lbl-str-cargill-pron': 'cargillPron', 'lbl-str-cargill-desc': 'cargillDesc', 'lbl-str-cargill-fact': 'cargillFact',
+        'lbl-str-hhi-title': 'hhiTitle', 'lbl-str-hhi-desc': 'hhiDesc', 'lbl-str-cr3': 'cr3',
+        'lbl-str-cr3-note': 'cr3Note', 'lbl-str-hhi-current': 'hhiCurrent', 'lbl-str-hhi-current-note': 'hhiCurrentNote',
+        'lbl-str-hhi-hist': 'hhiHist', 'lbl-str-hhi-hist-note': 'hhiHistNote', 'lbl-str-hhi-formula': 'hhiFormula',
+        'lbl-str-flow-chart-title': 'flowChartTitle', 'lbl-str-flow-chart-sub': 'flowChartSub', 'lbl-str-flow-source': 'flowSource',
+        'lbl-str-brands-title': 'brandsTitle', 'lbl-str-brand-global-title': 'brandGlobalTitle', 'lbl-str-brand-global': 'brandGlobal',
+        'lbl-str-brand-niche-title': 'brandNicheTitle', 'lbl-str-brand-niche': 'brandNiche', 'lbl-str-brand-takeaway': 'brandTakeaway',
+        'lbl-str-retail-chart-title': 'retailChartTitle', 'lbl-str-retail-chart-sub': 'retailChartSub', 'lbl-str-retail-source': 'retailSource',
+        'lbl-str-hhi-floor': 'hhiFloor', 'lbl-str-others': 'others', 'lbl-str-retail-note': 'retailNote',
+        'lbl-str-history-title': 'historyTitle', 'lbl-str-history-1996': 'history1996', 'lbl-str-history-2015a': 'history2015a',
+        'lbl-str-history-2015b': 'history2015b', 'lbl-str-history-now-year': 'historyNowYear', 'lbl-str-history-now': 'historyNow',
+        'lbl-str-method-title': 'methodTitle', 'lbl-str-method': 'method', 'lbl-str-star-note': 'starNote'
+      };
+      Object.entries(idMap).forEach(([id, key]) => {
+        const element = document.getElementById(id);
+        if (element) element.innerText = str[key];
+      });
+      if (charts.processingStructure) {
+        charts.processingStructure.data.labels = str.processingLabels;
+        charts.processingStructure.data.datasets[0].label = str.processingDataset;
+        charts.processingStructure.options.scales.x.title.text = currentLang === 'ru' ? 'тыс. т' : 'thousand tonnes';
+        charts.processingStructure.update();
+      }
+      if (charts.retailStructure) {
+        charts.retailStructure.data.labels = str.retailLabels;
+        charts.retailStructure.data.datasets[0].label = str.retailDataset;
+        charts.retailStructure.update();
+      }
+    }
+
     function switchTab(tabId) {
       currentTab = tabId;
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -871,6 +1155,12 @@
 
       if (tabId === 'sankey') {
         updateSankeyChart();
+      }
+      if (tabId === 'structure') {
+        requestAnimationFrame(() => {
+          if (charts.processingStructure) charts.processingStructure.resize();
+          if (charts.retailStructure) charts.retailStructure.resize();
+        });
       }
     }
 
@@ -1048,6 +1338,52 @@
           scales: {
             x: { stacked: true, ticks: { color: textColor }, grid: { color: gridColor } },
             y: { stacked: true, beginAtZero: true, max: 100, ticks: { color: textColor, callback: value => `${value}%` }, grid: { color: gridColor } }
+          }
+        }
+      });
+
+      const ctxProcessingStructure = document.getElementById('chart-processing-structure').getContext('2d');
+      charts.processingStructure = new Chart(ctxProcessingStructure, {
+        type: 'bar',
+        data: {
+          labels: dict.str.processingLabels,
+          datasets: [{
+            label: dict.str.processingDataset,
+            data: [1015, 1000, 888, 810, 409, 338, 308, 180, 136, 95, 90, 84],
+            backgroundColor: ['#f59e0b', '#10b981', '#38bdf8', '#8b5cf6', '#64748b', '#64748b', '#64748b', '#64748b', '#64748b', '#64748b', '#64748b', '#64748b'],
+            borderRadius: 4
+          }]
+        },
+        options: {
+          indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: { callbacks: { label: context => `${context.raw.toLocaleString()} ${currentLang === 'ru' ? 'тыс. т' : 'thousand t'}` } }
+          },
+          scales: {
+            x: { beginAtZero: true, ticks: { color: textColor }, grid: { color: gridColor }, title: { display: true, text: currentLang === 'ru' ? 'тыс. т' : 'thousand tonnes', color: textColor } },
+            y: { ticks: { color: textColor, font: { size: 10 } }, grid: { display: false } }
+          }
+        }
+      });
+
+      const ctxRetailStructure = document.getElementById('chart-retail-structure').getContext('2d');
+      charts.retailStructure = new Chart(ctxRetailStructure, {
+        type: 'doughnut',
+        data: {
+          labels: dict.str.retailLabels,
+          datasets: [{
+            label: dict.str.retailDataset,
+            data: [12.6, 12.3, 10.6, 8.2, 7.8, 5.8, 42.7],
+            backgroundColor: ['#f59e0b', '#ef4444', '#10b981', '#38bdf8', '#8b5cf6', '#ec4899', '#64748b'],
+            borderColor: currentTheme === 'dark' ? '#1e293b' : '#ffffff', borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false, cutout: '55%',
+          plugins: {
+            legend: { position: 'right', labels: { boxWidth: 12, color: textColor, font: { size: 10 } } },
+            tooltip: { callbacks: { label: context => `${context.label}: ${context.raw.toFixed(1)}%` } }
           }
         }
       });
