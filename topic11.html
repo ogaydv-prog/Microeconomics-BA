@@ -99,11 +99,11 @@
             padding: 25px 0;
         }
 
-        /* Плотная песчано-коричневая рамка для всех 6 карточек без щелей */
+        /* Обычные карточки (1-5) */
         .card {
             display: block;
             text-decoration: none;
-            background: #78350f; /* Исключает белые зазоры */
+            background: #78350f;
             border: 3px solid #78350f;
             border-radius: 12px;
             overflow: hidden;
@@ -121,17 +121,123 @@
             width: 100% !important;
             height: 100% !important;
             display: block !important;
-            object-fit: fill !important; /* Обжимает строго по внутренней рамке */
+            object-fit: fill !important;
             border-radius: 8px;
             margin: 0 !important;
             padding: 0 !important;
         }
 
-        /* Эффект при наведении: увеличение и золотисто-янтарная подсветка */
         .card:hover {
             transform: translateY(-10px) scale(1.05);
             border: 3px solid #f59e0b;
             box-shadow: 0 12px 30px rgba(245, 158, 11, 0.5), inset 0 0 12px rgba(245, 158, 11, 0.25);
+        }
+
+        /* ======================================================== */
+        /* 3D FLIP CARD СТИЛИ (Для 6-й карточки с 2 видео) */
+        /* ======================================================== */
+        .flip-card {
+            width: 185px;
+            height: 304px;
+            perspective: 1000px;
+            flex-shrink: 0;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            border: 3px solid #78350f;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(120, 53, 15, 0.2);
+            background: #001e50;
+        }
+
+        .flip-card:hover .flip-card-inner {
+            transform: rotateY(180deg);
+            border: 3px solid #f59e0b;
+            box-shadow: 0 12px 30px rgba(245, 158, 11, 0.5), inset 0 0 12px rgba(245, 158, 11, 0.25);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            -webkit-backface-visibility: hidden !important;
+            backface-visibility: hidden !important;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .flip-card-front {
+            z-index: 2;
+            transform: rotateY(0deg);
+        }
+
+        .flip-card-front img {
+            width: 100%;
+            height: 100%;
+            object-fit: fill;
+            display: block;
+        }
+
+        .flip-card-back {
+            background-color: #001e50;
+            color: white;
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 16px 10px;
+            gap: 12px;
+            z-index: 1;
+        }
+
+        .flip-card-back h3 {
+            font-size: 12px;
+            font-weight: 700;
+            color: #f59e0b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+            border-bottom: 1px solid rgba(245, 158, 11, 0.4);
+            padding-bottom: 6px;
+            width: 100%;
+        }
+
+        .video-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 10px 6px;
+            background: #002d72;
+            color: #ffffff !important;
+            text-decoration: none;
+            font-size: 10.5px;
+            font-weight: 600;
+            border-radius: 6px;
+            border: 1px solid #f59e0b;
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+            line-height: 1.2;
+            cursor: pointer;
+            position: relative;
+            z-index: 10;
+        }
+
+        .video-btn:hover {
+            background: #f59e0b;
+            color: #001e50 !important;
+            font-weight: 700;
+            transform: scale(1.04);
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.9);
         }
 
         footer {
@@ -144,7 +250,7 @@
             line-height: 1.6;
         }
 
-        /* Мобильная адаптивность для смартфонов */
+        /* Адаптивность для смартфонов */
         @media (max-width: 1250px) {
             .grid-container {
                 flex-wrap: wrap;
@@ -196,10 +302,19 @@
                 max-width: 380px;
             }
 
-            .card {
+            .card, .flip-card {
                 width: 100%;
                 height: auto;
                 aspect-ratio: 2 / 3;
+            }
+
+            .flip-card-back h3 {
+                font-size: 10px;
+            }
+
+            .video-btn {
+                font-size: 9.5px;
+                padding: 8px 4px;
             }
         }
     </style>
@@ -212,7 +327,7 @@
         <div class="header-titles">
             <h1>Тема 10: Общественные блага, экстерналии и государственное регулирование</h1>
             <p class="subtitle">
-                Выберите учебный материал ниже: лекционный конспект, интерактивную презентацию, симуляторы общественных благ и регулирования или видеолекцию.
+                Выберите учебный материал ниже: лекционный конспект, интерактивную презентацию, симуляторы общественных благ и регулирования или видеолекции.
             </p>
         </div>
         <a href="topics.html" class="back-button">← К темам курса</a>
@@ -247,11 +362,25 @@
             <img src="pic-sim-reg.png" alt="Симулятор государственного регулирования" onerror="this.src='./pic-sim-reg.png'">
         </a>
 
-        <!-- 6. Видеолекция (Прямая интерактивная карточка без переворота) -->
-        <a href="https://www.youtube.com/watch?v=Lp9cvR6LNrE&t=8s" 
-           target="_blank" rel="noopener noreferrer" class="card" title="Смотреть видеолекцию на YouTube">
-            <img src="pic-video9.png" alt="Обложка видеолекции" onerror="this.src='./pic-video9.png'">
-        </a>
+        <!-- 6. Видеолекции (3D Flip карточка с 2 YouTube видео) -->
+        <div class="flip-card">
+            <div class="flip-card-inner">
+                <!-- Лицевая сторона -->
+                <div class="flip-card-front">
+                    <img src="pic-video9.png" alt="Видеолекции" onerror="this.src='./pic-video9.png'">
+                </div>
+                <!-- Обратная сторона с 2 видеокнопками -->
+                <div class="flip-card-back">
+                    <h3>Видеолекции</h3>
+                    <a href="https://www.youtube.com/watch?v=Lp9cvR6LNrE&t=8s" target="_blank" rel="noopener noreferrer" class="video-btn">
+                        ▶ Часть 1: Блага & Экстерналии
+                    </a>
+                    <a href="https://www.youtube.com/watch?v=7F8ifv7UnhU&list=PLGssI1JnCp5tLzqscvLuyB7mT7Ij7Y7Qs&index=18" target="_blank" rel="noopener noreferrer" class="video-btn">
+                        ▶ Часть 2: Гос. регулирование
+                    </a>
+                </div>
+            </div>
+        </div>
 
     </main>
 
