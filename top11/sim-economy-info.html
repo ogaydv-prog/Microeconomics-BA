@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Экономика информации • Интерактивный Дашборд</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #0c0c0e; color: #e4e4e7; font-family: 'Inter', sans-serif; }
+        .neon-text-red { text-shadow: 0 0 10px rgba(239, 68, 68, 0.6), 0 0 20px rgba(239, 68, 68, 0.3); }
+        .tech-panel { background-color: #16161a; border: 1px solid #27272a; position: relative; }
+        .tech-panel::after { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, #3f3f46, transparent); }
+
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; margin: 16px 0; }
+        input[type=range]:focus { outline: none; }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 6px; cursor: pointer; background: #09090b; border: 1px solid #2d2d30; border-radius: 3px; box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+        input[type=range]::-webkit-slider-thumb {
+            height: 28px; width: 16px; border-radius: 2px;
+            background: linear-gradient(to right, #71717a 0%, #52525b 40%, #ef4444 43%, #ef4444 57%, #52525b 60%, #3f3f46 100%);
+            border: 1px solid #18181b; cursor: pointer; -webkit-appearance: none; margin-top: -11px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 0 8px rgba(239, 68, 68, 0.5); 
+            transition: box-shadow 0.1s ease;
+        }
+        input[type=range]:active::-webkit-slider-thumb { box-shadow: 0 2px 4px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 0 12px rgba(239, 68, 68, 0.8); }
+
+        .nav-tab { transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid #27272a; background-color: #111113; }
+        .nav-tab:hover { border-color: #52525b; color: #ffffff; }
+        .nav-tab.active { background-color: #1e1e24; border-color: #ef4444; color: #ef4444; box-shadow: 0 0 10px rgba(239, 68, 68, 0.15); }
+
+        .tab-content { display: none; animation: paneShow 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .tab-content.active { display: block; }
+        @keyframes paneShow { from { opacity: 0; transform: scale(0.99) translateY(4px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+
+        .math-block { background-color: #09090b; border-left: 3px solid #ef4444; font-family: 'JetBrains Mono', monospace; }
+
+        .led-indicator { width: 10px; height: 10px; border-radius: 50%; display: inline-block; transition: all 0.3s ease; }
+        .led-green-on { background-color: #10b981; box-shadow: 0 0 8px #10b981, 0 0 15px rgba(16, 185, 129, 0.5); }
+        .led-red-on { background-color: #ef4444; box-shadow: 0 0 8px #ef4444, 0 0 15px rgba(239, 68, 68, 0.5); }
+
+        #meter-needle { transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.3, 1.1); }
+
+        .flip-card { background-color: transparent; perspective: 1000px; }
+        .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; }
+        .flip-card.reveal .flip-card-inner { transform: rotateY(180deg); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden; border-radius: 4px; }
+        .flip-card-front { background-color: #1f1f23; border: 1px dashed #3f3f46; }
+        .flip-card-back { background-color: #09090b; transform: rotateY(180deg); }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-red-500/30 selection:text-white">
+
+    <div class="h-[2px] bg-gradient-to-r from-transparent via-red-500 to-transparent opacity-80"></div>
+
+    <header class="w-full max-w-6xl mx-auto px-6 pt-6 pb-4">
+        <div class="border-b border-zinc-800 pb-4 flex flex-col items-center md:items-start md:flex-row md:justify-between">
+            <div>
+                <h1 class="text-3xl font-black tracking-tight text-white uppercase neon-text-red">Экономика информации</h1>
+                <p class="text-xs font-mono uppercase tracking-widest text-zinc-400 mt-1">
+                    Управленческая экономика <span class="text-red-500">•</span> MBA-В26-М
+                </p>
+            </div>
+            <div class="mt-4 md:mt-0 font-mono text-xs text-zinc-500 flex items-center gap-3">
+                <span class="flex items-center gap-1.5"><span class="led-indicator led-green-on"></span> Дополнительный материал для изучения</span>
+                <span class="text-zinc-700">|</span><span>практические примеры</span>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-6xl mx-auto w-full px-6 mb-6">
+        <div class="tech-panel p-5 rounded border-l-4 border-l-cyan-500">
+            <h2 class="font-mono text-sm text-cyan-400 uppercase font-bold mb-2">Введение</h2>
+            <p class="text-sm text-zinc-300 leading-relaxed font-mono">
+                В классических микроэкономических моделях предполагается, что экономические агенты обладают совершенной информацией о ценах, качестве товаров и технологиях. Однако реальные рынки характеризуются <strong class="text-white">неполной информацией</strong> и <strong class="text-white">информационной асимметрией</strong>. Экономика информации исследует, как неопределенность и неравномерное распределение знаний влияют на поведение участников, рыночную структуру и ценообразование.
+            </p>
+        </div>
+    </div>
+
+    <nav class="max-w-6xl mx-auto w-full px-6 mb-6">
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-2 font-mono text-xs uppercase tracking-wider">
+            <button class="nav-tab active py-2.5 px-3 rounded text-center" onclick="openTab('tab-risk')">Риск & Полезность</button>
+            <button class="nav-tab py-2.5 px-3 rounded text-center" onclick="openTab('tab-search')">Теория поиска</button>
+            <button class="nav-tab py-2.5 px-3 rounded text-center" onclick="openTab('tab-adverse')">Ухудшающий отбор</button>
+            <button class="nav-tab py-2.5 px-3 rounded text-center" onclick="openTab('tab-moral')">Моральный риск</button>
+            <button class="nav-tab py-2.5 px-3 rounded text-center" onclick="openTab('tab-auction')">Логика аукционов</button>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto w-full px-6 flex-grow pb-12">
+
+        <!-- TAB 1: РИСК И НЕОПРЕДЕЛЕННОСТЬ -->
+        <section id="tab-risk" class="tab-content active">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="lg:col-span-5 flex flex-col gap-4">
+                    <div class="tech-panel p-5 rounded">
+                        <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-2">
+                            <span class="font-mono text-xs text-zinc-400 uppercase">Fader Controls // Unit A</span>
+                            <span class="text-xs text-red-500 font-mono">LIVE INPUT</span>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <div class="flex justify-between text-xs font-mono mb-1">
+                                <span class="text-zinc-300">ВЕРОЯТНОСТЬ УСПЕХА (p)</span>
+                                <span id="risk-prob-val" class="text-red-500 font-bold">60%</span>
+                            </div>
+                            <input type="range" id="risk-prob" min="0" max="100" value="60">
+                        </div>
+                        <div class="mb-4">
+                            <div class="flex justify-between text-xs font-mono mb-1">
+                                <span class="text-zinc-300">ОПТИМИСТИЧНЫЙ ДОХОД (x1)</span>
+                                <span id="risk-opt-val" class="text-red-500 font-bold">$100,000</span>
+                            </div>
+                            <input type="range" id="risk-opt" min="10000" max="200000" step="5000" value="100000">
+                        </div>
+                        <div class="mb-2">
+                            <div class="flex justify-between text-xs font-mono mb-1">
+                                <span class="text-zinc-300">ПЕССИМИСТИЧНЫЙ ДОХОД (x2)</span>
+                                <span id="risk-pess-val" class="text-red-500 font-bold">$20,000</span>
+                            </div>
+                            <input type="range" id="risk-pess" min="-50000" max="50000" step="2500" value="20000">
+                        </div>
+                    </div>
+
+                    <!-- ИСПРАВЛЕННЫЙ VU-METER С ИДЕАЛЬНОЙ РАЗМЕТКОЙ -->
+                    <div class="tech-panel p-5 rounded flex flex-col items-center">
+                        <span class="font-mono text-xs text-zinc-400 uppercase mb-2">Индикатор волатильности / VU METER</span>
+                        <svg class="w-full max-w-[260px]" viewBox="0 0 200 120">
+                            <path d="M 20 95 A 80 80 0 0 1 180 95" fill="none" stroke="#27272a" stroke-width="12" stroke-linecap="round"/>
+                            <path d="M 20 95 A 80 80 0 0 1 43.43 38.43" fill="none" stroke="#0ea5e9" stroke-width="8" style="filter: drop-shadow(0 0 4px #0ea5e9);"/>
+                            <path d="M 43.43 38.43 A 80 80 0 0 1 156.57 38.43" fill="none" stroke="#10b981" stroke-width="8" style="filter: drop-shadow(0 0 4px #10b981);"/>
+                            <path d="M 156.57 38.43 A 80 80 0 0 1 180 95" fill="none" stroke="#ef4444" stroke-width="8" style="filter: drop-shadow(0 0 4px #ef4444);"/>
+
+                            <line x1="20" y1="95" x2="28" y2="95" stroke="#18181b" stroke-width="3" />
+                            <line x1="43.43" y1="38.43" x2="49.09" y2="44.09" stroke="#18181b" stroke-width="3" />
+                            <line x1="100" y1="15" x2="100" y2="23" stroke="#18181b" stroke-width="3" />
+                            <line x1="156.57" y1="38.43" x2="150.91" y2="44.09" stroke="#18181b" stroke-width="3" />
+                            <line x1="180" y1="95" x2="172" y2="95" stroke="#18181b" stroke-width="3" />
+                            
+                            <text x="20" y="115" fill="#0ea5e9" font-size="10" font-family="monospace" font-weight="bold" text-anchor="middle">MIN</text>
+                            <text x="100" y="45" fill="#10b981" font-size="10" font-family="monospace" font-weight="bold" text-anchor="middle">SAFE</text>
+                            <text x="180" y="115" fill="#ef4444" font-size="10" font-family="monospace" font-weight="bold" text-anchor="middle">MAX</text>
+
+                            <g id="meter-needle" transform="rotate(-90 100 95)">
+                                <line x1="100" y1="95" x2="100" y2="18" stroke="#e4e4e7" stroke-width="2.5" stroke-linecap="round" style="filter: drop-shadow(0 3px 3px rgba(0,0,0,0.8));"/>
+                                <circle cx="100" cy="95" r="7" fill="#18181b" stroke="#71717a" stroke-width="2"/>
+                                <circle cx="100" cy="18" r="2.5" fill="#ef4444" />
+                            </g>
+                        </svg>
+                        <span class="text-[10px] text-zinc-500 font-mono mt-1">Ожидаемое СКО (σ)</span>
+                    </div>
+                </div>
+                
+                <div class="lg:col-span-7 flex flex-col justify-between gap-4">
+                    <div class="tech-panel p-6 rounded flex-grow">
+                        <span class="font-mono text-xs text-zinc-500 uppercase block mb-3">Статистическая разметка</span>
+                        <div id="risk-math-output" class="math-block p-4 rounded overflow-x-auto text-sm text-zinc-300"></div>
+                    </div>
+                    
+                    <div class="tech-panel p-5 rounded border-l-4 border-l-red-500" id="conclusion-box">
+                        <span class="font-mono text-xs text-red-400 uppercase font-bold block mb-1">Управленческий вердикт:</span>
+                        <p id="risk-conclusion" class="text-sm text-zinc-300 leading-relaxed font-mono"></p>
+                    </div>
+
+                    <div class="tech-panel p-5 rounded flex-grow">
+                        <span class="font-mono text-xs text-zinc-500 uppercase block mb-3">Отношение экономических агентов к риску</span>
+                        <div class="flex flex-wrap gap-2 mb-4 border-b border-zinc-800 pb-3">
+                            <button class="risk-tab-btn px-3 py-1.5 text-xs font-mono font-bold bg-cyan-900/40 text-cyan-400 rounded border border-cyan-500/50" onclick="openRiskTab('risk-averse', this)">Неприятие риска</button>
+                            <button class="risk-tab-btn px-3 py-1.5 text-xs font-mono bg-zinc-900 text-zinc-500 rounded border border-zinc-800 hover:text-zinc-300 transition-colors" onclick="openRiskTab('risk-neutral', this)">Нейтральность</button>
+                            <button class="risk-tab-btn px-3 py-1.5 text-xs font-mono bg-zinc-900 text-zinc-500 rounded border border-zinc-800 hover:text-zinc-300 transition-colors" onclick="openRiskTab('risk-loving', this)">Склонность к риску</button>
+                        </div>
+
+                        <div id="risk-averse" class="risk-tab-content block text-sm text-zinc-300 font-mono">
+                            <p class="mb-2"><strong class="text-cyan-400">Определение:</strong> Агент предпочитает гарантированный доход $w$ рискованному исходу с тем же математическим ожиданием $E[w]$.</p>
+                            <p class="mb-2"><strong class="text-cyan-400">Свойство:</strong> Функция полезности строго вогнута (concave): $U''(w) < 0$.</p>
+                            <div class="bg-zinc-950 p-3 rounded mt-2 border border-zinc-800"><strong class="text-cyan-400">Критерий:</strong><span class="latex-render ml-2">\[ E[U(w)] < U(E[w]) \]</span></div>
+                        </div>
+
+                        <div id="risk-neutral" class="risk-tab-content hidden text-sm text-zinc-300 font-mono">
+                            <p class="mb-2"><strong class="text-green-400">Определение:</strong> Агенту безразлично — получить гарантированный доход $w$ или пойти на риск с аналогичным ожидаемым значением $E[w]$.</p>
+                            <p class="mb-2"><strong class="text-green-400">Свойство:</strong> Функция полезности линейна: $U''(w) = 0$.</p>
+                            <div class="bg-zinc-950 p-3 rounded mt-2 border border-zinc-800"><strong class="text-green-400">Критерий:</strong><span class="latex-render ml-2">\[ E[U(w)] = U(E[w]) \]</span></div>
+                        </div>
+
+                        <div id="risk-loving" class="risk-tab-content hidden text-sm text-zinc-300 font-mono">
+                            <p class="mb-2"><strong class="text-red-400">Определение:</strong> Агент предпочитает рискованный выбор гарантированному получению средней ожидаемой суммы богатства.</p>
+                            <p class="mb-2"><strong class="text-red-400">Свойство:</strong> Функция полезности строго выпукла (convex): $U''(w) > 0$.</p>
+                            <div class="bg-zinc-950 p-3 rounded mt-2 border border-zinc-800"><strong class="text-red-400">Критерий:</strong><span class="latex-render ml-2">\[ E[U(w)] > U(E[w]) \]</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: ПОТРЕБИТЕЛЬСКИЙ ПОИСК -->
+        <section id="tab-search" class="tab-content">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="lg:col-span-4 flex flex-col gap-4">
+                    <div class="tech-panel p-5 rounded">
+                        <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-2 font-mono text-xs">
+                            <span class="text-zinc-400">Search Cost Controller</span><span class="text-red-500">INPUT c</span>
+                        </div>
+                        <div class="mb-4">
+                            <div class="flex justify-between text-xs font-mono mb-1">
+                                <span class="text-zinc-300">ИЗДЕРЖКИ ПОИСКА (c)</span><span id="search-cost-val" class="text-red-500 font-bold">$5.00</span>
+                            </div>
+                            <input type="range" id="search-cost" min="0.10" max="20.00" step="0.10" value="5.00">
+                        </div>
+                        <p class="text-[11px] font-mono text-zinc-500 leading-relaxed">* Моделируется равномерное распределение цен от $100 до $200.</p>
+                    </div>
+                    <div class="tech-panel p-5 rounded">
+                        <span class="font-mono text-xs text-zinc-400 uppercase block mb-2">Уравнение баланса (MC = MB)</span>
+                        <div id="search-math-output" class="math-block p-4 rounded text-xs text-zinc-300 mb-4"></div>
+                        <p class="text-[11px] font-mono text-zinc-500 leading-relaxed">
+                            Покупатель продолжает поиск более дешевого товара до тех пор, пока предельные издержки на лишний час поиска (MC = c) не сравняются с ожидаемой выгодой (MB) от нахождения более низкой цены. 
+                        </p>
+                    </div>
+
+                    <!-- NEW: Динамический блок пояснений Теории поиска -->
+                    <div id="search-dynamic-info" class="tech-panel p-4 rounded border-l-2 border-red-500">
+                        <span class="font-mono text-[10px] text-red-400 uppercase font-bold block mb-1">Анализ поведения потребителя:</span>
+                        <span id="search-dynamic-text" class="text-xs font-mono text-zinc-300 leading-relaxed"></span>
+                    </div>
+
+                </div>
+                
+                <div class="lg:col-span-8 flex flex-col gap-4">
+                    <div class="tech-panel p-5 rounded">
+                        <div class="flex justify-between items-center mb-3 border-b border-zinc-800 pb-2">
+                            <span class="font-mono text-xs text-zinc-400 uppercase">Осциллограф поиска // РЕЗЕРВИРОВАННАЯ ЦЕНА P*</span>
+                            <span class="text-[10px] text-zinc-500 font-mono">GRID: ON</span>
+                        </div>
+                        
+                        <div class="relative bg-zinc-950/80 rounded border border-zinc-800 p-2">
+                            <svg id="search-graph" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 280" class="w-full">
+                                <g stroke="#1f1f23" stroke-width="1">
+                                    <line x1="50" y1="20" x2="50" y2="240" /><line x1="100" y1="20" x2="100" y2="240" />
+                                    <line x1="150" y1="20" x2="150" y2="240" /><line x1="200" y1="20" x2="200" y2="240" />
+                                    <line x1="250" y1="20" x2="250" y2="240" /><line x1="300" y1="20" x2="300" y2="240" />
+                                    <line x1="350" y1="20" x2="350" y2="240" /><line x1="400" y1="20" x2="400" y2="240" />
+                                    <line x1="450" y1="20" x2="450" y2="240" />
+                                    <line x1="50" y1="40" x2="450" y2="40" /><line x1="50" y1="80" x2="450" y2="80" />
+                                    <line x1="50" y1="120" x2="450" y2="120" /><line x1="50" y1="160" x2="450" y2="160" />
+                                    <line x1="50" y1="200" x2="450" y2="200" /><line x1="50" y1="240" x2="450" y2="240" />
+                                </g>
+                                <line x1="50" y1="240" x2="460" y2="240" stroke="#52525b" stroke-width="2" />
+                                <line x1="50" y1="20" x2="50" y2="240" stroke="#52525b" stroke-width="2" />
+                                <text x="455" y="255" font-size="10" font-family="monospace" fill="#a1a1aa" text-anchor="end">Цена (P)</text>
+                                <text x="55" y="32" font-size="10" font-family="monospace" fill="#a1a1aa">Выгода / Издержки</text>
+                                
+                                <path d="M 120 240 Q 220 215 320 145 T 450 40" fill="none" stroke="#06b6d4" stroke-width="2.5" />
+                                <text x="410" y="30" font-size="11" font-family="monospace" fill="#06b6d4" font-weight="bold">EB(P)</text>
+                                
+                                <line id="svg-cost-line" x1="50" y1="145" x2="450" y2="145" stroke="#ef4444" stroke-width="2" stroke-dasharray="2,2" />
+                                <text id="svg-cost-text" x="452" y="140" font-size="10" font-family="monospace" fill="#ef4444" font-weight="bold" text-anchor="end">c (Cost)</text>
+                                
+                                <circle id="svg-intersect-pt" cx="320" cy="145" r="5" fill="#ef4444" />
+                                <line id="svg-p-line" x1="320" y1="145" x2="320" y2="240" stroke="#ef4444" stroke-dasharray="3,3" stroke-width="1.5" />
+                                <text id="svg-p-text" x="320" y="255" font-size="11" font-family="monospace" font-weight="bold" fill="#ffffff" text-anchor="middle">P*</text>
+                                <circle cx="120" cy="240" r="3" fill="#a1a1aa" />
+                                <text x="120" y="255" font-size="9" font-family="monospace" fill="#71717a" text-anchor="middle">P_min (100)</text>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: УХУДШАЮЩИЙ ОТБОР -->
+        <section id="tab-adverse" class="tab-content">
+            <div class="mb-4 inline-block bg-zinc-900 border border-zinc-700 px-3 py-1 rounded text-xs font-mono">
+                <span class="text-zinc-500">Раздел:</span> <strong class="text-white">Асимметрия информации (Ex Ante)</strong>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="lg:col-span-5 flex flex-col gap-4">
+                    <div class="tech-panel p-5 rounded">
+                        <span class="font-mono text-xs text-zinc-500 uppercase block mb-3">Параметры асимметрии</span>
+                        <div class="mb-4">
+                            <div class="flex justify-between text-xs font-mono mb-1">
+                                <span class="text-zinc-300">ДОЛЯ ХОРОШИХ МАШИН (q)</span><span id="lemon-q-val" class="text-red-500 font-bold">50%</span>
+                            </div>
+                            <input type="range" id="lemon-q" min="0" max="100" value="50">
+                        </div>
+                        <div class="grid grid-cols-2 gap-4 mt-4 pt-4 border-t border-zinc-800 text-[11px] font-mono">
+                            <div><span class="text-zinc-500 block">ЦЕННОСТЬ ПОКУПАТЕЛЯ:</span><span class="text-cyan-400">Персики: $12,000</span><br><span class="text-amber-500">Лимоны: $5,000</span></div>
+                            <div><span class="text-zinc-500 block">РЕЗЕРВ ПРОДАВЦА:</span><span class="text-cyan-400">Персики: $10,000</span><br><span class="text-amber-500">Лимоны: $4,000</span></div>
+                        </div>
+                    </div>
+                    <div class="tech-panel p-5 rounded">
+                        <span class="font-mono text-xs text-zinc-500 uppercase block mb-2">Усредненная цена покупателя:</span>
+                        <div id="lemon-math-output" class="math-block p-4 rounded text-xs text-zinc-300"></div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7 flex flex-col gap-4">
+                    <div class="tech-panel p-5 rounded">
+                        <div class="flex justify-between items-center mb-3 border-b border-zinc-800 pb-2">
+                            <span class="font-mono text-xs text-zinc-400 uppercase">Автопарк стоянки</span><span class="text-[10px] text-zinc-500 font-mono">10 МАШИН</span>
+                        </div>
+                        <div id="car-lot-grid" class="grid grid-cols-5 gap-3 p-2 bg-zinc-950/50 rounded border border-zinc-900"></div>
+                    </div>
+                    <div id="lemon-market-state" class="tech-panel p-5 rounded flex flex-col justify-between border-l-4">
+                        <div>
+                            <div class="flex justify-between items-center mb-3 font-mono text-xs">
+                                <span class="text-zinc-400">MARKET MONITOR STATUS</span>
+                                <div class="flex items-center gap-1.5"><span id="lemon-led-state" class="led-indicator"></span><span id="lemon-led-text" class="text-zinc-300">SYSTEM STATE</span></div>
+                            </div>
+                            <h4 id="lemon-status-title" class="text-xl font-bold tracking-tight mb-2 uppercase"></h4>
+                            <p id="lemon-status-desc" class="text-xs text-zinc-400 leading-relaxed font-mono"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: МОРАЛЬНЫЙ РИСК -->
+        <section id="tab-moral" class="tab-content">
+            <div class="mb-4 inline-block bg-zinc-900 border border-zinc-700 px-3 py-1 rounded text-xs font-mono">
+                <span class="text-zinc-500">Раздел:</span> <strong class="text-white">Асимметрия информации (Ex Post)</strong>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <div class="lg:col-span-5 flex flex-col gap-4">
+                    <div class="tech-panel p-5 rounded">
+                        <span class="font-mono text-xs text-zinc-500 uppercase block mb-3">Параметры контракта</span>
+                        <div class="mb-4">
+                            <div class="flex justify-between text-xs font-mono mb-1">
+                                <span class="text-zinc-300">З/П ПРИ УСПЕХЕ ($30,000)</span><span id="moral-whigh-val" class="text-red-500 font-bold">$11,000</span>
+                            </div>
+                            <input type="range" id="moral-whigh" min="5000" max="20000" step="500" value="11000">
+                        </div>
+                        <div class="mb-4">
+                            <div class="flex justify-between text-xs font-mono mb-1">
+                                <span class="text-zinc-300">З/П ПРИ КРИЗИСЕ ($10,000)</span><span id="moral-wlow-val" class="text-red-500 font-bold">$2,000</span>
+                            </div>
+                            <input type="range" id="moral-wlow" min="0" max="8000" step="500" value="2000">
+                        </div>
+                        <div class="text-[11px] font-mono text-zinc-500 mt-4 pt-4 border-t border-zinc-800 space-y-1">
+                            <p>• Альтернативный доход (Participation Limit): $2,000</p>
+                            <p>• Издержки высоких усилий (Effort Cost): $4,000</p>
+                        </div>
+                    </div>
+                    
+                    <div class="tech-panel p-5 rounded border-l-4 border-purple-500">
+                        <span class="font-mono text-xs text-purple-400 font-bold uppercase block mb-3">Анализ прибыли Принципала (Фирмы)</span>
+                        <div class="space-y-4 font-mono text-xs">
+                            <div>
+                                <div class="flex justify-between mb-1"><span class="text-zinc-400">Ожидаемая прибыль: <br>Фиксированный оклад ($6,000)</span><span id="firm-profit-fixed" class="text-zinc-300 font-bold self-end">$4,000</span></div>
+                                <div class="h-4 bg-zinc-900 rounded overflow-hidden relative border border-zinc-800">
+                                    <div class="h-full bg-zinc-600 transition-all duration-300" style="width: 25%"></div>
+                                </div>
+                                <span class="text-[9px] text-zinc-500 mt-1 block">* Агент гарантированно выбирает e=L (отлынивание). Выручка $10k минус оклад $6k.</span>
+                            </div>
+                            <div class="pt-2">
+                                <div class="flex justify-between mb-1"><span class="text-purple-400">Ожидаемая прибыль: <br>Стимулирующий контракт</span><span id="firm-profit-incentive" class="text-purple-400 font-bold self-end">$0</span></div>
+                                <div class="h-4 bg-zinc-900 rounded overflow-hidden relative border border-zinc-800">
+                                    <div id="firm-profit-bar" class="h-full bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.5)] transition-all duration-300" style="width: 0%"></div>
+                                </div>
+                                <span id="firm-profit-desc" class="text-[9px] text-purple-400/80 mt-1 block">Ожидание...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7 flex flex-col justify-between gap-4">
+                    <div class="tech-panel p-5 rounded">
+                        <span class="font-mono text-xs text-zinc-500 uppercase block mb-3">Анализатор полезности Агента (Менеджера)</span>
+                        <div class="space-y-4 font-mono text-xs">
+                            <div>
+                                <div class="flex justify-between mb-1"><span class="text-cyan-400">Полезность при работе E[U(H)]</span><span id="equalizer-uh-val" class="text-cyan-400 font-bold">0</span></div>
+                                <div class="h-4 bg-zinc-900 rounded overflow-hidden relative border border-zinc-800">
+                                    <div id="equalizer-uh-bar" class="h-full bg-cyan-500 shadow-[0_0_10px_rgba(6,182,212,0.5)] transition-all duration-300" style="width: 0%"></div>
+                                    <div class="absolute top-0 bottom-0 left-[20%] border-r border-dashed border-red-500/70"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-1"><span class="text-amber-500">Полезность при отлынивании E[U(L)]</span><span id="equalizer-ul-val" class="text-amber-500 font-bold">0</span></div>
+                                <div class="h-4 bg-zinc-900 rounded overflow-hidden relative border border-zinc-800">
+                                    <div id="equalizer-ul-bar" class="h-full bg-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.5)] transition-all duration-300" style="width: 0%"></div>
+                                    <div class="absolute top-0 bottom-0 left-[20%] border-r border-dashed border-red-500/70"></div>
+                                </div>
+                            </div>
+                            <div class="text-[10px] text-zinc-500 text-center flex justify-between px-1"><span>$0</span><span class="text-red-400 font-bold">| Порог участия ($2,000)</span><span>$10,000</span></div>
+                        </div>
+                    </div>
+
+                    <div class="tech-panel p-5 rounded flex-grow">
+                        <span class="font-mono text-xs text-zinc-500 uppercase block mb-2">Проверка условий контракта (Incentive Compatibility)</span>
+                        <div id="moral-math-output" class="math-block p-4 rounded text-xs text-zinc-300"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 5: ЛОГИКА АУКЦИОНОВ -->
+        <section id="tab-auction" class="tab-content">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- ТЕОРИЯ АУКЦИОНОВ -->
+                <div class="lg:col-span-12 mb-2">
+                    <div class="tech-panel p-5 rounded">
+                        <span class="font-mono text-xs text-zinc-500 uppercase block mb-3">Теоретический базис (Типы аукционов)</span>
+                        <div class="flex flex-wrap gap-2 mb-4 border-b border-zinc-800 pb-3">
+                            <button class="auc-tab-btn px-3 py-1.5 text-xs font-mono font-bold bg-cyan-900/40 text-cyan-400 rounded border border-cyan-500/50" onclick="openAucTab('auc-english', this)">Английский (Открытый)</button>
+                            <button class="auc-tab-btn px-3 py-1.5 text-xs font-mono bg-zinc-900 text-zinc-500 rounded border border-zinc-800 hover:text-zinc-300 transition-colors" onclick="openAucTab('auc-dutch', this)">Голландский (Открытый)</button>
+                            <button class="auc-tab-btn px-3 py-1.5 text-xs font-mono bg-zinc-900 text-zinc-500 rounded border border-zinc-800 hover:text-zinc-300 transition-colors" onclick="openAucTab('auc-first', this)">Аукцион 1-й цены</button>
+                            <button class="auc-tab-btn px-3 py-1.5 text-xs font-mono bg-zinc-900 text-zinc-500 rounded border border-zinc-800 hover:text-zinc-300 transition-colors" onclick="openAucTab('auc-vickrey', this)">Аукцион Викри (2-й цены)</button>
+                            <button class="auc-tab-btn px-3 py-1.5 text-xs font-mono bg-zinc-900 text-zinc-500 rounded border border-zinc-800 hover:text-zinc-300 transition-colors" onclick="openAucTab('auc-theorem', this)">Эквивалентность</button>
+                        </div>
+
+                        <!-- NEW: Английский аукцион -->
+                        <div id="auc-english" class="auc-tab-content block text-sm text-zinc-300 font-mono">
+                            <p class="mb-2"><strong class="text-cyan-400">Формат:</strong> Открытый аукцион на повышение цены. Аукционист начинает с минимума, участники по очереди делают ставки.</p>
+                            <p class="mb-2"><strong class="text-cyan-400">Логика:</strong> Победитель платит сумму, незначительно превышающую оценку конкурента, который сдался последним.</p>
+                            <p><strong class="text-cyan-400">Стратегия:</strong> Слабодоминирующая стратегия — оставаться в торгах до тех пор, пока цена не достигнет вашей истинной оценки ($v_i$).</p>
+                        </div>
+
+                        <!-- NEW: Голландский аукцион -->
+                        <div id="auc-dutch" class="auc-tab-content hidden text-sm text-zinc-300 font-mono">
+                            <p class="mb-2"><strong class="text-orange-400">Формат:</strong> Открытый аукцион на понижение цены. Аукционист начинает с очень высокой цены и снижает её, пока кто-то не согласится купить.</p>
+                            <p class="mb-2"><strong class="text-orange-400">Логика:</strong> Первый крикнувший забирает товар по названной цене. Стратегически идентичен аукциону Первой цены.</p>
+                            <p><strong class="text-orange-400">Стратегия (Bid Shading):</strong> Нельзя ждать падения до истинной цены ($v_i$), иначе кто-то перехватит. Необходимо вычислять оптимальный порог занижения ставки.</p>
+                        </div>
+
+                        <div id="auc-first" class="auc-tab-content hidden text-sm text-zinc-300 font-mono">
+                            <p class="mb-2"><strong class="text-purple-400">Правило:</strong> Победитель платит ровно ту сумму, которую заявил в закрытом конверте. Если поставить истинную оценку ($b_i = v_i$), чистая прибыль составит ноль.</p>
+                            <p class="mb-2"><strong class="text-purple-400">Стратегия (Bid Shading):</strong> Необходимо <b>занижать ставку</b>. С ростом конкуренции занижение становится меньше.</p>
+                            <div class="bg-zinc-950 p-3 rounded mt-2 border border-zinc-800 text-purple-400">\[ b_i(v_i) = v_i - \frac{v_i - L}{n} \]</div>
+                        </div>
+
+                        <div id="auc-vickrey" class="auc-tab-content hidden text-sm text-zinc-300 font-mono">
+                            <p class="mb-2"><strong class="text-green-400">Правило:</strong> Закрытые ставки. Победитель платит сумму, равную <b>второй по величине ставке</b> (ставке ближайшего конкурента).</p>
+                            <p class="mb-2"><strong class="text-green-400">Доминантная стратегия:</strong> Честное декларирование своей истинной частной оценки. Завышать или занижать ставку стратегически невыгодно.</p>
+                            <div class="bg-zinc-950 p-3 rounded mt-2 border border-zinc-800 text-green-400">\[ b_i(v_i) = v_i \]</div>
+                        </div>
+
+                        <div id="auc-theorem" class="auc-tab-content hidden text-sm text-zinc-300 font-mono">
+                            <p class="mb-2"><strong class="text-zinc-100">Теорема Уильяма Викри:</strong> Если все участники нейтральны к риску, а их частные оценки независимы, то все 4 классических типа аукциона приносят организатору <b>одинаковую ожидаемую выручку</b>.</p>
+                            <p><strong class="text-zinc-100">Математически:</strong> Ожидаемая выручка равна математическому ожиданию второй сверху частной оценки среди участников: $E[v_{(2)}]$.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-5 flex flex-col gap-4">
+                    <div class="tech-panel p-5 rounded">
+                        <span class="font-mono text-xs text-zinc-500 uppercase block mb-3">Симулятор: Аукцион 1-й цены / Голландский</span>
+                        <div class="mb-4">
+                            <div class="flex justify-between text-xs font-mono mb-1"><span class="text-zinc-300">ВАША ОЦЕНКА v_i</span><span id="auc-vi-val" class="text-cyan-400 font-bold">$34,000</span></div>
+                            <input type="range" id="auc-vi" min="15000" max="50000" step="1000" value="34000">
+                        </div>
+                        <div class="mb-4">
+                            <div class="flex justify-between text-xs font-mono mb-1"><span class="text-zinc-300">ВАША СТАВКА b_i</span><span id="auc-user-bid-val" class="text-red-500 font-bold">$22,000</span></div>
+                            <input type="range" id="auc-user-bid" min="10000" max="50000" step="500" value="22000">
+                            <div class="flex justify-between text-[10px] text-zinc-500 font-mono mt-0.5">
+                                <span class="text-red-500 underline cursor-pointer" onclick="setNashBid()">Ставка по Нэшу</span>
+                                <span class="text-zinc-400">Ваша маржа: <span id="auc-margin-val">$12,000</span></span>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <div class="flex justify-between text-xs font-mono mb-1"><span class="text-zinc-300">ЧИСЛО ОППОНЕНТОВ (n)</span><span id="auc-n-val" class="text-zinc-400 font-bold">3</span></div>
+                            <input type="range" id="auc-n" min="2" max="10" step="1" value="3">
+                        </div>
+                    </div>
+                    <button onclick="simulateAuctionLive()" class="w-full bg-red-600 hover:bg-red-700 active:bg-red-800 text-white font-mono uppercase tracking-wider text-xs font-bold py-3 px-4 rounded shadow-lg shadow-red-950/50 transition-all border border-red-500/30">
+                        ⚡ ЗАПУСТИТЬ ТОРГИ
+                    </button>
+                </div>
+
+                <div class="lg:col-span-7 flex flex-col gap-4">
+                    <div class="tech-panel p-5 rounded">
+                        <div class="flex justify-between items-center mb-4 border-b border-zinc-800 pb-2">
+                            <span class="font-mono text-xs text-zinc-400 uppercase">АРЕНА ТОРГОВ // REVEAL COMPONENT</span>
+                        </div>
+                        <div id="auction-arena-grid" class="grid grid-cols-2 md:grid-cols-4 gap-4 py-2"></div>
+                        <div id="auction-log" class="mt-4 p-3 bg-zinc-950 rounded border border-zinc-900 font-mono text-[11px] text-zinc-500 h-[70px] overflow-y-auto">
+                            Ожидание запуска торгов... Установите размер ставки и нажмите "ЗАПУСТИТЬ ТОРГИ".
+                        </div>
+                    </div>
+                    <div class="tech-panel p-4 rounded">
+                        <span class="font-mono text-xs text-zinc-500 uppercase block mb-2">Равновесный анализ вашей ставки:</span>
+                        <div id="auc-math-output" class="math-block p-4 rounded text-xs text-zinc-300 mb-4"></div>
+                        
+                        <!-- NEW: Динамический блок пояснений Логики Аукционов -->
+                        <div id="auc-dynamic-info" class="tech-panel p-3 rounded border-l-2 border-cyan-500">
+                            <span class="font-mono text-[10px] text-cyan-400 uppercase font-bold block mb-1">Стратегический совет:</span>
+                            <span id="auc-dynamic-text" class="text-[11px] font-mono text-zinc-300 leading-relaxed"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- NEW: Стилизованный футер по требованию пользователя -->
+    <footer class="w-full max-w-6xl mx-auto px-6 py-6 border-t border-zinc-800 text-center font-mono text-[11px] text-zinc-500 mb-2">
+        УПРАВЛЕНЧЕСКАЯ ЭКОНОМИКА • ALMAU •ВЫСШАЯ ШКОЛА БИЗНЕСА• 2026
+    </footer>
+
+    <script>
+        function openTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Риск-табы
+        function openRiskTab(tabId, btnElement) {
+            document.querySelectorAll('.risk-tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.risk-tab-btn').forEach(el => {
+                el.classList.remove('bg-cyan-900/40', 'text-cyan-400', 'border-cyan-500/50', 'font-bold');
+                el.classList.add('bg-zinc-900', 'text-zinc-500', 'border-zinc-800');
+            });
+            document.getElementById(tabId).classList.remove('hidden');
+            btnElement.classList.remove('bg-zinc-900', 'text-zinc-500', 'border-zinc-800');
+            btnElement.classList.add('bg-cyan-900/40', 'text-cyan-400', 'border-cyan-500/50', 'font-bold');
+            if (window.renderMathInElement) renderMathInElement(document.getElementById(tabId));
+        }
+
+        // Аукцион-табы
+        function openAucTab(tabId, btnElement) {
+            document.querySelectorAll('.auc-tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.auc-tab-btn').forEach(el => {
+                el.classList.remove('bg-cyan-900/40', 'text-cyan-400', 'border-cyan-500/50', 'font-bold');
+                el.classList.add('bg-zinc-900', 'text-zinc-500', 'border-zinc-800');
+            });
+            document.getElementById(tabId).classList.remove('hidden');
+            btnElement.classList.remove('bg-zinc-900', 'text-zinc-500', 'border-zinc-800');
+            btnElement.classList.add('bg-cyan-900/40', 'text-cyan-400', 'border-cyan-500/50', 'font-bold');
+            if (window.renderMathInElement) renderMathInElement(document.getElementById(tabId));
+        }
+
+        function formatCurrency(num) { return num.toLocaleString('en-US'); }
+
+        // --- TAB 1: RISK ---
+        const riskProbEl = document.getElementById('risk-prob'), riskOptEl = document.getElementById('risk-opt'), riskPessEl = document.getElementById('risk-pess');
+        function updateRisk() {
+            let pOpt = parseFloat(riskProbEl.value)/100, pPess = 1-pOpt, valOpt = parseFloat(riskOptEl.value), valPess = parseFloat(riskPessEl.value);
+            document.getElementById('risk-prob-val').innerText = riskProbEl.value + '%';
+            document.getElementById('risk-opt-val').innerText = '$' + formatCurrency(valOpt);
+            document.getElementById('risk-pess-val').innerText = '$' + formatCurrency(valPess);
+            let expectedValue = (pOpt*valOpt) + (pPess*valPess);
+            let variance = pOpt*Math.pow(valOpt - expectedValue, 2) + pPess*Math.pow(valPess - expectedValue, 2);
+            let sd = Math.sqrt(variance);
+
+            let maxSD = 100000;
+            let degree = -90 + (Math.min(sd, maxSD)/maxSD)*180;
+            document.getElementById('meter-needle').setAttribute('transform', `rotate(${degree} 100 95)`);
+
+            document.getElementById('risk-math-output').innerHTML = `\\[ E[x] = p_1 x_1 + p_2 x_2 = ${pOpt.toFixed(2)}(${formatCurrency(valOpt)}) + ${pPess.toFixed(2)}(${formatCurrency(valPess)}) = \\$${formatCurrency(Math.round(expectedValue))} \\] \\[ \\sigma = \\$${formatCurrency(Math.round(sd))} \\]`;
+            if (window.renderMathInElement) renderMathInElement(document.getElementById('risk-math-output'));
+
+            let concl = document.getElementById('risk-conclusion'), box = document.getElementById('conclusion-box');
+            if (expectedValue > 40000 && sd < 35000) {
+                concl.innerHTML = `ПРОЕКТ РЕКОМЕНДОВАН: Высокая норма средней прибыли при низком уровне волатильности.`;
+                concl.className = "text-sm text-green-400 font-mono"; box.className = "tech-panel p-5 rounded border-l-4 border-l-green-500";
+            } else if (expectedValue <= 0) {
+                concl.innerHTML = `ОТКЛОНИТЬ: Отрицательное математическое ожидание прибыли.`;
+                concl.className = "text-sm text-red-500 font-mono"; box.className = "tech-panel p-5 rounded border-l-4 border-l-red-500";
+            } else {
+                concl.innerHTML = `РИСКОВАННЫЙ ПРОЕКТ: Высокий уровень риска (\\sigma = $${formatCurrency(Math.round(sd))}) требует хеджирования.`;
+                concl.className = "text-sm text-amber-500 font-mono"; box.className = "tech-panel p-5 rounded border-l-4 border-l-amber-500";
+            }
+        }
+        [riskProbEl, riskOptEl, riskPessEl].forEach(el => el.addEventListener('input', updateRisk));
+
+        // --- TAB 2: SEARCH ---
+        document.getElementById('search-cost').addEventListener('input', function() {
+            let c = parseFloat(this.value);
+            document.getElementById('search-cost-val').innerText = '$' + c.toFixed(2);
+            let pStar = 100 + Math.sqrt(200 * c);
+            document.getElementById('search-math-output').innerHTML = `\\[ EB(P^*) = c \\implies \\frac{(P^* - 100)^2}{200} = ${c.toFixed(2)} \\] \\[ \\mathbf{P^* = \\$${pStar.toFixed(2)}} \\]`;
+            if (window.renderMathInElement) renderMathInElement(document.getElementById('search-math-output'));
+            
+            let svgCY = 240 - ((c / 20) * 200); 
+            document.getElementById('svg-cost-line').setAttribute('y1', svgCY); document.getElementById('svg-cost-line').setAttribute('y2', svgCY); document.getElementById('svg-cost-text').setAttribute('y', svgCY - 5);
+            let svgPX = 120 + (((pStar - 100) / 100) * 330);
+            document.getElementById('svg-intersect-pt').setAttribute('cx', svgPX); document.getElementById('svg-intersect-pt').setAttribute('cy', svgCY);
+            document.getElementById('svg-p-line').setAttribute('x1', svgPX); document.getElementById('svg-p-line').setAttribute('x2', svgPX); document.getElementById('svg-p-line').setAttribute('y1', svgCY);
+            document.getElementById('svg-p-text').setAttribute('x', svgPX); document.getElementById('svg-p-text').innerHTML = `P* = $${pStar.toFixed(1)}`;
+
+            // NEW: Динамическое текстовое пояснение
+            let infoBox = document.getElementById('search-dynamic-info');
+            let infoText = document.getElementById('search-dynamic-text');
+            if (c > 10) {
+                infoBox.className = "tech-panel p-4 rounded border-l-2 border-red-500";
+                infoText.innerHTML = `Высокие издержки поиска (<span class="text-red-400">$${c.toFixed(2)}</span>). Ожидаемая выгода (MB) быстро перекрывается затратами времени и сил (MC). Покупатель готов согласиться на высокую резервную цену <b>P* = $${pStar.toFixed(2)}</b> и прекратить поиск.`;
+            } else if (c <= 3) {
+                infoBox.className = "tech-panel p-4 rounded border-l-2 border-emerald-500";
+                infoText.innerHTML = `Низкие издержки (<span class="text-emerald-400">$${c.toFixed(2)}</span>). Искать информацию дешево (например, мониторинг цен в интернете). Покупатель будет искать дольше, снизив свою резервную цену до <b>P* = $${pStar.toFixed(2)}</b>.`;
+            } else {
+                infoBox.className = "tech-panel p-4 rounded border-l-2 border-cyan-500";
+                infoText.innerHTML = `Умеренные издержки (<span class="text-cyan-400">$${c.toFixed(2)}</span>). Согласно правилу баланса, оптимально прекратить поиск, как только встретится цена <b>P* = $${pStar.toFixed(2)}</b> или ниже. Дальнейший поиск не рентабелен.`;
+            }
+        });
+
+        // --- TAB 3: LEMONS ---
+        document.getElementById('lemon-q').addEventListener('input', function() {
+            let q = parseFloat(this.value) / 100;
+            document.getElementById('lemon-q-val').innerText = this.value + '%';
+            let expectedP = (q * 12000) + ((1 - q) * 5000);
+            let collapsed = expectedP < 10000;
+            
+            const lotGrid = document.getElementById('car-lot-grid');
+            lotGrid.innerHTML = '';
+            for (let i = 0; i < 10; i++) {
+                const isPeach = i < Math.round(q * 10);
+                const carCard = document.createElement('div');
+                carCard.className = `tech-panel p-2 flex flex-col items-center justify-center rounded relative overflow-hidden transition-all duration-300 ${isPeach ? 'border-cyan-500/20' : 'border-amber-500/20'}`;
+                carCard.innerHTML = `<svg class="w-10 h-6 ${isPeach ? 'text-cyan-400' : 'text-amber-500'} ${collapsed && isPeach ? 'opacity-25 grayscale' : ''}" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 16.5A1.5 1.5 0 1117.5 15h.5m-9 1.5a1.5 1.5 0 11-1.5-1.5h.5M4 10h16M4 10a2 2 0 012-2h12a2 2 0 012 2v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5zM9 8V6a2 2 0 012-2h2a2 2 0 012 2v2" /></svg><span class="font-mono text-[9px] mt-1 block ${isPeach ? 'text-cyan-400' : 'text-amber-500'}">${isPeach ? 'ПЕРСИК' : 'ЛИМОН'}</span>`;
+                if (collapsed && isPeach) carCard.innerHTML += `<div class="absolute inset-0 bg-red-950/80 flex items-center justify-center text-[8px] font-mono font-bold text-red-400 text-center px-0.5 border border-red-500/50">ОТЗЫВ</div>`;
+                lotGrid.appendChild(carCard);
+            }
+            
+            document.getElementById('lemon-math-output').innerHTML = `\\[ P_{exp} = ${q.toFixed(2)}(12k) + ${(1-q).toFixed(2)}(5k) = \\$${formatCurrency(expectedP)} \\]`;
+            if (window.renderMathInElement) renderMathInElement(document.getElementById('lemon-math-output'));
+
+            const pnl = document.getElementById('lemon-market-state'), ttl = document.getElementById('lemon-status-title'), dsc = document.getElementById('lemon-status-desc'), led = document.getElementById('lemon-led-state');
+            if (!collapsed) {
+                pnl.style.borderColor = 'rgba(16, 185, 129, 0.4)'; pnl.style.boxShadow = '0 0 15px rgba(16, 185, 129, 0.15)';
+                ttl.innerText = "Рынок работает"; ttl.className = "text-xl font-bold mb-2 uppercase text-green-400";
+                dsc.innerHTML = `Среднерыночная цена ($${formatCurrency(expectedP)}) превышает $10,000.`;
+                led.className = "led-indicator led-green-on";
+            } else {
+                pnl.style.borderColor = 'rgba(239, 68, 68, 0.4)'; pnl.style.boxShadow = '0 0 15px rgba(239, 68, 68, 0.15)';
+                ttl.innerText = "Коллапс (Концепция Джорджа Акерлофа)"; ttl.className = "text-xl font-bold mb-2 uppercase text-red-500";
+                dsc.innerHTML = `Средняя цена ($${formatCurrency(expectedP)}) ниже $10,000. Продавцы хороших машин уходят.`;
+                led.className = "led-indicator led-red-on";
+            }
+        });
+
+        // --- TAB 4: MORAL HAZARD ---
+        function updMoral() {
+            let wh = parseFloat(document.getElementById('moral-whigh').value), wl = parseFloat(document.getElementById('moral-wlow').value);
+            document.getElementById('moral-whigh-val').innerText = '$'+formatCurrency(wh);
+            document.getElementById('moral-wlow-val').innerText = '$'+formatCurrency(wl);
+            
+            let euh = 0.8*wh + 0.2*wl - 4000, eul = 1.0*wl;
+            document.getElementById('equalizer-uh-bar').style.width = Math.max(0, Math.min(100, (euh/10000)*100)) + '%';
+            document.getElementById('equalizer-ul-bar').style.width = Math.max(0, Math.min(100, (eul/10000)*100)) + '%';
+            document.getElementById('equalizer-uh-val').innerText = '$'+formatCurrency(Math.round(euh));
+            document.getElementById('equalizer-ul-val').innerText = '$'+formatCurrency(Math.round(eul));
+            document.getElementById('equalizer-uh-bar').style.backgroundColor = (euh < eul) ? '#ef4444' : '#06b6d4';
+            
+            let isWorking = (euh >= eul && euh >= 2000);
+            let stat = "";
+            let expectedFirmProfitIncentive = 0;
+
+            if (isWorking) {
+                stat = `\\color{#10b981}{\\text{Стимулы работают: Агент выбирает } (e=H)}`;
+                expectedFirmProfitIncentive = (0.8*30000 + 0.2*10000) - (0.8*wh + 0.2*wl);
+            } else if (euh < eul) {
+                stat = `\\color{#ef4444}{\\text{Агенту выгоднее отлынивать } (e=L)}`;
+                expectedFirmProfitIncentive = 10000 - wl;
+            } else {
+                stat = `\\color{#f59e0b}{\\text{Отказ от участия } (E[U] < 2,000)}`;
+                expectedFirmProfitIncentive = 0;
+            }
+            
+            let firmMax = 20000;
+            let firmBar = document.getElementById('firm-profit-bar');
+            let firmVal = document.getElementById('firm-profit-incentive');
+            let firmDesc = document.getElementById('firm-profit-desc');
+
+            firmBar.style.width = Math.max(0, Math.min(100, (expectedFirmProfitIncentive/firmMax)*100)) + '%';
+            firmVal.innerText = '$' + formatCurrency(Math.round(expectedFirmProfitIncentive));
+            
+            if(isWorking) {
+                firmBar.style.backgroundColor = '#a855f7'; firmDesc.innerText = "* Агент прилагает усилия (e=H). Прибыль максимизирована."; firmDesc.className = "text-[9px] text-purple-400 mt-1 block";
+            } else if(euh < eul) {
+                firmBar.style.backgroundColor = '#ef4444'; firmDesc.innerText = "* Провал контракта. Агент отлынивает (e=L)."; firmDesc.className = "text-[9px] text-red-500 mt-1 block";
+            } else {
+                firmBar.style.backgroundColor = '#52525b'; firmDesc.innerText = "* Агент покинул фирму. Нулевая прибыль."; firmDesc.className = "text-[9px] text-zinc-500 mt-1 block";
+            }
+
+            document.getElementById('moral-math-output').innerHTML = `\\[ E[U(H)] = ${euh} \\quad E[U(L)] = ${eul} \\] \\[ ${stat} \\]`;
+            if (window.renderMathInElement) renderMathInElement(document.getElementById('moral-math-output'));
+        }
+        document.getElementById('moral-whigh').addEventListener('input', updMoral);
+        document.getElementById('moral-wlow').addEventListener('input', updMoral);
+
+        // --- TAB 5: AUCTIONS ---
+        function drawArena() {
+            let vi = parseFloat(document.getElementById('auc-vi').value), bid = parseFloat(document.getElementById('auc-user-bid').value);
+            document.getElementById('auc-vi-val').innerText = '$'+formatCurrency(vi); document.getElementById('auc-user-bid-val').innerText = '$'+formatCurrency(bid); document.getElementById('auc-margin-val').innerText = '$'+formatCurrency(Math.max(0, vi-bid));
+            let grid = document.getElementById('auction-arena-grid'); grid.innerHTML = '';
+            grid.innerHTML += `<div class="tech-panel p-3 rounded text-center border-cyan-500/50 flex flex-col justify-between h-36"><span class="font-mono text-[10px] text-zinc-500">ИГРОК (ВЫ)</span><span class="text-cyan-400 font-bold text-lg">$${formatCurrency(bid)}</span><span class="text-[9px] font-mono text-zinc-400">Оценка: <b>$${formatCurrency(vi)}</b></span></div>`;
+            for (let i = 1; i <= parseInt(document.getElementById('auc-n').value); i++) {
+                grid.innerHTML += `<div id="opp-card-${i}" class="flip-card h-36 w-full"><div class="flip-card-inner w-full h-full"><div class="flip-card-front flex flex-col items-center justify-center"><span class="font-mono text-[10px] text-zinc-600">ОППОНЕНТ ${i}</span></div><div class="flip-card-back flex flex-col justify-between p-3 border border-zinc-800"><span class="font-mono text-[10px] text-zinc-500">ОППОНЕНТ ${i}</span><span class="text-amber-500 font-bold text-lg" id="opp-bid-val-${i}"></span><span class="text-[9px] font-mono text-zinc-400">Оценка: <b id="opp-vi-val-${i}"></b></span></div></div></div>`;
+            }
+        }
+        function setNashBid() {
+            let v = parseFloat(document.getElementById('auc-vi').value), n = parseInt(document.getElementById('auc-n').value);
+            document.getElementById('auc-user-bid').value = Math.round(v - ((v - 10000)/n));
+            drawArena(); document.getElementById('auc-user-bid').dispatchEvent(new Event('input'));
+        }
+        
+        function updAuc() { 
+            drawArena(); 
+            document.getElementById('auc-math-output').innerHTML = `\\[ b_i = v_i - \\frac{v_i - L}{n} \\]`; 
+            if(window.renderMathInElement) renderMathInElement(document.getElementById('auc-math-output')); 
+
+            // NEW: Динамическое текстовое пояснение стратегии аукционов
+            let v = parseFloat(document.getElementById('auc-vi').value);
+            let n = parseInt(document.getElementById('auc-n').value);
+            let nashBid = Math.round(v - ((v - 10000)/n));
+            let infoBox = document.getElementById('auc-dynamic-info');
+            let infoText = document.getElementById('auc-dynamic-text');
+
+            if (n <= 3) {
+                infoBox.className = "tech-panel p-3 rounded border-l-2 border-emerald-500 mt-4";
+                infoText.innerHTML = `Низкая конкуренция (<span class="text-emerald-400">Оппонентов: ${n}</span>). На Голландском аукционе или закрытом 1-й цены вы можете значительно <b>занизить ставку</b> (до $${nashBid.toLocaleString()}), чтобы заработать большую маржу, так как риск перехвата невелик.`;
+            } else if (n >= 7) {
+                infoBox.className = "tech-panel p-3 rounded border-l-2 border-red-500 mt-4";
+                infoText.innerHTML = `Высокая конкуренция (<span class="text-red-400">Оппонентов: ${n}</span>). Риск проиграть огромный. Оптимальная стратегия — <b>снижать уровень Bid Shading</b>. Ставка ($${nashBid.toLocaleString()}) должна почти вплотную приблизиться к вашей истинной оценке ($${v.toLocaleString()}).`;
+            } else {
+                infoBox.className = "tech-panel p-3 rounded border-l-2 border-cyan-500 mt-4";
+                infoText.innerHTML = `Умеренная конкуренция (<span class="text-cyan-400">Оппонентов: ${n}</span>). Найдите баланс: занижайте ставку до <b>$${nashBid.toLocaleString()}</b>, чтобы получить прибыль, но не жадничайте, иначе кто-то перебьет вашу цену.`;
+            }
+        }
+        
+        ['auc-vi', 'auc-user-bid', 'auc-n'].forEach(id => document.getElementById(id).addEventListener('input', updAuc));
+        
+        function simulateAuctionLive() {
+            let n = parseInt(document.getElementById('auc-n').value), vi = parseFloat(document.getElementById('auc-vi').value), ubid = parseFloat(document.getElementById('auc-user-bid').value);
+            drawArena(); document.getElementById('auction-log').innerHTML = "Принимаются закрытые ставки...";
+            setTimeout(() => {
+                let maxBid = 0;
+                for (let i=1; i<=n; i++) {
+                    let oV = Math.round(15000 + Math.random()*33000), oB = Math.round(oV - ((oV - 10000)/n));
+                    document.getElementById(`opp-bid-val-${i}`).innerText = '$'+formatCurrency(oB); document.getElementById(`opp-vi-val-${i}`).innerText = '$'+formatCurrency(oV);
+                    if (oB > maxBid) maxBid = oB;
+                    setTimeout(() => document.getElementById(`opp-card-${i}`).classList.add('reveal'), i*250);
+                }
+                setTimeout(() => {
+                    if (ubid > maxBid) document.getElementById('auction-log').innerHTML = ubid > vi ? `<span class="text-red-500">ПРОКЛЯТИЕ ПОБЕДИТЕЛЯ! Вы переплатили -$${formatCurrency(ubid-vi)}.</span>` : `<span class="text-green-400">ВЫ ПОБЕДИЛИ! Прибыль: +$${formatCurrency(vi-ubid)}.</span>`;
+                    else document.getElementById('auction-log').innerHTML = `Аукцион проигран. Максимальная ставка оппонентов: $${formatCurrency(maxBid)}.`;
+                }, n*250 + 300);
+            }, 500);
+        }
+
+        window.onload = () => { 
+            updateRisk(); 
+            document.getElementById('search-cost').dispatchEvent(new Event('input')); 
+            document.getElementById('lemon-q').dispatchEvent(new Event('input')); 
+            updMoral(); 
+            updAuc(); 
+            if (window.renderMathInElement) renderMathInElement(document.body);
+        };
+    </script>
+</body>
+</html>
