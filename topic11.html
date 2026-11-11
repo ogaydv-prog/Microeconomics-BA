@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тема 10 | Microeconomics BA AlmaU 2026</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #ffffff;
+            color: #333333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px 30px;
+        }
+
+        /* Навигационная панель */
+        .top-bar {
+            width: 100%;
+            max-width: 1450px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            position: relative;
+            padding-top: 10px;
+        }
+
+        .top-left-logo {
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+        }
+
+        .header-titles {
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #001e50;
+            line-height: 1.2;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #555555;
+            line-height: 1.4;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .back-button {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            text-decoration: none;
+            background-color: #001e50;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            white-space: nowrap;
+            box-shadow: 0 4px 10px rgba(0, 30, 80, 0.15);
+        }
+
+        .back-button:hover {
+            background-color: #003380;
+            transform: translateY(-52%);
+        }
+
+        /* Контейнер карточек */
+        .grid-container {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 18px;
+            max-width: 1450px;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+            margin: auto 0;
+            padding: 25px 0;
+        }
+
+        /* Плотная песчано-коричневая рамка для всех 6 карточек без щелей */
+        .card {
+            display: block;
+            text-decoration: none;
+            background: #78350f; /* Исключает белые зазоры */
+            border: 3px solid #78350f;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 14px rgba(120, 53, 15, 0.2);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 185px; 
+            height: 304px;
+            flex-shrink: 0;
+            cursor: pointer;
+            position: relative;
+            padding: 1px;
+        }
+
+        .card img {
+            width: 100% !important;
+            height: 100% !important;
+            display: block !important;
+            object-fit: fill !important; /* Обжимает строго по внутренней рамке */
+            border-radius: 8px;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        /* Эффект при наведении: увеличение и золотисто-янтарная подсветка */
+        .card:hover {
+            transform: translateY(-10px) scale(1.05);
+            border: 3px solid #f59e0b;
+            box-shadow: 0 12px 30px rgba(245, 158, 11, 0.5), inset 0 0 12px rgba(245, 158, 11, 0.25);
+        }
+
+        footer {
+            margin-top: auto;
+            font-size: 14px;
+            color: #718096;
+            padding-top: 30px;
+            padding-bottom: 20px;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        /* Мобильная адаптивность для смартфонов */
+        @media (max-width: 1250px) {
+            .grid-container {
+                flex-wrap: wrap;
+                gap: 16px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .top-bar {
+                flex-direction: column;
+                justify-content: center;
+                gap: 12px;
+                margin-bottom: 20px;
+            }
+
+            .top-left-logo, .back-button {
+                position: static;
+                transform: none;
+            }
+
+            .top-left-logo {
+                width: 52px;
+                height: 52px;
+            }
+
+            h1 {
+                font-size: 22px;
+            }
+
+            .subtitle {
+                font-size: 13px;
+            }
+
+            .back-button {
+                padding: 8px 14px;
+                font-size: 13px;
+            }
+
+            .grid-container {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 14px;
+                margin: 10px 0;
+                width: 100%;
+                max-width: 380px;
+            }
+
+            .card {
+                width: 100%;
+                height: auto;
+                aspect-ratio: 2 / 3;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Верхняя панель -->
+    <div class="top-bar">
+        <img src="almau.jpg" alt="AlmaU Logo" class="top-left-logo" onerror="this.src='./almau.png'">
+        <div class="header-titles">
+            <h1>Тема 10: Общественные блага, экстерналии и государственное регулирование</h1>
+            <p class="subtitle">
+                Выберите учебный материал ниже: лекционный конспект, интерактивную презентацию, симуляторы общественных благ и регулирования или видеолекцию.
+            </p>
+        </div>
+        <a href="topics.html" class="back-button">← К темам курса</a>
+    </div>
+
+    <!-- Основная сетка карточек -->
+    <main class="grid-container">
+        
+        <!-- 1. Конспект лекции (Reader) -->
+        <a href="gre.html" class="card" title="Электронный лекционный конспект">
+            <img src="pic-lecture9.png" alt="Конспект лекции" onerror="this.src='./pic-lecture9.png'">
+        </a>
+
+        <!-- 2. Презентация (Google Slides) -->
+        <a href="https://docs.google.com/presentation/d/1stX-mkcUYBy6hNQXsNonOZbKO6YZj51F/edit?usp=sharing&ouid=109725301150629205728&rtpof=true&sd=true" 
+           target="_blank" rel="noopener noreferrer" class="card" title="Презентация по теме 10">
+            <img src="pic-preza9.png" alt="Презентация по теме 10" onerror="this.src='./pic-preza9.png'">
+        </a>
+
+        <!-- 3. Симулятор: Общественные блага -->
+        <a href="sim-public.html" class="card" title="Симулятор общественных благ">
+            <img src="pic-sim-antitrust.png" alt="Симулятор общественных благ" onerror="this.src='./pic-sim-antitrust.png'">
+        </a>
+
+        <!-- 4. Симулятор: Предельные выгоды и издержки (MC/MB) -->
+        <a href="sim-mc-mb.html" class="card" title="Симулятор предельных выгод и издержек">
+            <img src="pic-sim-mc-mb.png" alt="Симулятор MC и MB" onerror="this.src='./pic-sim-mc-mb.png'">
+        </a>
+
+        <!-- 5. Симулятор: Государственное регулирование -->
+        <a href="sim-state-reg-7.html" class="card" title="Симулятор государственного регулирования">
+            <img src="pic-sim-reg.png" alt="Симулятор государственного регулирования" onerror="this.src='./pic-sim-reg.png'">
+        </a>
+
+        <!-- 6. Видеолекция (Прямая интерактивная карточка без переворота) -->
+        <a href="https://www.youtube.com/watch?v=Lp9cvR6LNrE&t=8s" 
+           target="_blank" rel="noopener noreferrer" class="card" title="Смотреть видеолекцию на YouTube">
+            <img src="pic-video9.png" alt="Обложка видеолекции" onerror="this.src='./pic-video9.png'">
+        </a>
+
+    </main>
+
+    <footer>
+        <p>Разработано для студентов Microeconomics BA AlmaU 2026 | Курс: Микроэкономика</p>
+        <p>© Almaty Management University | Школа цифровых технологий и экономики</p>
+    </footer>
+
+</body>
+</html>
