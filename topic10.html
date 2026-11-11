@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тема 10: Теория игр и стратегическое поведение | Микроэкономика</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8fafc;
+            color: #333333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Навигационная шапка */
+        .top-nav {
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0px;
+            padding-top: 10px;
+        }
+
+        /* Логотип AlmaU прижат влево и опущен на уровень заголовка */
+        .top-left-logo {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            margin-top: 25px;
+            margin-left: -5px;
+        }
+
+        .back-button {
+            text-decoration: none;
+            background-color: #001e50;
+            color: white;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 30, 80, 0.15);
+            white-space: nowrap;
+        }
+
+        .back-button:hover {
+            background-color: #003380;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0, 30, 80, 0.25);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 0 10px;
+            margin-top: -15px;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #001e50;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #555555;
+            max-width: 750px;
+            line-height: 1.5;
+            margin: 0 auto;
+        }
+
+        /* Сетка карточек */
+        .grid-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            max-width: 1200px;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+            padding-bottom: 40px;
+            margin: auto 0;
+        }
+
+        /* Карточки с точной пропорцией 175x262px и плотным обтеканием */
+        .card {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            background: #ffffff;
+            border: 2px solid #cbd5e1;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 175px; 
+            height: 262px; 
+            position: relative;
+            padding: 1px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            border-radius: 10px;
+            display: block;
+        }
+
+        /* Янтарно-коричневая интерактивная подсветка при наведении */
+        .card:hover {
+            transform: translateY(-8px) scale(1.04);
+            border-color: #d97706;
+            box-shadow: 0 16px 30px rgba(217, 119, 6, 0.35);
+        }
+
+        footer {
+            margin-top: auto;
+            font-size: 13px;
+            color: #718096;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        /* Полная мобильная адаптация для смартфонов */
+        @media (max-width: 640px) {
+            body {
+                padding: 12px;
+            }
+
+            .top-nav {
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+                margin-bottom: 15px;
+            }
+
+            .top-left-logo {
+                width: 50px;
+                height: 50px;
+                margin-top: 0;
+                margin-left: 0;
+            }
+
+            header {
+                margin-top: 0;
+            }
+
+            .back-button {
+                padding: 7px 14px;
+                font-size: 12px;
+            }
+
+            h1 {
+                font-size: 20px;
+            }
+
+            .subtitle {
+                font-size: 12px;
+            }
+
+            .grid-container {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+                width: 100%;
+                max-width: 380px;
+                margin: 15px auto;
+            }
+
+            .card {
+                width: 100%;
+                height: auto;
+                aspect-ratio: 2 / 3;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Навигация: Логотип AlmaU и кнопка возврата -->
+    <div class="top-nav">
+        <img src="almau.jpg" alt="AlmaU Logo" class="top-left-logo" onerror="this.src='./almau.png'">
+        <a href="topics.html" class="back-button">← К темам курса</a>
+    </div>
+
+    <header>
+        <h1>Тема 10: Теория игр и стратегическое поведение</h1>
+        <p class="subtitle">
+            Выберите учебный материал: интерактивная презентация, лекционный ридер, практический симулятор матрицы Теории игр, сборник игровых задач и классический ридер/книга.
+        </p>
+    </header>
+
+    <!-- Основная сетка из 5 карточек -->
+    <main class="grid-container">
+        
+        <!-- 1. Презентация (Google Slides) -->
+        <a href="https://docs.google.com/presentation/d/17WKXXgiTU7y361iFplm0S5GlgpBwPmWL/edit?usp=sharing&ouid=109725301150629205728&rtpof=true&sd=true" 
+           target="_blank" rel="noopener noreferrer" class="card" title="Презентация: Теория игр">
+            <img src="pic-preza8.png" alt="Презентация Теория игр" onerror="this.src='./pic-preza8.png'">
+        </a>
+
+        <!-- 2. Электронный конспект / Ридер (Google Docs) -->
+        <a href="https://docs.google.com/document/d/11SqUTjXUXjoBSHplLvLfTseYFrHv8j1Woq2cbyp2yv8/edit?usp=sharing" 
+           target="_blank" rel="noopener noreferrer" class="card" title="Лекционный конспект (Ридер)">
+            <img src="pic-lecture8.png" alt="Лекция Теория игр" onerror="this.src='./pic-lecture8.png'">
+        </a>
+
+        <!-- 3. Симулятор: Задачи Теории игр -->
+        <a href="sim-game-theory-task.html" class="card" title="Интерактивный симулятор матриц Теории игр">
+            <img src="pic-sim-gt.png" alt="Симулятор Теории игр" onerror="this.src='./pic-sim-gt.png'">
+        </a>
+
+        <!-- 4. Практикум / Сборник задач -->
+        <a href="sim-game-theory-tasks.html" class="card" title="Практические задачи по Теории игр">
+            <img src="pic-task8.png" alt="Задачи по Теории игр" onerror="this.src='./pic-task8.png'">
+        </a>
+
+        <!-- 5. Книга / Дополнительное чтение -->
+        <a href="https://loveread.ec/read_book.php?id=45085&p=1" 
+           target="_blank" rel="noopener noreferrer" class="card" title="Книга / Дополнительное чтение">
+            <img src="pic-articles8.png" alt="Книга Теория игр" onerror="this.src='./pic-articles8.png'">
+        </a>
+
+    </main>
+
+    <footer>
+        <p>Разработано для студентов AlmaU 2026 | Дисциплина: Микроэкономика</p>
+        <p>© Almaty Management University | Школа цифровых технологий и экономики</p>
+    </footer>
+
+</body>
+</html>
