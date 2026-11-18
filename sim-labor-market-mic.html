@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рынок труда | Микроэкономика</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.js"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#0b0f19',
+                        cardbg: '#151c2c',
+                        cardborder: '#2a364f',
+                        neoncyan: '#00f2fe',
+                        neonemerald: '#10b981',
+                        neonred: '#ef4444',
+                        neonblue: '#3b82f6',
+                        neonamber: '#f59e0b'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #0b0f19;
+            color: #e2e8f0;
+        }
+
+        .vintage-container {
+            background: #1e293b;
+            border: 1px solid #334155;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+            border-radius: 8px;
+            padding: 12px 14px;
+            color: #f8fafc;
+        }
+
+        .vintage-range {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #0f172a;
+            outline: none;
+            border: 1px solid #475569;
+        }
+
+        .vintage-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 32px;
+            border-radius: 3px;
+            cursor: pointer;
+            border: 1px solid #0f172a;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            background: linear-gradient(90deg, #cbd5e1 0%, #cbd5e1 35%, #dc2626 35%, #dc2626 65%, #cbd5e1 65%, #cbd5e1 100%);
+        }
+
+        .vintage-range::-moz-range-thumb {
+            width: 18px;
+            height: 32px;
+            border-radius: 3px;
+            cursor: pointer;
+            border: 1px solid #0f172a;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            background: linear-gradient(90deg, #cbd5e1 0%, #cbd5e1 35%, #dc2626 35%, #dc2626 65%, #cbd5e1 65%, #cbd5e1 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between">
+
+    <header class="border-b border-cardborder bg-cardbg/95 backdrop-blur sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full border border-neoncyan/50 p-1 bg-white/5 flex items-center justify-center">
+                    <i data-lucide="scale" class="w-5 h-5 text-neoncyan"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-black bg-gradient-to-r from-neoncyan to-neonblue bg-clip-text text-transparent">
+                        <span data-i18n="title">Рынок труда</span>
+                    </h1>
+                    <p class="text-xs text-slate-400" data-i18n="subtitle">Микроэкономика • Равновесие и минимальная заработная плата (Wmin)</p>
+                </div>
+            </div>
+
+            <div class="flex bg-slate-800 p-0.5 rounded-lg border border-slate-600 font-mono text-xs">
+                <button type="button" id="lang-ru" onclick="setLanguage('ru')" class="px-2.5 py-1 rounded bg-neoncyan text-black font-bold transition-all">RU</button>
+                <button type="button" id="lang-en" onclick="setLanguage('en')" class="px-2.5 py-1 rounded text-slate-300 transition-all">EN</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full">
+        <div class="bg-cardbg border border-cardborder rounded-2xl p-6 shadow-xl space-y-6">
+            <div>
+                <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                    <i data-lucide="sliders" class="text-neoncyan"></i>
+                    <span data-i18n="main_header">Рынок труда & Симулятор минимальной заработной платы (Wmin)</span>
+                </h2>
+                <p class="text-xs text-slate-400 mt-1" data-i18n="main_sub">
+                    Интерактивная модель спроса на труд (Ld), предложения труда (Ls) и последствий установления минимальной ставки Wmin.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- ЛЕВАЯ КОЛОНКА: РЕГУЛЯТОР И ТАБЛИЦА СТРАН -->
+                <div class="lg:col-span-5 bg-darkbg p-5 rounded-xl border border-cardborder space-y-4 text-white flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300" data-i18n="wmin_control">Регулятор минимальной зарплаты</h3>
+
+                        <div class="vintage-container space-y-2">
+                            <div class="flex justify-between items-center text-xs font-bold">
+                                <span class="text-red-400 flex items-center gap-1">
+                                    <i data-lucide="dollar-sign" class="w-4 h-4"></i>
+                                    <span data-i18n="wmin_slider">Ставка Wmin ($/час)</span>
+                                </span>
+                                <span id="val-wmin" class="font-mono text-base text-red-400 font-extrabold">$7.25</span>
+                            </div>
+                            <input type="range" id="slider-wmin" min="2.0" max="10.0" step="0.25" value="7.25" class="vintage-range" aria-label="Минимальная ставка заработной платы" oninput="updateLabourMarket()">
+                            <div class="flex justify-between text-[10px] font-mono text-slate-400 pt-0.5">
+                                <span>$2.00</span>
+                                <span class="text-amber-400">We = $5.00</span>
+                                <span>$10.00</span>
+                            </div>
+                        </div>
+
+                        <div id="market-status-box" class="p-3 rounded-lg border text-xs font-mono space-y-1.5">
+                            <div class="flex justify-between">
+                                <span class="text-slate-400" data-i18n="we_label">Равновесная ставка (We):</span>
+                                <span class="font-bold" data-i18n="we_value">$5.00 / час</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400" data-i18n="ld_ls_label">Спрос (Ld) / Предложение (Ls):</span>
+                                <span id="val-ld-ls" class="font-bold text-slate-200">2.8 M / 7.3 M</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-slate-400" data-i18n="gap_label">Баланс рынка:</span>
+                                <span id="val-gap" class="font-bold text-red-400">+4.5 M (Избыток рабочей силы)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2 pt-3 border-t border-slate-700">
+                        <h4 class="text-xs font-bold text-slate-300" data-i18n="stat_title">Примеры установленных ставок минимальной оплаты труда (2026):</h4>
+                        <div class="overflow-y-auto max-h-[260px] pr-1 border border-slate-800 rounded-lg">
+                            <table class="w-full text-[11px] font-mono text-left text-slate-300 border-collapse">
+                                <thead class="sticky top-0 bg-slate-900 z-10">
+                                    <tr class="border-b border-slate-700 font-bold">
+                                        <th class="p-2" data-i18n="th_country">Страна</th>
+                                        <th class="p-2" data-i18n="th_rate">Ставка и период</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="country-wmin-table" class="divide-y divide-slate-800/80">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ПРАВАЯ КОЛОНКА: ГРАФИК РЫНКА ТРУДА -->
+                <div class="lg:col-span-7 bg-white p-5 rounded-xl border border-slate-300 shadow-xl flex flex-col justify-between text-slate-900">
+                    <div class="h-[430px] w-full relative">
+                        <canvas id="laborChart"></canvas>
+                    </div>
+                    <div class="mt-3 p-3.5 rounded-lg bg-slate-100 border border-slate-300 text-xs text-slate-700 leading-relaxed" data-i18n="labor_note">
+                        Зелёная линия — предложение труда (Ls), синяя — спрос на труд (Ld), точка пересечения — равновесие (Le = 5,0 млн; We = $5,00). При Wmin &gt; We красный треугольник отражает избыток рабочей силы (безработицу). При Wmin &lt; We минимальная ставка не связывает рынок; синий треугольник показывает гипотетический дефицит рабочей силы при фиксации ставки ниже равновесной.
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <footer class="border-t border-cardborder bg-cardbg/50 py-3 text-center text-xs text-slate-400">
+        <span data-i18n="footer_text">Микроэкономика</span>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+
+        let currentLang = 'ru';
+
+        const countryData = {
+            ru: [
+                { c: "Австралия", r: "A$26,44 / час" },
+                { c: "Люксембург", r: "€16,02 / час (неквалиф. 18+)" },
+                { c: "Нидерланды", r: "€14,40 / час (21+)" },
+                { c: "Германия", r: "€13,90 / час" },
+                { c: "Великобритания", r: "£12,71 / час (21+)" },
+                { c: "Франция (SMIC)", r: "€12,02 / час" },
+                { c: "Канада (Онтарио)", r: "C$17,95 / час" },
+                { c: "США (федеральная)", r: "$7,25 / час" },
+                { c: "США (Калифорния / штаты)", r: "$16,90+ / час (по штатам)" },
+                { c: "Япония (средневзвеш.)", r: "¥1 065 / час" },
+                { c: "Южная Корея", r: "₩10 320 / час" },
+                { c: "Польша", r: "4 806 zł / месяц (~31,40 zł/ч)" },
+                { c: "Турция", r: "₺22 104 / месяц (нетто)" },
+                { c: "Казахстан (МЗП)", r: "₸85 000 / месяц" },
+                { c: "Узбекистан (МРОТ)", r: "1 155 000 сум / месяц" },
+                { c: "Кыргызстан", r: "2 865 сом / месяц" }
+            ],
+            en: [
+                { c: "Australia", r: "A$26.44 / hour" },
+                { c: "Luxembourg", r: "€16.02 / hour (unskilled 18+)" },
+                { c: "Netherlands", r: "€14.40 / hour (21+)" },
+                { c: "Germany", r: "€13.90 / hour" },
+                { c: "United Kingdom", r: "£12.71 / hour (21+)" },
+                { c: "France (SMIC)", r: "€12.02 / hour" },
+                { c: "Canada (Ontario)", r: "C$17.95 / hour" },
+                { c: "USA (Federal)", r: "$7.25 / hour" },
+                { c: "USA (California / States)", r: "$16.90+ / hour (varies)" },
+                { c: "Japan (Weighted Avg.)", r: "¥1,065 / hour" },
+                { c: "South Korea", r: "₩10,320 / hour" },
+                { c: "Poland", r: "4,806 zł / month (~31.40 zł/h)" },
+                { c: "Turkey", r: "₺22,104 / month (net)" },
+                { c: "Kazakhstan", r: "₸85,000 / month" },
+                { c: "Uzbekistan", r: "1,155,000 UZS / month" },
+                { c: "Kyrgyzstan", r: "2,865 KGS / month" }
+            ]
+        };
+
+        const translations = {
+            ru: {
+                title: "Рынок труда",
+                subtitle: "Микроэкономика • Равновесие и минимальная заработная плата (Wmin)",
+                main_header: "Рынок труда & Симулятор минимальной заработной платы (Wmin)",
+                main_sub: "Интерактивная модель спроса на труд (Ld), предложения труда (Ls) и последствий установления минимальной ставки Wmin.",
+                wmin_control: "Регулятор минимальной зарплаты",
+                wmin_slider: "Ставка Wmin ($/час)",
+                we_label: "Равновесная ставка (We):",
+                we_value: "$5.00 / час",
+                ld_ls_label: "Спрос (Ld) / Предложение (Ls):",
+                gap_label: "Баланс рынка:",
+                stat_title: "Примеры установленных ставок минимальной оплаты труда (2026):",
+                th_country: "Страна",
+                th_rate: "Ставка и период",
+                labor_note: "Зелёная линия — предложение труда (Ls), синяя — спрос на труд (Ld), точка пересечения — равновесие (Le = 5,0 млн; We = $5,00). При Wmin > We красный треугольник отражает избыток рабочей силы (безработицу). При Wmin < We минимальная ставка не связывает рынок; синий треугольник показывает гипотетический дефицит рабочей силы при фиксации ставки ниже равновесной.",
+                chart_ld: "Спрос на труд (Ld)",
+                chart_ls: "Предложение труда (Ls)",
+                chart_y_axis: "Ставка зарплаты ($/час)",
+                chart_x_axis: "Количество труда (млн чел.)",
+                zone_surplus: "Избыток рабочей силы",
+                zone_shortage: "Дефицит рабочей силы",
+                footer_text: "Микроэкономика"
+            },
+            en: {
+                title: "Labor Market",
+                subtitle: "Microeconomics • Equilibrium and Minimum Wage (Wmin)",
+                main_header: "Labor Market & Minimum Wage Simulator (Wmin)",
+                main_sub: "Interactive model of labor demand (Ld), labor supply (Ls), and the effects of setting a statutory minimum wage Wmin.",
+                wmin_control: "Minimum Wage Regulator",
+                wmin_slider: "Wmin Rate ($/hour)",
+                we_label: "Equilibrium Rate (We):",
+                we_value: "$5.00 / hour",
+                ld_ls_label: "Demand (Ld) / Supply (Ls):",
+                gap_label: "Market Balance:",
+                stat_title: "Examples of Statutory Minimum Wage Rates (2026):",
+                th_country: "Country",
+                th_rate: "Rate & Period",
+                labor_note: "The green line is labor supply (Ls), the blue line is labor demand (Ld), and their intersection is equilibrium (Le = 5.0M; We = $5.00). When Wmin > We, the red triangle shows labor surplus (unemployment). When Wmin < We, the minimum wage is nonbinding; the blue triangle shows a hypothetical labor shortage if the wage were fixed below equilibrium.",
+                chart_ld: "Labor Demand (Ld)",
+                chart_ls: "Labor Supply (Ls)",
+                chart_y_axis: "Wage Rate ($/hour)",
+                chart_x_axis: "Labor Quantity (M people)",
+                zone_surplus: "Labor Surplus",
+                zone_shortage: "Labor Shortage",
+                footer_text: "Microeconomics"
+            }
+        };
+
+        function renderCountryTable() {
+            const tbody = document.getElementById('country-wmin-table');
+            tbody.innerHTML = '';
+            countryData[currentLang].forEach(item => {
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-slate-800/50 transition-colors';
+                tr.innerHTML = `<td class="p-2 font-bold text-slate-200">${item.c}</td><td class="p-2 text-slate-300">${item.r}</td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.documentElement.lang = lang;
+            document.title = lang === 'ru' ? 'Рынок труда | Микроэкономика' : 'Labor Market | Microeconomics';
+            document.getElementById('lang-ru').className = lang === 'ru' ? 'px-2.5 py-1 rounded bg-neoncyan text-black font-bold transition-all' : 'px-2.5 py-1 rounded text-slate-300 transition-all';
+            document.getElementById('lang-en').className = lang === 'en' ? 'px-2.5 py-1 rounded bg-neoncyan text-black font-bold transition-all' : 'px-2.5 py-1 rounded text-slate-300 transition-all';
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (translations[lang][key]) {
+                    el.innerText = translations[lang][key];
+                }
+            });
+
+            renderCountryTable();
+            updateLabourMarket();
+
+            if (laborChart) {
+                const t = translations[currentLang];
+                laborChart.data.datasets[0].label = t.chart_ld;
+                laborChart.data.datasets[1].label = t.chart_ls;
+                laborChart.options.scales.y.title.text = t.chart_y_axis;
+                laborChart.options.scales.x.title.text = t.chart_x_axis;
+                laborChart.update();
+            }
+        }
+
+        let laborChart = null;
+
+        function initLaborChart() {
+            const ctx = document.getElementById('laborChart').getContext('2d');
+            const t = translations[currentLang];
+            laborChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    datasets: [
+                        {
+                            label: t.chart_ld,
+                            data: [{ x: 0, y: 10 }, { x: 10, y: 0 }],
+                            parsing: false,
+                            borderColor: '#2563eb',
+                            borderWidth: 3.5,
+                            pointRadius: 0,
+                            tension: 0,
+                            fill: false
+                        },
+                        {
+                            label: t.chart_ls,
+                            data: [{ x: 0, y: 0 }, { x: 10, y: 10 }],
+                            parsing: false,
+                            borderColor: '#16a34a',
+                            borderWidth: 3.5,
+                            pointRadius: 0,
+                            tension: 0,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            title: { display: true, text: t.chart_y_axis, color: '#334155', font: { weight: 'bold' } },
+                            min: 0,
+                            max: 11,
+                            grid: { color: '#e2e8f0' },
+                            ticks: { color: '#334155', callback: v => '$' + v }
+                        },
+                        x: {
+                            type: 'linear',
+                            title: { display: true, text: t.chart_x_axis, color: '#334155', font: { weight: 'bold' } },
+                            min: 0,
+                            max: 10,
+                            grid: { color: '#f1f5f9' },
+                            ticks: { color: '#334155', stepSize: 1 }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: { color: '#0f172a', font: { weight: 'bold', size: 12 } }
+                        }
+                    }
+                },
+                plugins: [{
+                    id: 'laborMarketTriangles',
+
+                    beforeDatasetsDraw: (chart) => {
+                        const wmin = parseFloat(document.getElementById('slider-wmin').value);
+                        const we = 5.0;
+                        if (wmin === we) return;
+
+                        const yScale = chart.scales.y;
+                        const xScale = chart.scales.x;
+                        const yPos = yScale.getPixelForValue(wmin);
+                        const yWe = yScale.getPixelForValue(we);
+                        const xWe = xScale.getPixelForValue(5);
+                        const qDemand = Math.max(0, 10 - wmin);
+                        const qSupply = wmin;
+                        const xDemand = xScale.getPixelForValue(qDemand);
+                        const xSupply = xScale.getPixelForValue(qSupply);
+
+                        const ctx = chart.ctx;
+                        ctx.save();
+                        ctx.beginPath();
+                        ctx.rect(
+                            chart.chartArea.left,
+                            chart.chartArea.top,
+                            chart.chartArea.right - chart.chartArea.left,
+                            chart.chartArea.bottom - chart.chartArea.top
+                        );
+                        ctx.clip();
+
+                        ctx.fillStyle = wmin > we
+                            ? 'rgba(239, 68, 68, 0.26)'
+                            : 'rgba(37, 99, 235, 0.26)';
+                        ctx.beginPath();
+                        ctx.moveTo(xWe, yWe);
+                        ctx.lineTo(xDemand, yPos);
+                        ctx.lineTo(xSupply, yPos);
+                        ctx.closePath();
+                        ctx.fill();
+                        ctx.restore();
+                    },
+
+                    afterDatasetsDraw: (chart) => {
+                        const wmin = parseFloat(document.getElementById('slider-wmin').value);
+                        const we = 5.0;
+                        const t = translations[currentLang];
+                        const yScale = chart.scales.y;
+                        const xScale = chart.scales.x;
+                        const yPos = yScale.getPixelForValue(wmin);
+                        const yWe = yScale.getPixelForValue(we);
+                        const xWe = xScale.getPixelForValue(5);
+                        const qDemand = Math.max(0, 10 - wmin);
+                        const qSupply = wmin;
+                        const xDemand = xScale.getPixelForValue(qDemand);
+                        const xSupply = xScale.getPixelForValue(qSupply);
+                        const ctx = chart.ctx;
+                        ctx.save();
+
+                        // Пунктирные проекции равновесия We = $5.00
+                        ctx.setLineDash([3, 3]);
+                        ctx.strokeStyle = '#94a3b8';
+                        ctx.lineWidth = 1.2;
+                        ctx.beginPath();
+                        ctx.moveTo(chart.chartArea.left, yWe);
+                        ctx.lineTo(xWe, yWe);
+                        ctx.lineTo(xWe, chart.chartArea.bottom);
+                        ctx.stroke();
+
+                        // Линия Wmin
+                        ctx.setLineDash([]);
+                        ctx.beginPath();
+                        ctx.lineWidth = 3;
+                        ctx.strokeStyle = wmin >= we ? '#dc2626' : '#2563eb';
+                        ctx.moveTo(chart.chartArea.left, yPos);
+                        ctx.lineTo(chart.chartArea.right, yPos);
+                        ctx.stroke();
+
+                        // Подпись ставки Wmin слева
+                        ctx.fillStyle = wmin >= we ? '#dc2626' : '#1d4ed8';
+                        ctx.font = 'bold 12px monospace';
+                        ctx.textAlign = 'left';
+                        ctx.fillText(`Wmin = $${wmin.toFixed(2)}`, chart.chartArea.left + 8, yPos - 7);
+
+                        // Подпись равновесной точки We
+                        ctx.fillStyle = '#0f172a';
+                        ctx.font = 'bold 11px sans-serif';
+                        ctx.fillText('E (Le=5, We=$5)', xWe + 8, yWe + 4);
+
+                        if (wmin !== we) {
+                            const deltaL = Math.abs(qSupply - qDemand).toFixed(1);
+                            const midX = (xDemand + xSupply) / 2;
+
+                            // Вертикальные проекции Ld и Ls
+                            ctx.setLineDash([4, 4]);
+                            ctx.strokeStyle = '#64748b';
+                            ctx.lineWidth = 1.2;
+                            ctx.beginPath();
+                            ctx.moveTo(xDemand, yPos);
+                            ctx.lineTo(xDemand, chart.chartArea.bottom);
+                            ctx.stroke();
+
+                            ctx.beginPath();
+                            ctx.moveTo(xSupply, yPos);
+                            ctx.lineTo(xSupply, chart.chartArea.bottom);
+                            ctx.stroke();
+
+                            ctx.setLineDash([]);
+                            ctx.textAlign = 'center';
+
+                            if (wmin > we) {
+                                // Надпись для красной зоны вверху (Избыток рабочей силы)
+                                const labelY = Math.max(chart.chartArea.top + 16, yPos - 22);
+                                ctx.fillStyle = '#991b1b';
+                                ctx.font = 'bold 12px sans-serif';
+                                ctx.fillText(`${t.zone_surplus}: +${deltaL} M`, midX, labelY);
+
+                                ctx.font = 'bold 10px monospace';
+                                ctx.fillStyle = '#2563eb';
+                                ctx.fillText(`Ld=${qDemand.toFixed(1)}`, xDemand, chart.chartArea.bottom - 6);
+                                ctx.fillStyle = '#16a34a';
+                                ctx.fillText(`Ls=${qSupply.toFixed(1)}`, xSupply, chart.chartArea.bottom - 6);
+                            } else {
+                                // Надпись для синей зоны внизу (Дефицит рабочей силы)
+                                const labelY = Math.min(chart.chartArea.bottom - 20, yPos + 24);
+                                ctx.fillStyle = '#1e40af';
+                                ctx.font = 'bold 12px sans-serif';
+                                ctx.fillText(`${t.zone_shortage}: -${deltaL} M`, midX, labelY);
+
+                                ctx.font = 'bold 10px monospace';
+                                ctx.fillStyle = '#16a34a';
+                                ctx.fillText(`Ls=${qSupply.toFixed(1)}`, xSupply, chart.chartArea.bottom - 6);
+                                ctx.fillStyle = '#2563eb';
+                                ctx.fillText(`Ld=${qDemand.toFixed(1)}`, xDemand, chart.chartArea.bottom - 6);
+                            }
+                        }
+
+                        // Узловые точки
+                        const drawPoint = (x, y, color, radius = 4.5) => {
+                            ctx.beginPath();
+                            ctx.fillStyle = color;
+                            ctx.arc(x, y, radius, 0, Math.PI * 2);
+                            ctx.fill();
+                        };
+                        drawPoint(xDemand, yPos, '#2563eb');
+                        drawPoint(xSupply, yPos, '#16a34a');
+                        drawPoint(xWe, yWe, '#0f172a', 5);
+
+                        ctx.restore();
+                    }
+                }]
+            });
+        }
+
+        function updateLabourMarket() {
+            const wmin = parseFloat(document.getElementById('slider-wmin').value);
+            const valEl = document.getElementById('val-wmin');
+            valEl.innerText = '$' + wmin.toFixed(2);
+            valEl.className = wmin >= 5.0
+                ? 'font-mono text-base text-red-400 font-extrabold'
+                : 'font-mono text-base text-blue-400 font-extrabold';
+
+            const we = 5.0;
+            const ld = Math.max(0, 10 - wmin);
+            const ls = wmin;
+            document.getElementById('val-ld-ls').innerText = `${ld.toFixed(1)} M / ${ls.toFixed(1)} M`;
+
+            const gapBox = document.getElementById('market-status-box');
+            const gapVal = document.getElementById('val-gap');
+
+            if (wmin > we) {
+                const surplus = (ls - ld).toFixed(1);
+                gapVal.innerText = currentLang === 'ru'
+                    ? `+${surplus} M (Избыток рабочей силы)`
+                    : `+${surplus} M (Labor Surplus)`;
+                gapVal.className = 'font-bold text-red-400';
+                gapBox.className = 'p-3 rounded-lg border border-red-500/40 bg-red-950/30 text-xs font-mono space-y-1.5';
+            } else if (wmin < we) {
+                const deficit = (ld - ls).toFixed(1);
+                gapVal.innerText = currentLang === 'ru'
+                    ? `-${deficit} M (Дефицит рабочей силы)`
+                    : `-${deficit} M (Labor Shortage)`;
+                gapVal.className = 'font-bold text-blue-400';
+                gapBox.className = 'p-3 rounded-lg border border-blue-500/40 bg-blue-950/30 text-xs font-mono space-y-1.5';
+            } else {
+                gapVal.innerText = currentLang === 'ru'
+                    ? `0.0 M (Рыночное равновесие)`
+                    : `0.0 M (Market Equilibrium)`;
+                gapVal.className = 'font-bold text-emerald-400';
+                gapBox.className = 'p-3 rounded-lg border border-emerald-500/40 bg-emerald-950/20 text-xs font-mono space-y-1.5';
+            }
+
+            if (laborChart) laborChart.update();
+        }
+
+        window.onload = () => {
+            renderCountryTable();
+            initLaborChart();
+            updateLabourMarket();
+        };
+    </script>
+</body>
+</html>

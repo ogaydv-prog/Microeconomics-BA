@@ -1,0 +1,2408 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рынки факторов производства | Microeconomics Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #121417;
+            --bg-surface: #1b1e24;
+            --bg-panel: #22262e;
+            --bg-elevated: #2a2f3a;
+            --border-subtle: #323846;
+            --border-bright: #464e61;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+
+            --neon-blue: #38bdf8;
+            --neon-blue-glow: rgba(56, 189, 248, 0.35);
+            --neon-red: #fb7185;
+            --neon-red-glow: rgba(251, 113, 133, 0.35);
+            --neon-emerald: #34d399;
+            --neon-amber: #fbbf24;
+            --neon-violet: #a78bfa;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at 15% 0%, #1d222b 0%, var(--bg-main) 55%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.55;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        header {
+            background: rgba(18, 20, 23, 0.92);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border-subtle);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .container {
+            max-width: 1380px;
+            margin: 0 auto;
+            padding: 0 24px;
+            width: 100%;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-badge {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(251, 113, 133, 0.2));
+            border: 1px solid var(--neon-blue);
+            box-shadow: 0 0 18px var(--neon-blue-glow);
+            display: grid;
+            place-items: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 800;
+            font-size: 16px;
+            color: var(--neon-blue);
+        }
+
+        .brand h1 {
+            font-size: clamp(18px, 2vw, 24px);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+        }
+
+        .brand p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .lang-switch {
+            display: flex;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 3px;
+        }
+
+        .lang-btn {
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .lang-btn.active {
+            background: var(--neon-blue);
+            color: #0b0f14;
+            box-shadow: 0 0 12px var(--neon-blue-glow);
+        }
+
+        .tabs-bar {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-bottom: 3px solid transparent;
+            border-radius: 10px 10px 0 0;
+            color: var(--text-secondary);
+            padding: 11px 16px;
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+            background: var(--bg-panel);
+        }
+
+        .tab-btn.active {
+            background: var(--bg-panel);
+            color: var(--text-primary);
+            border-color: var(--border-bright);
+            border-bottom-color: var(--tab-accent, var(--neon-blue));
+            box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.25);
+        }
+
+        main {
+            flex-grow: 1;
+            padding: 28px 0 56px;
+        }
+
+        .view-section {
+            display: none;
+            animation: fadeIn 0.28s ease;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-box {
+            background: linear-gradient(125deg, rgba(56, 189, 248, 0.08), rgba(251, 113, 133, 0.05) 45%, var(--bg-surface));
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 22px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+        }
+
+        .eyebrow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--neon-blue);
+            margin-bottom: 6px;
+        }
+
+        .hero-box h2 {
+            font-size: clamp(20px, 2.5vw, 28px);
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .hero-box p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            max-width: 940px;
+        }
+
+        .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+        .sim-grid { display: grid; grid-template-columns: 375px minmax(0, 1fr); gap: 20px; align-items: start; }
+
+        .card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .card p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .callout {
+            background: var(--bg-panel);
+            border-left: 4px solid var(--neon-blue);
+            border-radius: 0 12px 12px 0;
+            padding: 14px 16px;
+            margin-top: 14px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .callout.red { border-left-color: var(--neon-red); }
+        .callout.amber { border-left-color: var(--neon-amber); }
+        .callout.emerald { border-left-color: var(--neon-emerald); }
+
+        .callout strong {
+            color: var(--text-primary);
+            display: block;
+            margin-bottom: 3px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .formula-box {
+            background: #0e1013;
+            border: 1px solid var(--border-bright);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--neon-blue);
+            margin: 12px 0;
+            text-align: center;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.45);
+        }
+
+        /* =========================================================
+           VINTAGE RADIO TUNER SLIDER (Retro Receiver Dial Style)
+           ========================================================= */
+        .vintage-control {
+            background: #15181d;
+            border: 1px solid #2e3440;
+            border-radius: 12px;
+            padding: 14px 16px;
+            box-shadow: inset 0 3px 12px rgba(0, 0, 0, 0.65);
+            margin-bottom: 14px;
+        }
+
+        .vintage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            gap: 8px;
+        }
+
+        .vintage-readout {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background: #0b0d10;
+            border: 1px solid #323846;
+            white-space: nowrap;
+        }
+
+        .radio-dial-wrap {
+            position: relative;
+            padding: 10px 6px 16px;
+            background: linear-gradient(180deg, #0c0e12 0%, #191d24 100%);
+            border: 1px solid #383f4e;
+            border-radius: 8px;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.8), 0 1px 0 rgba(255,255,255,0.05);
+        }
+
+        .radio-ticks {
+            position: absolute;
+            left: 14px;
+            right: 14px;
+            bottom: 4px;
+            height: 8px;
+            background-image: repeating-linear-gradient(
+                to right,
+                #64748b 0px,
+                #64748b 1px,
+                transparent 1px,
+                transparent 10%
+            );
+            opacity: 0.65;
+            pointer-events: none;
+        }
+
+        .radio-ticks::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: -3px;
+            width: 2px;
+            height: 11px;
+            background: var(--neon-amber);
+            transform: translateX(-50%);
+        }
+
+        input[type="range"].vintage-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            background: #262b34;
+            border-radius: 3px;
+            outline: none;
+            position: relative;
+            z-index: 2;
+            cursor: pointer;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.9);
+        }
+
+        input[type="range"].vintage-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 28px;
+            border-radius: 4px;
+            border: 1.5px solid #94a3b8;
+            cursor: grab;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.75), 0 0 12px var(--thumb-glow, rgba(56, 189, 248, 0.5));
+            background: linear-gradient(
+                90deg,
+                #1e232b 0%,
+                #333b48 36%,
+                var(--thumb-stripe, #38bdf8) 44%,
+                var(--thumb-stripe, #38bdf8) 56%,
+                #333b48 64%,
+                #1e232b 100%
+            );
+            transition: transform 0.12s ease, box-shadow 0.12s ease;
+        }
+
+        input[type="range"].vintage-slider::-webkit-slider-thumb:hover {
+            transform: scaleY(1.08);
+        }
+
+        input[type="range"].vintage-slider::-webkit-slider-thumb:active {
+            cursor: grabbing;
+        }
+
+        input[type="range"].vintage-slider::-moz-range-thumb {
+            width: 18px;
+            height: 28px;
+            border-radius: 4px;
+            border: 1.5px solid #94a3b8;
+            cursor: grab;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.75), 0 0 12px var(--thumb-glow, rgba(56, 189, 248, 0.5));
+            background: linear-gradient(
+                90deg,
+                #1e232b 0%,
+                #333b48 36%,
+                var(--thumb-stripe, #38bdf8) 44%,
+                var(--thumb-stripe, #38bdf8) 56%,
+                #333b48 64%,
+                #1e232b 100%
+            );
+        }
+
+        .slider-blue {
+            --thumb-stripe: #38bdf8;
+            --thumb-glow: rgba(56, 189, 248, 0.65);
+        }
+        .slider-red {
+            --thumb-stripe: #fb7185;
+            --thumb-glow: rgba(251, 113, 133, 0.65);
+        }
+        .slider-emerald {
+            --thumb-stripe: #34d399;
+            --thumb-glow: rgba(52, 211, 153, 0.65);
+        }
+        .slider-amber {
+            --thumb-stripe: #fbbf24;
+            --thumb-glow: rgba(251, 191, 36, 0.65);
+        }
+
+        .preset-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .btn-preset {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            padding: 9px 10px;
+            border-radius: 9px;
+            font-size: 11px;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-preset:hover {
+            border-color: var(--neon-blue);
+            background: var(--bg-elevated);
+        }
+
+        .btn-preset.active {
+            border-color: var(--neon-blue);
+            background: rgba(56, 189, 248, 0.12);
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+        }
+
+        .btn-reset {
+            width: 100%;
+            margin-top: 10px;
+            background: var(--bg-elevated);
+            border: 1px solid var(--border-bright);
+            color: var(--text-primary);
+            padding: 9px;
+            border-radius: 9px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-reset:hover {
+            border-color: var(--neon-amber);
+            color: var(--neon-amber);
+        }
+
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .kpi-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+        }
+
+        .kpi-card span {
+            font-size: 10.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-secondary);
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 700;
+        }
+
+        .kpi-card strong {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 19px;
+            font-weight: 800;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12.5px;
+            margin-top: 10px;
+        }
+
+        .data-table th, .data-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border-subtle);
+            text-align: left;
+        }
+
+        .data-table th {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            background: var(--bg-panel);
+        }
+
+        .data-table tr.highlight-row {
+            background: rgba(56, 189, 248, 0.12);
+        }
+
+        .svg-box {
+            background: #14171c;
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 14px;
+            position: relative;
+        }
+
+        .svg-box svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .legend-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 10px;
+            font-size: 11.5px;
+            color: var(--text-secondary);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-line {
+            width: 18px;
+            height: 3px;
+            border-radius: 2px;
+        }
+
+        .chain-flow {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .chain-node {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .chain-node strong {
+            display: block;
+            font-size: 12px;
+            color: var(--neon-blue);
+            margin-bottom: 4px;
+        }
+
+        .chain-node span {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .quiz-item {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .quiz-item summary {
+            padding: 14px 16px;
+            font-weight: 700;
+            font-size: 13.5px;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-primary);
+        }
+
+        .quiz-item summary::-webkit-details-marker { display: none; }
+
+        .quiz-item summary::after {
+            content: "+";
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 18px;
+            color: var(--neon-blue);
+        }
+
+        .quiz-item[open] summary::after {
+            content: "−";
+            color: var(--neon-red);
+        }
+
+        .quiz-answer {
+            padding: 10px 16px 14px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            border-top: 1px dashed var(--border-subtle);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10.5px;
+            font-weight: 700;
+        }
+
+        .badge-blue { background: rgba(56, 189, 248, 0.15); color: var(--neon-blue); border: 1px solid rgba(56, 189, 248, 0.35); }
+        .badge-red { background: rgba(251, 113, 133, 0.15); color: var(--neon-red); border: 1px solid rgba(251, 113, 133, 0.35); }
+        .badge-emerald { background: rgba(52, 211, 153, 0.15); color: var(--neon-emerald); border: 1px solid rgba(52, 211, 153, 0.35); }
+        .badge-amber { background: rgba(251, 191, 36, 0.15); color: var(--neon-amber); border: 1px solid rgba(251, 191, 36, 0.35); }
+
+        @media (max-width: 1024px) {
+            .sim-grid, .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .chain-flow { grid-template-columns: repeat(2, 1fr); }
+            .kpi-row { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <div class="topbar">
+            <div class="brand">
+                <div class="brand-badge">FM</div>
+                <div>
+                    <h1 data-i18n="mainTitle">Рынки факторов производства</h1>
+                    <p data-i18n="mainSub">Микроэкономика • Производный спрос, предельный продукт, рынок труда, земля и капитал</p>
+                </div>
+            </div>
+            <div class="lang-switch">
+                <button class="lang-btn active" id="btnRu" onclick="setLang('ru')">РУС</button>
+                <button class="lang-btn" id="btnEn" onclick="setLang('en')">ENG</button>
+            </div>
+        </div>
+
+        <nav class="tabs-bar" role="tablist">
+            <button class="tab-btn active" style="--tab-accent: #38bdf8" data-tab="derived" onclick="switchTab('derived')">
+                01 · <span data-i18n="tab1">Логика и производный спрос</span>
+            </button>
+            <button class="tab-btn" style="--tab-accent: #34d399" data-tab="mpl" onclick="switchTab('mpl')">
+                02 · <span data-i18n="tab2">Предельный продукт труда (MPL & VMPL)</span>
+            </button>
+            <button class="tab-btn" style="--tab-accent: #fb7185" data-tab="labor" onclick="switchTab('labor')">
+                03 · <span data-i18n="tab3">Рынок труда (Figures 5 & 6)</span>
+            </button>
+            <button class="tab-btn" style="--tab-accent: #34d399" data-tab="supplylab" onclick="switchTab('supplylab')">
+                04 · <span data-i18n="tabSupply">Труд и досуг</span>
+            </button>
+            <button class="tab-btn" style="--tab-accent: #fbbf24" data-tab="monopsony" onclick="switchTab('monopsony')">
+                05 · <span data-i18n="tabMonopsony">Монопсония</span>
+            </button>
+            <button class="tab-btn" style="--tab-accent: #a78bfa" data-tab="wagediff" onclick="switchTab('wagediff')">
+                06 · <span data-i18n="tabWageDiff">Различия в оплате</span>
+            </button>
+            <button class="tab-btn" style="--tab-accent: #fbbf24" data-tab="landcap" onclick="switchTab('landcap')">
+                07 · <span data-i18n="tab4">Производительность, земля и капитал</span>
+            </button>
+            <button class="tab-btn" style="--tab-accent: #a78bfa" data-tab="summary" onclick="switchTab('summary')">
+                08 · <span data-i18n="tab5">Матрица шоков и самопроверка</span>
+            </button>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+
+    <!-- =====================================================================
+         TAB 1: DERIVED DEMAND & CHAPTER MAP
+         ===================================================================== -->
+    <section id="tab-derived" class="view-section active">
+        <div class="hero-box">
+            <div class="eyebrow" data-i18n="t1Eye">Базовая идея темы</div>
+            <h2 data-i18n="t1Title">Производный спрос: от рынка конечного продукта к доходам факторов</h2>
+            <p data-i18n="t1Lead">Факторы производства (труд, земля, капитал) нужны фирме не сами по себе, а потому, что они создают выпуск, который можно продать. В конкурентном рынке фирма нанимает фактор до точки, где цена фактора равна стоимости его предельного продукта: W = VMPL = P × MPL.</p>
+        </div>
+
+        <div class="card" style="margin-bottom: 18px;">
+            <h3>
+                <span data-i18n="chainTitle">Логическая цепочка формирования дохода фактора</span>
+                <span class="badge badge-blue">DERIVED DEMAND</span>
+            </h3>
+            <div class="chain-flow" id="chainFlow"></div>
+        </div>
+
+        <div class="card" style="margin-bottom: 18px;">
+            <h3>
+                <span data-i18n="dualTitle">Две связанные арены: как рынок продукта определяет спрос на труд</span>
+                <span class="badge badge-emerald" id="applePriceBadge">Цена яблок P = 10</span>
+            </h3>
+            <p style="margin-bottom: 14px;" data-i18n="dualDesc">Сдвиньте ползунок потребительского спроса на продукт (яблоки): рост спроса повышает цену продукта P, что увеличивает VMPL = P × MPL и сдвигает спрос на труд D вправо.</p>
+
+            <div class="vintage-control">
+                <div class="vintage-header">
+                    <span style="color: var(--neon-blue);">● <span data-i18n="appleSliderLabel">Спрос потребителей на продукт (яблоки):</span></span>
+                    <span class="vintage-readout" style="color: var(--neon-blue);" id="appleDemandVal">Базовый (P = 10)</span>
+                </div>
+                <div class="radio-dial-wrap">
+                    <div class="radio-ticks"></div>
+                    <input type="range" id="appleDemandSlider" class="vintage-slider slider-blue" min="-40" max="60" step="10" value="0">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="svg-box">
+                    <div style="font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--neon-blue);" data-i18n="prodMarketTitle">Арена 1: Рынок конечного продукта (Q, P)</div>
+                    <svg id="svgProductMarket" viewBox="0 0 460 250"></svg>
+                </div>
+                <div class="svg-box">
+                    <div style="font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--neon-red);" data-i18n="labMarketLinkTitle">Арена 2: Рынок труда сборщиков (L, W)</div>
+                    <svg id="svgLinkedLabor" viewBox="0 0 460 250"></svg>
+                </div>
+            </div>
+
+            <div class="callout" style="margin-top: 14px;">
+                <strong data-i18n="notConfuseTitle">Не путать!</strong>
+                <span data-i18n="notConfuseText">Спрос на труд не совпадает со спросом на продукт. Он выводится из спроса на продукт через цену выпуска P и производительность работника MPL.</span>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <h3 data-i18n="symbolsTitle">Ключевые обозначения</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th data-i18n="colSym">Обозначение</th>
+                            <th data-i18n="colMean">Смысл</th>
+                            <th data-i18n="colForm">Формула / Единица</th>
+                        </tr>
+                    </thead>
+                    <tbody id="symbolsBody"></tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h3 data-i18n="assumpTitle">Предпосылки базовой модели</h3>
+                <div id="assumptionsList" style="display: grid; gap: 10px; margin-top: 10px;"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 2: MARGINAL PRODUCT OF LABOR (MPL & VMPL)
+         ===================================================================== -->
+    <section id="tab-mpl" class="view-section">
+        <div class="hero-box">
+            <div class="eyebrow" data-i18n="t2Eye">Производственная функция и решение о найме</div>
+            <h2 data-i18n="t2Title">Предельный продукт труда (MPL) и стоимость предельного продукта (VMPL)</h2>
+            <p data-i18n="t2Lead">При неизменных земле и капитале каждый следующий работник добавляет всё меньше выпуска (убывающий MPL). Фирма переводит физический прирост в деньги (VMPL = P × MPL) и нанимает работников до тех пор, пока VMPL ≥ W.</p>
+        </div>
+
+        <div class="sim-grid" style="margin-bottom: 20px;">
+            <div class="card">
+                <h3 data-i18n="prodControlTitle">Симулятор яблоневого сада</h3>
+                <p style="margin-bottom: 14px;" data-i18n="prodControlDesc">Увеличивайте число работников L от 0 до 5, чтобы проследить отрисовку производственной функции Q(L), снижение угла наклона и падение предельного продукта MPL.</p>
+
+                <div class="vintage-control">
+                    <div class="vintage-header">
+                        <span style="color: var(--neon-emerald);">● <span data-i18n="workersSliderLabel">Число работников (L):</span></span>
+                        <span class="vintage-readout" style="color: var(--neon-emerald);" id="workersVal">5 чел.</span>
+                    </div>
+                    <div class="radio-dial-wrap">
+                        <div class="radio-ticks"></div>
+                        <input type="range" id="workersSlider" class="vintage-slider slider-emerald" min="0" max="5" step="1" value="5">
+                    </div>
+                </div>
+
+                <div class="vintage-control">
+                    <div class="vintage-header">
+                        <span style="color: var(--neon-blue);">● <span data-i18n="pricePSliderLabel">Цена продукта P (за бушель):</span></span>
+                        <span class="vintage-readout" style="color: var(--neon-blue);" id="pricePVal">10</span>
+                    </div>
+                    <div class="radio-dial-wrap">
+                        <div class="radio-ticks"></div>
+                        <input type="range" id="pricePSlider" class="vintage-slider slider-blue" min="5" max="20" step="1" value="10">
+                    </div>
+                </div>
+
+                <div class="vintage-control">
+                    <div class="vintage-header">
+                        <span style="color: var(--neon-red);">● <span data-i18n="wageWSliderLabel">Рыночная зарплата W:</span></span>
+                        <span class="vintage-readout" style="color: var(--neon-red);" id="wageWVal">500</span>
+                    </div>
+                    <div class="radio-dial-wrap">
+                        <div class="radio-ticks"></div>
+                        <input type="range" id="wageWSlider" class="vintage-slider slider-red" min="150" max="1100" step="50" value="500">
+                    </div>
+                </div>
+
+                <div class="formula-box">
+                    MPL = ΔQ / ΔL &nbsp;|&nbsp; VMPL = P × MPL = W
+                </div>
+
+                <div class="callout emerald">
+                    <strong data-i18n="hiringRuleTitle">Решение фирмы о найме:</strong>
+                    <span id="hiringVerdictText"></span>
+                </div>
+            </div>
+
+            <div style="display: grid; gap: 18px;">
+                <div class="kpi-row">
+                    <div class="kpi-card">
+                        <span data-i18n="kpiOut">Общий выпуск Q</span>
+                        <strong style="color: var(--neon-blue);" id="kpiQ">300</strong>
+                    </div>
+                    <div class="kpi-card">
+                        <span data-i18n="kpiMpl">Последний MPL</span>
+                        <strong style="color: var(--neon-emerald);" id="kpiMPL">20</strong>
+                    </div>
+                    <div class="kpi-card">
+                        <span data-i18n="kpiOptL">Оптимальный найм L*</span>
+                        <strong style="color: var(--neon-amber);" id="kpiOptL">3 чел.</strong>
+                    </div>
+                    <div class="kpi-card">
+                        <span data-i18n="kpiProfit">Суммарная Δπ</span>
+                        <strong style="color: var(--neon-emerald);" id="kpiTotalProfit">+900</strong>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="svg-box">
+                        <div style="font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--neon-emerald);" data-i18n="prodCurveHeader">Производственная функция Q(L) и прирост MPL</div>
+                        <svg id="svgProdFunc" viewBox="0 0 460 270"></svg>
+                    </div>
+                    <div class="svg-box">
+                        <div style="font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--neon-blue);" data-i18n="vmplCurveHeader">Оптимальный найм: пересечение W = VMPL</div>
+                        <svg id="svgVmplChart" viewBox="0 0 460 270"></svg>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 data-i18n="tableTitle">Числовой расчёт по работникам (Таблица фирмы)</h3>
+                    <div style="overflow-x: auto;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th data-i18n="thL">Работник (L)</th>
+                                    <th data-i18n="thQ">Выпуск (Q)</th>
+                                    <th data-i18n="thMPL">Предельный продукт (MPL)</th>
+                                    <th data-i18n="thVMPL">VMPL = P × MPL</th>
+                                    <th data-i18n="thW">Зарплата (W)</th>
+                                    <th data-i18n="thProfit">Прирост прибыли (Δπ)</th>
+                                    <th data-i18n="thStatus">Решение</th>
+                                </tr>
+                            </thead>
+                            <tbody id="mplTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-3">
+            <div class="card">
+                <h3 style="color: var(--neon-emerald);" data-i18n="exp1Title">Почему MPL убывает?</h3>
+                <p data-i18n="exp1Text">В саду фиксированы площадь земли и число лестниц. Первые работники собирают самые доступные яблоки. Каждому следующему работнику приходится работать в более тесных условиях и добираться до верхних веток — физическая добавка к выпуску снижается (100 → 80 → 60 → 40 → 20).</p>
+            </div>
+            <div class="card">
+                <h3 style="color: var(--neon-amber);" data-i18n="exp2Title">Убывание MPL ≠ падение выпуска</h3>
+                <p data-i18n="exp2Text">Важное различие: пока MPL > 0, общий выпуск Q продолжает расти (0 → 100 → 180 → 240 → 280 → 300). Уменьшается именно скорость его прироста, поэтому производственная функция становится более пологой, а кривая VMPL идёт вниз.</p>
+            </div>
+            <div class="card">
+                <h3 style="color: var(--neon-blue);" data-i18n="exp3Title">Связь P × MPL = W и P = MC</h3>
+                <p data-i18n="exp3Text">Разделив обе части условия найма P × MPL = W на MPL, получаем P = W / MPL. Величина W / MPL — это предельные издержки (MC) выпуска дополнительной единицы товара. Решение о найме труда и решение об объёме выпуска — две стороны одного правила максимизации прибыли.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 3: COMPETITIVE LABOR MARKET & SHIFTS (FIGURES 5 & 6)
+         ===================================================================== -->
+    <section id="tab-labor" class="view-section">
+        <div class="hero-box">
+            <div class="eyebrow" data-i18n="t3Eye">Равновесие и сравнительная статика</div>
+            <h2 data-i18n="t3Title">Конкурентный рынок труда: сдвиги спроса D и предложения S (Figures 5 и 6)</h2>
+            <p data-i18n="t3Lead">В равновесии рыночная зарплата W* координирует планы фирм и домохозяйств: каждый работник получает стоимость своего предельного вклада VMPL. Используйте винтажные слайдеры ниже, чтобы сдвинуть кривые D и S и проследить переход к новому равновесию.</p>
+        </div>
+
+        <div class="sim-grid">
+            <div class="card">
+                <h3 data-i18n="tunerTitle">Тюнер сдвигов рынка труда</h3>
+                <p style="font-size: 12px; margin-bottom: 14px;" data-i18n="tunerSub">Цвет вертикальной полоски на бегунке совпадает с цветом линии на графике.</p>
+
+                <!-- VINTAGE SLIDER: DEMAND FOR LABOR D (NEON BLUE) -->
+                <div class="vintage-control">
+                    <div class="vintage-header">
+                        <span style="color: var(--neon-blue);">● <span data-i18n="sliderDLabel">Спрос на труд (D / VMPL)</span></span>
+                        <span class="vintage-readout" style="color: var(--neon-blue);" id="shiftDReadout">0 (База D₁)</span>
+                    </div>
+                    <div class="radio-dial-wrap">
+                        <div class="radio-ticks"></div>
+                        <input type="range" id="laborDemandSlider" class="vintage-slider slider-blue" min="-45" max="45" step="5" value="0">
+                    </div>
+                    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 8px;" id="demandFactorDesc"></div>
+                </div>
+
+                <!-- VINTAGE SLIDER: SUPPLY OF LABOR S (NEON RED) -->
+                <div class="vintage-control">
+                    <div class="vintage-header">
+                        <span style="color: var(--neon-red);">● <span data-i18n="sliderSLabel">Предложение труда (S)</span></span>
+                        <span class="vintage-readout" style="color: var(--neon-red);" id="shiftSReadout">0 (База S₁)</span>
+                    </div>
+                    <div class="radio-dial-wrap">
+                        <div class="radio-ticks"></div>
+                        <input type="range" id="laborSupplySlider" class="vintage-slider slider-red" min="-45" max="45" step="5" value="0">
+                    </div>
+                    <div style="font-size: 11px; color: var(--text-secondary); margin-top: 8px;" id="supplyFactorDesc"></div>
+                </div>
+
+                <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary); margin-top: 6px;" data-i18n="presetsTitle">
+                    Сценарии из конспекта (Figures 5 & 6):
+                </div>
+                <div class="preset-grid">
+                    <button class="btn-preset" onclick="applyLaborPreset(0, 30, this)" data-i18n="preFig5">Figure 5: Иммиграция (S →)</button>
+                    <button class="btn-preset" onclick="applyLaborPreset(30, 0, this)" data-i18n="preFig6">Figure 6: Рост цены P (D →)</button>
+                    <button class="btn-preset" onclick="applyLaborPreset(0, -30, this)" data-i18n="preEmig">Ограничения / Эмиграция (← S)</button>
+                    <button class="btn-preset" onclick="applyLaborPreset(-30, 0, this)" data-i18n="preStorm">Ураган / Потеря техники (← D)</button>
+                </div>
+                <button class="btn-reset" onclick="applyLaborPreset(0, 0, null)" data-i18n="resetLaborBtn">↺ Вернуть исходное равновесие (D₁, S₁)</button>
+
+                <div class="callout amber" style="margin-top: 14px;">
+                    <strong data-i18n="diagTitle">Диагностический вопрос</strong>
+                    <span data-i18n="diagText">Изменилась зарплата W — это ещё не доказательство сдвига кривой. Сначала проверьте: изменились ли P, технология или запас капитала (для D) либо число работников и вкусы (для S)? Если нет — это движение вдоль кривой.</span>
+                </div>
+            </div>
+
+            <div style="display: grid; gap: 18px;">
+                <div class="kpi-row">
+                    <div class="kpi-card">
+                        <span data-i18n="kpiW1">Исходная W₁ → Новая W₂</span>
+                        <strong style="color: var(--neon-amber);" id="kpiWageMove">100 → 100</strong>
+                    </div>
+                    <div class="kpi-card">
+                        <span data-i18n="kpiL1">Исходная L₁ → Новая L₂</span>
+                        <strong style="color: var(--neon-emerald);" id="kpiEmpMove">100 → 100</strong>
+                    </div>
+                    <div class="kpi-card">
+                        <span data-i18n="kpiDirW">Направление зарплаты W</span>
+                        <strong id="kpiWageDir">Без изменений</strong>
+                    </div>
+                    <div class="kpi-card">
+                        <span data-i18n="kpiDirL">Направление занятости L</span>
+                        <strong id="kpiEmpDir">Без изменений</strong>
+                    </div>
+                </div>
+
+                <div class="svg-box">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                        <span style="font-size: 13px; font-weight: 800;" data-i18n="laborGraphHeader">Равновесие конкурентного рынка труда (W, L)</span>
+                        <span class="badge badge-blue" id="figureBadge">Базовое равновесие E₁</span>
+                    </div>
+                    <svg id="svgMainLabor" viewBox="0 0 680 360"></svg>
+                    <div class="legend-bar">
+                        <div class="legend-item"><span class="legend-line" style="background: var(--neon-blue);"></span><span data-i18n="legD1">Спрос на труд D₁ (база)</span></div>
+                        <div class="legend-item"><span class="legend-line" style="background: var(--neon-red);"></span><span data-i18n="legS1">Предложение труда S₁ (база)</span></div>
+                        <div class="legend-item"><span class="legend-line" style="background: var(--neon-amber);"></span><span data-i18n="legShift">Новая сдвинутая кривая (D₂ / S₂)</span></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 data-i18n="mechHeader">Пошаговый разбор механизма корректировки</h3>
+                    <div id="laborMechanismBox" style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.65;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-3" style="margin-top: 20px;">
+            <div class="card">
+                <h3 style="color: var(--neon-blue);" data-i18n="shiftDCardTitle">Что сдвигает спрос на труд (D)?</h3>
+                <ul style="padding-left: 18px; color: var(--text-secondary); font-size: 13px; display: grid; gap: 8px;">
+                    <li data-i18n="sd1"><strong>1. Цена выпуска P:</strong> рост цены продукта повышает VMPL = P × MPL при любом L → D сдвигается вправо (Figure 6).</li>
+                    <li data-i18n="sd2"><strong>2. Технологические изменения:</strong> технологии, дополняющие труд, повышают MPL и сдвигают D вправо; замещающая автоматизация может сдвинуть D влево.</li>
+                    <li data-i18n="sd3"><strong>3. Предложение других факторов:</strong> рост запаса капитала и земли повышает MPL и двигает D вправо; их потеря — влево.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3 style="color: var(--neon-red);" data-i18n="shiftSCardTitle">Что сдвигает предложение труда (S)?</h3>
+                <ul style="padding-left: 18px; color: var(--text-secondary); font-size: 13px; display: grid; gap: 8px;">
+                    <li data-i18n="ss1"><strong>1. Изменение вкусов:</strong> отношение домохозяйств к труду и досугу, участие различных демографических групп в рабочей силе.</li>
+                    <li data-i18n="ss2"><strong>2. Альтернативные возможности:</strong> появление более привлекательных зарплат в других отраслях сокращает S в данной отрасли.</li>
+                    <li data-i18n="ss3"><strong>3. Иммиграция и эмиграция:</strong> приток работников сдвигает S вправо (Figure 5); административные барьеры и отток — влево.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <h3 style="color: var(--neon-amber);" data-i18n="subIncTitle">Труд и досуг: два эффекта роста W</h3>
+                <p style="margin-bottom: 8px;" data-i18n="subInc1">Каждый час досуга имеет альтернативную стоимость — утраченную зарплату W.</p>
+                <p style="margin-bottom: 8px;" data-i18n="subInc2"><strong>Эффект замещения:</strong> рост W делает досуг дороже → стимул работать больше.</p>
+                <p data-i18n="subInc3"><strong>Эффект дохода:</strong> при более высокой W человек богаче и может позволить себе больше досуга → стимул работать меньше. В базовой рыночной модели преобладает эффект замещения (S имеет положительный наклон).</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 4: LABOR SUPPLY, INCOME AND SUBSTITUTION EFFECTS
+         ===================================================================== -->
+    <section id="tab-supplylab" class="view-section">
+        <div class="hero-box">
+            <div class="eyebrow" data-i18n="tsEye">Расширение из русской главы 17</div>
+            <h2 data-i18n="tsTitle">Выбор между трудом и досугом: эффекты замещения и дохода</h2>
+            <p data-i18n="tsLead">Более высокая зарплата делает досуг дороже и стимулирует труд, но одновременно повышает доход и позволяет покупать больше досуга. Симулятор показывает, почему индивидуальная кривая предложения труда может загибаться назад.</p>
+        </div>
+        <div class="sim-grid">
+            <div class="card">
+                <h3 data-i18n="tsControl">Настройка решения работника</h3>
+                <div class="vintage-control">
+                    <div class="vintage-header"><span style="color:var(--neon-emerald)">● <span data-i18n="tsWage">Почасовая зарплата</span></span><span class="vintage-readout" id="leisureWageVal">25</span></div>
+                    <div class="radio-dial-wrap"><div class="radio-ticks"></div><input type="range" id="leisureWageSlider" class="vintage-slider slider-emerald" min="5" max="80" step="1" value="25"></div>
+                </div>
+                <div class="vintage-control">
+                    <div class="vintage-header"><span style="color:var(--neon-violet)">● <span data-i18n="tsIncome">Нетрудовой доход</span></span><span class="vintage-readout" id="nonLaborIncomeVal">20</span></div>
+                    <div class="radio-dial-wrap"><div class="radio-ticks"></div><input type="range" id="nonLaborIncomeSlider" class="vintage-slider" min="0" max="100" step="5" value="20" style="--thumb-stripe:#a78bfa;--thumb-glow:rgba(167,139,250,.65)"></div>
+                </div>
+                <div class="kpi-row" style="grid-template-columns:repeat(2,1fr)">
+                    <div class="kpi-card"><span data-i18n="tsHours">Часы труда</span><strong id="laborHoursKpi" style="color:var(--neon-emerald)">—</strong></div>
+                    <div class="kpi-card"><span data-i18n="tsLeisure">Часы досуга</span><strong id="leisureHoursKpi" style="color:var(--neon-violet)">—</strong></div>
+                </div>
+                <div class="callout emerald"><strong data-i18n="tsVerdictTitle">Какой эффект сильнее</strong><span id="laborSupplyVerdict"></span></div>
+            </div>
+            <div style="display:grid;gap:18px">
+                <div class="grid-2">
+                    <div class="svg-box"><div style="font-size:12px;font-weight:800;color:var(--neon-emerald)" data-i18n="tsCurve1">Индивидуальное предложение труда</div><svg id="svgBackwardSupply" viewBox="0 0 460 300"></svg></div>
+                    <div class="svg-box"><div style="font-size:12px;font-weight:800;color:var(--neon-violet)" data-i18n="tsCurve2">Бюджетное ограничение труд–досуг</div><svg id="svgLeisureBudget" viewBox="0 0 460 300"></svg></div>
+                </div>
+                <div class="grid-3">
+                    <div class="card"><h3 style="color:var(--neon-emerald)" data-i18n="tsSubT">Эффект замещения</h3><p data-i18n="tsSubD">Рост W повышает альтернативную стоимость досуга. Работник замещает досуг трудом: часы труда растут.</p></div>
+                    <div class="card"><h3 style="color:var(--neon-violet)" data-i18n="tsIncT">Эффект дохода</h3><p data-i18n="tsIncD">Рост W делает человека богаче. Если досуг — нормальное благо, он хочет больше досуга: часы труда сокращаются.</p></div>
+                    <div class="card"><h3 style="color:var(--neon-amber)" data-i18n="tsMarketT">Индивид и рынок</h3><p data-i18n="tsMarketD">Индивидуальная кривая может загибаться назад; рыночное предложение часто остаётся восходящим из-за притока новых работников.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 5: MONOPSONY AND MINIMUM WAGE
+         ===================================================================== -->
+    <section id="tab-monopsony" class="view-section">
+        <div class="hero-box">
+            <div class="eyebrow" data-i18n="tmEye">Несовершенная конкуренция на рынке труда</div>
+            <h2 data-i18n="tmTitle">Монопсония: единственный крупный покупатель труда</h2>
+            <p data-i18n="tmLead">Монопсонист сталкивается с восходящим предложением труда. Чтобы нанять ещё одного работника, он должен повысить зарплату не только ему, поэтому предельные издержки труда MCL лежат выше S. Оптимум: MCL = VMPL.</p>
+        </div>
+        <div class="sim-grid">
+            <div class="card">
+                <h3 data-i18n="tmControl">Регулятор минимальной зарплаты</h3>
+                <div class="vintage-control">
+                    <div class="vintage-header"><span style="color:var(--neon-amber)">● <span data-i18n="tmMinW">Минимальная зарплата</span></span><span class="vintage-readout" id="minWageVal">0</span></div>
+                    <div class="radio-dial-wrap"><div class="radio-ticks"></div><input type="range" id="minWageSlider" class="vintage-slider slider-amber" min="0" max="130" step="5" value="0"></div>
+                </div>
+                <div class="kpi-row" style="grid-template-columns:repeat(2,1fr)">
+                    <div class="kpi-card"><span data-i18n="tmWkpi">Фактическая W</span><strong id="monoWageKpi" style="color:var(--neon-amber)">—</strong></div>
+                    <div class="kpi-card"><span data-i18n="tmLkpi">Занятость L</span><strong id="monoLaborKpi" style="color:var(--neon-emerald)">—</strong></div>
+                </div>
+                <div class="callout amber"><strong data-i18n="tmVerdictT">Результат политики</strong><span id="monopsonyVerdict"></span></div>
+                <button class="btn-reset" onclick="document.getElementById('minWageSlider').value=0;updateMonopsony()" data-i18n="tmReset">↺ Убрать минимум</button>
+            </div>
+            <div style="display:grid;gap:18px">
+                <div class="svg-box"><div style="display:flex;justify-content:space-between"><strong data-i18n="tmGraph">Монопсония и конкурентный ориентир</strong><span class="badge badge-blue">MCL = VMPL</span></div><svg id="svgMonopsony" viewBox="0 0 700 390"></svg></div>
+                <div class="grid-3">
+                    <div class="card"><h3 data-i18n="tmCompT">Конкурентный рынок</h3><p data-i18n="tmCompD">Равновесие находится в пересечении S и D: зарплата и занятость выше монопсонических.</p></div>
+                    <div class="card"><h3 data-i18n="tmMonoT">Монопсония</h3><p data-i18n="tmMonoD">Фирма выбирает L там, где MCL = VMPL, а W считывает с кривой предложения. Поэтому Wm &lt; Wc и Lm &lt; Lc.</p></div>
+                    <div class="card"><h3 data-i18n="tmPolicyT">Необычный результат</h3><p data-i18n="tmPolicyD">Умеренный минимум выше Wm может одновременно поднять зарплату и занятость; чрезмерно высокий минимум снова сокращает занятость.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 6: WAGE DIFFERENTIALS
+         ===================================================================== -->
+    <section id="tab-wagediff" class="view-section">
+        <div class="hero-box">
+            <div class="eyebrow" data-i18n="twEye">Почему одинаковые часы оплачиваются по-разному</div>
+            <h2 data-i18n="twTitle">Различия в заработной плате: производительность, условия и институты</h2>
+            <p data-i18n="twLead">Заработок зависит не только от количества труда. Меняются человеческий капитал, условия работы, редкость таланта, рыночная власть, профсоюзы, стимулирующая оплата и дискриминационные барьеры.</p>
+        </div>
+        <div class="sim-grid">
+            <div class="card">
+                <h3 data-i18n="twControl">Конструктор условной зарплаты</h3>
+                <div id="wageFactorControls"></div>
+                <button class="btn-reset" onclick="resetWageFactors()" data-i18n="twReset">↺ Сбросить профиль</button>
+            </div>
+            <div style="display:grid;gap:18px">
+                <div class="kpi-row">
+                    <div class="kpi-card"><span data-i18n="twBase">Базовая зарплата</span><strong>100</strong></div>
+                    <div class="kpi-card"><span data-i18n="twFinal">Расчётная зарплата</span><strong id="wageIndexKpi" style="color:var(--neon-emerald)">100</strong></div>
+                    <div class="kpi-card"><span data-i18n="twGap">Отклонение</span><strong id="wageGapKpi">0%</strong></div>
+                    <div class="kpi-card"><span data-i18n="twDriver">Главный фактор</span><strong id="wageDriverKpi" style="font-size:13px">—</strong></div>
+                </div>
+                <div class="svg-box"><strong data-i18n="twGraph">Декомпозиция условного индекса оплаты</strong><svg id="svgWageWaterfall" viewBox="0 0 700 460" style="min-height:420px"></svg></div>
+                <div class="grid-3">
+                    <div class="card"><h3 data-i18n="twHumanT">Человеческий капитал</h3><p data-i18n="twHumanD">Образование и опыт повышают производительность; образование также может служить сигналом способностей.</p></div>
+                    <div class="card"><h3 data-i18n="twCompT">Компенсирующие надбавки</h3><p data-i18n="twCompD">Опасная, неприятная или нестабильная работа должна предлагать надбавку, чтобы привлечь работников.</p></div>
+                    <div class="card"><h3 data-i18n="twDiscT">Дискриминация</h3><p data-i18n="twDiscD">Наблюдаемый разрыв не равен автоматически дискриминации, но барьеры и предубеждения могут снижать спрос и оплату определённых групп.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 7: PRODUCTIVITY, REAL WAGE, LAND & CAPITAL
+         ===================================================================== -->
+    <section id="tab-landcap" class="view-section">
+        <div class="hero-box">
+            <div class="eyebrow" data-i18n="t4Eye">Долгосрочный рост и другие факторы производства</div>
+            <h2 data-i18n="t4Title">Производительность и реальная зарплата (Figure 7) • Земля и капитал</h2>
+            <p data-i18n="t4Lead">Поскольку W = P × MPL, реальная зарплата W/P тесно связана с производительностью труда. Тот же принцип VMPX = P × MPX определяет рентные цены земли и капитала и объясняет взаимодействие всех факторов производства.</p>
+        </div>
+
+        <div class="grid-2" style="margin-bottom: 20px;">
+            <div class="svg-box">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 13px; font-weight: 800;" data-i18n="fig7Header">Figure 7: Производительность труда и реальная компенсация (1960 = 100)</span>
+                    <span class="badge badge-emerald">W / P ≈ MPL</span>
+                </div>
+                <svg id="svgFig7" viewBox="0 0 540 270"></svg>
+                <div class="legend-bar">
+                    <div class="legend-item"><span class="legend-line" style="background: var(--neon-red);"></span><span data-i18n="legProd">Производительность труда (выпуск в час)</span></div>
+                    <div class="legend-item"><span class="legend-line" style="background: var(--neon-blue);"></span><span data-i18n="legComp">Реальная компенсация (W / P)</span></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 data-i18n="prodSourcesTitle">Три источника роста производительности (и реальной зарплаты)</h3>
+                <div style="display: grid; gap: 10px; margin-top: 10px;">
+                    <div class="callout" style="margin-top: 0;">
+                        <strong data-i18n="src1T">1. Физический капитал</strong>
+                        <span data-i18n="src1D">Больше и совершеннее станки, оборудование и инфраструктура на каждого работника.</span>
+                    </div>
+                    <div class="callout emerald" style="margin-top: 0;">
+                        <strong data-i18n="src2T">2. Человеческий капитал</strong>
+                        <span data-i18n="src2D">Образование, профессиональные навыки, производственный опыт и здоровье работников.</span>
+                    </div>
+                    <div class="callout amber" style="margin-top: 0;">
+                        <strong data-i18n="src3T">3. Технологические знания</strong>
+                        <span data-i18n="src3D">Новые методы организации производства и инженерные решения, повышающие отдачу от ресурсов.</span>
+                    </div>
+                </div>
+                <p style="margin-top: 12px; font-size: 12.5px;" data-i18n="nomRealNote"><strong>Номинальная vs Реальная зарплата:</strong> номинальная W измеряется в деньгах, а реальная W/P — в единицах продукта. Именно реальная оплата сопоставляется с физической производительностью.</p>
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 20px;">
+            <h3>
+                <span data-i18n="landCapHeader">Рынки услуг земли и капитала: единый принцип VMPX = P × MPX</span>
+                <span class="badge badge-amber">RENTAL vs PURCHASE PRICE</span>
+            </h3>
+            <p style="margin-bottom: 14px;" data-i18n="landCapDesc">Спрос на землю и капитал также имеет отрицательный наклон из-за убывающего предельного продукта. Проверьте, как взаимодополняемость факторов передаёт шок с одного рынка на другой (кейс урагана в яблоневом саду):</p>
+
+            <div class="vintage-control">
+                <div class="vintage-header">
+                    <span style="color: var(--neon-amber);">● <span data-i18n="capitalShockLabel">Запас капитала (лестницы / оборудование в саду):</span></span>
+                    <span class="vintage-readout" style="color: var(--neon-amber);" id="capShockVal">Нормальный запас (100%)</span>
+                </div>
+                <div class="radio-dial-wrap">
+                    <div class="radio-ticks"></div>
+                    <input type="range" id="capitalShockSlider" class="vintage-slider slider-amber" min="-40" max="40" step="10" value="0">
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="svg-box">
+                    <div style="font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--neon-amber);" data-i18n="landTitle">Рынок услуг земли (Количество земли, Рентная цена)</div>
+                    <svg id="svgLandMarket" viewBox="0 0 460 250"></svg>
+                </div>
+                <div class="svg-box">
+                    <div style="font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--neon-violet);" data-i18n="capTitle">Рынок услуг капитала (Количество капитала, Рентная цена)</div>
+                    <svg id="svgCapitalMarket" viewBox="0 0 460 250"></svg>
+                </div>
+            </div>
+
+            <div class="callout amber" id="interfactorEffectBox" style="margin-top: 14px;"></div>
+        </div>
+
+        <div class="grid-3">
+            <div class="card">
+                <h3 data-i18n="rentPurchT">Рентная и покупная цена</h3>
+                <p data-i18n="rentPurchD"><strong>Рентная цена</strong> — плата за использование фактора в течение периода. <strong>Покупная цена</strong> — сумма за постоянное владение активом. Покупная цена зависит от ожидаемого потока будущих рентных доходов, а значит — от текущей и ожидаемой стоимости предельного продукта VMP.</p>
+            </div>
+            <div class="card">
+                <h3 data-i18n="capIncT">Доход от капитала в фирмах</h3>
+                <p data-i18n="capIncD">Фирмы часто сами владеют капиталом. Доход от него передаётся домохозяйствам в виде процентов и дивидендов или остаётся внутри компании как нераспределённая прибыль, увеличивая её рыночную стоимость. Базовый закон неизменен: капитал вознаграждается по своему VMP.</p>
+            </div>
+            <div class="card">
+                <h3 style="color: var(--neon-red);" data-i18n="blackDeathT">Чёрная смерть (XIV век)</h3>
+                <p data-i18n="blackDeathD">Естественный эксперимент истории: сокращение населения Европы вдвое сдвинуло предложение труда S влево. Оставшиеся работники работали на большем количестве земли на душу населения → MPL труда вырос, реальная зарплата W/P резко поднялась, а MPL земли и земельная рента упали.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 5: SHOCKS MATRIX, ALGORITHM & SELF-CHECK QUIZ
+         ===================================================================== -->
+    <section id="tab-summary" class="view-section">
+        <div class="hero-box">
+            <div class="eyebrow" data-i18n="t5Eye">Сводная шпаргалка и контроль знаний</div>
+            <h2 data-i18n="t5Title">Алгоритм анализа шоков, матрица последствий и вопросы для самопроверки</h2>
+            <p data-i18n="t5Lead">Используйте шестишаговый алгоритм при разборе кейсов и задач, чтобы никогда не путать движение вдоль кривой со сдвигом и точно определять направление изменения W и L.</p>
+        </div>
+
+        <div class="grid-2" style="margin-bottom: 20px;">
+            <div class="card">
+                <h3 data-i18n="algoHeader">6 шагов анализа любого события на факторном рынке</h3>
+                <div id="algoSteps" style="display: grid; gap: 9px; margin-top: 10px;"></div>
+            </div>
+
+            <div class="card">
+                <h3 data-i18n="matrixHeader">Матрица центральных шоков рынка труда</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th data-i18n="mEvent">Событие</th>
+                            <th data-i18n="mShift">Сдвиг кривой</th>
+                            <th data-i18n="mW">Зарплата (W)</th>
+                            <th data-i18n="mL">Занятость (L)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="shocksMatrixBody"></tbody>
+                </table>
+                <div class="callout" style="margin-top: 14px;">
+                    <strong data-i18n="finalNoteT">Финальный вывод главы</strong>
+                    <span data-i18n="finalNoteD">Распределение дохода в конкурентной модели определяется производительностью факторов. Но изменения на одном факторном рынке распространяются на смежные рынки через технологические связи, спрос на продукт и взаимодополняемость ресурсов.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 data-i18n="quizHeader">7 вопросов для самопроверки (нажмите на вопрос для просмотра ответа)</h3>
+            <div id="quizContainer" style="margin-top: 12px;"></div>
+        </div>
+    </section>
+
+</main>
+
+<script>
+'use strict';
+
+let currentLang = 'ru';
+
+const I18N = {
+    ru: {
+        mainTitle: 'Рынки факторов производства',
+        mainSub: 'Микроэкономика • Производный спрос, предельный продукт, рынок труда, земля и капитал',
+        tab1: 'Логика и производный спрос',
+        tab2: 'Предельный продукт труда (MPL & VMPL)',
+        tab3: 'Рынок труда (Figures 5 & 6)',
+        tab4: 'Производительность, земля и капитал',
+        tab5: 'Матрица шоков и самопроверка',
+        tabSupply: 'Труд и досуг',
+        tabMonopsony: 'Монопсония',
+        tabWageDiff: 'Различия в оплате',
+
+        tsEye: 'Расширение из русской главы 17', tsTitle: 'Выбор между трудом и досугом: эффекты замещения и дохода',
+        tsLead: 'Более высокая зарплата делает досуг дороже и стимулирует труд, но одновременно повышает доход и позволяет покупать больше досуга. Симулятор показывает, почему индивидуальная кривая предложения труда может загибаться назад.',
+        tsControl: 'Настройка решения работника', tsWage: 'Почасовая зарплата', tsIncome: 'Нетрудовой доход', tsHours: 'Часы труда', tsLeisure: 'Часы досуга', tsVerdictTitle: 'Какой эффект сильнее',
+        tsCurve1: 'Индивидуальное предложение труда', tsCurve2: 'Бюджетное ограничение труд–досуг',
+        tsSubT: 'Эффект замещения', tsSubD: 'Рост W повышает альтернативную стоимость досуга. Работник замещает досуг трудом: часы труда растут.',
+        tsIncT: 'Эффект дохода', tsIncD: 'Рост W делает человека богаче. Если досуг — нормальное благо, он хочет больше досуга: часы труда сокращаются.',
+        tsMarketT: 'Индивид и рынок', tsMarketD: 'Индивидуальная кривая может загибаться назад; рыночное предложение часто остаётся восходящим из-за притока новых работников.',
+
+        tmEye: 'Несовершенная конкуренция на рынке труда', tmTitle: 'Монопсония: единственный крупный покупатель труда',
+        tmLead: 'Монопсонист сталкивается с восходящим предложением труда. Чтобы нанять ещё одного работника, он должен повысить зарплату не только ему, поэтому предельные издержки труда MCL лежат выше S. Оптимум: MCL = VMPL.',
+        tmControl: 'Регулятор минимальной зарплаты', tmMinW: 'Минимальная зарплата', tmWkpi: 'Фактическая W', tmLkpi: 'Занятость L', tmVerdictT: 'Результат политики', tmReset: '↺ Убрать минимум', tmGraph: 'Монопсония и конкурентный ориентир',
+        tmCompT: 'Конкурентный рынок', tmCompD: 'Равновесие находится в пересечении S и D: зарплата и занятость выше монопсонических.',
+        tmMonoT: 'Монопсония', tmMonoD: 'Фирма выбирает L там, где MCL = VMPL, а W считывает с кривой предложения. Поэтому Wm < Wc и Lm < Lc.',
+        tmPolicyT: 'Необычный результат', tmPolicyD: 'Умеренный минимум выше Wm может одновременно поднять зарплату и занятость; чрезмерно высокий минимум снова сокращает занятость.',
+
+        twEye: 'Почему одинаковые часы оплачиваются по-разному', twTitle: 'Различия в заработной плате: производительность, условия и институты',
+        twLead: 'Заработок зависит не только от количества труда. Меняются человеческий капитал, условия работы, редкость таланта, рыночная власть, профсоюзы, стимулирующая оплата и дискриминационные барьеры.',
+        twControl: 'Конструктор условной зарплаты', twReset: '↺ Сбросить профиль', twBase: 'Базовая зарплата', twFinal: 'Расчётная зарплата', twGap: 'Отклонение', twDriver: 'Главный фактор', twGraph: 'Декомпозиция условного индекса оплаты',
+        twHumanT: 'Человеческий капитал', twHumanD: 'Образование и опыт повышают производительность; образование также может служить сигналом способностей.',
+        twCompT: 'Компенсирующие надбавки', twCompD: 'Опасная, неприятная или нестабильная работа должна предлагать надбавку, чтобы привлечь работников.',
+        twDiscT: 'Дискриминация', twDiscD: 'Наблюдаемый разрыв не равен автоматически дискриминации, но барьеры и предубеждения могут снижать спрос и оплату определённых групп.',
+
+        t1Eye: 'Базовая идея темы',
+        t1Title: 'Производный спрос: от рынка конечного продукта к доходам факторов',
+        t1Lead: 'Факторы производства (труд, земля, капитал) нужны фирме не сами по себе, а потому, что они создают выпуск, который можно продать. В конкурентном рынке фирма нанимает фактор до точки, где цена фактора равна стоимости его предельного продукта: W = VMPL = P × MPL.',
+        chainTitle: 'Логическая цепочка формирования дохода фактора',
+        dualTitle: 'Две связанные арены: как рынок продукта определяет спрос на труд',
+        dualDesc: 'Сдвиньте ползунок потребительского спроса на продукт (яблоки): рост спроса повышает цену продукта P, что увеличивает VMPL = P × MPL и сдвигает спрос на труд D вправо.',
+        appleSliderLabel: 'Спрос потребителей на продукт (яблоки):',
+        prodMarketTitle: 'Арена 1: Рынок конечного продукта (Q, P)',
+        labMarketLinkTitle: 'Арена 2: Рынок труда сборщиков (L, W)',
+        notConfuseTitle: 'Не путать!',
+        notConfuseText: 'Спрос на труд не совпадает со спросом на продукт. Он выводится из спроса на продукт через цену выпуска P и производительность работника MPL.',
+        symbolsTitle: 'Ключевые обозначения',
+        colSym: 'Обозначение',
+        colMean: 'Смысл',
+        colForm: 'Формула / Единица',
+        assumpTitle: 'Предпосылки базовой модели',
+
+        t2Eye: 'Производственная функция и решение о найме',
+        t2Title: 'Предельный продукт труда (MPL) и стоимость предельного продукта (VMPL)',
+        t2Lead: 'При неизменных земле и капитале каждый следующий работник добавляет всё меньше выпуска (убывающий MPL). Фирма переводит физический прирост в деньги (VMPL = P × MPL) и нанимает работников до тех пор, пока VMPL ≥ W.',
+        prodControlTitle: 'Симулятор яблоневого сада',
+        prodControlDesc: 'Увеличивайте число работников L от 0 до 5, чтобы проследить отрисовку производственной функции Q(L), снижение угла наклона и падение предельного продукта MPL.',
+        workersSliderLabel: 'Число работников (L):',
+        pricePSliderLabel: 'Цена продукта P (за бушель):',
+        wageWSliderLabel: 'Рыночная зарплата W:',
+        hiringRuleTitle: 'Решение фирмы о найме:',
+        kpiOut: 'Общий выпуск Q',
+        kpiMpl: 'Последний MPL',
+        kpiOptL: 'Оптимальный найм L*',
+        kpiProfit: 'Суммарная Δπ',
+        prodCurveHeader: 'Производственная функция Q(L) и прирост MPL',
+        vmplCurveHeader: 'Оптимальный найм: пересечение W = VMPL',
+        tableTitle: 'Числовой расчёт по работникам (Таблица фирмы)',
+        thL: 'Работник (L)',
+        thQ: 'Выпуск (Q)',
+        thMPL: 'Предельный продукт (MPL)',
+        thVMPL: 'VMPL = P × MPL',
+        thW: 'Зарплата (W)',
+        thProfit: 'Прирост прибыли (Δπ)',
+        thStatus: 'Решение',
+        exp1Title: 'Почему MPL убывает?',
+        exp1Text: 'В саду фиксированы площадь земли и число лестниц. Первые работники собирают самые доступные яблоки. Каждому следующему работнику приходится работать в более тесных условиях и добираться до верхних веток — физическая добавка к выпуску снижается (100 → 80 → 60 → 40 → 20).',
+        exp2Title: 'Убывание MPL ≠ падение выпуска',
+        exp2Text: 'Важное различие: пока MPL > 0, общий выпуск Q продолжает расти (0 → 100 → 180 → 240 → 280 → 300). Уменьшается именно скорость его прироста, поэтому производственная функция становится более пологой, а кривая VMPL идёт вниз.',
+        exp3Title: 'Связь P × MPL = W и P = MC',
+        exp3Text: 'Разделив обе части условия найма P × MPL = W на MPL, получаем P = W / MPL. Величина W / MPL — это предельные издержки (MC) выпуска дополнительной единицы товара. Решение о найме труда и решение об объёме выпуска — две стороны одного правила максимизации прибыли.',
+
+        t3Eye: 'Равновесие и сравнительная статика',
+        t3Title: 'Конкурентный рынок труда: сдвиги спроса D и предложения S (Figures 5 и 6)',
+        t3Lead: 'В равновесии рыночная зарплата W* координирует планы фирм и домохозяйств: каждый работник получает стоимость своего предельного вклада VMPL. Используйте винтажные слайдеры ниже, чтобы сдвинуть кривые D и S и проследить переход к новому равновесию.',
+        tunerTitle: 'Тюнер сдвигов рынка труда',
+        tunerSub: 'Цвет вертикальной полоски на бегунке совпадает с цветом линии на графике.',
+        sliderDLabel: 'Спрос на труд (D / VMPL)',
+        sliderSLabel: 'Предложение труда (S)',
+        presetsTitle: 'Сценарии из конспекта (Figures 5 & 6):',
+        preFig5: 'Figure 5: Иммиграция (S →)',
+        preFig6: 'Figure 6: Рост цены P (D →)',
+        preEmig: 'Ограничения / Эмиграция (← S)',
+        preStorm: 'Ураган / Потеря техники (← D)',
+        resetLaborBtn: '↺ Вернуть исходное равновесие (D₁, S₁)',
+        diagTitle: 'Диагностический вопрос',
+        diagText: 'Изменилась зарплата W — это ещё не доказательство сдвига кривой. Сначала проверьте: изменились ли P, технология или запас капитала (для D) либо число работников и вкусы (для S)? Если нет — это движение вдоль кривой.',
+        kpiW1: 'Исходная W₁ → Новая W₂',
+        kpiL1: 'Исходная L₁ → Новая L₂',
+        kpiDirW: 'Направление зарплаты W',
+        kpiDirL: 'Направление занятости L',
+        laborGraphHeader: 'Равновесие конкурентного рынка труда (W, L)',
+        legD1: 'Спрос на труд D₁ (база)',
+        legS1: 'Предложение труда S₁ (база)',
+        legShift: 'Новая сдвинутая кривая (D₂ / S₂)',
+        mechHeader: 'Пошаговый разбор механизма корректировки',
+        shiftDCardTitle: 'Что сдвигает спрос на труд (D)?',
+        sd1: '1. Цена выпуска P: рост цены продукта повышает VMPL = P × MPL при любом L → D сдвигается вправо (Figure 6).',
+        sd2: '2. Технологические изменения: технологии, дополняющие труд, повышают MPL и сдвигают D вправо; замещающая автоматизация может сдвинуть D влево.',
+        sd3: '3. Предложение других факторов: рост запаса капитала и земли повышает MPL и двигает D вправо; их потеря — влево.',
+        shiftSCardTitle: 'Что сдвигает предложение труда (S)?',
+        ss1: '1. Изменение вкусов: отношение домохозяйств к труду и досугу, участие различных демографических групп в рабочей силе.',
+        ss2: '2. Альтернативные возможности: появление более привлекательных зарплат в других отраслях сокращает S в данной отрасли.',
+        ss3: '3. Иммиграция и эмиграция: приток работников сдвигает S вправо (Figure 5); административные барьеры и отток — влево.',
+        subIncTitle: 'Труд и досуг: два эффекта роста W',
+        subInc1: 'Каждый час досуга имеет альтернативную стоимость — утраченную зарплату W.',
+        subInc2: 'Эффект замещения: рост W делает досуг дороже → стимул работать больше.',
+        subInc3: 'Эффект дохода: при более высокой W человек богаче и может позволить себе больше досуга → стимул работать меньше. В базовой рыночной модели преобладает эффект замещения (S имеет положительный наклон).',
+
+        t4Eye: 'Долгосрочный рост и другие факторы производства',
+        t4Title: 'Производительность и реальная зарплата (Figure 7) • Земля и капитал',
+        t4Lead: 'Поскольку W = P × MPL, реальная зарплата W/P тесно связана с производительностью труда. Тот же принцип VMPX = P × MPX определяет рентные цены земли и капитала и объясняет взаимодействие всех факторов производства.',
+        fig7Header: 'Figure 7: Производительность труда и реальная компенсация (1960 = 100)',
+        legProd: 'Производительность труда (выпуск в час)',
+        legComp: 'Реальная компенсация (W / P)',
+        prodSourcesTitle: 'Три источника роста производительности (и реальной зарплаты)',
+        src1T: '1. Физический капитал',
+        src1D: 'Больше и совершеннее станки, оборудование и инфраструктура на каждого работника.',
+        src2T: '2. Человеческий капитал',
+        src2D: 'Образование, профессиональные навыки, производственный опыт и здоровье работников.',
+        src3T: '3. Технологические знания',
+        src3D: 'Новые методы организации производства и инженерные решения, повышающие отдачу от ресурсов.',
+        nomRealNote: 'Номинальная vs Реальная зарплата: номинальная W измеряется в деньгах, а реальная W/P — в единицах продукта. Именно реальная оплата сопоставляется с физической производительностью.',
+        landCapHeader: 'Рынки услуг земли и капитала: единый принцип VMPX = P × MPX',
+        landCapDesc: 'Спрос на землю и капитал также имеет отрицательный наклон из-за убывающего предельного продукта. Проверьте, как взаимодополняемость факторов передаёт шок с одного рынка на другой (кейс урагана в яблоневом саду):',
+        capitalShockLabel: 'Запас капитала (лестницы / оборудование в саду):',
+        landTitle: 'Рынок услуг земли (Количество земли, Рентная цена)',
+        capTitle: 'Рынок услуг капитала (Количество капитала, Рентная цена)',
+        rentPurchT: 'Рентная и покупная цена',
+        rentPurchD: 'Рентная цена — плата за использование фактора в течение периода. Покупная цена — сумма за постоянное владение активом. Покупная цена зависит от ожидаемого потока будущих рентных доходов, а значит — от текущей и ожидаемой стоимости предельного продукта VMP.',
+        capIncT: 'Доход от капитала в фирмах',
+        capIncD: 'Фирмы часто сами владеют капиталом. Доход от него передаётся домохозяйствам в виде процентов и дивидендов или остаётся внутри компании как нераспределённая прибыль, увеличивая её рыночную стоимость. Базовый закон неизменен: капитал вознаграждается по своему VMP.',
+        blackDeathT: 'Чёрная смерть (XIV век)',
+        blackDeathD: 'Естественный эксперимент истории: сокращение населения Европы вдвое сдвинуло предложение труда S влево. Оставшиеся работники работали на большем количестве земли на душу населения → MPL труда вырос, реальная зарплата W/P резко поднялась, а MPL земли и земельная рента упали.',
+
+        t5Eye: 'Сводная шпаргалка и контроль знаний',
+        t5Title: 'Алгоритм анализа шоков, матрица последствий и вопросы для самопроверки',
+        t5Lead: 'Используйте шестишаговый алгоритм при разборе кейсов и задач, чтобы никогда не путать движение вдоль кривой со сдвигом и точно определять направление изменения W и L.',
+        algoHeader: '6 шагов анализа любого события на факторном рынке',
+        matrixHeader: 'Матрица центральных шоков рынка труда',
+        mEvent: 'Событие',
+        mShift: 'Сдвиг кривой',
+        mW: 'Зарплата (W)',
+        mL: 'Занятость (L)',
+        finalNoteT: 'Финальный вывод главы',
+        finalNoteD: 'Распределение дохода в конкурентной модели определяется производительностью факторов. Но изменения на одном факторном рынке распространяются на смежные рынки через технологические связи, спрос на продукт и взаимодополняемость ресурсов.',
+        quizHeader: '7 вопросов для самопроверки (нажмите на вопрос для просмотра ответа)'
+    },
+    en: {
+        mainTitle: 'The Markets for the Factors of Production',
+        mainSub: 'Microeconomics • Derived Demand, Marginal Product, Labor Market, Land & Capital',
+        tab1: 'Logic & Derived Demand',
+        tab2: 'Marginal Product of Labor (MPL & VMPL)',
+        tab3: 'Labor Market (Figures 5 & 6)',
+        tab4: 'Productivity, Land & Capital',
+        tab5: 'Shocks Matrix & Self-Check',
+        tabSupply: 'Labor & Leisure',
+        tabMonopsony: 'Monopsony',
+        tabWageDiff: 'Wage Differentials',
+
+        tsEye: 'Extension from the Russian Chapter 17', tsTitle: 'The Labor–Leisure Choice: Substitution and Income Effects',
+        tsLead: 'A higher wage makes leisure more expensive and encourages work, but also raises income and permits more leisure. The simulator shows why an individual labor-supply curve may bend backward.',
+        tsControl: 'Worker Decision Controls', tsWage: 'Hourly Wage', tsIncome: 'Non-Labor Income', tsHours: 'Hours of Work', tsLeisure: 'Hours of Leisure', tsVerdictTitle: 'Which Effect Dominates',
+        tsCurve1: 'Individual Labor Supply', tsCurve2: 'Labor–Leisure Budget Constraint',
+        tsSubT: 'Substitution Effect', tsSubD: 'A higher W raises the opportunity cost of leisure. The worker substitutes work for leisure, increasing hours.',
+        tsIncT: 'Income Effect', tsIncD: 'A higher W makes the worker richer. If leisure is a normal good, desired leisure rises and work hours fall.',
+        tsMarketT: 'Individual vs. Market', tsMarketD: 'Individual supply can bend backward; market supply often remains upward-sloping as new workers enter.',
+
+        tmEye: 'Imperfect Competition in the Labor Market', tmTitle: 'Monopsony: A Single Large Buyer of Labor',
+        tmLead: 'A monopsonist faces an upward-sloping labor supply. Hiring one more worker requires raising wages, so marginal labor cost MCL lies above S. The optimum satisfies MCL = VMPL.',
+        tmControl: 'Minimum-Wage Regulator', tmMinW: 'Minimum Wage', tmWkpi: 'Actual W', tmLkpi: 'Employment L', tmVerdictT: 'Policy Result', tmReset: '↺ Remove the Floor', tmGraph: 'Monopsony and Competitive Benchmark',
+        tmCompT: 'Competitive Market', tmCompD: 'Equilibrium is where S meets D, with a higher wage and employment than under monopsony.',
+        tmMonoT: 'Monopsony', tmMonoD: 'The firm chooses L where MCL = VMPL and reads W from supply. Thus Wm < Wc and Lm < Lc.',
+        tmPolicyT: 'Unusual Result', tmPolicyD: 'A moderate floor above Wm can raise both wages and employment; an excessive floor reduces employment again.',
+
+        twEye: 'Why Equal Hours Earn Unequal Pay', twTitle: 'Wage Differentials: Productivity, Job Conditions and Institutions',
+        twLead: 'Earnings depend on more than hours. Human capital, job conditions, scarce talent, market power, unions, efficiency wages and discriminatory barriers all matter.',
+        twControl: 'Conditional Wage Builder', twReset: '↺ Reset Profile', twBase: 'Base Wage', twFinal: 'Calculated Wage', twGap: 'Difference', twDriver: 'Main Driver', twGraph: 'Conditional Wage-Index Decomposition',
+        twHumanT: 'Human Capital', twHumanD: 'Education and experience raise productivity; education may also signal ability.',
+        twCompT: 'Compensating Differentials', twCompD: 'Dangerous, unpleasant or unstable jobs must offer a premium to attract workers.',
+        twDiscT: 'Discrimination', twDiscD: 'An observed gap is not automatically discrimination, but barriers and prejudice can reduce demand and pay for some groups.',
+
+        t1Eye: 'Core Chapter Idea',
+        t1Title: 'Derived Demand: From Final Product Market to Factor Incomes',
+        t1Lead: 'Factors of production (labor, land, capital) are demanded not for their own sake, but because they produce output that can be sold. A competitive firm hires a factor up to the point where the factor price equals the value of its marginal product: W = VMPL = P × MPL.',
+        chainTitle: 'Logical Chain of Factor Income Formation',
+        dualTitle: 'Two Connected Arenas: How the Product Market Drives Labor Demand',
+        dualDesc: 'Move the consumer demand slider for the final product (apples): higher demand raises product price P, increasing VMPL = P × MPL and shifting labor demand D to the right.',
+        appleSliderLabel: 'Consumer demand for the product (apples):',
+        prodMarketTitle: 'Arena 1: Final Product Market (Q, P)',
+        labMarketLinkTitle: 'Arena 2: Labor Market for Pickers (L, W)',
+        notConfuseTitle: 'Do Not Confuse!',
+        notConfuseText: 'Demand for labor is not identical to demand for the product. It is derived from product demand via output price P and worker productivity MPL.',
+        symbolsTitle: 'Key Notation',
+        colSym: 'Symbol',
+        colMean: 'Meaning',
+        colForm: 'Formula / Unit',
+        assumpTitle: 'Baseline Model Assumptions',
+
+        t2Eye: 'Production Function & Hiring Decision',
+        t2Title: 'Marginal Product of Labor (MPL) & Value of Marginal Product (VMPL)',
+        t2Lead: 'Holding land and capital fixed, each additional worker adds less output than the previous one (diminishing MPL). The firm converts physical output into money (VMPL = P × MPL) and hires workers as long as VMPL ≥ W.',
+        prodControlTitle: 'Apple Orchard Simulator',
+        prodControlDesc: 'Increase the number of workers L from 0 to 5 to trace the production function Q(L), its flattening slope, and the decline in marginal product MPL.',
+        workersSliderLabel: 'Number of workers (L):',
+        pricePSliderLabel: 'Output price P (per bushel):',
+        wageWSliderLabel: 'Market wage W:',
+        hiringRuleTitle: 'Firm Hiring Decision:',
+        kpiOut: 'Total Output Q',
+        kpiMpl: 'Last Worker MPL',
+        kpiOptL: 'Optimal Hiring L*',
+        kpiProfit: 'Cumulative Δπ',
+        prodCurveHeader: 'Production Function Q(L) & Incremental MPL',
+        vmplCurveHeader: 'Optimal Hiring: Intersection W = VMPL',
+        tableTitle: 'Numerical Calculation by Worker (Firm Table)',
+        thL: 'Worker (L)',
+        thQ: 'Output (Q)',
+        thMPL: 'Marginal Product (MPL)',
+        thVMPL: 'VMPL = P × MPL',
+        thW: 'Wage (W)',
+        thProfit: 'Profit Change (Δπ)',
+        thStatus: 'Decision',
+        exp1Title: 'Why Does MPL Diminish?',
+        exp1Text: 'Land area and ladders are fixed in the orchard. The first workers pick the easiest apples. Subsequent workers face crowded conditions and harder-to-reach branches—physical extra output declines (100 → 80 → 60 → 40 → 20).',
+        exp2Title: 'Diminishing MPL ≠ Falling Total Output',
+        exp2Text: 'Crucial distinction: as long as MPL > 0, total output Q continues to grow (0 → 100 → 180 → 240 → 280 → 300). Only the rate of increase slows down, making the production function flatter and VMPL downward-sloping.',
+        exp3Title: 'Link Between P × MPL = W and P = MC',
+        exp3Text: 'Dividing P × MPL = W by MPL gives P = W / MPL. Since W / MPL equals marginal cost (MC) of producing an extra unit, the input-hiring decision and output-supply decision are two sides of the same profit-maximization rule.',
+
+        t3Eye: 'Equilibrium & Comparative Statics',
+        t3Title: 'Competitive Labor Market: Shifts in Demand D and Supply S (Figures 5 & 6)',
+        t3Lead: 'In equilibrium, the market wage W* coordinates firm and household plans: each worker earns the value of their marginal contribution VMPL. Use the vintage tuner sliders below to shift D and S and trace the adjustment.',
+        tunerTitle: 'Labor Market Shift Tuner',
+        tunerSub: 'The vertical neon stripe on each slider matches its curve color on the graph.',
+        sliderDLabel: 'Labor Demand (D / VMPL)',
+        sliderSLabel: 'Labor Supply (S)',
+        presetsTitle: 'Lecture Scenarios (Figures 5 & 6):',
+        preFig5: 'Figure 5: Immigration (S →)',
+        preFig6: 'Figure 6: Higher Price P (D →)',
+        preEmig: 'Restrictions / Emigration (← S)',
+        preStorm: 'Hurricane / Lost Capital (← D)',
+        resetLaborBtn: '↺ Reset Initial Equilibrium (D₁, S₁)',
+        diagTitle: 'Diagnostic Question',
+        diagText: 'A change in wage W alone is not proof of a curve shift. First ask: did P, technology, or capital stock change (for D), or did worker count and tastes change (for S)? If not, it is movement along the curve.',
+        kpiW1: 'Initial W₁ → New W₂',
+        kpiL1: 'Initial L₁ → New L₂',
+        kpiDirW: 'Wage Direction W',
+        kpiDirL: 'Employment Direction L',
+        laborGraphHeader: 'Competitive Labor Market Equilibrium (W, L)',
+        legD1: 'Labor Demand D₁ (base)',
+        legS1: 'Labor Supply S₁ (base)',
+        legShift: 'New Shifted Curve (D₂ / S₂)',
+        mechHeader: 'Step-by-Step Adjustment Mechanism',
+        shiftDCardTitle: 'What Shifts Labor Demand (D)?',
+        sd1: '1. Output price P: higher product price increases VMPL = P × MPL at every L → D shifts right (Figure 6).',
+        sd2: '2. Technological change: labor-augmenting technology raises MPL and shifts D right; labor-saving automation may shift D left.',
+        sd3: '3. Supply of other factors: more capital and land raise MPL and shift D right; destruction of capital shifts D left.',
+        shiftSCardTitle: 'What Shifts Labor Supply (S)?',
+        ss1: '1. Changes in tastes: household attitudes toward work vs. leisure and demographic labor-force participation.',
+        ss2: '2. Alternative opportunities: higher wages in other industries reduce labor supply S in this industry.',
+        ss3: '3. Immigration & emigration: worker inflows shift S right (Figure 5); administrative restrictions and outflows shift S left.',
+        subIncTitle: 'Work vs. Leisure: Two Effects of Higher W',
+        subInc1: 'Every hour of leisure has an opportunity cost: the forgone wage W.',
+        subInc2: 'Substitution effect: higher W makes leisure more expensive → incentive to work more.',
+        subInc3: 'Income effect: higher W makes a person wealthier so they can afford more leisure → incentive to work less. In the standard market model, the substitution effect dominates (upward-sloping S).',
+
+        t4Eye: 'Long-Run Growth & Other Factors of Production',
+        t4Title: 'Productivity & Real Wages (Figure 7) • Land & Capital',
+        t4Lead: 'Because W = P × MPL, real wages W/P move closely with labor productivity. The same VMPX = P × MPX principle governs rental prices of land and capital and links all factor markets together.',
+        fig7Header: 'Figure 7: Labor Productivity & Real Compensation (1960 = 100)',
+        legProd: 'Labor productivity (output per hour)',
+        legComp: 'Real compensation (W / P)',
+        prodSourcesTitle: 'Three Sources of Higher Productivity (and Real Wages)',
+        src1T: '1. Physical Capital',
+        src1D: 'More and better machinery, equipment, and infrastructure per worker.',
+        src2T: '2. Human Capital',
+        src2D: 'Education, vocational skills, work experience, and health of workers.',
+        src3T: '3. Technological Knowledge',
+        src3D: 'New methods of organizing production and engineering breakthroughs that raise resource efficiency.',
+        nomRealNote: 'Nominal vs. Real Wage: nominal W is measured in money, whereas real W/P is measured in units of output. Real compensation is the proper counterpart to physical productivity.',
+        landCapHeader: 'Markets for Land and Capital Services: Unified Principle VMPX = P × MPX',
+        landCapDesc: 'Demand for land and capital slopes downward due to diminishing marginal product. Adjust capital stock (ladders in the orchard) to see how inter-factor complementarity transmits shocks across markets:',
+        capitalShockLabel: 'Capital stock (ladders / equipment in the orchard):',
+        landTitle: 'Market for Land Services (Quantity of Land, Rental Price)',
+        capTitle: 'Market for Capital Services (Quantity of Capital, Rental Price)',
+        rentPurchT: 'Rental Price vs. Purchase Price',
+        rentPurchD: 'Rental price is payment to use a factor for a limited period. Purchase price is payment to own the asset permanently. Purchase price depends on the expected stream of future rental income—hence on current and expected VMP.',
+        capIncT: 'Capital Income in Firms',
+        capIncD: 'Firms often own capital directly. Capital income reaches households as interest and dividends or stays in the firm as retained earnings, raising firm value. The core rule holds: capital is rewarded according to its VMP.',
+        blackDeathT: 'The Black Death (14th Century)',
+        blackDeathD: 'A natural historical experiment: halving Europe’s population shifted labor supply S left. Survivors worked with more land per worker → MPL of labor rose, real wages W/P surged, while MPL of land and land rents fell.',
+
+        t5Eye: 'Summary Cheat Sheet & Self-Check',
+        t5Title: 'Shock Analysis Algorithm, Outcome Matrix & Self-Check Questions',
+        t5Lead: 'Apply the six-step algorithm in case analyses to avoid confusing movement along a curve with a shift and to determine the exact direction of W and L.',
+        algoHeader: '6-Step Algorithm for Analyzing Any Factor Market Event',
+        matrixHeader: 'Matrix of Central Labor Market Shocks',
+        mEvent: 'Event',
+        mShift: 'Curve Shift',
+        mW: 'Wage (W)',
+        mL: 'Employment (L)',
+        finalNoteT: 'Final Chapter Takeaway',
+        finalNoteD: 'Income distribution in a competitive model reflects factor productivity. Because factor markets are linked through technology, product demand, and resource complementarity, shocks propagate across markets.',
+        quizHeader: '7 Self-Check Questions (Click any question to reveal the answer)'
+    }
+};
+
+const CONTENT = {
+    chain: {
+        ru: [
+            ['1. Спрос на продукт', 'Потребители покупают товар'],
+            ['2. Цена выпуска P', 'Формируется на рынке благ'],
+            ['3. VMPL = P × MPL', 'Денежная ценность труда'],
+            ['4. Спрос на труд D', 'Кривая VMPL фирмы'],
+            ['5. Рыночные W* и L*', 'Пересечение D и S труда'],
+            ['6. Доходы факторов', 'Зарплата, рента, процент']
+        ],
+        en: [
+            ['1. Product Demand', 'Consumers buy final output'],
+            ['2. Output Price P', 'Set in the goods market'],
+            ['3. VMPL = P × MPL', 'Monetary value of labor'],
+            ['4. Labor Demand D', 'Firm’s VMPL schedule'],
+            ['5. Market W* & L*', 'Intersection of D and S'],
+            ['6. Factor Incomes', 'Wages, rent, and interest']
+        ]
+    },
+    symbols: {
+        ru: [
+            ['L', 'Количество труда', 'работники или часы'],
+            ['MPL', 'Предельный продукт труда', 'ΔQ / ΔL'],
+            ['VMPL', 'Стоимость предельного продукта труда', 'P × MPL'],
+            ['W', 'Ставка заработной платы', 'денежная цена труда'],
+            ['P', 'Цена выпуска', 'денежная единица за продукт']
+        ],
+        en: [
+            ['L', 'Quantity of labor', 'workers or hours'],
+            ['MPL', 'Marginal product of labor', 'ΔQ / ΔL'],
+            ['VMPL', 'Value of marginal product of labor', 'P × MPL'],
+            ['W', 'Wage rate', 'monetary price of labor'],
+            ['P', 'Price of output', 'monetary unit per product']
+        ]
+    },
+    assumptions: {
+        ru: [
+            'Фирма конкурентна на рынке конечного продукта и принимает цену P как заданную.',
+            'Фирма конкурентна на рынке труда и принимает ставку заработной платы W как заданную.',
+            'Главная цель фирмы — максимизация экономической прибыли.',
+            'В краткосрочном анализе запас остальных факторов (земли и капитала) фиксирован.'
+        ],
+        en: [
+            'The firm is competitive in the product market and takes price P as given.',
+            'The firm is competitive in the labor market and takes wage W as given.',
+            'The firm’s objective is profit maximization.',
+            'In the short run, other factors of production (land and capital) are held fixed.'
+        ]
+    },
+    algo: {
+        ru: [
+            '1. Определите рынок и переменные на осях: W и L либо рентная цена и количество фактора.',
+            '2. Назовите исходные кривые S и D и точку первоначального равновесия.',
+            '3. Установите, какая именно неценовая причина изменилась.',
+            '4. Сдвиньте только соответствующую кривую (не двигайте обе без причины).',
+            '5. Сравните старое и новое равновесие по цене фактора и количеству.',
+            '6. Объясните экономический результат через MP и VMP, а не только геометрически.'
+        ],
+        en: [
+            '1. Identify the market and axis variables: W and L, or rental price and factor quantity.',
+            '2. State the initial S and D curves and the starting equilibrium point.',
+            '3. Determine which specific non-price determinant changed.',
+            '4. Shift only the affected curve.',
+            '5. Compare the old and new equilibria in terms of factor price and quantity.',
+            '6. Explain the economic mechanism via MP and VMP, not just geometry.'
+        ]
+    },
+    matrix: {
+        ru: [
+            ['Иммиграция работников (Figure 5)', 'S вправо (S₁ → S₂)', '↓ Снижается', '↑ Растёт'],
+            ['Эмиграция / барьеры на въезд', 'S влево (S₁ → S₂)', '↑ Растёт', '↓ Снижается'],
+            ['Рост цены продукта P (Figure 6)', 'D вправо (D₁ → D₂)', '↑ Растёт', '↑ Растёт'],
+            ['Рост производительности MPL', 'D вправо (D₁ → D₂)', '↑ Растёт', '↑ Растёт'],
+            ['Разрушение дополняющего капитала', 'D влево (D₁ → D₂)', '↓ Снижается', '↓ Снижается']
+        ],
+        en: [
+            ['Immigration of workers (Figure 5)', 'S right (S₁ → S₂)', '↓ Falls', '↑ Rises'],
+            ['Emigration / entry restrictions', 'S left (S₁ → S₂)', '↑ Rises', '↓ Falls'],
+            ['Rise in output price P (Figure 6)', 'D right (D₁ → D₂)', '↑ Rises', '↑ Rises'],
+            ['Rise in productivity MPL', 'D right (D₁ → D₂)', '↑ Rises', '↑ Rises'],
+            ['Destruction of complementary capital', 'D left (D₁ → D₂)', '↓ Falls', '↓ Falls']
+        ]
+    },
+    quiz: {
+        ru: [
+            ['1. Почему VMPL, а не MPL, определяет спрос фирмы на труд?', 'Фирма максимизирует денежную прибыль, а не физический объём товара. Поэтому физический прирост выпуска MPL переводится в выручку путём умножения на цену продукта: VMPL = P × MPL.'],
+            ['2. Чем сдвиг предложения труда отличается от движения вдоль него?', 'Изменение самой ставки зарплаты W при неизменных прочих условиях вызывает движение вдоль кривой S. Сдвиг всей кривой S происходит только при изменении неценовых факторов: числа работников (иммиграция/эмиграция), предпочтений между трудом и досугом или альтернативных возможностей в других секторах.'],
+            ['3. Почему в Figure 5 занятость растёт, а зарплата падает?', 'Приток работников сдвигает S вправо, создавая избыток труда при прежней W₁. Конкуренция снижает W. Фирмы расширяют найм вдоль кривой VMPL, но из-за убывающего MPL каждый дополнительный работник приносит меньший прирост выпуска, поэтому его VMPL ниже, и равновесная зарплата W₂ устанавливается на более низком уровне.'],
+            ['4. Почему в Figure 6 растут и зарплата, и занятость?', 'Рост цены конечного продукта P увеличивает стоимость предельного продукта VMPL = P × MPL при каждом уровне занятости, сдвигая кривую спроса D вправо. Возникает дефицит труда при старой ставке W₁, фирмы конкурируют за работников, поднимая W и двигаясь вверх вдоль неизменной кривой S.'],
+            ['5. Как рост цены продукта передаётся на рынок труда?', 'Через формулу VMPL = P × MPL: более высокая цена P повышает денежную ценность каждого бушеля или единицы товара, собранного работником. Это делает наём дополнительного работника прибыльным при прежней зарплате и сдвигает спрос на труд D вправо.'],
+            ['6. Как уменьшение запаса капитала влияет на MPL труда и W?', 'Капитал и труд обычно дополняют друг друга (например, сборщики яблок и лестницы). При потере капитала физическая производительность труда MPL падает, кривая VMPL сдвигается влево, что снижает как занятость L, так и ставку заработной платы W.'],
+            ['7. Почему покупная цена капитала зависит от будущих VMP?', 'Покупная цена — это плата за постоянное владение активом, приносящим рентный доход в каждом периоде. Поскольку рентная цена периода равна VMP капитала, покупатель оценивает актив исходя из суммы ожидаемых будущих значений VMP на протяжении срока службы оборудования.']
+        ],
+        en: [
+            ['1. Why does VMPL, rather than MPL, determine a firm’s demand for labor?', 'A firm maximizes monetary profit, not physical output. Therefore, physical incremental output MPL must be converted into revenue by multiplying by output price: VMPL = P × MPL.'],
+            ['2. How does a shift in labor supply differ from movement along it?', 'A change in the wage W ceteris paribus causes movement along the existing supply curve S. The entire curve S shifts only when non-wage determinants change: worker population (immigration/emigration), tastes for work vs. leisure, or outside opportunities.'],
+            ['3. Why does employment rise while the wage falls in Figure 5?', 'Worker inflows shift S right, creating a labor surplus at W₁. Competition pushes W down. As firms hire more workers along VMPL, diminishing MPL means each extra worker adds less output, lowering VMPL and driving the new equilibrium wage W₂ down.'],
+            ['4. Why do both the wage and employment rise in Figure 6?', 'A higher product price P increases VMPL = P × MPL at every quantity of labor, shifting labor demand D right. At W₁, firms face a labor shortage and bid wages up, moving upward along the unchanged supply curve S to higher W₂ and L₂.'],
+            ['5. How is a rise in product price transmitted to the labor market?', 'Through VMPL = P × MPL: a higher price P increases the monetary value of the output produced by each marginal worker, making additional hiring profitable and shifting labor demand D to the right.'],
+            ['6. How does a reduction in capital stock affect MPL and W?', 'Capital and labor are typically complements (e.g., apple pickers and ladders). Losing capital lowers workers’ physical productivity MPL, shifting VMPL left and reducing both equilibrium employment L and wage W.'],
+            ['7. Why does the purchase price of capital depend on future VMPs?', 'The purchase price pays for permanent ownership of an asset that yields a stream of period rental incomes. Since each period’s rental price equals the capital’s VMP, the asset’s value reflects current and expected future VMPs.']
+        ]
+    }
+};
+
+const ORCHARD_DATA = [
+    { L: 0, Q: 0, MPL: 0 },
+    { L: 1, Q: 100, MPL: 100 },
+    { L: 2, Q: 180, MPL: 80 },
+    { L: 3, Q: 240, MPL: 60 },
+    { L: 4, Q: 280, MPL: 40 },
+    { L: 5, Q: 300, MPL: 20 }
+];
+
+const $ = id => document.getElementById(id);
+
+function switchTab(tabId) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabId));
+    document.querySelectorAll('.view-section').forEach(s => s.classList.toggle('active', s.id === `tab-${tabId}`));
+}
+
+function setLang(lang) {
+    currentLang = lang;
+    $('btnRu').classList.toggle('active', lang === 'ru');
+    $('btnEn').classList.toggle('active', lang === 'en');
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (I18N[lang][key]) el.textContent = I18N[lang][key];
+    });
+
+    renderStaticTables();
+    updateDerivedLink();
+    updateOrchardSim();
+    updateLaborMarket();
+    drawFigure7();
+    updateLandCapital();
+    updateLaborSupplyLab();
+    updateMonopsony();
+    buildWageControls();
+    updateWageFactors();
+}
+
+function renderStaticTables() {
+    const L = currentLang;
+    $('chainFlow').innerHTML = CONTENT.chain[L].map(x => `<div class="chain-node"><strong>${x[0]}</strong><span>${x[1]}</span></div>`).join('');
+    $('symbolsBody').innerHTML = CONTENT.symbols[L].map(r => `<tr><td class="mono" style="color:var(--neon-blue);font-weight:800;">${r[0]}</td><td>${r[1]}</td><td class="mono" style="color:var(--neon-emerald);">${r[2]}</td></tr>`).join('');
+    $('assumptionsList').innerHTML = CONTENT.assumptions[L].map((t, i) => `<div class="callout" style="margin-top:0;"><strong>0${i+1}</strong><span>${t}</span></div>`).join('');
+    $('algoSteps').innerHTML = CONTENT.algo[L].map(s => `<div class="callout" style="margin-top:0;padding:10px 14px;"><span>${s}</span></div>`).join('');
+    $('shocksMatrixBody').innerHTML = CONTENT.matrix[L].map(r => `<tr><td><strong>${r[0]}</strong></td><td class="mono" style="color:var(--neon-amber);">${r[1]}</td><td class="mono">${r[2]}</td><td class="mono">${r[3]}</td></tr>`).join('');
+    $('quizContainer').innerHTML = CONTENT.quiz[L].map(q => `<details class="quiz-item"><summary>${q[0]}</summary><div class="quiz-answer">${q[1]}</div></details>`).join('');
+}
+
+function updateDerivedLink() {
+    const shift = Number($('appleDemandSlider').value);
+    const P = 10 + shift * 0.1;
+    const L = currentLang === 'ru';
+
+    $('appleDemandVal').textContent = shift === 0
+        ? (L ? `Базовый (P = ${P.toFixed(1)})` : `Baseline (P = ${P.toFixed(1)})`)
+        : (shift > 0 ? `+${shift}% (P = ${P.toFixed(1)})` : `${shift}% (P = ${P.toFixed(1)})`);
+    $('applePriceBadge').textContent = L ? `Цена яблок P = ${P.toFixed(1)}` : `Apple Price P = ${P.toFixed(1)}`;
+
+    const svgP = $('svgProductMarket');
+    const eqX1 = 230, eqY1 = 130;
+    const dx = shift * 1.1;
+    const newEqX1 = 230 + dx * 0.5;
+    const newEqY1 = 130 - dx * 0.5;
+
+    let htmlP = `
+        <line x1="45" y1="215" x2="430" y2="215" stroke="#64748b" stroke-width="1.5"/>
+        <line x1="45" y1="20" x2="45" y2="215" stroke="#64748b" stroke-width="1.5"/>
+        <text x="235" y="238" fill="#94a3b8" font-size="11" text-anchor="middle">${L ? 'Количество яблок, Q' : 'Quantity of Apples, Q'}</text>
+        <text x="16" y="120" fill="#94a3b8" font-size="11" transform="rotate(-90 16 120)" text-anchor="middle">${L ? 'Цена продукта, P' : 'Product Price, P'}</text>
+        <line x1="80" y1="195" x2="380" y2="55" stroke="#fb7185" stroke-width="3"/>
+        <text x="386" y="55" fill="#fb7185" font-size="12" font-weight="bold">S</text>
+        <line x1="80" y1="60" x2="380" y2="200" stroke="#38bdf8" stroke-width="3" stroke-opacity="${shift !== 0 ? 0.35 : 1}"/>
+        <text x="385" y="202" fill="#38bdf8" font-size="12" font-weight="bold">D₁</text>
+        <line x1="45" y1="${eqY1}" x2="${eqX1}" y2="${eqY1}" stroke="#64748b" stroke-dasharray="3,3"/>
+        <line x1="${eqX1}" y1="${eqY1}" x2="${eqX1}" y2="215" stroke="#64748b" stroke-dasharray="3,3"/>
+        <circle cx="${eqX1}" cy="${eqY1}" r="4.5" fill="#94a3b8"/>
+        <text x="38" y="${eqY1 + 4}" fill="#94a3b8" font-size="10" text-anchor="end">P₁</text>
+    `;
+
+    if (shift !== 0) {
+        htmlP += `
+            <line x1="${80 + dx}" y1="60" x2="${380 + dx}" y2="200" stroke="#38bdf8" stroke-width="3"/>
+            <text x="${385 + dx}" y="202" fill="#38bdf8" font-size="12" font-weight="bold">D₂</text>
+            <line x1="45" y1="${newEqY1}" x2="${newEqX1}" y2="${newEqY1}" stroke="#fbbf24" stroke-dasharray="3,3"/>
+            <line x1="${newEqX1}" y1="${newEqY1}" x2="${newEqX1}" y2="215" stroke="#fbbf24" stroke-dasharray="3,3"/>
+            <circle cx="${newEqX1}" cy="${newEqY1}" r="5.5" fill="#fbbf24"/>
+            <text x="38" y="${newEqY1 + 4}" fill="#fbbf24" font-size="10" font-weight="bold" text-anchor="end">P₂</text>
+        `;
+    }
+    svgP.innerHTML = htmlP;
+
+    const svgL = $('svgLinkedLabor');
+    const newEqX2 = 230 + dx * 0.5;
+    const newEqY2 = 130 - dx * 0.5;
+
+    let htmlL = `
+        <line x1="45" y1="215" x2="430" y2="215" stroke="#64748b" stroke-width="1.5"/>
+        <line x1="45" y1="20" x2="45" y2="215" stroke="#64748b" stroke-width="1.5"/>
+        <text x="235" y="238" fill="#94a3b8" font-size="11" text-anchor="middle">${L ? 'Количество труда, L' : 'Quantity of Labor, L'}</text>
+        <text x="16" y="120" fill="#94a3b8" font-size="11" transform="rotate(-90 16 120)" text-anchor="middle">${L ? 'Зарплата, W' : 'Wage Rate, W'}</text>
+        <line x1="80" y1="195" x2="380" y2="55" stroke="#fb7185" stroke-width="3"/>
+        <text x="386" y="55" fill="#fb7185" font-size="12" font-weight="bold">S</text>
+        <line x1="80" y1="60" x2="380" y2="200" stroke="#38bdf8" stroke-width="3" stroke-opacity="${shift !== 0 ? 0.35 : 1}"/>
+        <text x="385" y="202" fill="#38bdf8" font-size="12" font-weight="bold">D₁</text>
+        <line x1="45" y1="${eqY1}" x2="${eqX1}" y2="${eqY1}" stroke="#64748b" stroke-dasharray="3,3"/>
+        <line x1="${eqX1}" y1="${eqY1}" x2="${eqX1}" y2="215" stroke="#64748b" stroke-dasharray="3,3"/>
+        <circle cx="${eqX1}" cy="${eqY1}" r="4.5" fill="#94a3b8"/>
+        <text x="38" y="${eqY1 + 4}" fill="#94a3b8" font-size="10" text-anchor="end">W₁</text>
+    `;
+
+    if (shift !== 0) {
+        htmlL += `
+            <line x1="${80 + dx}" y1="60" x2="${380 + dx}" y2="200" stroke="#38bdf8" stroke-width="3"/>
+            <text x="${385 + dx}" y="202" fill="#38bdf8" font-size="12" font-weight="bold">D₂</text>
+            <line x1="45" y1="${newEqY2}" x2="${newEqX2}" y2="${newEqY2}" stroke="#34d399" stroke-dasharray="3,3"/>
+            <line x1="${newEqX2}" y1="${newEqY2}" x2="${newEqX2}" y2="215" stroke="#34d399" stroke-dasharray="3,3"/>
+            <circle cx="${newEqX2}" cy="${newEqY2}" r="5.5" fill="#34d399"/>
+            <text x="38" y="${newEqY2 + 4}" fill="#34d399" font-size="10" font-weight="bold" text-anchor="end">W₂</text>
+        `;
+    }
+    svgL.innerHTML = htmlL;
+}
+
+function updateOrchardSim() {
+    const maxL = Number($('workersSlider').value);
+    const P = Number($('pricePSlider').value);
+    const W = Number($('wageWSlider').value);
+    const L = currentLang === 'ru';
+
+    $('workersVal').textContent = L ? `${maxL} чел.` : `${maxL} workers`;
+    $('pricePVal').textContent = `${P}`;
+    $('wageWVal').textContent = `${W}`;
+
+    let optL = 0;
+    let totalProfit = 0;
+    ORCHARD_DATA.forEach(row => {
+        if (row.L > 0) {
+            const vmpl = P * row.MPL;
+            if (vmpl >= W) {
+                optL = row.L;
+                totalProfit += (vmpl - W);
+            }
+        }
+    });
+
+    const curRow = ORCHARD_DATA[maxL];
+    $('kpiQ').textContent = `${curRow.Q} ${L ? 'буш.' : 'bu'}`;
+    $('kpiMPL').textContent = maxL === 0 ? '—' : `+${curRow.MPL}`;
+    $('kpiOptL').textContent = L ? `${optL} чел.` : `${optL} workers`;
+    $('kpiTotalProfit').textContent = `${totalProfit >= 0 ? '+' : ''}${totalProfit}`;
+
+    $('hiringVerdictText').textContent = L
+        ? `При цене продукта P = ${P} и зарплате W = ${W} фирма нанимает ${optL} работник(ов), так как для каждого из них VMPL ≥ ${W}. Наём ${optL + 1}-го работника принёс бы убыток (VMPL < W).`
+        : `At output price P = ${P} and wage W = ${W}, the firm hires ${optL} worker(s) because VMPL ≥ ${W} for each of them. Hiring worker #${optL + 1} would reduce profit (VMPL < W).`;
+
+    $('mplTableBody').innerHTML = ORCHARD_DATA.slice(1).map(row => {
+        const vmpl = P * row.MPL;
+        const dProfit = vmpl - W;
+        const hired = vmpl >= W;
+        const visible = row.L <= maxL;
+        return `
+            <tr class="${hired ? 'highlight-row' : ''}" style="opacity: ${visible ? 1 : 0.45};">
+                <td class="mono font-bold">${row.L}</td>
+                <td class="mono">${row.Q}</td>
+                <td class="mono" style="color: var(--neon-emerald);">+${row.MPL}</td>
+                <td class="mono" style="color: var(--neon-blue); font-weight: 700;">${vmpl}</td>
+                <td class="mono" style="color: var(--neon-red);">${W}</td>
+                <td class="mono" style="color: ${dProfit >= 0 ? 'var(--neon-emerald)' : 'var(--neon-red)'}; font-weight: 700;">
+                    ${dProfit >= 0 ? '+' : ''}${dProfit}
+                </td>
+                <td>
+                    <span class="badge ${hired ? 'badge-emerald' : 'badge-red'}">
+                        ${hired ? (L ? 'Нанимаем (VMPL ≥ W)' : 'Hire (VMPL ≥ W)') : (L ? 'Отказ (VMPL < W)' : 'Do Not Hire')}
+                    </span>
+                </td>
+            </tr>
+        `;
+    }).join('');
+
+    const svgQ = $('svgProdFunc');
+    const gx = l => 55 + (l / 5) * 370;
+    const gy = q => 225 - (q / 320) * 190;
+
+    let qHtml = `
+        <line x1="55" y1="225" x2="435" y2="225" stroke="#64748b" stroke-width="1.5"/>
+        <line x1="55" y1="25" x2="55" y2="225" stroke="#64748b" stroke-width="1.5"/>
+        <text x="245" y="255" fill="#94a3b8" font-size="11" text-anchor="middle">${L ? 'Число работников, L' : 'Number of Workers, L'}</text>
+        <text x="16" y="125" fill="#94a3b8" font-size="11" transform="rotate(-90 16 125)" text-anchor="middle">${L ? 'Выпуск, Q' : 'Output, Q'}</text>
+    `;
+
+    [100, 200, 300].forEach(val => {
+        qHtml += `
+            <line x1="55" y1="${gy(val)}" x2="430" y2="${gy(val)}" stroke="#262b34" stroke-width="1"/>
+            <text x="48" y="${gy(val) + 4}" fill="#64748b" font-size="10" text-anchor="end">${val}</text>
+        `;
+    });
+
+    for (let i = 0; i <= 5; i++) {
+        qHtml += `<text x="${gx(i)}" y="241" fill="#94a3b8" font-size="10" text-anchor="middle">${i}</text>`;
+    }
+
+    const fullPts = ORCHARD_DATA.map(d => `${gx(d.L)},${gy(d.Q)}`).join(' ');
+    qHtml += `<polyline points="${fullPts}" fill="none" stroke="#34d399" stroke-width="2" stroke-dasharray="4,4" opacity="0.28"/>`;
+
+    const activeSlice = ORCHARD_DATA.slice(0, maxL + 1);
+    const activePts = activeSlice.map(d => `${gx(d.L)},${gy(d.Q)}`).join(' ');
+    qHtml += `<polyline points="${activePts}" fill="none" stroke="#34d399" stroke-width="3.5"/>`;
+
+    activeSlice.forEach((d, idx) => {
+        if (idx > 0) {
+            const prev = activeSlice[idx - 1];
+            qHtml += `
+                <line x1="${gx(prev.L)}" y1="${gy(prev.Q)}" x2="${gx(d.L)}" y2="${gy(prev.Q)}" stroke="#38bdf8" stroke-dasharray="2,2"/>
+                <line x1="${gx(d.L)}" y1="${gy(prev.Q)}" x2="${gx(d.L)}" y2="${gy(d.Q)}" stroke="#38bdf8" stroke-width="2"/>
+                <text x="${gx(d.L) + 5}" y="${(gy(prev.Q) + gy(d.Q)) / 2 + 3}" fill="#38bdf8" font-size="9.5" font-weight="bold">+${d.MPL}</text>
+            `;
+        }
+        qHtml += `<circle cx="${gx(d.L)}" cy="${gy(d.Q)}" r="5" fill="#34d399" stroke="#121417" stroke-width="1.5"/>`;
+    });
+    svgQ.innerHTML = qHtml;
+
+    const svgV = $('svgVmplChart');
+    const maxMoney = Math.max(1200, P * 110, W + 150);
+    const vx = l => 55 + (l / 5.5) * 370;
+    const vy = m => 225 - (m / maxMoney) * 190;
+
+    let vHtml = `
+        <line x1="55" y1="225" x2="435" y2="225" stroke="#64748b" stroke-width="1.5"/>
+        <line x1="55" y1="25" x2="55" y2="225" stroke="#64748b" stroke-width="1.5"/>
+        <text x="245" y="255" fill="#94a3b8" font-size="11" text-anchor="middle">${L ? 'Количество труда, L' : 'Quantity of Labor, L'}</text>
+        <text x="16" y="125" fill="#94a3b8" font-size="11" transform="rotate(-90 16 125)" text-anchor="middle">${L ? 'Денежная величина' : 'Monetary Value'}</text>
+    `;
+
+    for (let i = 1; i <= 5; i++) {
+        vHtml += `<text x="${vx(i)}" y="241" fill="#94a3b8" font-size="10" text-anchor="middle">${i}</text>`;
+    }
+
+    const vmplPts = ORCHARD_DATA.slice(1).map(d => `${vx(d.L)},${vy(P * d.MPL)}`).join(' ');
+    vHtml += `<polyline points="${vmplPts}" fill="none" stroke="#38bdf8" stroke-width="3.5"/>`;
+    vHtml += `<text x="${vx(1)}" y="${vy(P * 100) - 8}" fill="#38bdf8" font-size="11" font-weight="bold">VMPL = P × MPL</text>`;
+
+    ORCHARD_DATA.slice(1).forEach(d => {
+        const val = P * d.MPL;
+        vHtml += `<circle cx="${vx(d.L)}" cy="${vy(val)}" r="4.5" fill="#38bdf8"/>`;
+    });
+
+    vHtml += `
+        <line x1="55" y1="${vy(W)}" x2="425" y2="${vy(W)}" stroke="#fb7185" stroke-width="2.5"/>
+        <text x="422" y="${vy(W) - 6}" fill="#fb7185" font-size="11" font-weight="bold" text-anchor="end">W = ${W}</text>
+    `;
+
+    if (optL > 0) {
+        const optVmpl = P * ORCHARD_DATA[optL].MPL;
+        vHtml += `
+            <line x1="${vx(optL)}" y1="${vy(optVmpl)}" x2="${vx(optL)}" y2="225" stroke="#fbbf24" stroke-dasharray="3,3" stroke-width="1.5"/>
+            <circle cx="${vx(optL)}" cy="${vy(W)}" r="6" fill="#fbbf24"/>
+            <text x="${vx(optL)}" y="216" fill="#fbbf24" font-size="10" font-weight="bold" text-anchor="middle">L* = ${optL}</text>
+        `;
+    }
+    svgV.innerHTML = vHtml;
+}
+
+function applyLaborPreset(dShift, sShift, btn) {
+    $('laborDemandSlider').value = dShift;
+    $('laborSupplySlider').value = sShift;
+    document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    updateLaborMarket();
+}
+
+function updateLaborMarket() {
+    const dShift = Number($('laborDemandSlider').value);
+    const sShift = Number($('laborSupplySlider').value);
+    const L = currentLang === 'ru';
+
+    $('shiftDReadout').textContent = dShift === 0 ? (L ? '0 (База D₁)' : '0 (Base D₁)') : `${dShift > 0 ? '+' : ''}${dShift} (D₂)`;
+    $('shiftSReadout').textContent = sShift === 0 ? (L ? '0 (База S₁)' : '0 (Base S₁)') : `${sShift > 0 ? '+' : ''}${sShift} (S₂)`;
+
+    if (dShift > 0) {
+        $('demandFactorDesc').textContent = L
+            ? '↑ Рост цены продукта P, рост производительности MPL или увеличение запаса капитала сдвигают спрос на труд D вправо.'
+            : '↑ Higher product price P, higher MPL, or increased capital stock shifts labor demand D right.';
+    } else if (dShift < 0) {
+        $('demandFactorDesc').textContent = L
+            ? '↓ Падение цены продукта P или разрушение дополняющего капитала (ураган) сдвигают спрос на труд D влево.'
+            : '↓ Lower product price P or loss of complementary capital (hurricane) shifts labor demand D left.';
+    } else {
+        $('demandFactorDesc').textContent = L
+            ? 'Кривая спроса D₁ в базовом положении (VMPL = P × MPL).'
+            : 'Labor demand curve D₁ at baseline (VMPL = P × MPL).';
+    }
+
+    if (sShift > 0) {
+        $('supplyFactorDesc').textContent = L
+            ? '↑ Иммиграция или приток рабочей силы сдвигают предложение труда S вправо (сценарий Figure 5).'
+            : '↑ Immigration or workforce inflow shifts labor supply S right (Figure 5 scenario).';
+    } else if (sShift < 0) {
+        $('supplyFactorDesc').textContent = L
+            ? '↓ Эмиграция или административные ограничения на найм сдвигают предложение труда S влево.'
+            : '↓ Emigration or hiring restrictions shift labor supply S left.';
+    } else {
+        $('supplyFactorDesc').textContent = L
+            ? 'Кривая предложения S₁ в базовом положении.'
+            : 'Labor supply curve S₁ at baseline.';
+    }
+
+    const L1 = 100, W1 = 100;
+    const L2 = Math.round((180 + dShift + sShift) / 1.8);
+    const W2 = Math.round(200 - L2 + dShift);
+
+    $('kpiWageMove').textContent = `${W1} → ${W2}`;
+    $('kpiEmpMove').textContent = `${L1} → ${L2}`;
+
+    const wDiff = W2 - W1;
+    const lDiff = L2 - L1;
+
+    $('kpiWageDir').textContent = wDiff === 0 ? (L ? 'Без изменений' : 'Unchanged') : (wDiff > 0 ? (L ? `↑ Растёт (+${wDiff})` : `↑ Rises (+${wDiff})`) : (L ? `↓ Падает (${wDiff})` : `↓ Falls (${wDiff})`));
+    $('kpiWageDir').style.color = wDiff === 0 ? 'var(--text-primary)' : (wDiff > 0 ? 'var(--neon-emerald)' : 'var(--neon-red)');
+
+    $('kpiEmpDir').textContent = lDiff === 0 ? (L ? 'Без изменений' : 'Unchanged') : (lDiff > 0 ? (L ? `↑ Растёт (+${lDiff})` : `↑ Rises (+${lDiff})`) : (L ? `↓ Падает (${lDiff})` : `↓ Falls (${lDiff})`));
+    $('kpiEmpDir').style.color = lDiff === 0 ? 'var(--text-primary)' : (lDiff > 0 ? 'var(--neon-emerald)' : 'var(--neon-red)');
+
+    if (dShift === 0 && sShift > 0) {
+        $('figureBadge').textContent = 'Figure 5 · S →';
+    } else if (dShift > 0 && sShift === 0) {
+        $('figureBadge').textContent = 'Figure 6 · D →';
+    } else if (dShift === 0 && sShift === 0) {
+        $('figureBadge').textContent = L ? 'Базовое равновесие E₁' : 'Baseline Equilibrium E₁';
+    } else {
+        $('figureBadge').textContent = L ? 'Комбинированный шок E₂' : 'Combined Shock E₂';
+    }
+
+    let mechHtml = '';
+    if (dShift === 0 && sShift === 0) {
+        mechHtml = L
+            ? 'Рынок находится в исходном равновесии <strong>E₁ (L₁ = 100, W₁ = 100)</strong>. Количество труда, которое фирмы хотят нанять при ставке W₁ = VMPL, точно совпадает с количеством труда, которое готовы предложить домохозяйства.'
+            : 'The market is at initial equilibrium <strong>E₁ (L₁ = 100, W₁ = 100)</strong>. Labor demanded by firms at W₁ = VMPL exactly equals labor supplied by households.';
+    } else if (dShift === 0 && sShift > 0) {
+        mechHtml = L
+            ? `<strong>Сценарий Figure 5 (рост предложения труда S₁ → S₂):</strong><br>1. Приток работников сдвигает кривую предложения S вправо; спрос D₁ остаётся неизменным.<br>2. При прежней зарплате W₁ = 100 возникает <strong>избыток предложения труда</strong>.<br>3. Конкуренция работников снижает ставку зарплаты до <strong>W₂ = ${W2}</strong>. Фирмы движутся вниз и вправо по кривой D₁, увеличивая занятость до <strong>L₂ = ${L2}</strong>.<br>4. <em>Экономический смысл:</em> при большей занятости действует убывающий MPL, поэтому VMPL предельного работника ниже, и равновесная зарплата W₂ снижается.`
+            : `<strong>Figure 5 Scenario (Rightward Shift in Labor Supply S₁ → S₂):</strong><br>1. Worker inflow shifts supply S right; demand D₁ remains unchanged.<br>2. At the old wage W₁ = 100, a <strong>labor surplus</strong> emerges.<br>3. Competition bids the wage down to <strong>W₂ = ${W2}</strong>. Firms move down and right along D₁, expanding employment to <strong>L₂ = ${L2}</strong>.<br>4. <em>Economic intuition:</em> higher employment triggers diminishing MPL, lowering VMPL of the marginal worker and pulling equilibrium W₂ down.`;
+    } else if (dShift > 0 && sShift === 0) {
+        mechHtml = L
+            ? `<strong>Сценарий Figure 6 (рост спроса на труд D₁ → D₂):</strong><br>1. Рост цены выпуска P (или рост MPL) увеличивает VMPL = P × MPL и сдвигает спрос D вправо; предложение S₁ неизменно.<br>2. При прежней зарплате W₁ = 100 возникает <strong>избыточный спрос (дефицит) труда</strong>.<br>3. Фирмы повышают ставку зарплаты до <strong>W₂ = ${W2}</strong>, двигаясь вверх и вправо вдоль кривой предложения S₁ до занятости <strong>L₂ = ${L2}</strong>.<br>4. <em>Экономический смысл:</em> более высокая ценность продукта увеличивает VMPL каждого работника, поэтому одновременно растут и зарплата W, и занятость L.`
+            : `<strong>Figure 6 Scenario (Rightward Shift in Labor Demand D₁ → D₂):</strong><br>1. Higher output price P (or higher MPL) increases VMPL = P × MPL and shifts labor demand D right; supply S₁ is unchanged.<br>2. At the old wage W₁ = 100, a <strong>labor shortage</strong> emerges.<br>3. Firms bid wages up to <strong>W₂ = ${W2}</strong>, moving upward along S₁ to higher employment <strong>L₂ = ${L2}</strong>.<br>4. <em>Economic intuition:</em> higher output value raises every worker’s VMPL, so both wage W and employment L rise.`;
+    } else {
+        mechHtml = L
+            ? `<strong>Переход от E₁ (W₁=100, L₁=100) к E₂ (W₂=${W2}, L₂=${L2}):</strong><br>Сдвиг спроса на <strong>${dShift > 0 ? '+' + dShift : dShift}</strong> и сдвиг предложения на <strong>${sShift > 0 ? '+' + sShift : sShift}</strong> формируют новое пересечение кривых. Занятость изменилась на <strong>${lDiff >= 0 ? '+' + lDiff : lDiff}</strong>, а равновесная ставка заработной платы — на <strong>${wDiff >= 0 ? '+' + wDiff : wDiff}</strong>, снова выравниваясь с новой стоимостью предельного продукта VMPL(L₂).`
+            : `<strong>Adjustment from E₁ (W₁=100, L₁=100) to E₂ (W₂=${W2}, L₂=${L2}):</strong><br>A demand shift of <strong>${dShift > 0 ? '+' + dShift : dShift}</strong> combined with a supply shift of <strong>${sShift > 0 ? '+' + sShift : sShift}</strong> establishes a new intersection. Employment changes by <strong>${lDiff >= 0 ? '+' + lDiff : lDiff}</strong> and the equilibrium wage adjusts by <strong>${wDiff >= 0 ? '+' + wDiff : wDiff}</strong> to match the new VMPL(L₂).`;
+    }
+    $('laborMechanismBox').innerHTML = mechHtml;
+
+    const svg = $('svgMainLabor');
+    const gx = q => 65 + (q / 200) * 560;
+    const gy = w => 310 - (w / 220) * 270;
+
+    let html = `
+        <line x1="65" y1="310" x2="640" y2="310" stroke="#64748b" stroke-width="1.5"/>
+        <line x1="65" y1="25" x2="65" y2="310" stroke="#64748b" stroke-width="1.5"/>
+        <text x="350" y="345" fill="#94a3b8" font-size="12" text-anchor="middle">${L ? 'Количество труда, L' : 'Quantity of Labor, L'}</text>
+        <text x="20" y="170" fill="#94a3b8" font-size="12" transform="rotate(-90 20 170)" text-anchor="middle">${L ? 'Ставка заработной платы, W' : 'Wage Rate, W'}</text>
+    `;
+
+    [50, 100, 150, 200].forEach(v => {
+        html += `
+            <line x1="65" y1="${gy(v)}" x2="630" y2="${gy(v)}" stroke="#222730" stroke-width="1"/>
+            <line x1="${gx(v)}" y1="30" x2="${gx(v)}" y2="310" stroke="#222730" stroke-width="1"/>
+        `;
+    });
+
+    html += `
+        <line x1="${gx(15)}" y1="${gy(200 - 15)}" x2="${gx(185)}" y2="${gy(200 - 185)}" stroke="#38bdf8" stroke-width="3.5" stroke-opacity="${dShift !== 0 ? 0.35 : 1}"/>
+        <text x="${gx(187)}" y="${gy(15) + 4}" fill="#38bdf8" font-size="12" font-weight="bold">D₁</text>
+        <line x1="${gx(15)}" y1="${gy(20 + 0.8 * 15)}" x2="${gx(185)}" y2="${gy(20 + 0.8 * 185)}" stroke="#fb7185" stroke-width="3.5" stroke-opacity="${sShift !== 0 ? 0.35 : 1}"/>
+        <text x="${gx(187)}" y="${gy(20 + 0.8 * 185) + 4}" fill="#fb7185" font-size="12" font-weight="bold">S₁</text>
+    `;
+
+    if (dShift !== 0) {
+        const qStart = Math.max(0, 15 + dShift * 0.5);
+        const qEnd = Math.min(195, 185 + dShift * 0.5);
+        html += `
+            <line x1="${gx(qStart)}" y1="${gy(200 - qStart + dShift)}" x2="${gx(qEnd)}" y2="${gy(200 - qEnd + dShift)}" stroke="#fbbf24" stroke-width="3.5"/>
+            <text x="${gx(qEnd) + 5}" y="${gy(200 - qEnd + dShift) + 4}" fill="#fbbf24" font-size="12" font-weight="bold">D₂</text>
+        `;
+    }
+
+    if (sShift !== 0) {
+        const qStart = Math.max(0, 15 + sShift * 0.5);
+        const qEnd = Math.min(195, 185 + sShift * 0.5);
+        html += `
+            <line x1="${gx(qStart)}" y1="${gy(20 + 0.8 * qStart - sShift)}" x2="${gx(qEnd)}" y2="${gy(20 + 0.8 * qEnd - sShift)}" stroke="#fbbf24" stroke-width="3.5"/>
+            <text x="${gx(qEnd) + 5}" y="${gy(20 + 0.8 * qEnd - sShift) + 4}" fill="#fbbf24" font-size="12" font-weight="bold">S₂</text>
+        `;
+    }
+
+    html += `
+        <line x1="65" y1="${gy(W1)}" x2="${gx(L1)}" y2="${gy(W1)}" stroke="#94a3b8" stroke-dasharray="4,4"/>
+        <line x1="${gx(L1)}" y1="${gy(W1)}" x2="${gx(L1)}" y2="310" stroke="#94a3b8" stroke-dasharray="4,4"/>
+        <circle cx="${gx(L1)}" cy="${gy(W1)}" r="5.5" fill="#f1f5f9"/>
+        <text x="58" y="${gy(W1) + 4}" fill="#f1f5f9" font-size="11" font-weight="bold" text-anchor="end">W₁</text>
+        <text x="${gx(L1)}" y="326" fill="#f1f5f9" font-size="11" font-weight="bold" text-anchor="middle">L₁</text>
+    `;
+
+    if (dShift !== 0 || sShift !== 0) {
+        html += `
+            <line x1="65" y1="${gy(W2)}" x2="${gx(L2)}" y2="${gy(W2)}" stroke="#34d399" stroke-dasharray="4,4" stroke-width="1.5"/>
+            <line x1="${gx(L2)}" y1="${gy(W2)}" x2="${gx(L2)}" y2="310" stroke="#34d399" stroke-dasharray="4,4" stroke-width="1.5"/>
+            <circle cx="${gx(L2)}" cy="${gy(W2)}" r="6.5" fill="#34d399" stroke="#121417" stroke-width="1.5"/>
+            <text x="58" y="${gy(W2) + 4}" fill="#34d399" font-size="11" font-weight="bold" text-anchor="end">W₂</text>
+            <text x="${gx(L2)}" y="326" fill="#34d399" font-size="11" font-weight="bold" text-anchor="middle">L₂</text>
+        `;
+    }
+
+    svg.innerHTML = html;
+}
+
+function drawFigure7() {
+    const svg = $('svgFig7');
+    const L = currentLang === 'ru';
+    const years = [1960, 1970, 1980, 1990, 2000, 2010, 2020];
+    const prod = [100, 123, 149, 183, 226, 275, 326];
+    const comp = [100, 121, 144, 175, 211, 253, 296];
+
+    const gx = y => 55 + ((y - 1960) / 60) * 455;
+    const gy = v => 225 - ((v - 80) / 260) * 190;
+
+    let html = `
+        <line x1="55" y1="225" x2="520" y2="225" stroke="#64748b" stroke-width="1.5"/>
+        <line x1="55" y1="25" x2="55" y2="225" stroke="#64748b" stroke-width="1.5"/>
+        <text x="285" y="255" fill="#94a3b8" font-size="11" text-anchor="middle">${L ? 'Год' : 'Year'}</text>
+        <text x="16" y="125" fill="#94a3b8" font-size="11" transform="rotate(-90 16 125)" text-anchor="middle">${L ? 'Индекс (1960 = 100)' : 'Index (1960 = 100)'}</text>
+    `;
+
+    [100, 150, 200, 250, 300].forEach(v => {
+        html += `
+            <line x1="55" y1="${gy(v)}" x2="515" y2="${gy(v)}" stroke="#222730" stroke-width="1"/>
+            <text x="48" y="${gy(v) + 4}" fill="#64748b" font-size="10" text-anchor="end">${v}</text>
+        `;
+    });
+
+    years.forEach(y => {
+        html += `<text x="${gx(y)}" y="241" fill="#94a3b8" font-size="10" text-anchor="middle">${y}</text>`;
+    });
+
+    const prodPts = years.map((y, i) => `${gx(y)},${gy(prod[i])}`).join(' ');
+    const compPts = years.map((y, i) => `${gx(y)},${gy(comp[i])}`).join(' ');
+
+    html += `
+        <polyline points="${prodPts}" fill="none" stroke="#fb7185" stroke-width="3.5"/>
+        <polyline points="${compPts}" fill="none" stroke="#38bdf8" stroke-width="3.5"/>
+    `;
+    svg.innerHTML = html;
+}
+
+function updateLandCapital() {
+    const shock = Number($('capitalShockSlider').value);
+    const L = currentLang === 'ru';
+
+    $('capShockVal').textContent = shock === 0
+        ? (L ? 'Нормальный запас (100%)' : 'Normal Stock (100%)')
+        : (shock < 0
+            ? (L ? `Ураган: потеря капитала (${100 + shock}%)` : `Hurricane: Capital Lost (${100 + shock}%)`)
+            : (L ? `Инвестиции: рост капитала (${100 + shock}%)` : `Investment: Capital Added (${100 + shock}%)`));
+
+    if (shock < 0) {
+        $('interfactorEffectBox').innerHTML = L
+            ? `<strong>Эффект взаимодополняемости (Ураган уничтожил часть лестниц):</strong><br>1. На <strong>рынке капитала</strong> предложение лестниц S сдвигается влево → рентная цена оставшихся лестниц резко растёт.<br>2. На <strong>рынке труда</strong> сборщики остаются без оборудования → их предельный продукт MPL падает, спрос на труд D сдвигается влево и зарплата W снижается.`
+            : `<strong>Complementary Factor Effect (Hurricane Destroys Ladders):</strong><br>1. In the <strong>capital market</strong>, ladder supply S shifts left → rental price of remaining ladders rises sharply.<br>2. In the <strong>labor market</strong>, pickers have fewer ladders → their marginal product MPL falls, labor demand D shifts left, and wages W decline.`;
+    } else if (shock > 0) {
+        $('interfactorEffectBox').innerHTML = L
+            ? `<strong>Эффект взаимодополняемости (Закупка нового оборудования):</strong><br>1. На <strong>рынке капитала</strong> предложение оборудования S сдвигается вправо → рентная цена капитала снижается.<br>2. На <strong>рынке труда</strong> работники оснащены лучше → их MPL и VMPL растут, спрос на труд D сдвигается вправо, повышая зарплату W и занятость L.`
+            : `<strong>Complementary Factor Effect (New Equipment Added):</strong><br>1. In the <strong>capital market</strong>, equipment supply S shifts right → rental price of capital falls.<br>2. In the <strong>labor market</strong>, workers are better equipped → their MPL and VMPL rise, shifting labor demand D right and raising W and L.`;
+    } else {
+        $('interfactorEffectBox').innerHTML = L
+            ? `<strong>Базовое состояние факторов:</strong><br>Рентные цены услуг земли и капитала определяются пересечением спроса (VMPX = P × MPX) и предложения на каждом рынке. Передвиньте слайдер влево, чтобы смоделировать ураган с лестницами.`
+            : `<strong>Baseline Factor State:</strong><br>Rental prices of land and capital services are determined by demand (VMPX = P × MPX) and supply in each market. Move the slider left to simulate the hurricane case.`;
+    }
+
+    drawFactorMini($('svgLandMarket'), L ? 'Количество земли' : 'Quantity of Land', L ? 'Рентная цена' : 'Rental Price', 0, '#fbbf24');
+    drawFactorMini($('svgCapitalMarket'), L ? 'Количество капитала' : 'Quantity of Capital', L ? 'Рентная цена' : 'Rental Price', shock, '#a78bfa');
+}
+
+function drawFactorMini(svg, xLabel, yLabel, sShift, accentColor) {
+    const eqX1 = 230, eqY1 = 130;
+    const eqX2 = 230 + sShift * 0.6;
+    const eqY2 = 130 - sShift * 0.6;
+
+    let html = `
+        <line x1="50" y1="215" x2="430" y2="215" stroke="#64748b" stroke-width="1.5"/>
+        <line x1="50" y1="20" x2="50" y2="215" stroke="#64748b" stroke-width="1.5"/>
+        <text x="240" y="238" fill="#94a3b8" font-size="11" text-anchor="middle">${xLabel}</text>
+        <text x="16" y="120" fill="#94a3b8" font-size="11" transform="rotate(-90 16 120)" text-anchor="middle">${yLabel}</text>
+        <line x1="85" y1="55" x2="380" y2="195" stroke="#38bdf8" stroke-width="3"/>
+        <text x="385" y="198" fill="#38bdf8" font-size="11" font-weight="bold">D (VMP)</text>
+        <line x1="85" y1="195" x2="380" y2="55" stroke="#fb7185" stroke-width="3" stroke-opacity="${sShift !== 0 ? 0.35 : 1}"/>
+        <text x="385" y="55" fill="#fb7185" font-size="11" font-weight="bold">S₁</text>
+        <line x1="50" y1="${eqY1}" x2="${eqX1}" y2="${eqY1}" stroke="#64748b" stroke-dasharray="3,3"/>
+        <line x1="${eqX1}" y1="${eqY1}" x2="${eqX1}" y2="215" stroke="#64748b" stroke-dasharray="3,3"/>
+        <circle cx="${eqX1}" cy="${eqY1}" r="5" fill="#f1f5f9"/>
+        <text x="43" y="${eqY1 + 4}" fill="#f1f5f9" font-size="10" text-anchor="end">R₁</text>
+    `;
+
+    if (sShift !== 0) {
+        html += `
+            <line x1="${85 + sShift * 1.2}" y1="195" x2="${380 + sShift * 1.2}" y2="55" stroke="${accentColor}" stroke-width="3"/>
+            <text x="${385 + sShift * 1.2}" y="55" fill="${accentColor}" font-size="11" font-weight="bold">S₂</text>
+            <line x1="50" y1="${eqY2}" x2="${eqX2}" y2="${eqY2}" stroke="${accentColor}" stroke-dasharray="3,3"/>
+            <line x1="${eqX2}" y1="${eqY2}" x2="${eqX2}" y2="215" stroke="${accentColor}" stroke-dasharray="3,3"/>
+            <circle cx="${eqX2}" cy="${eqY2}" r="5.5" fill="${accentColor}"/>
+            <text x="43" y="${eqY2 + 4}" fill="${accentColor}" font-size="10" font-weight="bold" text-anchor="end">R₂</text>
+        `;
+    }
+    svg.innerHTML = html;
+}
+
+// -------------------------------------------------------------------------
+// LABOR–LEISURE MODULE
+// -------------------------------------------------------------------------
+function updateLaborSupplyLab() {
+    const wage = Number($('leisureWageSlider').value);
+    const nonLabor = Number($('nonLaborIncomeSlider').value);
+    const isRu = currentLang === 'ru';
+    // Teaching calibration: substitution dominates at low/moderate wages;
+    // income effects dominate after the turning point.
+    const baseHours = 4 + 0.38 * wage - 0.0029 * wage * wage;
+    const hours = Math.max(2, Math.min(16, baseHours - nonLabor * 0.035));
+    const leisure = 24 - hours;
+    $('leisureWageVal').textContent = wage.toFixed(0);
+    $('nonLaborIncomeVal').textContent = nonLabor.toFixed(0);
+    $('laborHoursKpi').textContent = hours.toFixed(1) + (isRu ? ' ч' : ' h');
+    $('leisureHoursKpi').textContent = leisure.toFixed(1) + (isRu ? ' ч' : ' h');
+    const turning = 66;
+    $('laborSupplyVerdict').innerHTML = wage < turning
+        ? (isRu ? '<strong>Преобладает эффект замещения:</strong> рост зарплаты увеличивает предложение труда.' : '<strong>Substitution dominates:</strong> a higher wage increases labor supplied.')
+        : (isRu ? '<strong>Преобладает эффект дохода:</strong> кривая загибается назад, и дальнейший рост зарплаты сокращает часы труда.' : '<strong>Income effect dominates:</strong> the curve bends backward and further wage growth reduces hours.');
+    drawBackwardSupply(wage, nonLabor);
+    drawLeisureBudget(wage, nonLabor, leisure);
+}
+
+function drawBackwardSupply(wage, nonLabor) {
+    const svg = $('svgBackwardSupply');
+    const gx = h => 60 + (h - 2) / 14 * 350;
+    const gy = w => 250 - (w - 5) / 75 * 205;
+    const pts = [];
+    for (let w=5; w<=80; w+=2) {
+        const h = Math.max(2, Math.min(16, 4 + .38*w - .0029*w*w - nonLabor*.035));
+        pts.push(`${gx(h)},${gy(w)}`);
+    }
+    const hNow = Math.max(2, Math.min(16, 4 + .38*wage - .0029*wage*wage - nonLabor*.035));
+    svg.innerHTML = `
+      <line x1="55" y1="250" x2="430" y2="250" stroke="#64748b"/><line x1="55" y1="25" x2="55" y2="250" stroke="#64748b"/>
+      <text x="240" y="282" fill="#94a3b8" font-size="12" text-anchor="middle">${currentLang==='ru'?'Часы труда':'Hours worked'}</text>
+      <text x="18" y="135" fill="#94a3b8" font-size="12" transform="rotate(-90 18 135)" text-anchor="middle">W</text>
+      <polyline points="${pts.join(' ')}" fill="none" stroke="#34d399" stroke-width="4"/>
+      <line x1="55" y1="${gy(wage)}" x2="${gx(hNow)}" y2="${gy(wage)}" stroke="#fbbf24" stroke-dasharray="5,4"/>
+      <line x1="${gx(hNow)}" y1="${gy(wage)}" x2="${gx(hNow)}" y2="250" stroke="#fbbf24" stroke-dasharray="5,4"/>
+      <circle cx="${gx(hNow)}" cy="${gy(wage)}" r="6" fill="#fbbf24"/>
+      <text x="350" y="60" fill="#a78bfa" font-size="11">${currentLang==='ru'?'зона эффекта дохода':'income-effect zone'}</text>`;
+}
+
+function drawLeisureBudget(wage, nonLabor, leisure) {
+    const svg = $('svgLeisureBudget');
+    const gx = l => 55 + l/24*360;
+    const maxC = nonLabor + wage*24;
+    const gy = c => 250 - c/maxC*205;
+    const consumption = nonLabor + wage*(24-leisure);
+    svg.innerHTML = `
+      <line x1="55" y1="250" x2="430" y2="250" stroke="#64748b"/><line x1="55" y1="25" x2="55" y2="250" stroke="#64748b"/>
+      <text x="240" y="282" fill="#94a3b8" font-size="12" text-anchor="middle">${currentLang==='ru'?'Досуг, часы':'Leisure, hours'}</text>
+      <text x="18" y="135" fill="#94a3b8" font-size="12" transform="rotate(-90 18 135)" text-anchor="middle">${currentLang==='ru'?'Потребление':'Consumption'}</text>
+      <line x1="${gx(0)}" y1="${gy(maxC)}" x2="${gx(24)}" y2="${gy(nonLabor)}" stroke="#a78bfa" stroke-width="4"/>
+      <circle cx="${gx(leisure)}" cy="${gy(consumption)}" r="7" fill="#34d399"/>
+      <line x1="${gx(leisure)}" y1="${gy(consumption)}" x2="${gx(leisure)}" y2="250" stroke="#34d399" stroke-dasharray="4,4"/>
+      <text x="92" y="45" fill="#fbbf24" font-size="11">${currentLang==='ru'?'наклон = −W':'slope = −W'}</text>`;
+}
+
+// -------------------------------------------------------------------------
+// MONOPSONY MODULE
+// -------------------------------------------------------------------------
+function updateMonopsony() {
+    const floor = Number($('minWageSlider').value);
+    const isRu = currentLang === 'ru';
+    const Wm=55, Lm=42, Wc=85, Lc=68;
+    let W=Wm, L=Lm, verdict;
+    if (floor === 0 || floor <= Wm) {
+        verdict = isRu ? 'Минимум не связывает фирму: сохраняется монопсонический исход Wm, Lm.' : 'The floor is non-binding: the monopsony outcome Wm, Lm remains.';
+    } else if (floor <= Wc) {
+        W=floor; L=Lm+(floor-Wm)/(Wc-Wm)*(Lc-Lm);
+        verdict = isRu ? 'Умеренный минимум ограничивает власть монопсониста: зарплата и занятость растут одновременно.' : 'A moderate floor limits monopsony power: wage and employment rise together.';
+    } else {
+        W=floor; L=Math.max(18, Lc-(floor-Wc)*.9);
+        verdict = isRu ? 'Минимум выше конкурентного уровня создаёт избыток труда и сокращает фактическую занятость.' : 'A floor above the competitive wage creates excess labor supply and reduces employment.';
+    }
+    $('minWageVal').textContent = floor === 0 ? (isRu?'Нет':'None') : floor;
+    $('monoWageKpi').textContent = Math.round(W);
+    $('monoLaborKpi').textContent = Math.round(L);
+    $('monopsonyVerdict').textContent = verdict;
+    drawMonopsony(floor,W,L);
+}
+
+function drawMonopsony(floor,W,L) {
+    const svg=$('svgMonopsony'); const X=q=>65+q/100*570, Y=w=>330-w/150*270;
+    const line=(x1,y1,x2,y2,c,w=3,d='')=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${w}" ${d?`stroke-dasharray="${d}"`:''}/>`;
+    let html=`${line(60,330,650,330,'#64748b',1.5)}${line(60,35,60,330,'#64748b',1.5)}
+      ${line(X(8),Y(25),X(92),Y(125),'#fb7185',3)}
+      ${line(X(8),Y(35),X(72),Y(145),'#fbbf24',3)}
+      ${line(X(8),Y(135),X(92),Y(35),'#38bdf8',3)}
+      <text x="590" y="${Y(125)-8}" fill="#fb7185" font-size="12">S</text><text x="470" y="${Y(145)-8}" fill="#fbbf24" font-size="12">MCL</text><text x="590" y="${Y(35)+18}" fill="#38bdf8" font-size="12">D = VMPL</text>
+      <circle cx="${X(42)}" cy="${Y(55)}" r="6" fill="#a78bfa"/><text x="${X(42)+8}" y="${Y(55)-8}" fill="#a78bfa" font-size="11">M</text>
+      <circle cx="${X(68)}" cy="${Y(85)}" r="6" fill="#34d399"/><text x="${X(68)+8}" y="${Y(85)-8}" fill="#34d399" font-size="11">C</text>
+      ${line(X(L),Y(W),X(L),330,'#f1f5f9',1.4,'4,4')}${line(60,Y(W),X(L),Y(W),'#f1f5f9',1.4,'4,4')}
+      <circle cx="${X(L)}" cy="${Y(W)}" r="7" fill="#f1f5f9"/>`;
+    if(floor>0) html+=`${line(60,Y(floor),650,Y(floor),'#fbbf24',2.5,'7,4')}<text x="610" y="${Y(floor)-7}" fill="#fbbf24" font-size="11">Wmin</text>`;
+    html+=`<text x="355" y="372" fill="#94a3b8" font-size="12" text-anchor="middle">${currentLang==='ru'?'Занятость L':'Employment L'}</text><text x="20" y="180" fill="#94a3b8" font-size="12" transform="rotate(-90 20 180)">W</text>`;
+    svg.innerHTML=html;
+}
+
+// -------------------------------------------------------------------------
+// WAGE DIFFERENTIALS MODULE
+// -------------------------------------------------------------------------
+const WAGE_FACTORS = [
+    ['human','Human capital','Человеческий капитал',-20,35,0,'#34d399'],
+    ['conditions','Job conditions','Условия труда',-15,25,0,'#fbbf24'],
+    ['talent','Scarce talent','Редкий талант',-10,35,0,'#38bdf8'],
+    ['institutions','Institutions','Институты / профсоюз',-15,20,0,'#a78bfa'],
+    ['efficiency','Efficiency wage','Эффективная зарплата',0,20,0,'#fb7185'],
+    ['barriers','Barriers / discrimination','Барьеры / дискриминация',-30,0,0,'#ef4444']
+];
+function buildWageControls(){
+    $('wageFactorControls').innerHTML=WAGE_FACTORS.map(f=>`<div class="vintage-control"><div class="vintage-header"><span style="color:${f[6]}">● ${currentLang==='ru'?f[2]:f[1]}</span><span class="vintage-readout" id="wf-${f[0]}-v">0</span></div><div class="radio-dial-wrap"><div class="radio-ticks"></div><input type="range" id="wf-${f[0]}" class="vintage-slider" min="${f[3]}" max="${f[4]}" value="0" step="1" style="--thumb-stripe:${f[6]};--thumb-glow:${f[6]}88"></div></div></div>`).join('');
+    WAGE_FACTORS.forEach(f=>$(`wf-${f[0]}`).addEventListener('input',updateWageFactors));
+}
+function resetWageFactors(){WAGE_FACTORS.forEach(f=>$(`wf-${f[0]}`).value=0);updateWageFactors();}
+function updateWageFactors(){
+    const vals=WAGE_FACTORS.map(f=>Number($(`wf-${f[0]}`).value)); const total=100+vals.reduce((a,b)=>a+b,0);
+    vals.forEach((v,i)=>$(`wf-${WAGE_FACTORS[i][0]}-v`).textContent=(v>0?'+':'')+v+'%');
+    $('wageIndexKpi').textContent=total; $('wageGapKpi').textContent=(total-100>0?'+':'')+(total-100)+'%';
+    $('wageGapKpi').style.color=total>=100?'var(--neon-emerald)':'var(--neon-red)';
+    let idx=0; vals.forEach((v,i)=>{if(Math.abs(v)>Math.abs(vals[idx]))idx=i});
+    $('wageDriverKpi').textContent=vals.every(v=>v===0)?'—':(currentLang==='ru'?WAGE_FACTORS[idx][2]:WAGE_FACTORS[idx][1]);
+    drawWageWaterfall(vals);
+}
+function drawWageWaterfall(vals){
+    const svg=$('svgWageWaterfall'), chartTop=38, chartBottom=380, bw=72, gap=24;
+    let running=100;
+    const levels=[0,100];
+    vals.forEach(v=>{running+=v;levels.push(running);});
+    const rawMin=Math.min(...levels), rawMax=Math.max(...levels);
+    const padding=Math.max(12,(rawMax-rawMin)*0.10);
+    const yMin=Math.min(0,rawMin-padding), yMax=rawMax+padding;
+    const y=v=>chartTop+(yMax-v)/(yMax-yMin)*(chartBottom-chartTop);
+    const zeroY=y(0);
+    let cumulative=100;
+    let html=`
+      <line x1="45" y1="${zeroY}" x2="670" y2="${zeroY}" stroke="#64748b" stroke-width="1.4"/>
+      <line x1="45" y1="${chartTop}" x2="45" y2="${chartBottom}" stroke="#64748b" stroke-width="1.2"/>
+      <text x="39" y="${chartTop+5}" fill="#94a3b8" font-size="10" text-anchor="end">${Math.round(yMax)}</text>
+      <text x="39" y="${zeroY+4}" fill="#94a3b8" font-size="10" text-anchor="end">0</text>`;
+    const items=[100,...vals];
+    items.forEach((v,i)=>{
+      const x=55+i*(bw+gap); let start,end,color,label;
+      if(i===0){start=0;end=100;color='#64748b';label=currentLang==='ru'?'База':'Base';}
+      else{start=cumulative;end=cumulative+v;color=v>=0?'#34d399':'#fb7185';label=currentLang==='ru'?WAGE_FACTORS[i-1][2]:WAGE_FACTORS[i-1][1];cumulative=end;}
+      const top=Math.max(start,end), bottom=Math.min(start,end), rectY=y(top), h=Math.max(3,y(bottom)-y(top));
+      const valueY=Math.max(chartTop+12,rectY-7);
+      html+=`<rect x="${x}" y="${rectY}" width="${bw}" height="${h}" rx="5" fill="${color}" opacity=".88"/>
+        <text x="${x+bw/2}" y="${chartBottom+22}" fill="#94a3b8" font-size="9" text-anchor="middle">${label.split(' ')[0]}</text>
+        <text x="${x+bw/2}" y="${valueY}" fill="#f1f5f9" font-size="10" text-anchor="middle">${i===0?'100':(v>0?'+':'')+v}</text>`;
+      if(i>0){html+=`<line x1="${x-gap}" y1="${y(start)}" x2="${x}" y2="${y(start)}" stroke="#475569" stroke-dasharray="3,3"/>`;}
+    });
+    const final=100+vals.reduce((a,b)=>a+b,0), finalY=y(final);
+    html+=`<line x1="50" y1="${finalY}" x2="660" y2="${finalY}" stroke="#fbbf24" stroke-dasharray="6,4"/>
+      <text x="655" y="${Math.max(chartTop+13,finalY-8)}" fill="#fbbf24" font-size="12" text-anchor="end">${currentLang==='ru'?'Итог':'Final'} ${final}</text>`;
+    svg.innerHTML=html;
+}
+
+$('appleDemandSlider').addEventListener('input', updateDerivedLink);
+$('workersSlider').addEventListener('input', updateOrchardSim);
+$('pricePSlider').addEventListener('input', updateOrchardSim);
+$('wageWSlider').addEventListener('input', updateOrchardSim);
+$('laborDemandSlider').addEventListener('input', () => {
+    document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('active'));
+    updateLaborMarket();
+});
+$('laborSupplySlider').addEventListener('input', () => {
+    document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('active'));
+    updateLaborMarket();
+});
+$('capitalShockSlider').addEventListener('input', updateLandCapital);
+$('leisureWageSlider').addEventListener('input', updateLaborSupplyLab);
+$('nonLaborIncomeSlider').addEventListener('input', updateLaborSupplyLab);
+$('minWageSlider').addEventListener('input', updateMonopsony);
+
+buildWageControls();
+setLang('ru');
+updateLaborSupplyLab();
+updateMonopsony();
+updateWageFactors();
+</script>
+</body>
+</html>
