@@ -22,7 +22,7 @@
             padding: 20px 30px;
         }
 
-        /* Навигационная панель */
+        /* Навигационная панель (десктоп) */
         .top-bar {
             width: 100%;
             max-width: 1450px;
@@ -31,7 +31,7 @@
             justify-content: center;
             margin-bottom: 25px;
             position: relative;
-            padding-top: 10px;
+            padding-top: 6px;
         }
 
         .top-left-logo {
@@ -39,28 +39,30 @@
             left: 0;
             top: 50%;
             transform: translateY(-50%);
-            width: 60px;
-            height: 60px;
+            width: 58px;
+            height: 58px;
             object-fit: contain;
         }
 
         .header-titles {
             text-align: center;
+            padding: 0 155px 0 76px;
+            max-width: 100%;
         }
 
         h1 {
             font-size: 28px;
             font-weight: 700;
             color: #001e50;
-            line-height: 1.2;
-            margin-bottom: 6px;
+            line-height: 1.25;
+            margin-bottom: 8px;
         }
 
         .subtitle {
             font-size: 14px;
             color: #555555;
-            line-height: 1.4;
-            max-width: 800px;
+            line-height: 1.45;
+            max-width: 820px;
             margin: 0 auto;
         }
 
@@ -83,7 +85,7 @@
 
         .back-button:hover {
             background-color: #003380;
-            transform: translateY(-52%);
+            transform: translateY(calc(-50% - 2px));
         }
 
         /* Контейнер карточек */
@@ -109,7 +111,7 @@
             overflow: hidden;
             box-shadow: 0 4px 14px rgba(120, 53, 15, 0.2);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            width: 185px; 
+            width: 185px;
             height: 304px;
             flex-shrink: 0;
             cursor: pointer;
@@ -250,7 +252,7 @@
             line-height: 1.6;
         }
 
-        /* Адаптивность для смартфонов */
+        /* Планшеты и средние экраны */
         @media (max-width: 1250px) {
             .grid-container {
                 flex-wrap: wrap;
@@ -258,48 +260,81 @@
             }
         }
 
+        @media (max-width: 960px) {
+            .header-titles {
+                padding: 0 140px 0 68px;
+            }
+
+            h1 {
+                font-size: 23px;
+            }
+        }
+
+        /* Адаптивность для смартфонов: всё по центру, логотип по центру сверху, сетка в 2 колонки */
         @media (max-width: 768px) {
             body {
-                padding: 15px;
+                padding: 16px 14px;
+                align-items: center;
             }
 
             .top-bar {
                 flex-direction: column;
+                align-items: center;
                 justify-content: center;
                 gap: 12px;
-                margin-bottom: 20px;
-            }
-
-            .top-left-logo, .back-button {
-                position: static;
-                transform: none;
+                margin-bottom: 14px;
+                padding-top: 0;
             }
 
             .top-left-logo {
+                position: static;
+                transform: none;
                 width: 52px;
                 height: 52px;
+                margin: 0 auto;
+            }
+
+            .header-titles {
+                width: 100%;
+                padding: 0 6px;
+                text-align: center;
             }
 
             h1 {
-                font-size: 22px;
+                font-size: 19px;
+                line-height: 1.25;
+                margin-bottom: 6px;
+                text-align: center;
             }
 
             .subtitle {
-                font-size: 13px;
+                font-size: 12.5px;
+                line-height: 1.4;
+                margin: 0 auto;
+                text-align: center;
             }
 
             .back-button {
-                padding: 8px 14px;
+                position: static;
+                transform: none;
+                margin: 2px auto 0;
+                padding: 8px 16px;
                 font-size: 13px;
+            }
+
+            .back-button:hover {
+                transform: translateY(-2px);
             }
 
             .grid-container {
                 display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 14px;
-                margin: 10px 0;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 12px;
+                margin: 6px auto;
+                padding: 10px 0;
                 width: 100%;
-                max-width: 380px;
+                max-width: 400px;
+                justify-items: center;
             }
 
             .card, .flip-card {
@@ -308,13 +343,30 @@
                 aspect-ratio: 2 / 3;
             }
 
+            .card:hover {
+                transform: translateY(-4px) scale(1.02);
+            }
+
+            .flip-card-back {
+                padding: 10px 8px;
+                gap: 8px;
+            }
+
             .flip-card-back h3 {
                 font-size: 10px;
+                padding-bottom: 4px;
             }
 
             .video-btn {
                 font-size: 9.5px;
-                padding: 8px 4px;
+                padding: 7px 5px;
+            }
+
+            footer {
+                font-size: 12px;
+                padding-top: 20px;
+                padding-bottom: 12px;
+                text-align: center;
             }
         }
     </style>
@@ -323,7 +375,7 @@
 
     <!-- Верхняя панель -->
     <div class="top-bar">
-        <img src="almau.jpg" alt="AlmaU Logo" class="top-left-logo" onerror="this.src='./almau.png'">
+        <img src="almau.jpg" alt="AlmaU Logo" class="top-left-logo" onerror="this.onerror=null; this.src='almau.png';">
         <div class="header-titles">
             <h1>Тема 10: Общественные блага, экстерналии и государственное регулирование</h1>
             <p class="subtitle">
@@ -338,28 +390,28 @@
         
         <!-- 1. Конспект лекции (Reader) -->
         <a href="gre.html" class="card" title="Электронный лекционный конспект">
-            <img src="pic-lecture9.png" alt="Конспект лекции" onerror="this.src='./pic-lecture9.png'">
+            <img src="pic-lecture9.png" alt="Конспект лекции">
         </a>
 
         <!-- 2. Презентация (Google Slides) -->
         <a href="https://docs.google.com/presentation/d/1stX-mkcUYBy6hNQXsNonOZbKO6YZj51F/edit?usp=sharing&ouid=109725301150629205728&rtpof=true&sd=true" 
            target="_blank" rel="noopener noreferrer" class="card" title="Презентация по теме 10">
-            <img src="pic-preza9.png" alt="Презентация по теме 10" onerror="this.src='./pic-preza9.png'">
+            <img src="pic-preza9.png" alt="Презентация по теме 10">
         </a>
 
         <!-- 3. Симулятор: Общественные блага -->
         <a href="sim-public.html" class="card" title="Симулятор общественных благ">
-            <img src="pic-sim-antitrust.png" alt="Симулятор общественных благ" onerror="this.src='./pic-sim-antitrust.png'">
+            <img src="pic-sim-antitrust.png" alt="Симулятор общественных благ">
         </a>
 
         <!-- 4. Симулятор: Предельные выгоды и издержки (MC/MB) -->
         <a href="sim-mc-mb.html" class="card" title="Симулятор предельных выгод и издержек">
-            <img src="pic-sim-mc-mb.png" alt="Симулятор MC и MB" onerror="this.src='./pic-sim-mc-mb.png'">
+            <img src="pic-sim-mc-mb.png" alt="Симулятор MC и MB">
         </a>
 
         <!-- 5. Симулятор: Государственное регулирование -->
         <a href="sim-state-reg-7.html" class="card" title="Симулятор государственного регулирования">
-            <img src="pic-sim-reg.png" alt="Симулятор государственного регулирования" onerror="this.src='./pic-sim-reg.png'">
+            <img src="pic-sim-reg.png" alt="Симулятор государственного регулирования">
         </a>
 
         <!-- 6. Видеолекции (3D Flip карточка с 2 YouTube видео) -->
@@ -367,7 +419,7 @@
             <div class="flip-card-inner">
                 <!-- Лицевая сторона -->
                 <div class="flip-card-front">
-                    <img src="pic-video9.png" alt="Видеолекции" onerror="this.src='./pic-video9.png'">
+                    <img src="pic-video9.png" alt="Видеолекции">
                 </div>
                 <!-- Обратная сторона с 2 видеокнопками -->
                 <div class="flip-card-back">
