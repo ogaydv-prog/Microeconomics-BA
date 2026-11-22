@@ -23,23 +23,22 @@
             position: relative;
         }
 
-        /* Навигационная шапка */
-        .top-nav {
-            width: 100%;
-            max-width: 1200px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
+        /* Логотип прижат к левому краю на одной линии с названием темы */
         .top-left-logo {
-            width: 55px;
-            height: 55px;
+            position: absolute;
+            top: 22px;
+            left: 20px;
+            width: 56px;
+            height: 56px;
             object-fit: contain;
+            z-index: 10;
         }
 
+        /* Кнопка возврата симметрично прижата к правому краю на той же линии */
         .back-button {
+            position: absolute;
+            top: 30px;
+            right: 20px;
             text-decoration: none;
             background-color: #001e50;
             color: white;
@@ -49,6 +48,7 @@
             font-size: 14px;
             transition: all 0.3s ease;
             box-shadow: 0 4px 10px rgba(0, 30, 80, 0.15);
+            z-index: 10;
         }
 
         .back-button:hover {
@@ -59,8 +59,9 @@
 
         header {
             text-align: center;
+            margin-top: 10px;
             margin-bottom: 30px;
-            padding: 0 10px;
+            padding: 0 190px;
         }
 
         h1 {
@@ -68,7 +69,7 @@
             font-weight: 700;
             color: #001e50;
             margin-bottom: 8px;
-            margin-top: 10px;
+            line-height: 1.25;
         }
 
         .subtitle {
@@ -88,6 +89,7 @@
             width: 100%;
             justify-content: center;
             align-items: center;
+            margin: auto 0;
             padding-bottom: 40px;
         }
 
@@ -112,7 +114,6 @@
         .card img {
             width: 100%;
             height: 100%;
-            /* Заполняем рамку по высоте с фокусом на верхнюю часть (заголовок плашки) */
             object-fit: cover;
             object-position: center top;
             border-radius: 8px;
@@ -131,6 +132,7 @@
             width: 180px;
             height: 270px;
             perspective: 1000px;
+            cursor: pointer;
         }
 
         .flip-card-inner {
@@ -143,7 +145,8 @@
             border-radius: 12px;
         }
 
-        .flip-card:hover .flip-card-inner {
+        .flip-card:hover .flip-card-inner,
+        .flip-card.flipped .flip-card-inner {
             transform: rotateY(180deg);
         }
 
@@ -172,7 +175,9 @@
         }
 
         .flip-card:hover .flip-card-front,
-        .flip-card:hover .flip-card-back {
+        .flip-card:hover .flip-card-back,
+        .flip-card.flipped .flip-card-front,
+        .flip-card.flipped .flip-card-back {
             border-color: #001e50;
             box-shadow: 0 16px 30px rgba(0, 30, 80, 0.22);
         }
@@ -188,6 +193,12 @@
             padding: 12px;
             gap: 10px;
             border-radius: 12px;
+            pointer-events: none;
+        }
+
+        .flip-card:hover .flip-card-back,
+        .flip-card.flipped .flip-card-back {
+            pointer-events: auto;
         }
 
         .flip-card-back h3 {
@@ -232,48 +243,56 @@
             line-height: 1.6;
         }
 
-        /* Мобильная адаптация */
-        @media (max-width: 640px) {
+        /* Мобильная адаптация под планшеты и смартфоны */
+        @media (max-width: 768px) {
             body {
-                padding: 12px;
-            }
-
-            .top-nav {
-                flex-direction: row;
-                align-items: center;
-                margin-bottom: 15px;
+                padding: 14px 12px;
             }
 
             .top-left-logo {
-                width: 45px;
-                height: 45px;
+                position: static;
+                display: block;
+                margin: 0 auto 10px auto;
+                width: 52px;
+                height: 52px;
             }
 
             .back-button {
-                padding: 7px 12px;
-                font-size: 12px;
+                position: static;
+                display: inline-block;
+                margin: 0 auto 16px auto;
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+
+            header {
+                margin-top: 0;
+                margin-bottom: 20px;
+                padding: 0 8px;
             }
 
             h1 {
-                font-size: 20px;
+                font-size: 22px;
             }
 
             .subtitle {
-                font-size: 12px;
+                font-size: 13px;
+                line-height: 1.4;
             }
 
             .grid-container {
                 display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 12px;
+                grid-template-columns: repeat(2, minmax(140px, 165px));
+                justify-content: center;
+                gap: 14px;
                 width: 100%;
-                max-width: 380px;
+                padding-bottom: 25px;
             }
 
             .card, .flip-card {
                 width: 100%;
                 height: auto;
-                aspect-ratio: 2 / 3;
+                aspect-ratio: 180 / 270;
             }
 
             .flip-card-back {
@@ -281,20 +300,28 @@
                 gap: 6px;
             }
 
+            .flip-card-back h3 {
+                font-size: 11px;
+            }
+
             .video-link {
                 font-size: 9px;
-                padding: 6px 4px;
+                padding: 7px 4px;
+            }
+
+            footer {
+                font-size: 12px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Навигация: Логотип и кнопка возврата -->
-    <div class="top-nav">
-        <img src="almau.jpg" alt="AlmaU Logo" class="top-left-logo">
-        <a href="topics.html" class="back-button">← К темам курса</a>
-    </div>
+    <!-- Логотип AlmaU в левом верхнем углу напротив заголовка -->
+    <img src="almau.jpg" alt="AlmaU Logo" class="top-left-logo" onerror="this.onerror=null; this.src='pictures/main/almau.jpg';">
+
+    <!-- Кнопка возврата в правом верхнем углу на той же линии -->
+    <a href="topics.html" class="back-button">← К темам курса</a>
 
     <header>
         <h1>Тема 7: Монополия и антимонопольное регулирование</h1>
@@ -326,7 +353,7 @@
         </a>
 
         <!-- 5. Видеоматериалы (3D Flip с двумя ссылками) -->
-        <div class="flip-card">
+        <div class="flip-card" onclick="this.classList.toggle('flipped')">
             <div class="flip-card-inner">
                 <!-- Лицевая сторона -->
                 <div class="flip-card-front">
@@ -336,11 +363,11 @@
                 <div class="flip-card-back">
                     <h3>Видеолекции</h3>
                     <a href="https://www.youtube.com/watch?v=NySt2EDS1Ik&list=PLGssI1JnCp5uK8oP_5_DFfOO0-f1gwXw9&index=35" 
-                       target="_blank" rel="noopener noreferrer" class="video-link">
+                       target="_blank" rel="noopener noreferrer" class="video-link" onclick="event.stopPropagation()">
                         ▶ Ч. 1: Монополия (МФТИ)
                     </a>
                     <a href="https://www.youtube.com/watch?v=rk1hmraf2yE" 
-                       target="_blank" rel="noopener noreferrer" class="video-link">
+                       target="_blank" rel="noopener noreferrer" class="video-link" onclick="event.stopPropagation()">
                         ▶ Ч. 2: Антитраст
                     </a>
                 </div>
