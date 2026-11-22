@@ -23,23 +23,22 @@
             position: relative;
         }
 
-        /* Навигационная шапка */
-        .top-nav {
-            width: 100%;
-            max-width: 1200px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
+        /* Логотип прижат к левому краю на одной линии с названием темы */
         .top-left-logo {
-            width: 55px;
-            height: 55px;
+            position: absolute;
+            top: 22px;
+            left: 20px;
+            width: 56px;
+            height: 56px;
             object-fit: contain;
+            z-index: 10;
         }
 
+        /* Кнопка возврата симметрично прижата к правому краю на той же линии */
         .back-button {
+            position: absolute;
+            top: 30px;
+            right: 20px;
             text-decoration: none;
             background-color: #001e50;
             color: white;
@@ -49,6 +48,7 @@
             font-size: 14px;
             transition: all 0.3s ease;
             box-shadow: 0 4px 10px rgba(0, 30, 80, 0.15);
+            z-index: 10;
         }
 
         .back-button:hover {
@@ -59,7 +59,9 @@
 
         header {
             text-align: center;
+            margin-top: 10px;
             margin-bottom: 30px;
+            padding: 0 190px;
         }
 
         h1 {
@@ -67,7 +69,7 @@
             font-weight: 700;
             color: #001e50;
             margin-bottom: 8px;
-            margin-top: 10px;
+            line-height: 1.25;
         }
 
         .subtitle {
@@ -87,6 +89,7 @@
             width: 100%;
             justify-content: center;
             align-items: center;
+            margin: auto 0;
             padding-bottom: 40px;
         }
 
@@ -124,6 +127,7 @@
             width: 180px;
             height: 270px;
             perspective: 1000px;
+            cursor: pointer;
         }
 
         .flip-card-inner {
@@ -136,7 +140,8 @@
             border-radius: 12px;
         }
 
-        .flip-card:hover .flip-card-inner {
+        .flip-card:hover .flip-card-inner,
+        .flip-card.flipped .flip-card-inner {
             transform: rotateY(180deg);
         }
 
@@ -161,7 +166,9 @@
         }
 
         .flip-card:hover .flip-card-front,
-        .flip-card:hover .flip-card-back {
+        .flip-card:hover .flip-card-back,
+        .flip-card.flipped .flip-card-front,
+        .flip-card.flipped .flip-card-back {
             border-color: #001e50;
             box-shadow: 0 16px 30px rgba(0, 30, 80, 0.18);
         }
@@ -176,6 +183,12 @@
             align-items: center;
             padding: 12px;
             gap: 12px;
+            pointer-events: none;
+        }
+
+        .flip-card:hover .flip-card-back,
+        .flip-card.flipped .flip-card-back {
+            pointer-events: auto;
         }
 
         .flip-card-back h3 {
@@ -218,17 +231,32 @@
             line-height: 1.6;
         }
 
-        /* Мобильная адаптация */
-        @media (max-width: 640px) {
-            .top-nav {
-                flex-direction: column;
-                align-items: center;
-                gap: 12px;
+        /* Мобильная адаптация под планшеты и смартфоны */
+        @media (max-width: 768px) {
+            body {
+                padding: 14px 12px;
             }
 
             .top-left-logo {
-                width: 65px;
-                height: 65px;
+                position: static;
+                display: block;
+                margin: 0 auto 10px auto;
+                width: 52px;
+                height: 52px;
+            }
+
+            .back-button {
+                position: static;
+                display: inline-block;
+                margin: 0 auto 16px auto;
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+
+            header {
+                margin-top: 0;
+                margin-bottom: 20px;
+                padding: 0 8px;
             }
 
             h1 {
@@ -237,31 +265,46 @@
 
             .subtitle {
                 font-size: 13px;
+                line-height: 1.4;
             }
 
             .grid-container {
-                gap: 15px;
+                display: grid;
+                grid-template-columns: repeat(2, minmax(140px, 165px));
+                justify-content: center;
+                gap: 14px;
+                padding-bottom: 25px;
             }
 
             .card, .flip-card {
-                width: 155px;
-                height: 235px;
+                width: 100%;
+                height: auto;
+                aspect-ratio: 180 / 270;
+            }
+
+            .flip-card-back h3 {
+                font-size: 11px;
             }
 
             .video-link {
                 font-size: 10px;
                 padding: 8px 4px;
             }
+
+            footer {
+                font-size: 12px;
+                padding-top: 20px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Навигация: Логотип и кнопка возврата -->
-    <div class="top-nav">
-        <img src="pictures/main/almau.jpg" alt="AlmaU Logo" class="top-left-logo">
-        <a href="topics.html" class="back-button">← К темам курса</a>
-    </div>
+    <!-- Логотип AlmaU в левом верхнем углу напротив заголовка -->
+    <img src="pictures/main/almau.jpg" alt="AlmaU Logo" class="top-left-logo" onerror="this.onerror=null; this.src='almau.jpg';">
+
+    <!-- Кнопка возврата в правом верхнем углу на той же линии -->
+    <a href="topics.html" class="back-button">← К темам курса</a>
 
     <header>
         <h1>Тема 3: Эластичность спроса и предложения</h1>
@@ -292,8 +335,8 @@
             <img src="pictures/main/pic-task-coffee-pe.png" alt="Кейс эластичности">
         </a>
 
-        <!-- 5. Видеоматериалы (3D Flip на Hover) -->
-        <div class="flip-card">
+        <!-- 5. Видеоматериалы (3D Flip на Hover и по нажатию) -->
+        <div class="flip-card" onclick="this.classList.toggle('flipped')">
             <div class="flip-card-inner">
                 <!-- Лицевая сторона -->
                 <div class="flip-card-front">
@@ -302,10 +345,10 @@
                 <!-- Оборотная сторона -->
                 <div class="flip-card-back">
                     <h3>Видеолекции</h3>
-                    <a href="https://www.youtube.com/watch?v=31Qb9aKm9mo" target="_blank" rel="noopener noreferrer" class="video-link">
+                    <a href="https://www.youtube.com/watch?v=31Qb9aKm9mo" target="_blank" rel="noopener noreferrer" class="video-link" onclick="event.stopPropagation()">
                         ▶ Part 1 (YouTube)
                     </a>
-                    <a href="https://www.youtube.com/watch?v=HHcblIxiAAk" target="_blank" rel="noopener noreferrer" class="video-link">
+                    <a href="https://www.youtube.com/watch?v=HHcblIxiAAk" target="_blank" rel="noopener noreferrer" class="video-link" onclick="event.stopPropagation()">
                         ▶ Part 2 (YouTube)
                     </a>
                 </div>
