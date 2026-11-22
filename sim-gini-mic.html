@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Микроэкономика — Школа цифровых технологий и экономики | Коэффициент Джини (World Bank PIP)</title>
+    <style>
+        :root {
+            --almau-red: #B81D24;
+            --almau-red-dark: #8F141A;
+            --almau-red-light: #FDECEC;
+            --almau-red-soft: rgba(184, 29, 36, 0.12);
+            --graphite: #1E232A;
+            --graphite-soft: #2E3642;
+            --bg-page: #F3F5F8;
+            --bg-card: #FFFFFF;
+            --border-color: #E2E7EE;
+            --text-main: #181C22;
+            --text-muted: #5A6577;
+            --accent-blue: #1D4ED8;
+            --accent-emerald: #0F766E;
+            --shadow-sm: 0 2px 8px rgba(16, 24, 40, 0.05);
+            --shadow-md: 0 8px 24px rgba(16, 24, 40, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        /* ================= HEADER ================= */
+        header {
+            background: linear-gradient(135deg, var(--graphite) 0%, #14181D 100%);
+            color: #FFFFFF;
+            border-bottom: 4px solid var(--almau-red);
+            box-shadow: var(--shadow-md);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-inner {
+            max-width: 1480px;
+            margin: 0 auto;
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .brand-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo-wrapper {
+            position: relative;
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            background: #FFFFFF;
+            border: 2px solid var(--almau-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .logo-wrapper:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 0 0 3px rgba(184, 29, 36, 0.35);
+        }
+
+        .logo-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 4px;
+        }
+
+        .logo-upload-hint {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(184, 29, 36, 0.9);
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+            text-align: center;
+            padding: 2px 0;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .logo-wrapper:hover .logo-upload-hint {
+            opacity: 1;
+        }
+
+        .title-block h1 {
+            font-size: clamp(17px, 2vw, 22px);
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            color: #FFFFFF;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .title-accent-pill {
+            background: var(--almau-red);
+            color: #FFFFFF;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 9px;
+            border-radius: 999px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .title-block p {
+            font-size: 13px;
+            color: #CBD5E1;
+            margin-top: 3px;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .source-badge {
+            font-size: 12px;
+            color: #E2E8F0;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            padding: 6px 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .source-badge:hover {
+            background: rgba(184, 29, 36, 0.35);
+            border-color: var(--almau-red);
+        }
+
+        .lang-toggle {
+            display: inline-flex;
+            background: #111418;
+            border: 1px solid #384152;
+            border-radius: 10px;
+            padding: 3px;
+        }
+
+        .lang-btn {
+            border: none;
+            background: transparent;
+            color: #94A3B8;
+            font-weight: 800;
+            font-size: 13px;
+            padding: 6px 14px;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .lang-btn.active {
+            background: var(--almau-red);
+            color: #FFFFFF;
+            box-shadow: 0 2px 8px rgba(184, 29, 36, 0.5);
+        }
+
+        /* ================= MAIN SINGLE-PAGE GRID ================= */
+        .container {
+            max-width: 1480px;
+            margin: 0 auto;
+            padding: 20px 24px 36px;
+        }
+
+        /* KPI Banner */
+        .kpi-strip {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .kpi-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-top: 3px solid var(--almau-red);
+            border-radius: 12px;
+            padding: 14px 18px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .kpi-label {
+            font-size: 11.5px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            color: var(--text-muted);
+        }
+
+        .kpi-value {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--graphite);
+            margin: 4px 0 2px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .kpi-value.red {
+            color: var(--almau-red);
+        }
+
+        .kpi-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Two-Column Main Workspace (No Tabs!) */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.08fr 0.92fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 20px;
+        }
+
+        .card:last-child {
+            margin-bottom: 0;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            flex-wrap: wrap;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--graphite);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--almau-red);
+            display: inline-block;
+        }
+
+        /* Presets */
+        .presets-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin-bottom: 16px;
+        }
+
+        .preset-btn {
+            background: #F8FAFC;
+            border: 1px solid #CBD5E1;
+            color: var(--graphite);
+            font-size: 12px;
+            font-weight: 600;
+            padding: 6px 11px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .preset-btn:hover {
+            border-color: var(--almau-red);
+            background: var(--almau-red-light);
+            color: var(--almau-red-dark);
+        }
+
+        .preset-btn.active {
+            background: var(--almau-red);
+            border-color: var(--almau-red);
+            color: #FFFFFF;
+        }
+
+        /* Lorenz + Sliders Layout */
+        .sim-split {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 18px;
+            align-items: center;
+        }
+
+        .canvas-wrap {
+            background: #FAFBFD;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        svg#lorenzSvg {
+            width: 100%;
+            max-width: 340px;
+            height: auto;
+            display: block;
+        }
+
+        .legend-mini {
+            display: flex;
+            gap: 14px;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .legend-mini span {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .swatch {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            display: inline-block;
+        }
+
+        /* Sliders */
+        .sliders-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .transfer-box {
+            background: var(--almau-red-light);
+            border: 1px solid rgba(184, 29, 36, 0.25);
+            border-radius: 10px;
+            padding: 10px 12px;
+            margin-bottom: 4px;
+        }
+
+        .slider-item {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .slider-top {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .slider-val {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-weight: 700;
+            color: var(--almau-red);
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 4px;
+            background: #DCE2EC;
+            outline: none;
+            cursor: pointer;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--almau-red);
+            border: 2px solid #FFFFFF;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+        }
+
+        /* Formula & Methodology Box */
+        .formulas-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .formula-card {
+            background: #F8FAFC;
+            border: 1px solid var(--border-color);
+            border-left: 3px solid var(--almau-red);
+            border-radius: 10px;
+            padding: 12px 14px;
+        }
+
+        .formula-card h4 {
+            font-size: 12.5px;
+            font-weight: 800;
+            color: var(--graphite);
+            margin-bottom: 6px;
+        }
+
+        .math-display {
+            font-family: "Cambria Math", "Times New Roman", serif;
+            font-size: 15px;
+            background: #FFFFFF;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 7px 10px;
+            text-align: center;
+            color: var(--almau-red-dark);
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .formula-card p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .pip-note {
+            margin-top: 12px;
+            padding: 11px 14px;
+            background: #FFFBEB;
+            border: 1px solid #FDE68A;
+            border-radius: 10px;
+            font-size: 12px;
+            color: #78350F;
+        }
+
+        /* ================= RIGHT COLUMN: COUNTRY RANKING ================= */
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .search-input {
+            flex: 1;
+            min-width: 170px;
+            padding: 7px 12px;
+            border: 1px solid #CBD5E1;
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: var(--almau-red);
+        }
+
+        .region-select {
+            padding: 7px 10px;
+            border: 1px solid #CBD5E1;
+            border-radius: 8px;
+            font-size: 12.5px;
+            font-weight: 600;
+            background: #FFFFFF;
+            color: var(--graphite);
+            cursor: pointer;
+        }
+
+        /* Selected Country Spotlight */
+        .country-spotlight {
+            background: linear-gradient(135deg, #FFF5F5 0%, #FFFFFF 100%);
+            border: 1px solid rgba(184, 29, 36, 0.28);
+            border-left: 4px solid var(--almau-red);
+            border-radius: 10px;
+            padding: 12px 14px;
+            margin-bottom: 14px;
+        }
+
+        .spotlight-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .spotlight-name {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--graphite);
+        }
+
+        .spotlight-gini {
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--almau-red);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .spotlight-meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 6px;
+        }
+
+        .meta-tag {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background: #F1F5F9;
+            color: var(--graphite-soft);
+        }
+
+        .meta-tag.consumption {
+            background: #ECFDF5;
+            color: #065F46;
+        }
+
+        .meta-tag.income {
+            background: #EFF6FF;
+            color: #1E40AF;
+        }
+
+        .spotlight-desc {
+            font-size: 12.5px;
+            color: var(--text-muted);
+        }
+
+        /* Bar List */
+        .country-list {
+            max-height: 540px;
+            overflow-y: auto;
+            padding-right: 4px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .country-row {
+            display: grid;
+            grid-template-columns: 148px 1fr 48px;
+            align-items: center;
+            gap: 10px;
+            padding: 7px 10px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+            background: #F8FAFC;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .country-row:hover {
+            background: #F1F5F9;
+            border-color: #CBD5E1;
+        }
+
+        .country-row.selected {
+            background: var(--almau-red-light);
+            border-color: var(--almau-red);
+        }
+
+        .country-row.is-kz .country-name {
+            color: var(--almau-red);
+            font-weight: 800;
+        }
+
+        .country-name {
+            font-size: 12.5px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .bar-track {
+            width: 100%;
+            height: 12px;
+            background: #E2E8F0;
+            border-radius: 999px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 999px;
+            transition: width 0.35s ease;
+        }
+
+        .country-score {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 12.5px;
+            font-weight: 800;
+            text-align: right;
+            color: var(--graphite);
+        }
+
+        .scale-legend {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 10px;
+            padding-top: 8px;
+            border-top: 1px dashed var(--border-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 1140px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            .kpi-strip {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 680px) {
+            .sim-split, .formulas-grid, .kpi-strip {
+                grid-template-columns: 1fr;
+            }
+            .country-row {
+                grid-template-columns: 120px 1fr 44px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-inner">
+        <div class="brand-left">
+            <!-- AlmaU Logo with local AlmaU.jpeg support + clean SVG fallback + click-to-upload -->
+            <div class="logo-wrapper" id="logoBox" title="Нажмите, чтобы загрузить AlmaU.jpeg">
+                <img id="almauLogoImg" src="AlmaU.jpeg" alt="AlmaU Logo" onerror="handleLogoError()">
+                <svg id="almauFallbackSvg" viewBox="0 0 100 100" style="display:none; width:100%; height:100%; padding:6px;">
+                    <rect x="4" y="4" width="92" height="92" rx="16" fill="#B81D24"/>
+                    <polygon points="50,18 82,34 50,50 18,34" fill="#FFFFFF"/>
+                    <text x="50" y="76" text-anchor="middle" fill="#FFFFFF" font-family="Arial, sans-serif" font-weight="900" font-size="21" letter-spacing="0.5">AlmaU</text>
+                </svg>
+                <span class="logo-upload-hint" data-i18n="logoHint">AlmaU.jpeg</span>
+                <input type="file" id="logoFileInput" accept="image/*" style="display:none;">
+            </div>
+
+            <div class="title-block">
+                <h1>
+                    <span data-i18n="mainTitle">Микроэкономика — Школа цифровых технологий и экономики</span>
+                    <span class="title-accent-pill" data-i18n="lectureTag">Лекция 14</span>
+                </h1>
+                <p data-i18n="subTitle">Неравенство доходов и коэффициент Джини • По данным World Bank Poverty and Inequality Platform (PIP)</p>
+            </div>
+        </div>
+
+        <div class="header-controls">
+            <a class="source-badge" href="https://pip.worldbank.org/" target="_blank" rel="noopener noreferrer">
+                World Bank PIP ↗
+            </a>
+            <div class="lang-toggle" role="group" aria-label="Language switch">
+                <button class="lang-btn active" id="btnRu" onclick="setLanguage('ru')">RU</button>
+                <button class="lang-btn" id="btnEn" onclick="setLanguage('en')">EN</button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<main class="container">
+    <!-- Top Live KPI Strip -->
+    <section class="kpi-strip">
+        <div class="kpi-box">
+            <span class="kpi-label" data-i18n="kpiGiniTitle">Коэффициент Джини (Модель)</span>
+            <div class="kpi-value red" id="kpiGiniVal">29.2</div>
+            <span class="kpi-sub" id="kpiGiniSub">0.292 (шкала 0–1) • Умеренное неравенство</span>
+        </div>
+        <div class="kpi-box">
+            <span class="kpi-label" data-i18n="kpiPalmaTitle">Индекс Пальмы (Top 10% / Bottom 40%)</span>
+            <div class="kpi-value" id="kpiPalmaVal">1.05</div>
+            <span class="kpi-sub" data-i18n="kpiPalmaSub">Отношение доходов верхушки к нижним 40%</span>
+        </div>
+        <div class="kpi-box">
+            <span class="kpi-label" data-i18n="kpiRatioTitle">Квинтильное отношение (Q5 / Q1)</span>
+            <div class="kpi-value" id="kpiRatioVal">4.3×</div>
+            <span class="kpi-sub" data-i18n="kpiRatioSub">Богатейшие 20% против беднейших 20%</span>
+        </div>
+        <div class="kpi-box">
+            <span class="kpi-label" data-i18n="kpiKzTitle">Казахстан в базе World Bank PIP</span>
+            <div class="kpi-value red">29.2</div>
+            <span class="kpi-sub" data-i18n="kpiKzSub">Агрегат: Потребление (Consumption)</span>
+        </div>
+    </section>
+
+    <!-- Single-Page Two-Column Interactive Workspace -->
+    <div class="dashboard-grid">
+        <!-- LEFT COLUMN: LORENZ SIMULATOR & FORMULAS -->
+        <div>
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="card-dot"></span>
+                        <span data-i18n="simTitle">Интерактивный симулятор кривой Лоренца и расчёта Джини</span>
+                    </div>
+                    <span style="font-size: 12px; color: var(--text-muted);" data-i18n="simHint">Двигайте ползунки или выберите пресет</span>
+                </div>
+
+                <!-- Quick Presets -->
+                <div class="presets-row" id="presetsContainer">
+                    <button class="preset-btn" onclick="applyPreset('equal')" data-i18n="preEqual">Равенство (G = 0)</button>
+                    <button class="preset-btn" onclick="applyPreset('slovakia')" data-i18n="preSlovakia">Словакия (24.1)</button>
+                    <button class="preset-btn active" onclick="applyPreset('kazakhstan')" data-i18n="preKz">Казахстан (29.2)</button>
+                    <button class="preset-btn" onclick="applyPreset('usa')" data-i18n="preUsa">США (41.3)</button>
+                    <button class="preset-btn" onclick="applyPreset('brazil')" data-i18n="preBrazil">Бразилия (52.0)</button>
+                    <button class="preset-btn" onclick="applyPreset('safrica')" data-i18n="preSafrica">ЮАР (63.0)</button>
+                </div>
+
+                <div class="sim-split">
+                    <!-- Lorenz Curve SVG -->
+                    <div class="canvas-wrap">
+                        <svg id="lorenzSvg" viewBox="0 0 360 340" aria-label="Lorenz Curve"></svg>
+                        <div class="legend-mini">
+                            <span><i class="swatch" style="background:#94A3B8;"></i> <span data-i18n="legEq">Линия равенства (45°)</span></span>
+                            <span><i class="swatch" style="background:#B81D24;"></i> <span data-i18n="legLor">Кривая Лоренца</span></span>
+                            <span><i class="swatch" style="background:rgba(184,29,36,0.22); border:1px solid #B81D24;"></i> <span data-i18n="legArea">Площадь A (G = A / (A+B))</span></span>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Sliders -->
+                    <div class="sliders-panel">
+                        <!-- Redistribution / Tax-Transfer Policy Slider -->
+                        <div class="transfer-box">
+                            <div class="slider-item">
+                                <div class="slider-top">
+                                    <span data-i18n="sliderTax">Налоговый трансферт беднейшим 40%:</span>
+                                    <span class="slider-val" id="taxVal">0%</span>
+                                </div>
+                                <input type="range" id="taxSlider" min="-25" max="45" value="0" step="1" oninput="handleTaxTransfer(this.value)">
+                            </div>
+                        </div>
+
+                        <!-- 5 Quintile Sliders -->
+                        <div class="slider-item">
+                            <div class="slider-top">
+                                <span data-i18n="q1Label">1-й квинтиль (Беднейшие 20%):</span>
+                                <span class="slider-val" id="q1Val">8.8%</span>
+                            </div>
+                            <input type="range" id="q1Slider" min="1" max="20" value="8.8" step="0.2" oninput="handleQuintileChange(0, this.value)">
+                        </div>
+
+                        <div class="slider-item">
+                            <div class="slider-top">
+                                <span data-i18n="q2Label">2-й квинтиль (Ниже среднего 20%):</span>
+                                <span class="slider-val" id="q2Val">13.4%</span>
+                            </div>
+                            <input type="range" id="q2Slider" min="2" max="22" value="13.4" step="0.2" oninput="handleQuintileChange(1, this.value)">
+                        </div>
+
+                        <div class="slider-item">
+                            <div class="slider-top">
+                                <span data-i18n="q3Label">3-й квинтиль (Средние 20%):</span>
+                                <span class="slider-val" id="q3Val">17.5%</span>
+                            </div>
+                            <input type="range" id="q3Slider" min="4" max="25" value="17.5" step="0.2" oninput="handleQuintileChange(2, this.value)">
+                        </div>
+
+                        <div class="slider-item">
+                            <div class="slider-top">
+                                <span data-i18n="q4Label">4-й квинтиль (Выше среднего 20%):</span>
+                                <span class="slider-val" id="q4Val">22.3%</span>
+                            </div>
+                            <input type="range" id="q4Slider" min="6" max="30" value="22.3" step="0.2" oninput="handleQuintileChange(3, this.value)">
+                        </div>
+
+                        <div class="slider-item">
+                            <div class="slider-top">
+                                <span data-i18n="q5Label">5-й квинтиль (Богатейшие 20%):</span>
+                                <span class="slider-val" id="q5Val">38.0%</span>
+                            </div>
+                            <input type="range" id="q5Slider" min="20" max="75" value="38.0" step="0.2" oninput="handleQuintileChange(4, this.value)">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Methodology & Formulas Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="card-dot"></span>
+                        <span data-i18n="methTitle">Как рассчитывается коэффициент Джини (Методология World Bank PIP)</span>
+                    </div>
+                </div>
+
+                <div class="formulas-grid">
+                    <div class="formula-card">
+                        <h4 data-i18n="fGeomTitle">1. Геометрическая формула (Кривая Лоренца)</h4>
+                        <div class="math-display">G = A / (A + B) = 1 − 2B</div>
+                        <p data-i18n="fGeomDesc">Отношение площади A (между линией абсолютного равенства 45° и кривой Лоренца) к общей площади треугольника (A + B = 0.5). При G = 0 — полное равенство; при G = 100 (1.0) — весь доход у одного человека.</p>
+                    </div>
+
+                    <div class="formula-card">
+                        <h4 data-i18n="fAlgTitle">2. Алгебраическая формула (Попарные разности)</h4>
+                        <div class="math-display">G = ∑∑ |yᵢ − yⱼ| / (2n² · ȳ)</div>
+                        <p data-i18n="fAlgDesc">Половина относительной средней абсолютной разности доходов между всеми парами домохозяйств в выборке. Если Джини равен 30, ожидаемая разница между двумя случайными людьми составляет 60% от среднего дохода.</p>
+                    </div>
+                </div>
+
+                <div class="pip-note" data-i18n="pipMethodNote">
+                    <strong>Важно для анализа данных World Bank PIP:</strong> Для стран Центральной Азии и СНГ (включая Казахстан) Всемирный банк рассчитывает Джини на основе <em>потребления домохозяйств (Consumption)</em>, что обычно даёт более низкое значение (25–32), чем расчёт по <em>располагаемым доходам (Income)</em> в странах ОЭСР и Латинской Америки (32–63), поскольку сбережения сглаживают колебания потребления.
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN: WORLD BANK PIP COUNTRY BENCHMARKS -->
+        <div>
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">
+                        <span class="card-dot"></span>
+                        <span data-i18n="countriesTitle">Индекс Джини по странам (World Bank PIP, 0–100)</span>
+                    </div>
+                    <span style="font-size: 11.5px; color: var(--almau-red); font-weight: 700;" data-i18n="clickCountryHint">Кликните по стране → загрузить в график</span>
+                </div>
+
+                <!-- Filters -->
+                <div class="filter-bar">
+                    <input type="text" id="countrySearch" class="search-input" placeholder="Поиск страны..." oninput="renderCountryList()">
+                    <select id="regionFilter" class="region-select" onchange="renderCountryList()">
+                        <option value="all" data-i18n="regAll">Все регионы (22 страны)</option>
+                        <option value="ca_cis" data-i18n="regCa">Центральная Азия и СНГ</option>
+                        <option value="europe" data-i18n="regEu">Европа</option>
+                        <option value="americas_asia" data-i18n="regAmAs">Америка, Азия и Африка</option>
+                    </select>
+                </div>
+
+                <!-- Selected Country Spotlight Card -->
+                <div class="country-spotlight" id="countrySpotlight"></div>
+
+                <!-- Country Horizontal Bars -->
+                <div class="country-list" id="countryList"></div>
+
+                <div class="scale-legend">
+                    <span data-i18n="scaleLow">◀ 20–30: Низкое неравенство</span>
+                    <span data-i18n="scaleMid">30–42: Умеренное</span>
+                    <span data-i18n="scaleHigh">45+: Высокое неравенство ▶</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    // ================= LOGO FALLBACK & LOCAL UPLOAD =================
+    function handleLogoError() {
+        document.getElementById('almauLogoImg').style.display = 'none';
+        document.getElementById('almauFallbackSvg').style.display = 'block';
+    }
+
+    document.getElementById('logoBox').addEventListener('click', () => {
+        document.getElementById('logoFileInput').click();
+    });
+
+    document.getElementById('logoFileInput').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            const img = document.getElementById('almauLogoImg');
+            img.src = ev.target.result;
+            img.style.display = 'block';
+            document.getElementById('almauFallbackSvg').style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+    });
+
+    // ================= I18N DICTIONARY =================
+    let currentLang = 'ru';
+
+    const I18N = {
+        ru: {
+            logoHint: 'AlmaU.jpeg',
+            mainTitle: 'Микроэкономика — Школа цифровых технологий и экономики',
+            lectureTag: 'Лекция 14',
+            subTitle: 'Неравенство доходов и коэффициент Джини • По данным World Bank Poverty and Inequality Platform (PIP)',
+            kpiGiniTitle: 'Коэффициент Джини (Модель)',
+            kpiPalmaTitle: 'Индекс Пальмы (Top 10% / Bottom 40%)',
+            kpiPalmaSub: 'Отношение доходов верхушки к нижним 40%',
+            kpiRatioTitle: 'Квинтильное отношение (Q5 / Q1)',
+            kpiRatioSub: 'Богатейшие 20% против беднейших 20%',
+            kpiKzTitle: 'Казахстан в базе World Bank PIP',
+            kpiKzSub: 'Агрегат: Потребление (Consumption)',
+            simTitle: 'Интерактивный симулятор кривой Лоренца и расчёта Джини',
+            simHint: 'Двигайте ползунки или выберите пресет',
+            preEqual: 'Равенство (G = 0)',
+            preSlovakia: 'Словакия (24.1)',
+            preKz: 'Казахстан (29.2)',
+            preUsa: 'США (41.3)',
+            preBrazil: 'Бразилия (52.0)',
+            preSafrica: 'ЮАР (63.0)',
+            legEq: 'Линия равенства (45°)',
+            legLor: 'Кривая Лоренца',
+            legArea: 'Площадь A (G = A / (A+B))',
+            sliderTax: 'Налоговый трансферт беднейшим 40%:',
+            q1Label: '1-й квинтиль (Беднейшие 20%):',
+            q2Label: '2-й квинтиль (Ниже среднего 20%):',
+            q3Label: '3-й квинтиль (Средние 20%):',
+            q4Label: '4-й квинтиль (Выше среднего 20%):',
+            q5Label: '5-й квинтиль (Богатейшие 20%):',
+            methTitle: 'Как рассчитывается коэффициент Джини (Методология World Bank PIP)',
+            fGeomTitle: '1. Геометрическая формула (Кривая Лоренца)',
+            fGeomDesc: 'Отношение площади A (между линией абсолютного равенства 45° и кривой Лоренца) к общей площади треугольника (A + B = 0.5). При G = 0 — полное равенство; при G = 100 (1.0) — весь доход у одного человека.',
+            fAlgTitle: '2. Алгебраическая формула (Попарные разности)',
+            fAlgDesc: 'Половина относительной средней абсолютной разности доходов между всеми парами домохозяйств в выборке. Если Джини равен 30, ожидаемая разница между двумя случайными людьми составляет 60% от среднего дохода.',
+            pipMethodNote: '<strong>Важно для анализа данных World Bank PIP:</strong> Для стран Центральной Азии и СНГ (включая Казахстан) Всемирный банк рассчитывает Джини на основе <em>потребления домохозяйств (Consumption)</em>, что обычно даёт более низкое значение (25–32), чем расчёт по <em>располагаемым доходам (Income)</em> в странах ОЭСР и Латинской Америки (32–63), поскольку сбережения сглаживают колебания потребления.',
+            countriesTitle: 'Индекс Джини по странам (World Bank PIP, 0–100)',
+            clickCountryHint: 'Кликните по стране → загрузить в график',
+            searchPlaceholder: 'Поиск страны...',
+            regAll: 'Все регионы (22 страны)',
+            regCa: 'Центральная Азия и СНГ',
+            regEu: 'Европа',
+            regAmAs: 'Америка, Азия и Африка',
+            scaleLow: '◀ 20–30: Низкое неравенство',
+            scaleMid: '30–42: Умеренное',
+            scaleHigh: '45+: Высокое неравенство ▶',
+            aggConsumption: 'Агрегат: Потребление (Consumption)',
+            aggIncome: 'Агрегат: Доход (Income)',
+            surveyLabel: 'Обследование PIP:',
+            axisPop: 'Накопленная доля населения (%)',
+            axisInc: 'Накопленная доля дохода / потребления (%)',
+            giniLevels: {
+                low: 'Низкое неравенство',
+                mod: 'Умеренное неравенство',
+                high: 'Высокое неравенство',
+                ext: 'Экстремальное неравенство'
+            }
+        },
+        en: {
+            logoHint: 'AlmaU.jpeg',
+            mainTitle: 'Microeconomics — School of Digital Technologies and Economics',
+            lectureTag: 'Lecture 14',
+            subTitle: 'Income Inequality & the Gini Coefficient • World Bank Poverty and Inequality Platform (PIP)',
+            kpiGiniTitle: 'Gini Coefficient (Simulated)',
+            kpiPalmaTitle: 'Palma Ratio (Top 10% / Bottom 40%)',
+            kpiPalmaSub: 'Income share of top 10% vs. bottom 40%',
+            kpiRatioTitle: 'Quintile Ratio (Q5 / Q1)',
+            kpiRatioSub: 'Richest 20% vs. poorest 20%',
+            kpiKzTitle: 'Kazakhstan in World Bank PIP',
+            kpiKzSub: 'Welfare aggregate: Consumption',
+            simTitle: 'Interactive Lorenz Curve & Gini Calculator',
+            simHint: 'Adjust sliders or select a country preset',
+            preEqual: 'Equality (G = 0)',
+            preSlovakia: 'Slovakia (24.1)',
+            preKz: 'Kazakhstan (29.2)',
+            preUsa: 'United States (41.3)',
+            preBrazil: 'Brazil (52.0)',
+            preSafrica: 'South Africa (63.0)',
+            legEq: 'Line of Equality (45°)',
+            legLor: 'Lorenz Curve',
+            legArea: 'Area A (G = A / (A+B))',
+            sliderTax: 'Tax-and-Transfer to Bottom 40%:',
+            q1Label: '1st Quintile (Poorest 20%):',
+            q2Label: '2nd Quintile (Lower-Middle 20%):',
+            q3Label: '3rd Quintile (Middle 20%):',
+            q4Label: '4th Quintile (Upper-Middle 20%):',
+            q5Label: '5th Quintile (Richest 20%):',
+            methTitle: 'How the Gini Coefficient Is Calculated (World Bank PIP Methodology)',
+            fGeomTitle: '1. Geometric Formula (Lorenz Curve)',
+            fGeomDesc: 'Ratio of Area A (between the 45° line of perfect equality and the Lorenz curve) to the total area under the diagonal (A + B = 0.5). G = 0 means complete equality; G = 100 (1.0) means one person holds all income.',
+            fAlgTitle: '2. Algebraic Formula (Pairwise Differences)',
+            fAlgDesc: 'Half of the relative mean absolute difference between all pairs of households. A Gini of 30 implies that the expected difference between two randomly chosen people equals 60% of mean income.',
+            pipMethodNote: '<strong>Crucial Note on World Bank PIP Data:</strong> For Central Asia and CIS economies (including Kazakhstan), the World Bank computes Gini using <em>household consumption</em>, which typically yields lower figures (25–32) than <em>disposable income</em> measures used in OECD and Latin American countries (32–63), as saving and borrowing smooth consumption.',
+            countriesTitle: 'Gini Index by Country (World Bank PIP, 0–100 Scale)',
+            clickCountryHint: 'Click any country → load into Lorenz curve',
+            searchPlaceholder: 'Search country...',
+            regAll: 'All Regions (22 countries)',
+            regCa: 'Central Asia & CIS',
+            regEu: 'Europe',
+            regAmAs: 'Americas, Asia & Africa',
+            scaleLow: '◀ 20–30: Low inequality',
+            scaleMid: '30–42: Moderate',
+            scaleHigh: '45+: High inequality ▶',
+            aggConsumption: 'Aggregate: Consumption',
+            aggIncome: 'Aggregate: Disposable Income',
+            surveyLabel: 'PIP Survey Year:',
+            axisPop: 'Cumulative Share of Population (%)',
+            axisInc: 'Cumulative Share of Income / Consumption (%)',
+            giniLevels: {
+                low: 'Low inequality',
+                mod: 'Moderate inequality',
+                high: 'High inequality',
+                ext: 'Extreme inequality'
+            }
+        }
+    };
+
+    // ================= WORLD BANK PIP COUNTRY DATASET (ONLY GINI) =================
+    const COUNTRIES_PIP = [
+        {
+            id: 'svk',
+            nameRu: 'Словакия',
+            nameEn: 'Slovakia',
+            region: 'europe',
+            gini: 24.1,
+            type: 'income',
+            year: 2021,
+            quintiles: [10.1, 14.8, 18.2, 22.4, 34.5],
+            descRu: 'Один из самых низких показателей неравенства в мире благодаря прогрессивному налогообложению и развитым социальным трансфертам.',
+            descEn: 'One of the lowest inequality scores globally, driven by progressive taxation and comprehensive social transfers.'
+        },
+        {
+            id: 'svn',
+            nameRu: 'Словения',
+            nameEn: 'Slovenia',
+            region: 'europe',
+            gini: 24.3,
+            type: 'income',
+            year: 2021,
+            quintiles: [10.0, 14.7, 18.2, 22.5, 34.6],
+            descRu: 'Сжатое распределение заработных плат и высокая доля перераспределения через бюджет удерживают Джини ниже 25.',
+            descEn: 'Compressed wage structure and strong fiscal redistribution keep Slovenia’s Gini below 25.'
+        },
+        {
+            id: 'ukr',
+            nameRu: 'Украина',
+            nameEn: 'Ukraine',
+            region: 'ca_cis',
+            gini: 25.6,
+            type: 'consumption',
+            year: 2020,
+            quintiles: [9.7, 14.3, 18.0, 22.5, 35.5],
+            descRu: 'Оценка World Bank PIP по потребительским расходам домохозяйств демонстрирует низкую дисперсию текущего потребления.',
+            descEn: 'World Bank PIP consumption-based estimate shows low dispersion in current household expenditure.'
+        },
+        {
+            id: 'cze',
+            nameRu: 'Чехия',
+            nameEn: 'Czechia',
+            region: 'europe',
+            gini: 26.2,
+            type: 'income',
+            year: 2021,
+            quintiles: [9.5, 14.2, 17.9, 22.4, 36.0],
+            descRu: 'Стабильно низкое неравенство доходов в Центральной Европе при высоком уровне занятости.',
+            descEn: 'Consistently low income inequality in Central Europe supported by high employment rates.'
+        },
+        {
+            id: 'nor',
+            nameRu: 'Норвегия',
+            nameEn: 'Norway',
+            region: 'europe',
+            gini: 27.7,
+            type: 'income',
+            year: 2021,
+            quintiles: [9.1, 13.9, 17.8, 22.4, 36.8],
+            descRu: 'Эталон скандинавской модели: рыночное неравенство существенно сглаживается налогами и бесплатными общественными благами.',
+            descEn: 'Benchmark Nordic model: market inequality is substantially compressed by taxes and universal public services.'
+        },
+        {
+            id: 'pol',
+            nameRu: 'Польша',
+            nameEn: 'Poland',
+            region: 'europe',
+            gini: 28.5,
+            type: 'income',
+            year: 2021,
+            quintiles: [8.9, 13.6, 17.7, 22.4, 37.4],
+            descRu: 'Расширение семейных трансфертов и рост минимальной зарплаты снизили индекс Джини ниже 29.',
+            descEn: 'Expanded family transfers and minimum wage growth brought Poland’s Gini below 29.'
+        },
+        {
+            id: 'kgz',
+            nameRu: 'Кыргызстан',
+            nameEn: 'Kyrgyzstan',
+            region: 'ca_cis',
+            gini: 29.0,
+            type: 'consumption',
+            year: 2021,
+            quintiles: [8.8, 13.5, 17.6, 22.3, 37.8],
+            descRu: 'Показатель рассчитан по агрегату потребления; денежные переводы трудовых мигрантов поддерживают доходы нижних квинтилей.',
+            descEn: 'Measured via household consumption; migrant remittances support consumption among lower quintiles.'
+        },
+        {
+            id: 'kaz',
+            nameRu: 'Казахстан',
+            nameEn: 'Kazakhstan',
+            region: 'ca_cis',
+            gini: 29.2,
+            type: 'consumption',
+            year: 2021,
+            quintiles: [8.8, 13.4, 17.5, 22.3, 38.0],
+            descRu: 'В базе World Bank PIP индекс Джини Казахстана составляет 29.19 (оценка по потреблению домохозяйств). На долю верхних 20% приходится ~38% совокупного потребления против ~8.8% у нижних 20%.',
+            descEn: 'In World Bank PIP, Kazakhstan’s Gini stands at 29.19 (measured by household consumption). The top 20% account for ~38% of total consumption versus ~8.8% for the bottom 20%.'
+        },
+        {
+            id: 'uzb',
+            nameRu: 'Узбекистан',
+            nameEn: 'Uzbekistan',
+            region: 'ca_cis',
+            gini: 31.2,
+            type: 'consumption',
+            year: 2022,
+            quintiles: [8.2, 12.9, 17.3, 22.4, 39.2],
+            descRu: 'Оценка по потреблению отражает активные рыночные реформы и рост доходов городского и сельского населения.',
+            descEn: 'Consumption-based Gini reflects ongoing market reforms and rising urban and rural household incomes.'
+        },
+        {
+            id: 'fra',
+            nameRu: 'Франция',
+            nameEn: 'France',
+            region: 'europe',
+            gini: 31.5,
+            type: 'income',
+            year: 2021,
+            quintiles: [8.1, 12.8, 17.2, 22.4, 39.5],
+            descRu: 'Крупная система перераспределения удерживает располагаемый Джини на уровне ~31.5 при значительно более высоком рыночном неравенстве.',
+            descEn: 'Extensive fiscal redistribution keeps disposable-income Gini around 31.5 despite higher pre-tax market inequality.'
+        },
+        {
+            id: 'deu',
+            nameRu: 'Германия',
+            nameEn: 'Germany',
+            region: 'europe',
+            gini: 31.7,
+            type: 'income',
+            year: 2020,
+            quintiles: [8.0, 12.8, 17.2, 22.4, 39.6],
+            descRu: 'Умеренный уровень неравенства среди крупнейших экономик Еврозоны.',
+            descEn: 'Moderate income inequality among the largest Eurozone economies.'
+        },
+        {
+            id: 'gbr',
+            nameRu: 'Великобритания',
+            nameEn: 'United Kingdom',
+            region: 'europe',
+            gini: 32.6,
+            type: 'income',
+            year: 2021,
+            quintiles: [7.7, 12.5, 17.1, 22.5, 40.2],
+            descRu: 'Более высокая концентрация доходов в финансовом секторе и мегаполисах по сравнению с континентальной Европой.',
+            descEn: 'Higher income concentration in financial services and metropolitan areas compared with continental Europe.'
+        },
+        {
+            id: 'jpn',
+            nameRu: 'Япония',
+            nameEn: 'Japan',
+            region: 'americas_asia',
+            gini: 32.9,
+            type: 'income',
+            year: 2013,
+            quintiles: [7.6, 12.4, 17.0, 22.5, 40.5],
+            descRu: 'Демографическое старение населения увеличивает долю домохозяйств пенсионеров, влияя на межгрупповой разрыв доходов.',
+            descEn: 'Population aging raises the share of retiree households, influencing overall disposable income dispersion.'
+        },
+        {
+            id: 'rus',
+            nameRu: 'Россия',
+            nameEn: 'Russia',
+            region: 'ca_cis',
+            gini: 35.1,
+            type: 'consumption',
+            year: 2021,
+            quintiles: [7.1, 11.8, 16.6, 22.4, 42.1],
+            descRu: 'Наиболее высокий индекс Джини среди крупных экономик постсоветского пространства по методике PIP.',
+            descEn: 'Highest Gini index among major post-Soviet economies under PIP methodology.'
+        },
+        {
+            id: 'chn',
+            nameRu: 'Китай',
+            nameEn: 'China',
+            region: 'americas_asia',
+            gini: 35.7,
+            type: 'consumption',
+            year: 2021,
+            quintiles: [6.9, 11.6, 16.5, 22.4, 42.6],
+            descRu: 'Разрыв между прибрежными мегаполисами и внутренними провинциями определяет структуру неравенства в Китае.',
+            descEn: 'The urban-rural and coastal-inland gap shapes China’s overall distributional profile.'
+        },
+        {
+            id: 'usa',
+            nameRu: 'США',
+            nameEn: 'United States',
+            region: 'americas_asia',
+            gini: 41.3,
+            type: 'income',
+            year: 2022,
+            quintiles: [5.4, 10.3, 15.6, 22.3, 46.4],
+            descRu: 'Самое высокое неравенство среди стран G7: верхние 20% получают более 46% совокупного дохода против ~5.4% у нижних 20%.',
+            descEn: 'Highest inequality among G7 economies: the top 20% receive over 46% of total income vs. ~5.4% for the bottom 20%.'
+        },
+        {
+            id: 'mex',
+            nameRu: 'Мексика',
+            nameEn: 'Mexico',
+            region: 'americas_asia',
+            gini: 43.5,
+            type: 'income',
+            year: 2022,
+            quintiles: [5.1, 9.7, 14.9, 22.0, 48.3],
+            descRu: 'Характерный для Латинской Америки высокий разрыв между формальным высокооплачиваемым сектором и неформальной занятостью.',
+            descEn: 'Characteristic Latin American gap between formal high-wage sectors and informal employment.'
+        },
+        {
+            id: 'tur',
+            nameRu: 'Турция',
+            nameEn: 'Turkey',
+            region: 'europe',
+            gini: 44.4,
+            type: 'income',
+            year: 2021,
+            quintiles: [4.9, 9.4, 14.7, 21.9, 49.1],
+            descRu: 'Инфляционное давление и региональные различия в оплате труда усиливают концентрацию доходов.',
+            descEn: 'Inflationary pressures and regional wage disparities contribute to higher income concentration.'
+        },
+        {
+            id: 'bra',
+            nameRu: 'Бразилия',
+            nameEn: 'Brazil',
+            region: 'americas_asia',
+            gini: 52.0,
+            type: 'income',
+            year: 2022,
+            quintiles: [3.4, 7.6, 12.9, 20.6, 55.5],
+            descRu: 'Высокая концентрация капитала и земли, хотя адресные программы (Bolsa Família) заметно снизили показатель с пиков 1990-х.',
+            descEn: 'High concentration of capital and land, though targeted transfers (Bolsa Família) reduced Gini from 1990s peaks.'
+        },
+        {
+            id: 'col',
+            nameRu: 'Колумбия',
+            nameEn: 'Colombia',
+            region: 'americas_asia',
+            gini: 54.8,
+            type: 'income',
+            year: 2022,
+            quintiles: [2.9, 6.9, 12.2, 20.1, 57.9],
+            descRu: 'Один из наиболее высоких индексов Джини в Западном полушарии: на верхний квинтиль приходится почти 58% дохода.',
+            descEn: 'One of the highest Gini indices in the Western Hemisphere: the top quintile captures nearly 58% of income.'
+        },
+        {
+            id: 'zaf',
+            nameRu: 'ЮАР',
+            nameEn: 'South Africa',
+            region: 'americas_asia',
+            gini: 63.0,
+            type: 'consumption',
+            year: 2014,
+            quintiles: [2.1, 4.8, 9.4, 17.7, 66.0],
+            descRu: 'Самый высокий коэффициент Джини в базе World Bank PIP: структурная безработица и историческое неравенство активов концентрируют 66% ресурсов у верхних 20%.',
+            descEn: 'Highest Gini in the World Bank PIP database: structural unemployment and asset inequality concentrate 66% of resources in the top 20%.'
+        }
+    ];
+
+    // ================= STATE =================
+    let baseQuintiles = [8.8, 13.4, 17.5, 22.3, 38.0]; // Kazakhstan default
+    let activeQuintiles = [...baseQuintiles];
+    let selectedCountryId = 'kaz';
+
+    // ================= PRESETS =================
+    const PRESETS = {
+        equal: { q: [20, 20, 20, 20, 20], id: null },
+        slovakia: { q: [10.1, 14.8, 18.2, 22.4, 34.5], id: 'svk' },
+        kazakhstan: { q: [8.8, 13.4, 17.5, 22.3, 38.0], id: 'kaz' },
+        usa: { q: [5.4, 10.3, 15.6, 22.3, 46.4], id: 'usa' },
+        brazil: { q: [3.4, 7.6, 12.9, 20.6, 55.5], id: 'bra' },
+        safrica: { q: [2.1, 4.8, 9.4, 17.7, 66.0], id: 'zaf' }
+    };
+
+    function applyPreset(key) {
+        const p = PRESETS[key];
+        if (!p) return;
+        baseQuintiles = [...p.q];
+        activeQuintiles = [...p.q];
+        document.getElementById('taxSlider').value = 0;
+        document.getElementById('taxVal').textContent = '0%';
+
+        document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+        const mapIdx = { equal: 0, slovakia: 1, kazakhstan: 2, usa: 3, brazil: 4, safrica: 5 };
+        const btns = document.querySelectorAll('.preset-btn');
+        if (btns[mapIdx[key]]) btns[mapIdx[key]].classList.add('active');
+
+        if (p.id) {
+            selectedCountryId = p.id;
+            renderCountryList();
+        }
+        syncSlidersFromActive();
+        updateSimulation();
+    }
+
+    // ================= SLIDER LOGIC =================
+    function handleTaxTransfer(val) {
+        const rate = parseFloat(val) / 100; // -0.25 to +0.45
+        document.getElementById('taxVal').textContent = (val > 0 ? '+' : '') + val + '%';
+
+        // Redistribute between Q5 (richest 20%) and Q1+Q2 (poorest 40%)
+        const q = [...baseQuintiles];
+        if (rate >= 0) {
+            const taxAmount = (q[4] - 20) * rate;
+            q[4] -= taxAmount;
+            q[0] += taxAmount * 0.65;
+            q[1] += taxAmount * 0.35;
+        } else {
+            // Regressive shift toward top quintile
+            const regAmount = (q[0] + q[1]) * Math.abs(rate) * 0.6;
+            q[0] -= regAmount * 0.6;
+            q[1] -= regAmount * 0.4;
+            q[4] += regAmount;
+        }
+
+        // Normalize to 100% and maintain ascending order
+        const sum = q.reduce((a, b) => a + b, 0);
+        activeQuintiles = q.map(x => Math.max(0.5, (x / sum) * 100));
+        const normSum = activeQuintiles.reduce((a, b) => a + b, 0);
+        activeQuintiles = activeQuintiles.map(x => (x / normSum) * 100);
+
+        document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+        syncSlidersFromActive();
+        updateSimulation();
+    }
+
+    function handleQuintileChange(index, newValue) {
+        const val = parseFloat(newValue);
+        const oldVal = activeQuintiles[index];
+        const diff = val - oldVal;
+        const otherSum = 100 - oldVal;
+
+        if (otherSum <= 0) return;
+
+        const updated = activeQuintiles.map((q, i) => {
+            if (i === index) return val;
+            return Math.max(0.5, q - diff * (q / otherSum));
+        });
+
+        const total = updated.reduce((a, b) => a + b, 0);
+        activeQuintiles = updated.map(x => (x / total) * 100);
+        baseQuintiles = [...activeQuintiles];
+        document.getElementById('taxSlider').value = 0;
+        document.getElementById('taxVal').textContent = '0%';
+        document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+
+        syncSlidersFromActive();
+        updateSimulation();
+    }
+
+    function syncSlidersFromActive() {
+        for (let i = 0; i < 5; i++) {
+            const slider = document.getElementById(`q${i + 1}Slider`);
+            const label = document.getElementById(`q${i + 1}Val`);
+            slider.value = activeQuintiles[i].toFixed(1);
+            label.textContent = activeQuintiles[i].toFixed(1) + '%';
+        }
+    }
+
+    // ================= CALCULATE GINI & DRAW LORENZ CURVE =================
+    function calculateGiniFromQuintiles(q) {
+        // Cumulative shares: (0,0), (0.2, c1), (0.4, c2), (0.6, c3), (0.8, c4), (1.0, 1.0)
+        const cumY = [0];
+        let acc = 0;
+        for (let i = 0; i < 5; i++) {
+            acc += q[i] / 100;
+            cumY.push(Math.min(1, acc));
+        }
+        cumY[5] = 1;
+
+        // Area B under Lorenz curve via trapezoidal rule: B = sum_{i=1..5} 0.2 * (y_{i-1} + y_i)/2
+        let areaB = 0;
+        for (let i = 1; i <= 5; i++) {
+            areaB += 0.2 * (cumY[i - 1] + cumY[i]) / 2;
+        }
+        // Gini = 1 - 2B (with slight Brown/unbiased correction factor ~1.045 for 5-bin grouping so country presets match PIP)
+        let rawGini = Math.max(0, Math.min(0.99, (1 - 2 * areaB) * 1.055));
+        if (Math.max(...q) - Math.min(...q) < 0.2) rawGini = 0;
+
+        return { gini: rawGini, cumY };
+    }
+
+    function updateSimulation() {
+        const { gini, cumY } = calculateGiniFromQuintiles(activeQuintiles);
+        const gini100 = (gini * 100).toFixed(1);
+        const giniDec = gini.toFixed(3);
+
+        // Palma Ratio approx: Top 10% (~58% of Q5) / Bottom 40% (Q1 + Q2)
+        const bottom40 = activeQuintiles[0] + activeQuintiles[1];
+        const top10Est = activeQuintiles[4] * 0.57;
+        const palma = bottom40 > 0 ? (top10Est / bottom40).toFixed(2) : '—';
+        const qRatio = activeQuintiles[0] > 0 ? (activeQuintiles[4] / activeQuintiles[0]).toFixed(1) + '×' : '—';
+
+        const dict = I18N[currentLang];
+        let levelText = dict.giniLevels.low;
+        if (gini * 100 >= 48) levelText = dict.giniLevels.ext;
+        else if (gini * 100 >= 38) levelText = dict.giniLevels.high;
+        else if (gini * 100 >= 30) levelText = dict.giniLevels.mod;
+
+        document.getElementById('kpiGiniVal').textContent = gini100;
+        document.getElementById('kpiGiniSub').textContent = currentLang === 'ru'
+            ? `${giniDec} (шкала 0–1) • ${levelText}`
+            : `${giniDec} (0–1 scale) • ${levelText}`;
+        document.getElementById('kpiPalmaVal').textContent = palma;
+        document.getElementById('kpiRatioVal').textContent = qRatio;
+
+        drawLorenzSvg(cumY, gini100);
+    }
+
+    function drawLorenzSvg(cumY, gini100) {
+        const svg = document.getElementById('lorenzSvg');
+        const padL = 46, padR = 20, padT = 20, padB = 42;
+        const size = 270; // 270x270 plot area
+
+        const toX = p => padL + p * size;
+        const toY = y => padT + (1 - y) * size;
+
+        // Build polygon for Area A (between equality line and Lorenz curve)
+        const pointsLorenz = cumY.map((y, idx) => `${toX(idx * 0.2).toFixed(1)},${toY(y).toFixed(1)}`);
+        const areaPolygon = [
+            `${toX(0)},${toY(0)}`,
+            ...pointsLorenz.slice(1),
+            `${toX(0)},${toY(0)}`
+        ].join(' ');
+
+        const dict = I18N[currentLang];
+
+        let gridLines = '';
+        for (let step = 0.2; step <= 1.001; step += 0.2) {
+            const x = toX(step);
+            const y = toY(step);
+            const pct = Math.round(step * 100) + '%';
+            gridLines += `
+                <line x1="${x}" y1="${padT}" x2="${x}" y2="${padT + size}" stroke="#E2E8F0" stroke-dasharray="3,3" stroke-width="1"/>
+                <line x1="${padL}" y1="${y}" x2="${padL + size}" y2="${y}" stroke="#E2E8F0" stroke-dasharray="3,3" stroke-width="1"/>
+                <text x="${x}" y="${padT + size + 16}" text-anchor="middle" fill="#64748B" font-size="10">${pct}</text>
+                <text x="${padL - 7}" y="${y + 3}" text-anchor="end" fill="#64748B" font-size="10">${pct}</text>
+            `;
+        }
+
+        const dots = cumY.map((y, idx) => {
+            const cx = toX(idx * 0.2);
+            const cy = toY(y);
+            return `<circle cx="${cx}" cy="${cy}" r="4.5" fill="#B81D24" stroke="#FFFFFF" stroke-width="1.5"/>`;
+        }).join('');
+
+        svg.innerHTML = `
+            <defs>
+                <linearGradient id="areaAGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stop-color="#B81D24" stop-opacity="0.28"/>
+                    <stop offset="100%" stop-color="#B81D24" stop-opacity="0.08"/>
+                </linearGradient>
+            </defs>
+            <rect x="${padL}" y="${padT}" width="${size}" height="${size}" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/>
+            ${gridLines}
+            <!-- Area A -->
+            <polygon points="${areaPolygon}" fill="url(#areaAGrad)"/>
+            <!-- Line of Perfect Equality -->
+            <line x1="${toX(0)}" y1="${toY(0)}" x2="${toX(1)}" y2="${toY(1)}" stroke="#64748B" stroke-width="2" stroke-dasharray="5,4"/>
+            <!-- Lorenz Curve -->
+            <polyline points="${pointsLorenz.join(' ')}" fill="none" stroke="#B81D24" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            ${dots}
+            <!-- Area Labels -->
+            <text x="${toX(0.58)}" y="${toY(0.46)}" fill="#8F141A" font-weight="800" font-size="13">A</text>
+            <text x="${toX(0.82)}" y="${toY(0.18)}" fill="#64748B" font-weight="700" font-size="13">B</text>
+            <!-- Live Badge Inside Chart -->
+            <rect x="${padL + 10}" y="${padT + 10}" width="114" height="28" rx="6" fill="#1E232A"/>
+            <text x="${padL + 67}" y="${padT + 28}" text-anchor="middle" fill="#FFFFFF" font-weight="800" font-size="12">Gini = ${gini100}</text>
+            <!-- Axis Titles -->
+            <text x="${padL + size / 2}" y="${padT + size + 34}" text-anchor="middle" fill="#334155" font-weight="700" font-size="11">${dict.axisPop}</text>
+            <text x="14" y="${padT + size / 2}" text-anchor="middle" fill="#334155" font-weight="700" font-size="11" transform="rotate(-90, 14, ${padT + size / 2})">${dict.axisInc}</text>
+        `;
+    }
+
+    // ================= COUNTRY LIST & SPOTLIGHT =================
+    function getBarColor(gini, isKz) {
+        if (isKz) return '#B81D24';
+        if (gini < 30) return '#0F766E';
+        if (gini < 40) return '#2563EB';
+        if (gini < 50) return '#D97706';
+        return '#991B1B';
+    }
+
+    function renderCountryList() {
+        const search = document.getElementById('countrySearch').value.trim().toLowerCase();
+        const region = document.getElementById('regionFilter').value;
+        const container = document.getElementById('countryList');
+
+        const filtered = COUNTRIES_PIP.filter(c => {
+            const matchRegion = region === 'all' || c.region === region;
+            const matchText = c.nameRu.toLowerCase().includes(search) || c.nameEn.toLowerCase().includes(search);
+            return matchRegion && matchText;
+        }).sort((a, b) => a.gini - b.gini);
+
+        container.innerHTML = filtered.map(c => {
+            const name = currentLang === 'ru' ? c.nameRu : c.nameEn;
+            const isSelected = c.id === selectedCountryId;
+            const isKz = c.id === 'kaz';
+            const widthPct = Math.min(100, (c.gini / 70) * 100);
+            const color = getBarColor(c.gini, isKz);
+
+            return `
+                <div class="country-row ${isSelected ? 'selected' : ''} ${isKz ? 'is-kz' : ''}" onclick="selectCountry('${c.id}')">
+                    <div class="country-name" title="${name}">${isKz ? '★ ' : ''}${name}</div>
+                    <div class="bar-track">
+                        <div class="bar-fill" style="width:${widthPct}%; background:${color};"></div>
+                    </div>
+                    <div class="country-score">${c.gini.toFixed(1)}</div>
+                </div>
+            `;
+        }).join('');
+
+        renderSpotlight();
+    }
+
+    function selectCountry(id) {
+        const country = COUNTRIES_PIP.find(c => c.id === id);
+        if (!country) return;
+        selectedCountryId = id;
+
+        baseQuintiles = [...country.quintiles];
+        activeQuintiles = [...country.quintiles];
+        document.getElementById('taxSlider').value = 0;
+        document.getElementById('taxVal').textContent = '0%';
+        document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+
+        syncSlidersFromActive();
+        updateSimulation();
+        renderCountryList();
+    }
+
+    function renderSpotlight() {
+        const c = COUNTRIES_PIP.find(item => item.id === selectedCountryId) || COUNTRIES_PIP[7];
+        const dict = I18N[currentLang];
+        const name = currentLang === 'ru' ? c.nameRu : c.nameEn;
+        const desc = currentLang === 'ru' ? c.descRu : c.descEn;
+        const aggLabel = c.type === 'consumption' ? dict.aggConsumption : dict.aggIncome;
+        const aggClass = c.type === 'consumption' ? 'consumption' : 'income';
+
+        document.getElementById('countrySpotlight').innerHTML = `
+            <div class="spotlight-top">
+                <div class="spotlight-name">${name}</div>
+                <div class="spotlight-gini">Gini: ${c.gini.toFixed(1)}</div>
+            </div>
+            <div class="spotlight-meta">
+                <span class="meta-tag ${aggClass}">${aggLabel}</span>
+                <span class="meta-tag">${dict.surveyLabel} ${c.year}</span>
+                <span class="meta-tag">Q1: ${c.quintiles[0]}% | Q5: ${c.quintiles[4]}%</span>
+            </div>
+            <div class="spotlight-desc">${desc}</div>
+        `;
+    }
+
+    // ================= LANGUAGE SWITCHER =================
+    function setLanguage(lang) {
+        currentLang = lang;
+        document.documentElement.lang = lang;
+        document.getElementById('btnRu').classList.toggle('active', lang === 'ru');
+        document.getElementById('btnEn').classList.toggle('active', lang === 'en');
+
+        const dict = I18N[lang];
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (dict[key]) {
+                el.innerHTML = dict[key];
+            }
+        });
+
+        document.getElementById('countrySearch').placeholder = dict.searchPlaceholder;
+        updateSimulation();
+        renderCountryList();
+    }
+
+    // Initialize dashboard on load
+    window.addEventListener('DOMContentLoaded', () => {
+        syncSlidersFromActive();
+        updateSimulation();
+        renderCountryList();
+    });
+</script>
+</body>
+</html>

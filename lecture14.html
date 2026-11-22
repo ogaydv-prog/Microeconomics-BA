@@ -1,0 +1,2206 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Распределение доходов, неравенство и бедность | Microeconomics Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #121417;
+            --bg-surface: #1b1e24;
+            --bg-panel: #22262e;
+            --bg-elevated: #2a2f3a;
+            --border-subtle: #323846;
+            --border-bright: #464e61;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+
+            --neon-blue: #38bdf8;
+            --neon-blue-glow: rgba(56, 189, 248, 0.35);
+            --neon-red: #fb7185;
+            --neon-red-glow: rgba(251, 113, 133, 0.35);
+            --neon-emerald: #34d399;
+            --neon-amber: #fbbf24;
+            --neon-violet: #a78bfa;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: radial-gradient(circle at 15% 0%, #1d222b 0%, var(--bg-main) 55%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.55;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        header {
+            background: rgba(18, 20, 23, 0.92);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border-subtle);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .container {
+            max-width: 1380px;
+            margin: 0 auto;
+            padding: 0 24px;
+            width: 100%;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-badge {
+            width: 46px;
+            height: 46px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(251, 113, 133, 0.2));
+            border: 1px solid var(--neon-blue);
+            box-shadow: 0 0 18px var(--neon-blue-glow);
+            display: grid;
+            place-items: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 800;
+            font-size: 16px;
+            color: var(--neon-blue);
+        }
+
+        .brand h1 {
+            font-size: clamp(18px, 2vw, 24px);
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+        }
+
+        .brand p {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .lang-switch {
+            display: flex;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 3px;
+        }
+
+        .lang-btn {
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .lang-btn.active {
+            background: var(--neon-blue);
+            color: #0b0f14;
+            box-shadow: 0 0 12px var(--neon-blue-glow);
+        }
+
+        .tabs-bar {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-bottom: 3px solid transparent;
+            border-radius: 10px 10px 0 0;
+            color: var(--text-secondary);
+            padding: 11px 16px;
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+            background: var(--bg-panel);
+        }
+
+        .tab-btn.active {
+            background: var(--bg-panel);
+            color: var(--text-primary);
+            border-color: var(--border-bright);
+            border-bottom-color: var(--tab-accent, var(--neon-blue));
+            box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.25);
+        }
+
+        main {
+            flex-grow: 1;
+            padding: 28px 0 56px;
+        }
+
+        .view-section {
+            display: none;
+            animation: fadeIn 0.28s ease;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero-box {
+            background: linear-gradient(125deg, rgba(56, 189, 248, 0.08), rgba(251, 113, 133, 0.05) 45%, var(--bg-surface));
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 22px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+        }
+
+        .eyebrow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--neon-blue);
+            margin-bottom: 6px;
+        }
+
+        .hero-box h2 {
+            font-size: clamp(20px, 2.5vw, 28px);
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+
+        .hero-box p {
+            color: var(--text-secondary);
+            font-size: 14px;
+            max-width: 960px;
+        }
+
+        .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+        .sim-grid { display: grid; grid-template-columns: 375px minmax(0, 1fr); gap: 20px; align-items: start; }
+
+        .card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .card p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .callout {
+            background: var(--bg-panel);
+            border-left: 4px solid var(--neon-blue);
+            border-radius: 0 12px 12px 0;
+            padding: 14px 16px;
+            margin-top: 14px;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .callout.red { border-left-color: var(--neon-red); }
+        .callout.amber { border-left-color: var(--neon-amber); }
+        .callout.emerald { border-left-color: var(--neon-emerald); }
+        .callout.violet { border-left-color: var(--neon-violet); }
+
+        .callout strong {
+            color: var(--text-primary);
+            display: block;
+            margin-bottom: 3px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .formula-box {
+            background: #0e1013;
+            border: 1px solid var(--border-bright);
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--neon-blue);
+            margin: 12px 0;
+            text-align: center;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.45);
+        }
+
+        .vintage-control {
+            background: #15181d;
+            border: 1px solid #2e3440;
+            border-radius: 12px;
+            padding: 14px 16px;
+            box-shadow: inset 0 3px 12px rgba(0, 0, 0, 0.65);
+            margin-bottom: 14px;
+        }
+
+        .vintage-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            gap: 8px;
+        }
+
+        .vintage-readout {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 6px;
+            background: #0b0d10;
+            border: 1px solid #323846;
+            white-space: nowrap;
+        }
+
+        .radio-dial-wrap {
+            position: relative;
+            padding: 10px 6px 16px;
+            background: linear-gradient(180deg, #0c0e12 0%, #191d24 100%);
+            border: 1px solid #383f4e;
+            border-radius: 8px;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.8), 0 1px 0 rgba(255,255,255,0.05);
+        }
+
+        .radio-ticks {
+            position: absolute;
+            left: 14px;
+            right: 14px;
+            bottom: 4px;
+            height: 8px;
+            background-image: repeating-linear-gradient(
+                to right,
+                #64748b 0px,
+                #64748b 1px,
+                transparent 1px,
+                transparent 10%
+            );
+            opacity: 0.65;
+            pointer-events: none;
+        }
+
+        .radio-ticks::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            top: -3px;
+            width: 2px;
+            height: 11px;
+            background: var(--neon-amber);
+            transform: translateX(-50%);
+        }
+
+        input[type="range"].vintage-slider {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 6px;
+            background: #262b34;
+            border-radius: 3px;
+            outline: none;
+            position: relative;
+            z-index: 2;
+            cursor: pointer;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.9);
+        }
+
+        input[type="range"].vintage-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 28px;
+            border-radius: 4px;
+            border: 1.5px solid #94a3b8;
+            cursor: grab;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.75), 0 0 12px var(--thumb-glow, rgba(56, 189, 248, 0.5));
+            background: linear-gradient(
+                90deg,
+                #1e232b 0%,
+                #333b48 36%,
+                var(--thumb-stripe, #38bdf8) 44%,
+                var(--thumb-stripe, #38bdf8) 56%,
+                #333b48 64%,
+                #1e232b 100%
+            );
+            transition: transform 0.12s ease, box-shadow 0.12s ease;
+        }
+
+        input[type="range"].vintage-slider::-webkit-slider-thumb:hover {
+            transform: scaleY(1.08);
+        }
+
+        input[type="range"].vintage-slider::-webkit-slider-thumb:active {
+            cursor: grabbing;
+        }
+
+        input[type="range"].vintage-slider::-moz-range-thumb {
+            width: 18px;
+            height: 28px;
+            border-radius: 4px;
+            border: 1.5px solid #94a3b8;
+            cursor: grab;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.75), 0 0 12px var(--thumb-glow, rgba(56, 189, 248, 0.5));
+            background: linear-gradient(
+                90deg,
+                #1e232b 0%,
+                #333b48 36%,
+                var(--thumb-stripe, #38bdf8) 44%,
+                var(--thumb-stripe, #38bdf8) 56%,
+                #333b48 64%,
+                #1e232b 100%
+            );
+        }
+
+        .slider-blue { --thumb-stripe: #38bdf8; --thumb-glow: rgba(56, 189, 248, 0.65); }
+        .slider-red { --thumb-stripe: #fb7185; --thumb-glow: rgba(251, 113, 133, 0.65); }
+        .slider-emerald { --thumb-stripe: #34d399; --thumb-glow: rgba(52, 211, 153, 0.65); }
+        .slider-amber { --thumb-stripe: #fbbf24; --thumb-glow: rgba(251, 191, 36, 0.65); }
+        .slider-violet { --thumb-stripe: #a78bfa; --thumb-glow: rgba(167, 139, 250, 0.65); }
+
+        .preset-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .btn-preset {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            padding: 9px 10px;
+            border-radius: 9px;
+            font-size: 11px;
+            font-weight: 600;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-preset:hover {
+            border-color: var(--neon-blue);
+            background: var(--bg-elevated);
+        }
+
+        .btn-preset.active {
+            border-color: var(--neon-blue);
+            background: rgba(56, 189, 248, 0.12);
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.2);
+        }
+
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .kpi-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+        }
+
+        .kpi-card span {
+            font-size: 10.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-secondary);
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 700;
+        }
+
+        .kpi-card strong {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 18px;
+            font-weight: 800;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12.5px;
+            margin-top: 10px;
+        }
+
+        .data-table th, .data-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border-subtle);
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .data-table th {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            background: var(--bg-panel);
+        }
+
+        .data-table tr.highlight-row {
+            background: rgba(56, 189, 248, 0.10);
+        }
+
+        .svg-box {
+            background: #14171c;
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 14px;
+            position: relative;
+        }
+
+        .svg-box svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .legend-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 10px;
+            font-size: 11.5px;
+            color: var(--text-secondary);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-line {
+            width: 18px;
+            height: 3px;
+            border-radius: 2px;
+        }
+
+        .chain-flow {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .chain-node {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .chain-node strong {
+            display: block;
+            font-size: 12px;
+            color: var(--neon-blue);
+            margin-bottom: 4px;
+        }
+
+        .chain-node span {
+            font-size: 11px;
+            color: var(--text-secondary);
+        }
+
+        .quiz-item {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .quiz-item summary {
+            padding: 14px 16px;
+            font-weight: 700;
+            font-size: 13.5px;
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-primary);
+        }
+
+        .quiz-item summary::-webkit-details-marker { display: none; }
+
+        .quiz-item summary::after {
+            content: "+";
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 18px;
+            color: var(--neon-blue);
+        }
+
+        .quiz-item[open] summary::after {
+            content: "−";
+            color: var(--neon-red);
+        }
+
+        .quiz-answer {
+            padding: 10px 16px 14px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            border-top: 1px dashed var(--border-subtle);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10.5px;
+            font-weight: 700;
+        }
+
+        .badge-blue { background: rgba(56, 189, 248, 0.15); color: var(--neon-blue); border: 1px solid rgba(56, 189, 248, 0.35); }
+        .badge-red { background: rgba(251, 113, 133, 0.15); color: var(--neon-red); border: 1px solid rgba(251, 113, 133, 0.35); }
+        .badge-emerald { background: rgba(52, 211, 153, 0.15); color: var(--neon-emerald); border: 1px solid rgba(52, 211, 153, 0.35); }
+        .badge-amber { background: rgba(251, 191, 36, 0.15); color: var(--neon-amber); border: 1px solid rgba(251, 191, 36, 0.35); }
+        .badge-violet { background: rgba(167, 139, 250, 0.15); color: var(--neon-violet); border: 1px solid rgba(167, 139, 250, 0.35); }
+
+        @media (max-width: 1024px) {
+            .sim-grid, .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+            .chain-flow { grid-template-columns: repeat(2, 1fr); }
+            .kpi-row { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <div class="topbar">
+            <div class="brand">
+                <div class="brand-badge">ID</div>
+                <div>
+                    <h1 data-i18n="mainTitle">Распределение доходов, неравенство и бедность</h1>
+                    <p data-i18n="mainSub">Микроэкономика • Измерение неравенства и бедности, мобильность, философия и политика перераспределения</p>
+                </div>
+            </div>
+            <div class="lang-switch">
+                <button class="lang-btn active" id="btnRu" onclick="setLang('ru')">РУС</button>
+                <button class="lang-btn" id="btnEn" onclick="setLang('en')">ENG</button>
+            </div>
+        </div>
+
+        <nav class="tabs-bar" role="tablist">
+            <button class="tab-btn active" style="--tab-accent: #38bdf8" data-tab="measurement" onclick="switchTab('measurement')">
+                01 · <span data-i18n="tab1">Измерение неравенства и бедности</span>
+            </button>
+            <button class="tab-btn" style="--tab-accent: #fb7185" data-tab="usa" onclick="switchTab('usa')">
+                02 · <span data-i18n="tab2">США: данные и измерение</span>
+            </button>
+            <button class="tab-btn" style="--tab-accent: #34d399" data-tab="kazakhstan" onclick="switchTab('kazakhstan')">
+                03 · <span data-i18n="tab3">Казахстан: бедность и АСП</span>
+            </button>
+            <button class="tab-btn" style="--tab-accent: #fbbf24" data-tab="world" onclick="switchTab('world')">
+                04 · <span data-i18n="tab4">Остальной мир и сравнение</span>
+            </button>
+            <button class="tab-btn" style="--tab-accent: #a78bfa" data-tab="policy" onclick="switchTab('policy')">
+                05 · <span data-i18n="tab5">Философия и политика снижения бедности</span>
+            </button>
+            <button class="tab-btn" style="--tab-accent: #38bdf8" data-tab="cases" onclick="switchTab('cases')">
+                06 · <span data-i18n="tab6">Практикум, кейсы и глоссарий</span>
+            </button>
+        </nav>
+    </div>
+</header>
+
+<main class="container">
+
+    <!-- =====================================================================
+         TAB 1: MEASUREMENT OF INEQUALITY, POVERTY & MOBILITY
+         ===================================================================== -->
+    <section id="tab-measurement" class="view-section active">
+        <div class="hero-box">
+            <div class="eyebrow" data-i18n="t1Eye">Позитивный анализ и измерители</div>
+            <h2 data-i18n="t1Title">Как читать данные о неравенстве, бедности и уровне жизни</h2>
+            <p data-i18n="t1Lead">Тема связывает позитивный анализ распределения доходов с нормативным вопросом: что государство должно делать с неравенством? Центральный компромисс — справедливость против эффективности (equity vs. efficiency). Важно отличать саму экономическую концепцию от статистического измерителя.</p>
+        </div>
+
+        <div class="card" style="margin-bottom: 18px;">
+            <h3>
+                <span data-i18n="archTitle">Архитектура анализа распределения доходов</span>
+                <span class="badge badge-blue">EQUITY vs EFFICIENCY</span>
+            </h3>
+            <div class="chain-flow" id="archFlow"></div>
+            <div class="callout" style="margin-top: 14px;">
+                <strong data-i18n="coreIdeaTitle">Главная мысль</strong>
+                <span data-i18n="coreIdeaText">Неравенство — это характеристика всего распределения доходов. Бедность — это положение домохозяйства относительно выбранного порога. Эти понятия связаны, но не тождественны.</span>
+            </div>
+        </div>
+
+        <div class="sim-grid" style="margin-bottom: 20px;">
+            <div class="card">
+                <h3 data-i18n="lorenzCtrlTitle">Симулятор кривой Лоренца и индекса Джини</h3>
+                <p style="margin-bottom: 14px;" data-i18n="lorenzCtrlDesc">Переключайте профили распределения или меняйте степень концентрации доходов, чтобы увидеть, как кривая Лоренца прогибается ниже линии 45° и как меняется коэффициент Джини.</p>
+
+                <div class="vintage-control">
+                    <div class="vintage-header">
+                        <span style="color: var(--neon-blue);">● <span data-i18n="ineqSliderLabel">Степень концентрации дохода:</span></span>
+                        <span class="vintage-readout" style="color: var(--neon-blue);" id="giniReadout">Gini = 0.292</span>
+                    </div>
+                    <div class="radio-dial-wrap">
+                        <div class="radio-ticks"></div>
+                        <input type="range" id="ineqSlider" class="vintage-slider slider-blue" min="0" max="60" step="2" value="22">
+                    </div>
+                </div>
+
+                <div style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-secondary);" data-i18n="lorenzPresetsTitle">
+                    Эталонные профили для сравнения:
+                </div>
+                <div class="preset-grid">
+                    <button class="btn-preset" onclick="setLorenzPreset(0, this)" data-i18n="lpEqual">Полное равенство (Gini = 0.00)</button>
+                    <button class="btn-preset active" onclick="setLorenzPreset(22, this)" data-i18n="lpKz">Профиль Казахстана (Gini ≈ 0.29)</button>
+                    <button class="btn-preset" onclick="setLorenzPreset(38, this)" data-i18n="lpUsa">Профиль США (Gini ≈ 0.41)</button>
+                    <button class="btn-preset" onclick="setLorenzPreset(54, this)" data-i18n="lpHigh">Высокая концентрация (Gini ≈ 0.56)</button>
+                </div>
+
+                <div class="formula-box">
+                    Gini = A / (A + B) ∈ [0, 1]
+                </div>
+
+                <div class="callout emerald">
+                    <strong data-i18n="lorenzGeomTitle">Геометрия коэффициента Джини</strong>
+                    <span data-i18n="lorenzGeomText">A — площадь между линией абсолютного равенства (45°) и кривой Лоренца; A + B — вся площадь треугольника под диагональю. Чем дальше кривая отходит вниз от линии 45°, тем выше неравенство.</span>
+                </div>
+            </div>
+
+            <div style="display: grid; gap: 18px;">
+                <div class="kpi-row">
+                    <div class="kpi-card">
+                        <span data-i18n="kpiGini">Коэффициент Джини</span>
+                        <strong style="color: var(--neon-blue);" id="kpiGiniVal">0.292</strong>
+                    </div>
+                    <div class="kpi-card">
+                        <span data-i18n="kpiQ1">Нижний квинтиль (20%)</span>
+                        <strong style="color: var(--neon-red);" id="kpiQ1Val">8.8%</strong>
+                    </div>
+                    <div class="kpi-card">
+                        <span data-i18n="kpiQ5">Верхний квинтиль (20%)</span>
+                        <strong style="color: var(--neon-amber);" id="kpiQ5Val">38.2%</strong>
+                    </div>
+                    <div class="kpi-card">
+                        <span data-i18n="kpiRatio">Соотношение Q5 / Q1</span>
+                        <strong style="color: var(--neon-emerald);" id="kpiRatioVal">4.3x</strong>
+                    </div>
+                </div>
+
+                <div class="grid-2">
+                    <div class="svg-box">
+                        <div style="font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--neon-blue);" data-i18n="lorenzChartTitle">Кривая Лоренца (накопленные доли населения и дохода)</div>
+                        <svg id="svgLorenz" viewBox="0 0 460 290"></svg>
+                    </div>
+                    <div class="svg-box">
+                        <div style="font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--neon-amber);" data-i18n="quintileChartTitle">Распределение совокупного дохода по квинтилям (%)</div>
+                        <svg id="svgQuintiles" viewBox="0 0 460 290"></svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid-2" style="margin-bottom: 20px;">
+            <div class="card">
+                <h3 data-i18n="measTableTitle">Сравнение измерителей неравенства</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th data-i18n="mCol1">Показатель</th>
+                            <th data-i18n="mCol2">Что показывает</th>
+                            <th data-i18n="mCol3">Сильная сторона</th>
+                            <th data-i18n="mCol4">Ограничение</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ineqMeasuresBody"></tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h3 data-i18n="povTypesTitle">Три типа черты бедности (Poverty Line)</h3>
+                <div style="display: grid; gap: 10px; margin-top: 10px;" id="povTypesList"></div>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <h3 data-i18n="hardMeasTitle">4 причины, почему измерение бедности и неравенства трудно</h3>
+                <div style="display: grid; gap: 10px; margin-top: 10px;" id="hardMeasList"></div>
+            </div>
+
+            <div class="card">
+                <h3>
+                    <span data-i18n="mobilityTitle">Экономическая мобильность и Great Gatsby Curve</span>
+                    <span class="badge badge-violet">MOBILITY</span>
+                </h3>
+                <p style="margin-bottom: 10px;" data-i18n="mobilityText1">Статический снимок распределения не показывает перемещения людей между группами во времени и между поколениями (intergenerational mobility). Временная бедность требует страхования и стабилизации дохода, тогда как хроническая — инвестиций в человеческий капитал, здравоохранение, качественное образование, childcare и инфраструктуру.</p>
+                <div class="callout violet">
+                    <strong data-i18n="gatsbyTitle">Кривая Великого Гэтсби (Great Gatsby Curve)</strong>
+                    <span data-i18n="gatsbyText">Международные исследования фиксируют отрицательную связь между текущим уровнем неравенства и межпоколенческой мобильностью. Это эмпирическая корреляция, а не автоматическое доказательство причинности, но она смещает фокус дискуссии от равенства результатов к равенству возможностей.</span>
+                </div>
+                <div class="callout amber" style="margin-top: 12px;">
+                    <strong data-i18n="ladderTitle">Лестница измерения благосостояния</strong>
+                    <span data-i18n="ladderText">Денежный доход до налогов → Ресурсы после налогов и трансфертов → Фактическое потребление → Многомерная депривация (multidimensional deprivation).</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 2: UNITED STATES DATA & METHODOLOGY
+         ===================================================================== -->
+    <section id="tab-usa" class="view-section">
+        <div class="hero-box">
+            <div class="eyebrow" data-i18n="t2Eye">Эмпирический фокус: США</div>
+            <h2 data-i18n="t2Title">США: официальная бедность (Official Poverty) и дополнительная мера (SPM)</h2>
+            <p data-i18n="t2Lead">Сопоставление официального показателя бедности США и Supplemental Poverty Measure (SPM) наглядно демонстрирует главный методический урок темы: выбор измерителя меняет количественную оценку и выводы для экономической политики.</p>
+        </div>
+
+        <div class="kpi-row" style="margin-bottom: 20px;">
+            <div class="kpi-card">
+                <span data-i18n="usKpi1">Official Poverty (2025)</span>
+                <strong style="color: var(--neon-blue);">10.2%</strong>
+            </div>
+            <div class="kpi-card">
+                <span data-i18n="usKpi2">SPM Poverty (2025)</span>
+                <strong style="color: var(--neon-red);">13.1%</strong>
+            </div>
+            <div class="kpi-card">
+                <span data-i18n="usKpi3">Порог (семья из 4, 2025)</span>
+                <strong style="color: var(--neon-amber);">$32,970</strong>
+            </div>
+            <div class="kpi-card">
+                <span data-i18n="usKpi4">Медианный доход (2025)</span>
+                <strong style="color: var(--neon-emerald);">$87,460</strong>
+            </div>
+        </div>
+
+        <div class="grid-2" style="margin-bottom: 20px;">
+            <div class="svg-box">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 13px; font-weight: 800;" data-i18n="usChart1Title">Динамика официального уровня бедности в США (1959–2025, %)</span>
+                    <span class="badge badge-blue">34.5 МЛН ЧЕЛ. (2025)</span>
+                </div>
+                <svg id="svgUsTrend" viewBox="0 0 540 270"></svg>
+            </div>
+
+            <div class="svg-box">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 13px; font-weight: 800;" data-i18n="usChart2Title">Official Poverty vs. Supplemental Poverty Measure (2025)</span>
+                    <span class="badge badge-red">МЕТОДОЛОГИЯ</span>
+                </div>
+                <svg id="svgUsCompare" viewBox="0 0 540 270"></svg>
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 20px;">
+            <h3 data-i18n="usTableTitle">Ключевые индикаторы США: исторические якоря и актуальные данные (2025/2026)</h3>
+            <div style="overflow-x: auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th data-i18n="usCol1">Индикатор</th>
+                            <th data-i18n="usCol2">Базовый якорь (2017)</th>
+                            <th data-i18n="usCol3">Актуальное значение (2025)</th>
+                            <th data-i18n="usCol4">Экономическая интерпретация</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <h3 style="color: var(--neon-blue);" data-i18n="offBoxT">Официальная мера (Official Poverty Measure)</h3>
+                <p data-i18n="offBoxD">Опирается на денежный доход до уплаты налогов (pretax money income) и не учитывает многие неденежные трансферты (in-kind benefits) и возвратные налоговые кредиты. Порог бедности индексируется номинально на инфляцию, поэтому при сравнении показателей за десятилетия требуется осторожность.</p>
+            </div>
+            <div class="card">
+                <h3 style="color: var(--neon-red);" data-i18n="spmBoxT">Дополнительная мера (SPM)</h3>
+                <p data-i18n="spmBoxD">Учитывает налоги и налоговые кредиты (tax credits), государственные программы помощи, а также вычитает обязательные расходы (на работу, медицину) и корректирует порог на географические различия стоимости жилья. Поэтому SPM — не «более точный процент», а ответ на другой аналитический вопрос.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 3: KAZAKHSTAN POVERTY, INEQUALITY & TSA SIMULATOR
+         ===================================================================== -->
+    <section id="tab-kazakhstan" class="view-section">
+        <div class="hero-box">
+            <div class="eyebrow" data-i18n="t3Eye">Национальный контекст: Республика Казахстан</div>
+            <h2 data-i18n="t3Title">Казахстан: динамика бедности, международные линии и Адресная социальная помощь (АСП)</h2>
+            <p data-i18n="t3Lead">Для корректного анализа Казахстана необходимо чётко различать три инструмента: национальную статистическую оценку бедности (5.0% в 2024), международные сопоставимые линии Всемирного банка ($3.00 и $8.30 по ППС 2021) и административную черту для назначения АСП.</p>
+        </div>
+
+        <div class="kpi-row" style="margin-bottom: 20px;">
+            <div class="kpi-card">
+                <span data-i18n="kzKpi1">Национальная бедность (2024)</span>
+                <strong style="color: var(--neon-emerald);">5.0%</strong>
+            </div>
+            <div class="kpi-card">
+                <span data-i18n="kzKpi2">Gini (World Bank PIP, 2021)</span>
+                <strong style="color: var(--neon-blue);">29.19</strong>
+            </div>
+            <div class="kpi-card">
+                <span data-i18n="kzKpi3">Крайняя бедность ($3.00/день)</span>
+                <strong style="color: var(--neon-emerald);">0.04%</strong>
+            </div>
+            <div class="kpi-card">
+                <span data-i18n="kzKpi4">Уязвимость ($8.30/день UMIC)</span>
+                <strong style="color: var(--neon-amber);">15.2%</strong>
+            </div>
+        </div>
+
+        <div class="grid-2" style="margin-bottom: 20px;">
+            <div class="svg-box">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 13px; font-weight: 800;" data-i18n="kzChart1Title">Снижение национальной бедности в Казахстане (2006 vs 2024)</span>
+                    <span class="badge badge-emerald">-13.2 П.П.</span>
+                </div>
+                <svg id="svgKzTrend" viewBox="0 0 540 260"></svg>
+            </div>
+
+            <div class="svg-box">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 13px; font-weight: 800;" data-i18n="kzChart2Title">Три порога оценки благосостояния в Казахстане (%)</span>
+                    <span class="badge badge-amber">КОНЦЕПЦИИ</span>
+                </div>
+                <svg id="svgKzLines" viewBox="0 0 540 260"></svg>
+            </div>
+        </div>
+
+        <!-- INTERACTIVE TSA CALCULATOR (KAZAKHSTAN 2025/2026 RULES) -->
+        <div class="sim-grid" style="margin-bottom: 20px;">
+            <div class="card">
+                <h3>
+                    <span data-i18n="tsaSimTitle">Калькулятор АСП (правила с 2025/2026 г.)</span>
+                    <span class="badge badge-emerald">АСП РК</span>
+                </h3>
+                <p style="margin-bottom: 14px;" data-i18n="tsaSimDesc">С 1 января 2025 года черта бедности для назначения АСП определяется как 35% медианного дохода, но не ниже 70% регионального прожиточного минимума (ПМ). Смоделируйте право семьи на пособие и его размер.</p>
+
+                <div class="vintage-control">
+                    <div class="vintage-header">
+                        <span style="color: var(--neon-blue);">● <span data-i18n="tsaPmLabel">Региональный ПМ (тенге/чел.):</span></span>
+                        <span class="vintage-readout" style="color: var(--neon-blue);" id="tsaPmVal">50 000 ₸</span>
+                    </div>
+                    <div class="radio-dial-wrap">
+                        <div class="radio-ticks"></div>
+                        <input type="range" id="tsaPmSlider" class="vintage-slider slider-blue" min="42000" max="65000" step="1000" value="50000">
+                    </div>
+                </div>
+
+                <div class="vintage-control">
+                    <div class="vintage-header">
+                        <span style="color: var(--neon-emerald);">● <span data-i18n="tsaIncLabel">Среднедушевой доход семьи:</span></span>
+                        <span class="vintage-readout" style="color: var(--neon-emerald);" id="tsaIncVal">24 000 ₸</span>
+                    </div>
+                    <div class="radio-dial-wrap">
+                        <div class="radio-ticks"></div>
+                        <input type="range" id="tsaIncSlider" class="vintage-slider slider-emerald" min="0" max="50000" step="1000" value="24000">
+                    </div>
+                </div>
+
+                <div class="vintage-control">
+                    <div class="vintage-header">
+                        <span style="color: var(--neon-amber);">● <span data-i18n="tsaSizeLabel">Число членов семьи:</span></span>
+                        <span class="vintage-readout" style="color: var(--neon-amber);" id="tsaSizeVal">4 чел.</span>
+                    </div>
+                    <div class="radio-dial-wrap">
+                        <div class="radio-ticks"></div>
+                        <input type="range" id="tsaSizeSlider" class="vintage-slider slider-amber" min="1" max="8" step="1" value="4">
+                    </div>
+                </div>
+
+                <div class="vintage-control">
+                    <div class="vintage-header">
+                        <span style="color: var(--neon-violet);">● <span data-i18n="tsaKidsLabel">Из них детей в возрасте 1–6 лет:</span></span>
+                        <span class="vintage-readout" style="color: var(--neon-violet);" id="tsaKidsVal">1 реб.</span>
+                    </div>
+                    <div class="radio-dial-wrap">
+                        <div class="radio-ticks"></div>
+                        <input type="range" id="tsaKidsSlider" class="vintage-slider slider-violet" min="0" max="4" step="1" value="1">
+                    </div>
+                </div>
+            </div>
+
+            <div style="display: grid; gap: 18px;">
+                <div class="kpi-row">
+                    <div class="kpi-card">
+                        <span data-i18n="tsaKpiLine">Черта бедности (70% ПМ)</span>
+                        <strong style="color: var(--neon-blue);" id="tsaLineOut">35 000 ₸</strong>
+                    </div>
+                    <div class="kpi-card">
+                        <span data-i18n="tsaKpiGap">Дефицит на 1 человека</span>
+                        <strong style="color: var(--neon-amber);" id="tsaGapOut">11 000 ₸</strong>
+                    </div>
+                    <div class="kpi-card">
+                        <span data-i18n="tsaKpiBase">Базовая АСП на семью</span>
+                        <strong style="color: var(--neon-emerald);" id="tsaBaseOut">44 000 ₸</strong>
+                    </div>
+                    <div class="kpi-card">
+                        <span data-i18n="tsaKpiStatus">Статус назначения</span>
+                        <strong id="tsaStatusOut" style="color: var(--neon-emerald);">Назначается</strong>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 data-i18n="tsaBreakdownTitle">Механизм расчёта и условия назначения АСП</h3>
+                    <div id="tsaExplanationBox" style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.65;"></div>
+                    <div class="formula-box">
+                        АСП = (Черта бедности − Среднедушевой доход) × N + Доплата детям (1–6 лет)
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3 data-i18n="kzConceptTableTitle">Разграничение понятий для Казахстана</h3>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th data-i18n="kzC1">Понятие</th>
+                                <th data-i18n="kzC2">Инструмент в Казахстане</th>
+                                <th data-i18n="kzC3">Для чего используется</th>
+                            </tr>
+                        </thead>
+                        <tbody id="kzConceptBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 4: REST OF THE WORLD & COMPARATIVE FRAMEWORK
+         ===================================================================== -->
+    <section id="tab-world" class="view-section">
+        <div class="hero-box">
+            <div class="eyebrow" data-i18n="t4Eye">Глобальная картина 2026 и межстрановое сопоставление</div>
+            <h2 data-i18n="t4Title">Остальной мир (World Bank 2026) и сравнительная рамка: США — Казахстан — Мир</h2>
+            <p data-i18n="t4Lead">В 2025 году Всемирный банк обновил международные линии бедности в ценах ППС 2021 года: $3.00 в день для крайней бедности, $4.20 для стран с доходом ниже среднего и $8.30 для стран с доходом выше среднего. В 2026 году глобальное сокращение крайней бедности замедлилось.</p>
+        </div>
+
+        <div class="kpi-row" style="margin-bottom: 20px;">
+            <div class="kpi-card">
+                <span data-i18n="wKpi1">Ниже $3.00/день (Extreme)</span>
+                <strong style="color: var(--neon-red);">~10% (811 млн)</strong>
+            </div>
+            <div class="kpi-card">
+                <span data-i18n="wKpi2">Ниже $4.20/день (LMIC)</span>
+                <strong style="color: var(--neon-amber);">~19%</strong>
+            </div>
+            <div class="kpi-card">
+                <span data-i18n="wKpi3">Ниже $8.30/день (UMIC)</span>
+                <strong style="color: var(--neon-blue);">~46% (3.7 млрд)</strong>
+            </div>
+            <div class="kpi-card">
+                <span data-i18n="wKpi4">База пересчёта цен</span>
+                <strong style="color: var(--neon-violet);">2021 PPP</strong>
+            </div>
+        </div>
+
+        <div class="grid-2" style="margin-bottom: 20px;">
+            <div class="svg-box">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <span style="font-size: 13px; font-weight: 800;" data-i18n="wChartTitle">Глобальные ориентиры бедности, 2026 (World Bank, 2021 PPP)</span>
+                    <span class="badge badge-amber">ДОЛЯ НАСЕЛЕНИЯ МИРА</span>
+                </div>
+                <svg id="svgWorldBenchmarks" viewBox="0 0 540 270"></svg>
+            </div>
+
+            <div class="card">
+                <h3 data-i18n="wReportTitle">Главные выводы доклада World Bank (2026)</h3>
+                <div style="display: grid; gap: 10px; margin-top: 10px;">
+                    <div class="callout red" style="margin-top: 0;">
+                        <strong data-i18n="wFinding1T">1. Замедление прогресса</strong>
+                        <span data-i18n="wFinding1D">Сокращение крайней бедности ($3.00/день) застопорилось. Около 811 млн человек живут ниже этой черты, а при слабом росте подушевого ВВП к 2030 году число крайне бедных может превысить текущий уровень.</span>
+                    </div>
+                    <div class="callout amber" style="margin-top: 0;">
+                        <strong data-i18n="wFinding2T">2. Географическая концентрация</strong>
+                        <span data-i18n="wFinding2D">Крайняя бедность всё сильнее концентрируется в странах Африки к югу от Сахары (Sub-Saharan Africa) и в зонах нестабильности и конфликтов.</span>
+                    </div>
+                    <div class="callout emerald" style="margin-top: 0;">
+                        <strong data-i18n="wFinding3T">3. Смена акцента политики</strong>
+                        <span data-i18n="wFinding3D">Трансферты необходимы как страховочная сетка (safety net), но устойчивый выход из бедности требует продуктивных рабочих мест, роста производительности, человеческого капитала и устойчивости к шокам.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 20px;">
+            <h3 data-i18n="compMatrixTitle">Сравнительная рамка: США, Казахстан и мир</h3>
+            <div style="overflow-x: auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th data-i18n="cmCol1">Измерение</th>
+                            <th data-i18n="cmCol2">США (USA)</th>
+                            <th data-i18n="cmCol3">Казахстан (Kazakhstan)</th>
+                            <th data-i18n="cmCol4">Мир (World Bank)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="compFrameworkBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="callout">
+            <strong data-i18n="pppNoteTitle">Важная методическая оговорка о линиях ППС (PPP)</strong>
+            <span data-i18n="pppNoteText">Международные линии ($3.00 / $4.20 / $8.30 в ценах 2021 PPP) созданы для межстрановой сопоставимости. Они не заменяют национальную черту бедности и не определяют автоматически право на получение социальной помощи внутри страны. Также важно различать год наблюдения микроданных (например, 2021 для PIP по Казахстану, 2024 для нацбедности РК, 2025 для США) и год публикации отчёта (2026).</span>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 5: POLITICAL PHILOSOPHY & ANTIPOVERTY POLICY
+         ===================================================================== -->
+    <section id="tab-policy" class="view-section">
+        <div class="hero-box">
+            <div class="eyebrow" data-i18n="t5Eye">Нормативный анализ и дизайн социальной политики</div>
+            <h2 data-i18n="t5Title">Политическая философия перераспределения и инструменты борьбы с бедностью</h2>
+            <p data-i18n="t5Lead">Экономическая наука может измерить последствия налогов и трансфертов, но выбор масштаба перераспределения зависит от ценностных суждений. При этом любой инструмент помощи сталкивается с проблемой предельных стимулов (effective marginal tax rate).</p>
+        </div>
+
+        <div class="card" style="margin-bottom: 20px;">
+            <h3 data-i18n="philHeader">Три философских подхода к справедливости и перераспределению</h3>
+            <div style="overflow-x: auto;">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th data-i18n="phCol1">Подход</th>
+                            <th data-i18n="phCol2">Ключевая идея</th>
+                            <th data-i18n="phCol3">Аргумент за / против перераспределения</th>
+                            <th data-i18n="phCol4">Главный риск</th>
+                        </tr>
+                    </thead>
+                    <tbody id="philosophyBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- INTERACTIVE NEGATIVE INCOME TAX / EFFECTIVE MARGINAL TAX RATE SIMULATOR -->
+        <div class="sim-grid" style="margin-bottom: 20px;">
+            <div class="card">
+                <h3>
+                    <span data-i18n="nitSimTitle">Симулятор стимулов: отрицательный подоходный налог (NIT)</span>
+                    <span class="badge badge-violet">INCENTIVES</span>
+                </h3>
+                <p style="margin-bottom: 14px;" data-i18n="nitSimDesc">Проверьте компромисс между щедростью гарантии дохода, ставкой сворачивания пособия (phase-out rate) и фискальными издержками: налог = t × Доход − Гарантия.</p>
+
+                <div class="vintage-control">
+                    <div class="vintage-header">
+                        <span style="color: var(--neon-emerald);">● <span data-i18n="nitGuarLabel">Гарантированный минимум (G):</span></span>
+                        <span class="vintage-readout" style="color: var(--neon-emerald);" id="nitGuarVal">$10,000</span>
+                    </div>
+                    <div class="radio-dial-wrap">
+                        <div class="radio-ticks"></div>
+                        <input type="range" id="nitGuarSlider" class="vintage-slider slider-emerald" min="4000" max="16000" step="1000" value="10000">
+                    </div>
+                </div>
+
+                <div class="vintage-control">
+                    <div class="vintage-header">
+                        <span style="color: var(--neon-red);">● <span data-i18n="nitRateLabel">Предельная ставка изъятия (t):</span></span>
+                        <span class="vintage-readout" style="color: var(--neon-red);" id="nitRateVal">25%</span>
+                    </div>
+                    <div class="radio-dial-wrap">
+                        <div class="radio-ticks"></div>
+                        <input type="range" id="nitRateSlider" class="vintage-slider slider-red" min="10" max="60" step="5" value="25">
+                    </div>
+                </div>
+
+                <div class="vintage-control">
+                    <div class="vintage-header">
+                        <span style="color: var(--neon-blue);">● <span data-i18n="nitEarnLabel">Рыночный заработок семьи (Y):</span></span>
+                        <span class="vintage-readout" style="color: var(--neon-blue);" id="nitEarnVal">$20,000</span>
+                    </div>
+                    <div class="radio-dial-wrap">
+                        <div class="radio-ticks"></div>
+                        <input type="range" id="nitEarnSlider" class="vintage-slider slider-blue" min="0" max="80000" step="2000" value="20000">
+                    </div>
+                </div>
+
+                <div class="formula-box">
+                    Налог = t × Y − G &nbsp;|&nbsp; Порог выхода = G / t
+                </div>
+            </div>
+
+            <div style="display: grid; gap: 18px;">
+                <div class="kpi-row">
+                    <div class="kpi-card">
+                        <span data-i18n="nitKpi1">Порог нулевого налога (G/t)</span>
+                        <strong style="color: var(--neon-amber);" id="nitBreakOut">$40,000</strong>
+                    </div>
+                    <div class="kpi-card">
+                        <span data-i18n="nitKpi2">Чистый налог / трансферт</span>
+                        <strong style="color: var(--neon-emerald);" id="nitTaxOut">−$5,000 (пособие)</strong>
+                    </div>
+                    <div class="kpi-card">
+                        <span data-i18n="nitKpi3">Располагаемый доход</span>
+                        <strong style="color: var(--neon-blue);" id="nitDispOut">$25,000</strong>
+                    </div>
+                    <div class="kpi-card">
+                        <span data-i18n="nitKpi4">Выигрыш с +$1,000 труда</span>
+                        <strong style="color: var(--neon-violet);" id="nitGainOut">+$750</strong>
+                    </div>
+                </div>
+
+                <div class="svg-box">
+                    <div style="font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--neon-violet);" data-i18n="nitChartTitle">Зависимость располагаемого дохода от рыночного заработка (NIT)</div>
+                    <svg id="svgNitChart" viewBox="0 0 640 270"></svg>
+                </div>
+
+                <div class="callout amber" style="margin-top: 0;">
+                    <strong data-i18n="emtrTitle">Ловушка высоких эффективных предельных ставок (Effective Marginal Tax Rate)</strong>
+                    <span data-i18n="emtrText">Если при дополнительном заработке семья одновременно платит больше налогов и теряет несколько пособий, эффективная предельная ставка изъятия может приблизиться к 100%. Качественная социальная защита должна обеспечивать базовую достаточность (adequacy) и сохранять финансовый выигрыш от работы.</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3 data-i18n="toolsHeader">Сравнение 5 инструментов политики снижения бедности</h3>
+            <div class="grid-3" style="margin-top: 10px;" id="policyToolsGrid"></div>
+        </div>
+    </section>
+
+    <!-- =====================================================================
+         TAB 6: WORKSHOP, MINI-CASES, GLOSSARY & DISCUSSION
+         ===================================================================== -->
+    <section id="tab-cases" class="view-section">
+        <div class="hero-box">
+            <div class="eyebrow" data-i18n="t6Eye">Прикладной разбор, кейсы и терминология</div>
+            <h2 data-i18n="t6Title">Практикум интерпретации данных, мини-кейсы, глоссарий и вопросы для дискуссии</h2>
+            <p data-i18n="t6Lead">Разберите типичные статистические парадоксы, проанализируйте три аудиторных кейса и проверьте владение ключевыми терминами темы на русском и английском языках.</p>
+        </div>
+
+        <div class="card" style="margin-bottom: 20px;">
+            <h3 data-i18n="workshopHeader">Практикум: 4 типичные ловушки при интерпретации данных</h3>
+            <div class="grid-2" style="margin-top: 10px;" id="workshopGrid"></div>
+        </div>
+
+        <div class="card" style="margin-bottom: 20px;">
+            <h3 data-i18n="miniCasesHeader">Три мини-кейса для обсуждения в аудитории</h3>
+            <div class="grid-3" style="margin-top: 10px;" id="miniCasesGrid"></div>
+        </div>
+
+        <div class="grid-2">
+            <div class="card">
+                <h3 data-i18n="glossaryHeader">Расширенный двуязычный глоссарий</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th data-i18n="glCol1">Термин</th>
+                            <th data-i18n="glCol2">Экономический смысл</th>
+                        </tr>
+                    </thead>
+                    <tbody id="glossaryBody"></tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <h3 data-i18n="discHeader">7 вопросов для дискуссии и самопроверки</h3>
+                <div id="discussionAccordion" style="margin-top: 10px;"></div>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<script>
+'use strict';
+
+let currentLang = 'ru';
+
+const I18N = {
+    ru: {
+        mainTitle: 'Распределение доходов, неравенство и бедность',
+        mainSub: 'Микроэкономика • Измерение неравенства и бедности, мобильность, философия и политика перераспределения',
+        tab1: 'Измерение неравенства и бедности',
+        tab2: 'США: данные и измерение',
+        tab3: 'Казахстан: бедность и АСП',
+        tab4: 'Остальной мир и сравнение',
+        tab5: 'Философия и политика снижения бедности',
+        tab6: 'Практикум, кейсы и глоссарий',
+
+        t1Eye: 'Позитивный анализ и измерители',
+        t1Title: 'Как читать данные о неравенстве, бедности и уровне жизни',
+        t1Lead: 'Тема связывает позитивный анализ распределения доходов с нормативным вопросом: что государство должно делать с неравенством? Центральный компромисс — справедливость против эффективности (equity vs. efficiency). Важно отличать саму экономическую концепцию от статистического измерителя.',
+        archTitle: 'Архитектура анализа распределения доходов',
+        coreIdeaTitle: 'Главная мысль',
+        coreIdeaText: 'Неравенство — это характеристика всего распределения доходов. Бедность — это положение домохозяйства относительно выбранного порога. Эти понятия связаны, но не тождественны.',
+        lorenzCtrlTitle: 'Симулятор кривой Лоренца и индекса Джини',
+        lorenzCtrlDesc: 'Переключайте профили распределения или меняйте степень концентрации доходов, чтобы увидеть, как кривая Лоренца прогибается ниже линии 45° и как меняется коэффициент Джини.',
+        ineqSliderLabel: 'Степень концентрации дохода:',
+        lorenzPresetsTitle: 'Эталонные профили для сравнения:',
+        lpEqual: 'Полное равенство (Gini = 0.00)',
+        lpKz: 'Профиль Казахстана (Gini ≈ 0.29)',
+        lpUsa: 'Профиль США (Gini ≈ 0.41)',
+        lpHigh: 'Высокая концентрация (Gini ≈ 0.56)',
+        lorenzGeomTitle: 'Геометрия коэффициента Джини',
+        lorenzGeomText: 'A — площадь между линией абсолютного равенства (45°) и кривой Лоренца; A + B — вся площадь треугольника под диагональю. Чем дальше кривая отходит вниз от линии 45°, тем выше неравенство.',
+        kpiGini: 'Коэффициент Джини',
+        kpiQ1: 'Нижний квинтиль (20%)',
+        kpiQ5: 'Верхний квинтиль (20%)',
+        kpiRatio: 'Соотношение Q5 / Q1',
+        lorenzChartTitle: 'Кривая Лоренца (накопленные доли населения и дохода)',
+        quintileChartTitle: 'Распределение совокупного дохода по квинтилям (%)',
+        measTableTitle: 'Сравнение измерителей неравенства',
+        mCol1: 'Показатель',
+        mCol2: 'Что показывает',
+        mCol3: 'Сильная сторона',
+        mCol4: 'Ограничение',
+        povTypesTitle: 'Три типа черты бедности (Poverty Line)',
+        hardMeasTitle: '4 причины, почему измерение бедности и неравенства трудно',
+        mobilityTitle: 'Экономическая мобильность и Great Gatsby Curve',
+        mobilityText1: 'Статический снимок распределения не показывает перемещения людей между группами во времени и между поколениями (intergenerational mobility). Временная бедность требует страхования и стабилизации дохода, тогда как хроническая — инвестиций в человеческий капитал, здравоохранение, качественное образование, childcare и инфраструктуру.',
+        gatsbyTitle: 'Кривая Великого Гэтсби (Great Gatsby Curve)',
+        gatsbyText: 'Международные исследования фиксируют отрицательную связь между текущим уровнем неравенства и межпоколенческой мобильностью. Это эмпирическая корреляция, а не автоматическое доказательство причинности, но она смещает фокус дискуссии от равенства результатов к равенству возможностей.',
+        ladderTitle: 'Лестница измерения благосостояния',
+        ladderText: 'Денежный доход до налогов → Ресурсы после налогов и трансфертов → Фактическое потребление → Многомерная депривация (multidimensional deprivation).',
+
+        t2Eye: 'Эмпирический фокус: США',
+        t2Title: 'США: официальная бедность (Official Poverty) и дополнительная мера (SPM)',
+        t2Lead: 'Сопоставление официального показателя бедности США и Supplemental Poverty Measure (SPM) наглядно демонстрирует главный методический урок темы: выбор измерителя меняет количественную оценку и выводы для экономической политики.',
+        usKpi1: 'Official Poverty (2025)',
+        usKpi2: 'SPM Poverty (2025)',
+        usKpi3: 'Порог (семья из 4, 2025)',
+        usKpi4: 'Медианный доход (2025)',
+        usChart1Title: 'Динамика официального уровня бедности в США (1959–2025, %)',
+        usChart2Title: 'Official Poverty vs. Supplemental Poverty Measure (2025)',
+        usTableTitle: 'Ключевые индикаторы США: исторические якоря и актуальные данные (2025/2026)',
+        usCol1: 'Индикатор',
+        usCol2: 'Базовый якорь (2017)',
+        usCol3: 'Актуальное значение (2025)',
+        usCol4: 'Экономическая интерпретация',
+        offBoxT: 'Официальная мера (Official Poverty Measure)',
+        offBoxD: 'Опирается на денежный доход до уплаты налогов (pretax money income) и не учитывает многие неденежные трансферты (in-kind benefits) и возвратные налоговые кредиты. Порог бедности индексируется номинально на инфляцию, поэтому при сравнении показателей за десятилетия требуется осторожность.',
+        spmBoxT: 'Дополнительная мера (SPM)',
+        spmBoxD: 'Учитывает налоги и налоговые кредиты (tax credits), государственные программы помощи, а также вычитает обязательные расходы (на работу, медицину) и корректирует порог на географические различия стоимости жилья. Поэтому SPM — не «более точный процент», а ответ на другой аналитический вопрос.',
+
+        t3Eye: 'Национальный контекст: Республика Казахстан',
+        t3Title: 'Казахстан: динамика бедности, международные линии и Адресная социальная помощь (АСП)',
+        t3Lead: 'Для корректного анализа Казахстана необходимо чётко различать три инструмента: национальную статистическую оценку бедности (5.0% в 2024), международные сопоставимые линии Всемирного банка ($3.00 и $8.30 по ППС 2021) и административную черту для назначения АСП.',
+        kzKpi1: 'Национальная бедность (2024)',
+        kzKpi2: 'Gini (World Bank PIP, 2021)',
+        kzKpi3: 'Крайняя бедность ($3.00/день)',
+        kzKpi4: 'Уязвимость ($8.30/день UMIC)',
+        kzChart1Title: 'Снижение национальной бедности в Казахстане (2006 vs 2024)',
+        kzChart2Title: 'Три порога оценки благосостояния в Казахстане (%)',
+        tsaSimTitle: 'Калькулятор АСП (правила с 2025/2026 г.)',
+        tsaSimDesc: 'С 1 января 2025 года черта бедности для назначения АСП определяется как 35% медианного дохода, но не ниже 70% регионального прожиточного минимума (ПМ). Смоделируйте право семьи на пособие и его размер.',
+        tsaPmLabel: 'Региональный ПМ (тенге/чел.):',
+        tsaIncLabel: 'Среднедушевой доход семьи:',
+        tsaSizeLabel: 'Число членов семьи:',
+        tsaKidsLabel: 'Из них детей в возрасте 1–6 лет:',
+        tsaKpiLine: 'Черта бедности (70% ПМ)',
+        tsaKpiGap: 'Дефицит на 1 человека',
+        tsaKpiBase: 'Базовая АСП на семью',
+        tsaKpiStatus: 'Статус назначения',
+        tsaBreakdownTitle: 'Механизм расчёта и условия назначения АСП',
+        kzConceptTableTitle: 'Разграничение понятий для Казахстана',
+        kzC1: 'Понятие',
+        kzC2: 'Инструмент в Казахстане',
+        kzC3: 'Для чего используется',
+
+        t4Eye: 'Глобальная картина 2026 и межстрановое сопоставление',
+        t4Title: 'Остальной мир (World Bank 2026) и сравнительная рамка: США — Казахстан — Мир',
+        t4Lead: 'В 2025 году Всемирный банк обновил международные линии бедности в ценах ППС 2021 года: $3.00 в день для крайней бедности, $4.20 для стран с доходом ниже среднего и $8.30 для стран с доходом выше среднего. В 2026 году глобальное сокращение крайней бедности замедлилось.',
+        wKpi1: 'Ниже $3.00/день (Extreme)',
+        wKpi2: 'Ниже $4.20/день (LMIC)',
+        wKpi3: 'Ниже $8.30/день (UMIC)',
+        wKpi4: 'База пересчёта цен',
+        wChartTitle: 'Глобальные ориентиры бедности, 2026 (World Bank, 2021 PPP)',
+        wReportTitle: 'Главные выводы доклада World Bank (2026)',
+        wFinding1T: '1. Замедление прогресса',
+        wFinding1D: 'Сокращение крайней бедности ($3.00/день) застопорилось. Около 811 млн человек живут ниже этой черты, а при слабом росте подушевого ВВП к 2030 году число крайне бедных может превысить текущий уровень.',
+        wFinding2T: '2. Географическая концентрация',
+        wFinding2D: 'Крайняя бедность всё сильнее концентрируется в странах Африки к югу от Сахары (Sub-Saharan Africa) и в зонах нестабильности и конфликтов.',
+        wFinding3T: '3. Смена акцента политики',
+        wFinding3D: 'Трансферты необходимы как страховочная сетка (safety net), но устойчивый выход из бедности требует продуктивных рабочих мест, роста производительности, человеческого капитала и устойчивости к шокам.',
+        compMatrixTitle: 'Сравнительная рамка: США, Казахстан и мир',
+        cmCol1: 'Измерение',
+        cmCol2: 'США (USA)',
+        cmCol3: 'Казахстан (Kazakhstan)',
+        cmCol4: 'Мир (World Bank)',
+        pppNoteTitle: 'Важная методическая оговорка о линиях ППС (PPP)',
+        pppNoteText: 'Международные линии ($3.00 / $4.20 / $8.30 в ценах 2021 PPP) созданы для межстрановой сопоставимости. Они не заменяют национальную черту бедности и не определяют автоматически право на получение социальной помощи внутри страны. Также важно различать год наблюдения микроданных (например, 2021 для PIP по Казахстану, 2024 для нацбедности РК, 2025 для США) и год публикации отчёта (2026).',
+
+        t5Eye: 'Нормативный анализ и дизайн социальной политики',
+        t5Title: 'Политическая философия перераспределения и инструменты борьбы с бедностью',
+        t5Lead: 'Экономическая наука может измерить последствия налогов и трансфертов, но выбор масштаба перераспределения зависит от ценностных суждений. При этом любой инструмент помощи сталкивается с проблемой предельных стимулов (effective marginal tax rate).',
+        philHeader: 'Три философских подхода к справедливости и перераспределению',
+        phCol1: 'Подход',
+        phCol2: 'Ключевая идея',
+        phCol3: 'Аргумент за / против перераспределения',
+        phCol4: 'Главный риск',
+        nitSimTitle: 'Симулятор стимулов: отрицательный подоходный налог (NIT)',
+        nitSimDesc: 'Проверьте компромисс между щедростью гарантии дохода, ставкой сворачивания пособия (phase-out rate) и фискальными издержками: налог = t × Доход − Гарантия.',
+        nitGuarLabel: 'Гарантированный минимум (G):',
+        nitRateLabel: 'Предельная ставка изъятия (t):',
+        nitEarnLabel: 'Рыночный заработок семьи (Y):',
+        nitKpi1: 'Порог нулевого налога (G/t)',
+        nitKpi2: 'Чистый налог / трансферт',
+        nitKpi3: 'Располагаемый доход',
+        nitKpi4: 'Выигрыш с +$1,000 труда',
+        nitChartTitle: 'Зависимость располагаемого дохода от рыночного заработка (NIT)',
+        emtrTitle: 'Ловушка высоких эффективных предельных ставок (Effective Marginal Tax Rate)',
+        emtrText: 'Если при дополнительном заработке семья одновременно платит больше налогов и теряет несколько пособий, эффективная предельная ставка изъятия может приблизиться к 100%. Качественная социальная защита должна обеспечивать базовую достаточность (adequacy) и сохранять финансовый выигрыш от работы.',
+        toolsHeader: 'Сравнение 5 инструментов политики снижения бедности',
+
+        t6Eye: 'Прикладной разбор, кейсы и терминология',
+        t6Title: 'Практикум интерпретации данных, мини-кейсы, глоссарий и вопросы для дискуссии',
+        t6Lead: 'Разберите типичные статистические парадоксы, проанализируйте три аудиторных кейса и проверьте владение ключевыми терминами темы на русском и английском языках.',
+        workshopHeader: 'Практикум: 4 типичные ловушки при интерпретации данных',
+        miniCasesHeader: 'Три мини-кейса для обсуждения в аудитории',
+        glossaryHeader: 'Расширенный двуязычный глоссарий',
+        glCol1: 'Термин',
+        glCol2: 'Экономический смысл',
+        discHeader: '7 вопросов для дискуссии и самопроверки'
+    },
+    en: {
+        mainTitle: 'Income Distribution, Inequality, and Poverty',
+        mainSub: 'Microeconomics • Measuring Inequality & Poverty, Mobility, Political Philosophy & Antipoverty Policy',
+        tab1: 'Measuring Inequality & Poverty',
+        tab2: 'United States: Data & Measures',
+        tab3: 'Kazakhstan: Poverty & TSA',
+        tab4: 'Rest of the World & Comparison',
+        tab5: 'Philosophy & Antipoverty Policy',
+        tab6: 'Workshop, Cases & Glossary',
+
+        t1Eye: 'Positive Analysis & Measurement',
+        t1Title: 'How to Read Data on Inequality, Poverty, and Living Standards',
+        t1Lead: 'This topic connects positive analysis of the income distribution with the normative question of what government should do about inequality. The central trade-off is equity versus efficiency. It is crucial to separate the economic concept from the specific statistical measure.',
+        archTitle: 'Analytical Architecture of Income Distribution',
+        coreIdeaTitle: 'Core Idea',
+        coreIdeaText: 'Inequality describes the entire distribution of income. Poverty describes a household’s position relative to a chosen threshold. They are related but not identical.',
+        lorenzCtrlTitle: 'Lorenz Curve & Gini Coefficient Simulator',
+        lorenzCtrlDesc: 'Switch between country profiles or adjust income concentration to observe how the Lorenz curve bows below the 45° equality line and how the Gini coefficient responds.',
+        ineqSliderLabel: 'Income concentration level:',
+        lorenzPresetsTitle: 'Reference profiles for comparison:',
+        lpEqual: 'Complete Equality (Gini = 0.00)',
+        lpKz: 'Kazakhstan Profile (Gini ≈ 0.29)',
+        lpUsa: 'United States Profile (Gini ≈ 0.41)',
+        lpHigh: 'High Concentration (Gini ≈ 0.56)',
+        lorenzGeomTitle: 'Geometry of the Gini Coefficient',
+        lorenzGeomText: 'Area A lies between the 45° line of equality and the Lorenz curve; A + B is the total area under the 45° line. The farther the curve bows downward, the higher the inequality.',
+        kpiGini: 'Gini Coefficient',
+        kpiQ1: 'Bottom Quintile (20%)',
+        kpiQ5: 'Top Quintile (20%)',
+        kpiRatio: 'Q5 / Q1 Ratio',
+        lorenzChartTitle: 'Lorenz Curve (Cumulative Population vs. Cumulative Income)',
+        quintileChartTitle: 'Share of Aggregate Income by Quintile (%)',
+        measTableTitle: 'Comparison of Inequality Measures',
+        mCol1: 'Measure',
+        mCol2: 'What It Shows',
+        mCol3: 'Strength',
+        mCol4: 'Limitation',
+        povTypesTitle: 'Three Types of Poverty Lines',
+        hardMeasTitle: '4 Reasons Why Measuring Inequality and Poverty Is Difficult',
+        mobilityTitle: 'Economic Mobility & the Great Gatsby Curve',
+        mobilityText1: 'A static snapshot does not reveal movement across income groups over time or across generations (intergenerational mobility). Temporary poverty calls for insurance and income stabilization, whereas persistent poverty calls for human capital, health, quality education, childcare, and infrastructure.',
+        gatsbyTitle: 'The Great Gatsby Curve',
+        gatsbyText: 'Cross-country research frequently finds a negative correlation between current inequality and intergenerational mobility. It is a correlation rather than automatic proof of causation, yet it shifts the debate from equality of outcomes toward equality of opportunity.',
+        ladderTitle: 'Welfare Measurement Ladder',
+        ladderText: 'Pretax cash income → Post-tax & transfer resources → Actual consumption → Multidimensional deprivation.',
+
+        t2Eye: 'Empirical Focus: United States',
+        t2Title: 'United States: Official Poverty Measure vs. Supplemental Poverty Measure (SPM)',
+        t2Lead: 'Comparing the U.S. official poverty rate with the Supplemental Poverty Measure (SPM) illustrates a key methodological lesson: the choice of measure changes the quantitative story and policy conclusions.',
+        usKpi1: 'Official Poverty (2025)',
+        usKpi2: 'SPM Poverty (2025)',
+        usKpi3: 'Threshold (Family of 4, 2025)',
+        usKpi4: 'Median Household Income (2025)',
+        usChart1Title: 'U.S. Official Poverty Rate Trajectory (1959–2025, %)',
+        usChart2Title: 'Official Poverty vs. Supplemental Poverty Measure (2025)',
+        usTableTitle: 'Key U.S. Indicators: Historical Anchors & Latest Data (2025/2026)',
+        usCol1: 'Indicator',
+        usCol2: 'Baseline Anchor (2017)',
+        usCol3: 'Latest Value (2025)',
+        usCol4: 'Economic Interpretation',
+        offBoxT: 'Official Poverty Measure',
+        offBoxD: 'Uses pretax money income and excludes many noncash benefits (in-kind transfers) and refundable tax credits. The threshold is nominally indexed for inflation, so cross-decade comparisons require caution.',
+        spmBoxT: 'Supplemental Poverty Measure (SPM)',
+        spmBoxD: 'Includes taxes, tax credits, and noncash government programs while subtracting work and medical out-of-pocket expenses and adjusting for geographic housing costs. The SPM is not simply a "better percentage"—it answers a different analytical question.',
+
+        t3Eye: 'National Context: Republic of Kazakhstan',
+        t3Title: 'Kazakhstan: Poverty Trajectory, International Lines & Targeted Social Assistance (TSA)',
+        t3Lead: 'Analyzing Kazakhstan accurately requires separating three instruments: the national statistical poverty rate (5.0% in 2024), World Bank international PPP lines ($3.00 and $8.30 at 2021 PPP), and the administrative threshold for Targeted Social Assistance (TSA).',
+        kzKpi1: 'National Poverty (2024)',
+        kzKpi2: 'Gini (World Bank PIP, 2021)',
+        kzKpi3: 'Extreme Poverty ($3.00/day)',
+        kzKpi4: 'Vulnerability ($8.30/day UMIC)',
+        kzChart1Title: 'National Poverty Reduction in Kazakhstan (2006 vs 2024)',
+        kzChart2Title: 'Three Welfare Thresholds in Kazakhstan (%)',
+        tsaSimTitle: 'TSA Calculator (2025/2026 Rules)',
+        tsaSimDesc: 'Since January 1, 2025, the administrative TSA poverty threshold is set at 35% of median income with a floor of 70% of the regional subsistence minimum (SM). Simulate family eligibility and benefit amount.',
+        tsaPmLabel: 'Regional Subsistence Minimum (KZT/person):',
+        tsaIncLabel: 'Family Per-Capita Income:',
+        tsaSizeLabel: 'Family Size (members):',
+        tsaKidsLabel: 'Children Aged 1–6 Years:',
+        tsaKpiLine: 'Poverty Line (70% SM)',
+        tsaKpiGap: 'Per-Capita Shortfall',
+        tsaKpiBase: 'Base Family TSA',
+        tsaKpiStatus: 'Eligibility Status',
+        tsaBreakdownTitle: 'TSA Calculation Mechanism & Eligibility Rules',
+        kzConceptTableTitle: 'Distinguishing Concepts for Kazakhstan',
+        kzC1: 'Concept',
+        kzC2: 'Instrument in Kazakhstan',
+        kzC3: 'Analytical / Policy Purpose',
+
+        t4Eye: 'Global Picture 2026 & Cross-Country Framework',
+        t4Title: 'Rest of the World (World Bank 2026) & Comparative Framework: USA — Kazakhstan — World',
+        t4Lead: 'In 2025, the World Bank updated its international poverty lines at 2021 PPP: $3.00/day for extreme poverty, $4.20 for the lower-middle-income benchmark, and $8.30 for the upper-middle-income benchmark. In 2026, global extreme-poverty reduction has stalled.',
+        wKpi1: 'Below $3.00/day (Extreme)',
+        wKpi2: 'Below $4.20/day (LMIC)',
+        wKpi3: 'Below $8.30/day (UMIC)',
+        wKpi4: 'Price Conversion Base',
+        wChartTitle: 'Global Poverty Benchmarks, 2026 (World Bank, 2021 PPP)',
+        wReportTitle: 'Key Findings of the World Bank Report (2026)',
+        wFinding1T: '1. Stalled Progress',
+        wFinding1D: 'Extreme-poverty reduction ($3.00/day) has stalled. Roughly 811 million people live below $3.00/day, and under weak per-capita growth the count could be higher in 2030 than today.',
+        wFinding2T: '2. Geographic Concentration',
+        wFinding2D: 'Extreme poverty is increasingly concentrated in Sub-Saharan Africa and in fragile and conflict-affected situations.',
+        wFinding3T: '3. Policy Shift',
+        wFinding3D: 'Transfers are vital as a safety net, but durable poverty reduction requires productive jobs, productivity growth, human capital, and household resilience to shocks.',
+        compMatrixTitle: 'Comparative Framework: United States, Kazakhstan, and the World',
+        cmCol1: 'Dimension',
+        cmCol2: 'USA',
+        cmCol3: 'Kazakhstan',
+        cmCol4: 'World (World Bank)',
+        pppNoteTitle: 'Important Methodological Note on PPP Lines',
+        pppNoteText: 'International lines ($3.00 / $4.20 / $8.30 at 2021 PPP) are built for cross-country comparability. They do not replace national poverty lines or automatically determine benefit eligibility. Also distinguish survey observation year (e.g., 2021 for Kazakhstan PIP, 2024 for KZ national poverty, 2025 for U.S. data) from report publication year (2026).',
+
+        t5Eye: 'Normative Analysis & Social Policy Design',
+        t5Title: 'Political Philosophy of Redistribution & Antipoverty Policies',
+        t5Lead: 'Economics can evaluate the consequences of taxes and transfers, but choosing a social welfare function involves value judgments. Every antipoverty tool faces the challenge of marginal work incentives (effective marginal tax rates).',
+        philHeader: 'Three Philosophical Approaches to Justice and Redistribution',
+        phCol1: 'Approach',
+        phCol2: 'Core Idea',
+        phCol3: 'View on Redistribution',
+        phCol4: 'Main Risk',
+        nitSimTitle: 'Incentive Simulator: Negative Income Tax (NIT)',
+        nitSimDesc: 'Explore the trade-off between income guarantee generosity, benefit phase-out rate, and fiscal cost: Tax = t × Earnings − Guarantee.',
+        nitGuarLabel: 'Guaranteed Minimum (G):',
+        nitRateLabel: 'Marginal Phase-Out Rate (t):',
+        nitEarnLabel: 'Family Market Earnings (Y):',
+        nitKpi1: 'Break-Even Income (G/t)',
+        nitKpi2: 'Net Tax / Transfer',
+        nitKpi3: 'Disposable Income',
+        nitKpi4: 'Net Gain from +$1,000 Work',
+        nitChartTitle: 'Disposable Income vs. Market Earnings under a Negative Income Tax',
+        emtrTitle: 'High Effective Marginal Tax Rate Trap',
+        emtrText: 'When extra earnings simultaneously increase taxes and withdraw multiple means-tested benefits, the effective marginal tax rate can approach 100%. Well-designed social protection must balance adequacy with preserving gains from work.',
+        toolsHeader: 'Comparison of 5 Antipoverty Policy Instruments',
+
+        t6Eye: 'Applied Analysis, Cases & Terminology',
+        t6Title: 'Data Interpretation Workshop, Mini-Cases, Glossary & Discussion Questions',
+        t6Lead: 'Examine common statistical paradoxes, analyze three classroom mini-cases, and review bilingual terminology across the topic.',
+        workshopHeader: 'Workshop: 4 Common Pitfalls in Interpreting Distributional Data',
+        miniCasesHeader: 'Three Mini-Cases for Classroom Discussion',
+        glossaryHeader: 'Extended Bilingual Glossary',
+        glCol1: 'Term',
+        glCol2: 'Economic Meaning',
+        discHeader: '7 Discussion and Self-Check Questions'
+    }
+};
+
+const DATA = {
+    arch: {
+        ru: [
+            ['1. Измерение', 'Квинтили, кривая Лоренца, Джини'],
+            ['2. Пороги бедности', 'Абсолютная, относительная, ППС'],
+            ['3. Уровень жизни', 'Потребление, трансферты, налоги'],
+            ['4. Мобильность', 'Жизненный цикл и поколения'],
+            ['5. Политика', 'Справедливость vs. стимулы']
+        ],
+        en: [
+            ['1. Measurement', 'Quintiles, Lorenz curve, Gini'],
+            ['2. Poverty Lines', 'Absolute, relative, PPP'],
+            ['3. Living Standards', 'Consumption, transfers, taxes'],
+            ['4. Mobility', 'Life cycle & generations'],
+            ['5. Policy', 'Equity vs. work incentives']
+        ]
+    },
+    ineqMeasures: {
+        ru: [
+            ['Квинтили', 'Доли дохода по 20% населения', 'Интуитивность', 'Не показывает распределение внутри групп'],
+            ['Коэффициент Джини', 'Общую концентрацию (0–1)', 'Одно число для сравнения', 'Одинаковый Gini может скрывать разную форму кривой'],
+            ['Top 1% / Top 10%', 'Концентрацию наверху', 'Хорошо фиксирует сверхдоходы', 'Не описывает нижнюю часть распределения'],
+            ['Consumption inequality', 'Различия в потреблении', 'Ближе к реальному уровню жизни', 'Сложнее измерять в обследованиях']
+        ],
+        en: [
+            ['Quintiles', 'Income shares by population fifth', 'Intuitive', 'Hides within-group distribution'],
+            ['Gini Coefficient', 'Overall concentration (0–1)', 'Single comparable statistic', 'Same Gini can mask different curve shapes'],
+            ['Top 1% / Top 10%', 'Top-end concentration', 'Captures super-rich dynamics', 'Says little about the bottom tail'],
+            ['Consumption inequality', 'Differences in actual spending', 'Closer to living standards', 'Harder to measure in surveys']
+        ]
+    },
+    povTypes: {
+        ru: [
+            ['Абсолютная черта (Absolute)', 'Фиксирует минимальный реальный объём ресурсов (потребительскую корзину), необходимый для базового выживания, скорректированный на инфляцию.'],
+            ['Относительная черта (Relative)', 'Связывает бедность с типичным уровнем жизни в данном обществе (например, 50% или 60% от медианного дохода).'],
+            ['Административная черта (Administrative)', 'Устанавливается государством для определения права семьи на конкретную программу социальной поддержки (например, черта АСП).']
+        ],
+        en: [
+            ['Absolute Poverty Line', 'Fixes a minimum real standard of resources (basic consumption basket) adjusted over time for inflation.'],
+            ['Relative Poverty Line', 'Links poverty to typical living standards in a given society (e.g., 50% or 60% of median income).'],
+            ['Administrative Threshold', 'Set by law or regulation to determine household eligibility for a specific social assistance program (e.g., TSA threshold).']
+        ]
+    },
+    hardMeas: {
+        ru: [
+            ['1. Неденежные трансферты и налоговые кредиты', 'Учёт только денежного дохода до налогов игнорирует продовольственную, жилищную, медицинскую помощь и возвратные налоговые кредиты.'],
+            ['2. Жизненный цикл (Life Cycle)', 'Низкий годовой доход студента или пенсионера не означает хроническую бедность: доход предсказуемо меняется с возрастом.'],
+            ['3. Временный vs. постоянный доход', 'Временный провал дохода сглаживается сбережениями и кредитом; постоянный доход и потребление точнее отражают благосостояние.'],
+            ['4. Размер и состав домохозяйства', 'Одинаковый доход означает разный уровень жизни для одинокого человека и семьи из пяти человек; нужны шкалы эквивалентности.']
+        ],
+        en: [
+            ['1. In-Kind Transfers & Tax Credits', 'Measuring only pretax cash income misses food, housing, and medical aid as well as refundable tax credits.'],
+            ['2. The Economic Life Cycle', 'A low annual income for a student or retiree does not imply lifelong deprivation; income follows a predictable age profile.'],
+            ['3. Transitory vs. Permanent Income', 'Temporary shocks can be smoothed via saving and borrowing; permanent income and consumption better reflect living standards.'],
+            ['4. Household Size & Equivalence', 'The same household income yields different living standards for one person versus a family of five; equivalence scales are needed.']
+        ]
+    },
+    usTable: {
+        ru: [
+            ['Official poverty rate', '12.3% (2017)', '10.2% (2025)', '34.5 млн человек; официальный показатель денежного дохода до налогов'],
+            ['Supplemental Poverty Measure (SPM)', 'Обсуждается учёт трансфертов', '13.1% (2025)', 'Учитывает налоги, кредиты, часть трансфертов и обязательные расходы'],
+            ['Порог бедности (семья из 4 чел.)', '$24,858 (2017)', '$32,970 (2025)', 'Номинально индексируется; требует осторожности при сравнении во времени'],
+            ['Медианный доход домохозяйств', '—', '$87,460 (2025)', 'Исторический максимум серии с 1967 г.; реальный рост на 2.6% за год']
+        ],
+        en: [
+            ['Official poverty rate', '12.3% (2017)', '10.2% (2025)', '34.5 million people; official pretax cash-income measure'],
+            ['Supplemental Poverty Measure (SPM)', 'Omitted transfers discussed', '13.1% (2025)', 'Includes taxes, tax credits, noncash transfers, and necessary expenses'],
+            ['Poverty threshold (family of 4)', '$24,858 (2017)', '$32,970 (2025)', 'Nominally indexed; requires care in long-run comparisons'],
+            ['Median household income', '—', '$87,460 (2025)', 'Series high since 1967; real median income rose 2.6% year-over-year']
+        ]
+    },
+    kzConcept: {
+        ru: [
+            ['Национальная бедность (5.0%, 2024)', 'Статистическая оценка доли населения с доходами ниже величины прожиточного минимума', 'Мониторинг уровня жизни и динамики благосостояния внутри страны'],
+            ['Линии World Bank ($3.00 / $8.30 PPP)', 'Международно сопоставимые пороги в ценах 2021 ППС (0.04% и 15.2% в 2021 г.)', 'Межстрановое сравнение и оценка экономической уязвимости UMIC'],
+            ['Черта бедности для АСП', '35% медианного дохода, но не ниже 70% регионального прожиточного минимума', 'Определение права на адресную социальную помощь и расчёт выплаты']
+        ],
+        en: [
+            ['National Poverty (5.0%, 2024)', 'Statistical share of population with income below the subsistence minimum', 'Domestic monitoring of living standards and welfare trends'],
+            ['World Bank Lines ($3.00 / $8.30 PPP)', 'Internationally comparable 2021 PPP thresholds (0.04% and 15.2% in 2021)', 'Cross-country benchmarking and vulnerability assessment for an UMIC'],
+            ['TSA Poverty Threshold', '35% of median income, with a floor of 70% of regional subsistence minimum', 'Determining eligibility and calculating Targeted Social Assistance payouts']
+        ]
+    },
+    compFramework: {
+        ru: [
+            ['Основная мера', 'Official poverty + SPM', 'Национальная бедность + административная АСП', 'Международные линии по ППС (2021 PPP)'],
+            ['Ключевая цифра', '10.2% official; 13.1% SPM (2025)', '5.0% нацбедность (2024); 15.2% по $8.30 (2021)', '$3.00/день: ~10% мира (~811 млн чел., 2026)'],
+            ['Неравенство', 'Gini стабилен в 2024–25; post-tax Gini ниже', 'Gini 29.19 (World Bank PIP, 2021)', 'Сильно различается между странами и регионами'],
+            ['Главный урок', 'Выбор измерителя меняет картину политики', 'Не путать статистику бедности с правом на АСП', 'Крайняя бедность концентрируется в уязвимых регионах']
+        ],
+        en: [
+            ['Primary Measure', 'Official poverty + SPM', 'National poverty + administrative TSA threshold', 'International PPP lines (2021 PPP)'],
+            ['Latest Key Figure', '10.2% official; 13.1% SPM (2025)', '5.0% national (2024); 15.2% at $8.30/day (2021)', '$3.00/day: ~10% global (~811M people, 2026)'],
+            ['Inequality', 'Gini stable 2024–25; post-tax Gini lower', 'Gini 29.19 (World Bank PIP, 2021)', 'Varies widely across countries and regions'],
+            ['Core Lesson', 'Choice of measure changes the policy story', 'Do not confuse poverty statistics with benefit eligibility', 'Extreme poverty is increasingly geographically concentrated']
+        ]
+    },
+    philosophy: {
+        ru: [
+            ['Утилитаризм (Bentham, Mill)', 'Максимизировать сумму полезности всех членов общества', 'Убывающая предельная полезность дохода оправдывает перераспределение от богатых к бедным', '«Дырявое ведро» (leaky bucket): потери стимулов и эффективности при перераспределении'],
+            ['Либерализм (John Rawls)', '«Вуаль неведения» (veil of ignorance) и критерий максимина', 'Общество должно максимизировать благосостояние наименее обеспеченного человека (worst-off)', 'Чрезмерное выравнивание может подорвать стимулы к труду и инновациям'],
+            ['Либертарианство (Robert Nozick)', 'Справедливость процесса важнее равенства конечного результата', 'Перераспределение ограничено защитой прав собственности и исправлением несправедливости', 'Может допускать крайне высокое неравенство доходов при честных правилах обмена']
+        ],
+        en: [
+            ['Utilitarianism (Bentham, Mill)', 'Maximize total utility summed across all members of society', 'Diminishing marginal utility of income supports transferring from rich to poor', 'The "leaky bucket": incentive and efficiency losses during redistribution'],
+            ['Liberalism (John Rawls)', 'The "veil of ignorance" and the maximin criterion', 'Institutions should maximize the well-being of the worst-off person in society', 'Excessive equalization can weaken incentives to work and innovate'],
+            ['Libertarianism (Robert Nozick)', 'Justice of the process matters more than equality of outcomes', 'Redistribution is limited to enforcing property rights and rectifying past injustice', 'May tolerate very unequal outcomes as long as exchange rules are fair']
+        ]
+    },
+    policyTools: {
+        ru: [
+            ['1. Минимальная зарплата', 'Повышает доходы низкооплачиваемых работников, но влияние на занятость зависит от эластичности спроса на труд. Неточно таргетирована на бедные семьи (многие получатели — молодёжь из обеспеченных семей).'],
+            ['2. Денежные пособия (Cash Welfare)', 'Прямо увеличивают располагаемые ресурсы семьи, но правила проверки нуждаемости и сворачивания выплат влияют на стимулы к занятости и формализации доходов.'],
+            ['3. Отрицательный подоходный налог (NIT)', 'Гарантирует минимальный доход и плавно сокращает субсидию по мере роста заработка, сохраняя стимул работать (пример — EITC в США).'],
+            ['4. Натуральные трансферты (In-Kind)', 'Продуктовые талоны, жильё, медицинская страховка гарантируют потребление базовых благ, но ограничивают свободу выбора получателя и требуют администрирования.'],
+            ['5. Человеческий капитал и активация', 'Образование, childcare, здравоохранение, переобучение и содействие занятости устраняют причины хронической бедности, а не только текущий дефицит дохода.'],
+            ['6. Координация шкал (Policy Design)', 'Главная задача архитектора социальной защиты — избегать резких «обрывов» права на помощь (eligibility cliffs) и согласовывать phase-out графики разных программ.']
+        ],
+        en: [
+            ['1. Minimum Wage', 'Raises earnings for covered low-wage workers, but employment effects depend on labor-demand elasticity. Imperfectly targeted to poor households (many minimum-wage workers live in non-poor families).'],
+            ['2. Cash Welfare / Social Assistance', 'Directly increases disposable household resources, but means-testing and benefit withdrawal rules affect labor supply and formal employment incentives.'],
+            ['3. Negative Income Tax (NIT)', 'Guarantees a minimum income floor and phases out the subsidy gradually as earnings rise, preserving work incentives (e.g., EITC).'],
+            ['4. In-Kind Transfers', 'Food, housing, and medical benefits ensure specific consumption of necessities, though they restrict recipient choice and carry administrative costs.'],
+            ['5. Human Capital & Activation', 'Education, childcare, healthcare, job training, and placement services address root causes of persistent poverty rather than just current income shortfalls.'],
+            ['6. Coordinating Phase-Out Schedules', 'A central task of social protection design is avoiding sharp eligibility cliffs and coordinating benefit phase-outs across programs.']
+        ]
+    },
+    workshop: {
+        ru: [
+            ['Случай 1. Gini снизился, но бедность выросла', 'Экономический спад может сильнее сократить доходы верхних групп, сделав распределение более равным (ниже Gini), но одновременно опустить часть семей ниже абсолютной черты бедности. Джини не измеряет уровень жизни.'],
+            ['Случай 2. Средний доход растёт, бедность не меняется', 'Экономический рост может концентрироваться в верхней части распределения. При абсолютной черте важны доходы нижнего хвоста; при относительной черте рост медианы поднимает саму границу бедности.'],
+            ['Случай 3. Official poverty в США ниже, чем SPM', 'Это не противоречие: SPM добавляет налоговые кредиты и трансферты, но одновременно вычитает налоги, расходы на работу и медицину и учитывает высокую стоимость жилья в мегаполисах.'],
+            ['Случай 4. Крайняя бедность ~0%, но уязвимость высока', 'Пример Казахстана: по линии $3.00/день крайняя депривация составляет 0.04%, но по порогу $8.30/день (UMIC) 15.2% населения остаются уязвимыми к инфляции, болезням и потере дохода.']
+        ],
+        en: [
+            ['Case 1. Gini Falls While Poverty Rises', 'A recession can reduce upper incomes more sharply, compressing the distribution (lower Gini), while simultaneously pushing more households below an absolute poverty line. Gini is not a living-standard indicator.'],
+            ['Case 2. Mean Income Rises While Poverty Stalls', 'Growth may be concentrated at the top. Under an absolute line, what matters is the bottom tail; under a relative line, rising median income raises the poverty threshold itself.'],
+            ['Case 3. U.S. Official Poverty Is Below SPM', 'Not a paradox: SPM adds tax credits and noncash benefits, but also subtracts taxes, work expenses, and out-of-pocket medical costs while adjusting for geographic housing costs.'],
+            ['Case 4. Extreme Poverty Near Zero, Material Vulnerability', 'Kazakhstan example: at $3.00/day extreme poverty is 0.04%, yet at the $8.30/day UMIC benchmark 15.2% remain vulnerable to inflation, health shocks, or job loss.']
+        ]
+    },
+    miniCases: {
+        ru: [
+            ['Кейс A: Одна семья — три статуса', 'Семья имеет доход чуть выше национальной статистической черты, но ниже регионального административного порога АСП; одновременно она выше $3.00/день, но ниже $8.30/день. Вывод: статус «бедная/небедная» зависит от цели измерения.'],
+            ['Кейс B: Ловушка высоких предельных ставок', 'Семья получает три адресных пособия, каждое из которых уменьшается при росте зарплаты. Дополнительный заработок почти не увеличивает бюджет семьи. Решение: плавные шкалы phase-out и сохранение выигрыша от труда.'],
+            ['Кейс C: Что означает «справедливо»?','Утилитарист оценит сумму полезности с учётом потерь эффективности; ролзианец посмотрит на положение наименее обеспеченного; либертарианец проверит добровольность и защиту прав собственности. Один пакет реформ получает три разные оценки.']
+        ],
+        en: [
+            ['Case A: One Family — Three Statuses', 'A family’s income sits just above the national statistical line yet below the regional administrative TSA threshold; it is well above $3.00/day yet below $8.30/day. Lesson: "poor vs. non-poor" depends on measurement purpose.'],
+            ['Case B: High Effective Marginal Rate Trap', 'A family receives three means-tested benefits that all phase out as wages rise, leaving almost no net gain from extra work. Solution: coordinated gradual phase-out schedules that preserve work incentives.'],
+            ['Case C: What Does "Fair" Mean?', 'A utilitarian weighs total utility net of incentive losses; a Rawlsian checks the welfare of the worst-off; a libertarian examines procedural fairness and property rights. The same policy package receives three distinct verdicts.']
+        ]
+    },
+    glossary: {
+        ru: [
+            ['Income inequality', 'Неравномерность распределения дохода между людьми или домохозяйствами'],
+            ['Poverty rate', 'Доля населения, чей доход опускается ниже выбранной черты бедности'],
+            ['Poverty gap', 'Средняя глубина дефицита дохода относительно черты; отличает «едва ниже» от «далеко ниже»'],
+            ['Lorenz curve', 'График зависимости накопленной доли дохода от накопленной доли населения'],
+            ['Gini coefficient', 'Сводный индекс концентрации распределения от 0 (равенство) до 1'],
+            ['Permanent income', 'Нормальный долгосрочный доход, очищенный от временных шоков'],
+            ['Economic mobility', 'Перемещение людей между доходными группами во времени или между поколениями'],
+            ['In-kind transfer', 'Социальная помощь в виде товаров и услуг (питание, жильё, медицина), а не денег'],
+            ['Means testing', 'Проверка доходов и имущества семьи для определения права на социальную помощь'],
+            ['Effective marginal tax rate', 'Доля дополнительного заработка, теряемая из-за роста налогов и сокращения пособий']
+        ],
+        en: [
+            ['Income inequality', 'Uneven distribution of income across individuals or households'],
+            ['Poverty rate', 'Percentage of the population whose family income falls below a specified poverty line'],
+            ['Poverty gap', 'Average resource shortfall relative to the poverty line; distinguishes shallow from deep poverty'],
+            ['Lorenz curve', 'Plot of cumulative share of income against cumulative share of population'],
+            ['Gini coefficient', 'Summary measure of distributional concentration ranging from 0 (equality) to 1'],
+            ['Permanent income', 'Normal long-run income abstracted from temporary fluctuations'],
+            ['Economic mobility', 'Movement of individuals or families across income groups over time or generations'],
+            ['In-kind transfer', 'Social assistance delivered as goods or services (food, housing, healthcare) rather than cash'],
+            ['Means testing', 'Evaluating household income and assets to determine eligibility for government assistance'],
+            ['Effective marginal tax rate', 'Fraction of an extra unit of earnings lost through higher taxes and reduced benefits']
+        ]
+    },
+    discussion: {
+        ru: [
+            ['1. Почему official poverty и SPM в США могут двигаться в разные стороны?', 'Official poverty учитывает только денежный доход до налогов. Если государство расширяет налоговые кредиты (например, EITC или Child Tax Credit) или жилищную помощь, SPM снижается, даже если денежный доход до налогов не вырос. И наоборот: рост расходов на жильё или медицину может повысить SPM при стабильном official rate.'],
+            ['2. Должна ли черта бедности быть абсолютной или относительной?', 'Абсолютная черта позволяет отслеживать прогресс в удовлетворении базовых физиологических потребностей во времени. Относительная черта отражает социальную исключённость и способность участвовать в жизни общества по мере роста общего благосостояния. На практике страны комбинируют оба подхода.'],
+            ['3. Что лучше измеряет благосостояние: income, consumption или multidimensional deprivation?', 'Потребление (consumption) лучше отражает permanent income, так как домохозяйства сглаживают временные колебания дохода. Многомерная депривация дополнительно фиксирует доступ к образованию, здравоохранению и базовой инфраструктуре, который нельзя купить напрямую при отсутствии общественных благ.'],
+            ['4. Почему низкий коэффициент Джини не гарантирует отсутствия бедности?', 'Джини измеряет относительный разброс доходов, а не их абсолютный уровень. Если вся экономика бедна, доходы могут быть распределены очень ровно (низкий Gini), но большинство населения всё равно окажется ниже абсолютной черты бедности.'],
+            ['5. Как АСП Казахстана сочетает таргетирование и стимулы к росту дохода?', 'АСП адресно направляет средства семьям ниже 70% регионального ПМ (или 35% медианы) и включает комплексную оценку благосостояния. При этом содействие занятости трудоспособных членов семьи призвано предотвращать иждивенчество и снижать эффект высоких предельных ставок при выходе на работу.'],
+            ['6. Что важнее для справедливости: equality of outcomes или equality of opportunity?', 'Экономическая теория и дискуссия вокруг Great Gatsby Curve показывают, что равные стартовые возможности (доступ к образованию, здоровью, социальным лифтам) повышают одновременно и справедливость, и долгосрочную эффективность экономики, тогда как жёсткое выравнивание результатов создаёт сильные искажения стимулов.'],
+            ['7. Какой из философских подходов ближе к современной социальной политике Казахстана?', 'Современная модель сочетает элементы утилитаризма и ролзианства: адресная поддержка наиболее уязвимых групп (порог АСП, доплаты детям 1–6 лет) сочетается с инвестициями в человеческий капитал и сохранением рыночных стимулов к труду и предпринимательству.']
+        ],
+        en: [
+            ['1. Why can the U.S. official poverty rate and SPM move in opposite directions?', 'Official poverty counts only pretax cash income. Expanding refundable tax credits (such as EITC or Child Tax Credit) or housing aid lowers SPM without changing pretax cash income. Conversely, surging housing or medical costs can raise SPM while official poverty stays flat.'],
+            ['2. Should a poverty line be absolute or relative?', 'An absolute line tracks progress in meeting basic material needs over time. A relative line captures social inclusion and participation relative to evolving societal standards. In practice, policymakers use both benchmarks for different analytical purposes.'],
+            ['3. Which better measures welfare: income, consumption, or multidimensional deprivation?', 'Consumption better reflects permanent income because households smooth temporary income shocks. Multidimensional deprivation additionally captures non-market access to healthcare, education, and infrastructure.'],
+            ['4. Why does a low Gini coefficient not guarantee the absence of poverty?', 'Gini measures relative dispersion rather than absolute living standards. In a low-income economy, incomes can be distributed very evenly (low Gini) while a large share of the population remains below an absolute subsistence threshold.'],
+            ['5. How does Kazakhstan’s TSA balance targeting with work incentives?', 'TSA targets families below 70% of the regional subsistence minimum (or 35% of median income) using a comprehensive welfare check, while pairing cash support with active labor-market measures for able-bodied adults to mitigate high marginal withdrawal effects.'],
+            ['6. Which matters more for fairness: equality of outcomes or equality of opportunity?', 'Evidence around the Great Gatsby Curve suggests that equality of opportunity (access to education, health, and mobility) advances both fairness and long-run economic efficiency, whereas rigid equalization of outcomes imposes substantial incentive costs.'],
+            ['7. Which philosophical approach best describes modern social policy in Kazakhstan?', 'Kazakhstan’s framework blends utilitarian and Rawlsian elements: targeted safety nets protect the worst-off (via the TSA floor and child supplements) while maintaining market work incentives and investing in human capital.']
+        ]
+    }
+};
+
+const $ = id => document.getElementById(id);
+
+function switchTab(tabId) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.tab === tabId));
+    document.querySelectorAll('.view-section').forEach(s => s.classList.toggle('active', s.id === `tab-${tabId}`));
+}
+
+function setLang(lang) {
+    currentLang = lang;
+    $('btnRu').classList.toggle('active', lang === 'ru');
+    $('btnEn').classList.toggle('active', lang === 'en');
+
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        if (I18N[lang][key]) el.textContent = I18N[lang][key];
+    });
+
+    renderStaticBlocks();
+    updateLorenzSim();
+    drawUsCharts();
+    drawKzCharts();
+    updateTsaSim();
+    drawWorldChart();
+    updateNitSim();
+}
+
+function renderStaticBlocks() {
+    const L = currentLang;
+    $('archFlow').innerHTML = DATA.arch[L].map(x => `<div class="chain-node"><strong>${x[0]}</strong><span>${x[1]}</span></div>`).join('');
+    $('ineqMeasuresBody').innerHTML = DATA.ineqMeasures[L].map(r => `<tr><td><strong style="color:var(--neon-blue);">${r[0]}</strong></td><td>${r[1]}</td><td style="color:var(--neon-emerald);">${r[2]}</td><td>${r[3]}</td></tr>`).join('');
+    $('povTypesList').innerHTML = DATA.povTypes[L].map((p, idx) => `<div class="callout ${idx===0?'':idx===1?'amber':'emerald'}" style="margin-top:0;"><strong>${p[0]}</strong><span>${p[1]}</span></div>`).join('');
+    $('hardMeasList').innerHTML = DATA.hardMeas[L].map(h => `<div class="callout" style="margin-top:0;"><strong>${h[0]}</strong><span>${h[1]}</span></div>`).join('');
+    $('usTableBody').innerHTML = DATA.usTable[L].map(r => `<tr><td><strong>${r[0]}</strong></td><td class="mono">${r[1]}</td><td class="mono" style="color:var(--neon-emerald);font-weight:700;">${r[2]}</td><td>${r[3]}</td></tr>`).join('');
+    $('kzConceptBody').innerHTML = DATA.kzConcept[L].map(r => `<tr><td><strong style="color:var(--neon-emerald);">${r[0]}</strong></td><td>${r[1]}</td><td>${r[2]}</td></tr>`).join('');
+    $('compFrameworkBody').innerHTML = DATA.compFramework[L].map(r => `<tr><td><strong>${r[0]}</strong></td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join('');
+    $('philosophyBody').innerHTML = DATA.philosophy[L].map(r => `<tr><td><strong style="color:var(--neon-violet);">${r[0]}</strong></td><td>${r[1]}</td><td>${r[2]}</td><td style="color:var(--neon-amber);">${r[3]}</td></tr>`).join('');
+    $('policyToolsGrid').innerHTML = DATA.policyTools[L].map(t => `<div class="callout" style="margin-top:0;"><strong>${t[0]}</strong><span>${t[1]}</span></div>`).join('');
+    $('workshopGrid').innerHTML = DATA.workshop[L].map((w, i) => `<div class="callout ${i%2===0?'amber':'red'}" style="margin-top:0;"><strong>${w[0]}</strong><span>${w[1]}</span></div>`).join('');
+    $('miniCasesGrid').innerHTML = DATA.miniCases[L].map((c, i) => `<div class="callout ${i===0?'':i===1?'red':'violet'}" style="margin-top:0;"><strong>${c[0]}</strong><span>${c[1]}</span></div>`).join('');
+    $('glossaryBody').innerHTML = DATA.glossary[L].map(g => `<tr><td class="mono" style="color:var(--neon-blue);font-weight:700;">${g[0]}</td><td>${g[1]}</td></tr>`).join('');
+    $('discussionAccordion').innerHTML = DATA.discussion[L].map(d => `<details class="quiz-item"><summary>${d[0]}</summary><div class="quiz-answer">${d[1]}</div></details>`).join('');
+}
+
+// =========================================================================
+// TAB 1: LORENZ CURVE & GINI SIMULATOR
+// =========================================================================
+function setLorenzPreset(val, btn) {
+    $('ineqSlider').value = val;
+    document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    updateLorenzSim();
+}
+
+function updateLorenzSim() {
+    const k = Number($('ineqSlider').value); // 0 to 60
+    const alpha = 1 + (k / 20); // 1.0 to 4.0 -> Gini = (alpha - 1)/(alpha + 1)
+    const cumPop = [0, 0.2, 0.4, 0.6, 0.8, 1.0];
+    const cumInc = cumPop.map(p => Math.pow(p, alpha));
+
+    const qShares = [];
+    for (let i = 1; i <= 5; i++) {
+        qShares.push((cumInc[i] - cumInc[i - 1]) * 100);
+    }
+
+    // Trapezoidal Gini from 5 quintiles
+    let areaB = 0;
+    for (let i = 1; i <= 5; i++) {
+        areaB += 0.2 * (cumInc[i - 1] + cumInc[i]) / 2;
+    }
+    const gini = Math.max(0, 1 - 2 * areaB);
+    const L = currentLang === 'ru';
+
+    $('giniReadout').textContent = `Gini = ${gini.toFixed(3)}`;
+    $('kpiGiniVal').textContent = gini.toFixed(3);
+    $('kpiQ1Val').textContent = `${qShares[0].toFixed(1)}%`;
+    $('kpiQ5Val').textContent = `${qShares[4].toFixed(1)}%`;
+    $('kpiRatioVal').textContent = qShares[0] > 0.1 ? `${(qShares[4] / qShares[0]).toFixed(1)}x` : '∞';
+
+    // Draw Lorenz SVG
+    const svgL = $('svgLorenz');
+    const gx = p => 60 + p * 350;
+    const gy = y => 240 - y * 200;
+
+    let htmlL = `
+        <line x1="60" y1="240" x2="415" y2="240" stroke="#64748b" stroke-width="1.5"/>
+        <line x1="60" y1="35" x2="60" y2="240" stroke="#64748b" stroke-width="1.5"/>
+        <text x="235" y="275" fill="#94a3b8" font-size="11" text-anchor="middle">${L ? 'Накопленная доля населения (%)' : 'Cumulative Population Share (%)'}</text>
+        <text x="16" y="140" fill="#94a3b8" font-size="11" transform="rotate(-90 16 140)" text-anchor="middle">${L ? 'Накопленная доля дохода (%)' : 'Cumulative Income Share (%)'}</text>
+    `;
+
+    [0.2, 0.4, 0.6, 0.8, 1.0].forEach(v => {
+        htmlL += `
+            <line x1="60" y1="${gy(v)}" x2="410" y2="${gy(v)}" stroke="#222730" stroke-width="1"/>
+            <line x1="${gx(v)}" y1="40" x2="${gx(v)}" y2="240" stroke="#222730" stroke-width="1"/>
+            <text x="${gx(v)}" y="256" fill="#94a3b8" font-size="10" text-anchor="middle">${Math.round(v*100)}%</text>
+            <text x="53" y="${gy(v)+4}" fill="#94a3b8" font-size="10" text-anchor="end">${Math.round(v*100)}%</text>
+        `;
+    });
+
+    // Shaded area A between equality line and Lorenz curve
+    const polyPts = [
+        `${gx(0)},${gy(0)}`,
+        ...cumPop.slice(1).map((p, i) => `${gx(p)},${gy(cumInc[i+1])}`),
+        `${gx(0)},${gy(0)}`
+    ].join(' ');
+    htmlL += `<polygon points="${polyPts}" fill="rgba(56, 189, 248, 0.18)"/>`;
+
+    // 45-degree line
+    htmlL += `
+        <line x1="${gx(0)}" y1="${gy(0)}" x2="${gx(1)}" y2="${gy(1)}" stroke="#34d399" stroke-width="2.5" stroke-dasharray="5,4"/>
+        <text x="${gx(0.55)}" y="${gy(0.62)}" fill="#34d399" font-size="10.5" font-weight="bold" transform="rotate(-30 ${gx(0.55)} ${gy(0.62)})">${L ? 'Линия равенства (45°)' : 'Line of Equality (45°)'}</text>
+    `;
+
+    // Lorenz curve
+    const curvePts = cumPop.map((p, i) => `${gx(p)},${gy(cumInc[i])}`).join(' ');
+    htmlL += `<polyline points="${curvePts}" fill="none" stroke="#38bdf8" stroke-width="3.5"/>`;
+
+    cumPop.forEach((p, i) => {
+        htmlL += `<circle cx="${gx(p)}" cy="${gy(cumInc[i])}" r="4.5" fill="#38bdf8" stroke="#121417" stroke-width="1.5"/>`;
+    });
+
+    if (gini > 0.05) {
+        htmlL += `<text x="${gx(0.62)}" y="${gy(0.45)}" fill="#f1f5f9" font-size="12" font-weight="bold">A</text>`;
+    }
+    htmlL += `<text x="${gx(0.84)}" y="${gy(0.14)}" fill="#94a3b8" font-size="12" font-weight="bold">B</text>`;
+    svgL.innerHTML = htmlL;
+
+    // Draw Quintile Bars SVG
+    const svgQ = $('svgQuintiles');
+    const labels = L ? ['Q1 (бедн.)', 'Q2', 'Q3', 'Q4', 'Q5 (богат.)'] : ['Q1 (bottom)', 'Q2', 'Q3', 'Q4', 'Q5 (top)'];
+    const colors = ['#fb7185', '#f472b6', '#38bdf8', '#34d399', '#fbbf24'];
+
+    let htmlQ = `
+        <line x1="50" y1="240" x2="430" y2="240" stroke="#64748b" stroke-width="1.5"/>
+        <line x1="50" y1="35" x2="50" y2="240" stroke="#64748b" stroke-width="1.5"/>
+        <line x1="50" y1="${240 - (20/70)*195}" x2="425" y2="${240 - (20/70)*195}" stroke="#34d399" stroke-dasharray="4,4" stroke-width="1.2"/>
+        <text x="422" y="${240 - (20/70)*195 - 5}" fill="#34d399" font-size="9.5" text-anchor="end">${L ? 'Равенство = 20%' : 'Equal = 20%'}</text>
+    `;
+
+    qShares.forEach((val, idx) => {
+        const bw = 50;
+        const bx = 72 + idx * 72;
+        const bh = Math.min(195, (val / 70) * 195);
+        const by = 240 - bh;
+        htmlQ += `
+            <rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="6" fill="${colors[idx]}" fill-opacity="0.85"/>
+            <text x="${bx + bw/2}" y="${by - 6}" fill="#f1f5f9" font-size="11" font-weight="bold" text-anchor="middle">${val.toFixed(1)}%</text>
+            <text x="${bx + bw/2}" y="258" fill="#94a3b8" font-size="10" text-anchor="middle">${labels[idx]}</text>
+        `;
+    });
+    svgQ.innerHTML = htmlQ;
+}
+
+// =========================================================================
+// TAB 2: USA CHARTS
+// =========================================================================
+function drawUsCharts() {
+    const L = currentLang === 'ru';
+    const svg1 = $('svgUsTrend');
+    const pts = [
+        { yr: 1959, v: 22.4 },
+        { yr: 1973, v: 11.1 },
+        { yr: 2017, v: 12.3 },
+        { yr: 2025, v: 10.2 }
+    ];
+    const gx = yr => 65 + ((yr - 1955) / 75) * 440;
+    const gy = v => 225 - ((v - 5) / 20) * 185;
+
+    let h1 = `
+        <line x1="65" y1="225" x2="515" y2="225" stroke="#64748b" stroke-width="1.5"/>
+        <line x1="65" y1="25" x2="65" y2="225" stroke="#64748b" stroke-width="1.5"/>
+    `;
+    [10, 15, 20].forEach(v => {
+        h1 += `
+            <line x1="65" y1="${gy(v)}" x2="510" y2="${gy(v)}" stroke="#222730" stroke-width="1"/>
+            <text x="58" y="${gy(v)+4}" fill="#64748b" font-size="10" text-anchor="end">${v}%</text>
+        `;
+    });
+
+    const linePts = pts.map(p => `${gx(p.yr)},${gy(p.v)}`).join(' ');
+    h1 += `<polyline points="${linePts}" fill="none" stroke="#38bdf8" stroke-width="3.5"/>`;
+    pts.forEach(p => {
+        h1 += `
+            <circle cx="${gx(p.yr)}" cy="${gy(p.v)}" r="5.5" fill="#38bdf8" stroke="#121417" stroke-width="1.5"/>
+            <text x="${gx(p.yr)}" y="${gy(p.v) - 10}" fill="#f1f5f9" font-size="11" font-weight="bold" text-anchor="middle">${p.v}%</text>
+            <text x="${gx(p.yr)}" y="243" fill="#94a3b8" font-size="10.5" text-anchor="middle">${p.yr}</text>
+        `;
+    });
+    svg1.innerHTML = h1;
+
+    const svg2 = $('svgUsCompare');
+    const bars = [
+        { label: L ? 'Official Poverty (2017)' : 'Official Poverty (2017)', v: 12.3, col: '#64748b' },
+        { label: L ? 'Official Poverty (2025)' : 'Official Poverty (2025)', v: 10.2, col: '#38bdf8' },
+        { label: L ? 'SPM Poverty (2025)' : 'SPM Poverty (2025)', v: 13.1, col: '#fb7185' }
+    ];
+    let h2 = `
+        <line x1="65" y1="225" x2="510" y2="225" stroke="#64748b" stroke-width="1.5"/>
+        <line x1="65" y1="25" x2="65" y2="225" stroke="#64748b" stroke-width="1.5"/>
+    `;
+    bars.forEach((b, i) => {
+        const bw = 95;
+        const bx = 105 + i * 135;
+        const bh = (b.v / 16) * 180;
+        const by = 225 - bh;
+        h2 += `
+            <rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="8" fill="${b.col}" fill-opacity="0.88"/>
+            <text x="${bx + bw/2}" y="${by - 8}" fill="#f1f5f9" font-size="13" font-weight="bold" text-anchor="middle">${b.v}%</text>
+            <text x="${bx + bw/2}" y="245" fill="#94a3b8" font-size="10" text-anchor="middle">${b.label}</text>
+        `;
+    });
+    svg2.innerHTML = h2;
+}
+
+// =========================================================================
+// TAB 3: KAZAKHSTAN CHARTS & TSA CALCULATOR
+// =========================================================================
+function drawKzCharts() {
+    const L = currentLang === 'ru';
+    const svg1 = $('svgKzTrend');
+    const bars1 = [
+        { label: '2006', v: 18.2, col: '#fb7185' },
+        { label: '2024', v: 5.0, col: '#34d399' }
+    ];
+    let h1 = `
+        <line x1="70" y1="215" x2="490" y2="215" stroke="#64748b" stroke-width="1.5"/>
+        <line x1="70" y1="25" x2="70" y2="215" stroke="#64748b" stroke-width="1.5"/>
+    `;
+    bars1.forEach((b, i) => {
+        const bw = 120;
+        const bx = 135 + i * 190;
+        const bh = (b.v / 21) * 175;
+        const by = 215 - bh;
+        h1 += `
+            <rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="8" fill="${b.col}" fill-opacity="0.88"/>
+            <text x="${bx + bw/2}" y="${by - 8}" fill="#f1f5f9" font-size="14" font-weight="bold" text-anchor="middle">${b.v.toFixed(1)}%</text>
+            <text x="${bx + bw/2}" y="236" fill="#94a3b8" font-size="12" font-weight="bold" text-anchor="middle">${b.label}</text>
+        `;
+    });
+    svg1.innerHTML = h1;
+
+    const svg2 = $('svgKzLines');
+    const bars2 = [
+        { label: '$3.00/day (PIP)', v: 0.04, col: '#38bdf8' },
+        { label: L ? 'Нацбедность (2024)' : 'National (2024)', v: 5.0, col: '#34d399' },
+        { label: '$8.30/day (UMIC)', v: 15.2, col: '#fbbf24' }
+    ];
+    let h2 = `
+        <line x1="65" y1="215" x2="505" y2="215" stroke="#64748b" stroke-width="1.5"/>
+        <line x1="65" y1="25" x2="65" y2="215" stroke="#64748b" stroke-width="1.5"/>
+    `;
+    bars2.forEach((b, i) => {
+        const bw = 95;
+        const bx = 100 + i * 135;
+        const bh = Math.max(4, (b.v / 18) * 175);
+        const by = 215 - bh;
+        h2 += `
+            <rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="8" fill="${b.col}" fill-opacity="0.88"/>
+            <text x="${bx + bw/2}" y="${by - 8}" fill="#f1f5f9" font-size="12.5" font-weight="bold" text-anchor="middle">${b.v}%</text>
+            <text x="${bx + bw/2}" y="236" fill="#94a3b8" font-size="10.5" text-anchor="middle">${b.label}</text>
+        `;
+    });
+    svg2.innerHTML = h2;
+}
+
+function updateTsaSim() {
+    const pm = Number($('tsaPmSlider').value);
+    const inc = Number($('tsaIncSlider').value);
+    const size = Number($('tsaSizeSlider').value);
+    let kids = Number($('tsaKidsSlider').value);
+    if (kids > size - 1) {
+        kids = Math.max(0, size - 1);
+        $('tsaKidsSlider').value = kids;
+    }
+
+    const L = currentLang === 'ru';
+    const povLine = Math.round(pm * 0.70);
+    const eligible = inc < povLine;
+    const gap = eligible ? (povLine - inc) : 0;
+    const baseTsa = gap * size;
+
+    $('tsaPmVal').textContent = `${pm.toLocaleString('ru-RU')} ₸`;
+    $('tsaIncVal').textContent = `${inc.toLocaleString('ru-RU')} ₸`;
+    $('tsaSizeVal').textContent = L ? `${size} чел.` : `${size} members`;
+    $('tsaKidsVal').textContent = L ? `${kids} реб.` : `${kids} child(ren)`;
+
+    $('tsaLineOut').textContent = `${povLine.toLocaleString('ru-RU')} ₸`;
+    $('tsaGapOut').textContent = `${gap.toLocaleString('ru-RU')} ₸`;
+    $('tsaBaseOut').textContent = `${baseTsa.toLocaleString('ru-RU')} ₸`;
+
+    $('tsaStatusOut').textContent = eligible ? (L ? 'Назначается' : 'Eligible') : (L ? 'Не назначается' : 'Not Eligible');
+    $('tsaStatusOut').style.color = eligible ? 'var(--neon-emerald)' : 'var(--neon-red)';
+
+    if (eligible) {
+        $('tsaExplanationBox').innerHTML = L
+            ? `Среднедушевой доход семьи (<strong>${inc.toLocaleString('ru-RU')} ₸</strong>) ниже установленной черты бедности (<strong>${povLine.toLocaleString('ru-RU')} ₸</strong> = 70% от регионального ПМ). Дефицит на каждого члена семьи составляет <strong>${gap.toLocaleString('ru-RU')} ₸</strong>. Базовый размер АСП на семью из ${size} человек равен <strong>${baseTsa.toLocaleString('ru-RU')} ₸/мес</strong>, плюс назначается дополнительная ежемесячная выплата на <strong>${kids}</strong> ребёнка (детей) в возрасте 1–6 лет (при прохождении комплексной оценки благосостояния).`
+            : `Family per-capita income (<strong>${inc.toLocaleString('ru-RU')} KZT</strong>) is below the administrative poverty threshold (<strong>${povLine.toLocaleString('ru-RU')} KZT</strong> = 70% of regional SM). The per-capita shortfall is <strong>${gap.toLocaleString('ru-RU')} KZT</strong>. Base monthly TSA for ${size} members equals <strong>${baseTsa.toLocaleString('ru-RU')} KZT</strong>, plus an additional monthly supplement for <strong>${kids}</strong> child(ren) aged 1–6 (subject to comprehensive welfare assessment).`;
+    } else {
+        $('tsaExplanationBox').innerHTML = L
+            ? `Среднедушевой доход семьи (<strong>${inc.toLocaleString('ru-RU')} ₸</strong>) достигает или превышает черту бедности для АСП (<strong>${povLine.toLocaleString('ru-RU')} ₸</strong>). Право на получение АСП отсутствует (базовая выплата = 0 ₸), даже если доход семьи остаётся ниже полного регионального прожиточного минимума (${pm.toLocaleString('ru-RU')} ₸).`
+            : `Family per-capita income (<strong>${inc.toLocaleString('ru-RU')} KZT</strong>) meets or exceeds the TSA poverty line (<strong>${povLine.toLocaleString('ru-RU')} KZT</strong>). The family is ineligible for TSA (base payout = 0 KZT), even if its income remains below the full regional subsistence minimum (${pm.toLocaleString('ru-RU')} KZT).`;
+    }
+}
+
+// =========================================================================
+// TAB 4: WORLD BANK BENCHMARKS
+// =========================================================================
+function drawWorldChart() {
+    const L = currentLang === 'ru';
+    const svg = $('svgWorldBenchmarks');
+    const bars = [
+        { label: L ? '$3.00/день (Extreme)' : '$3.00/day (Extreme)', v: 10, col: '#fb7185' },
+        { label: L ? '$4.20/день (LMIC)' : '$4.20/day (LMIC)', v: 19, col: '#fbbf24' },
+        { label: L ? '$8.30/день (UMIC)' : '$8.30/day (UMIC)', v: 46, col: '#38bdf8' }
+    ];
+    let html = `
+        <line x1="65" y1="225" x2="510" y2="225" stroke="#64748b" stroke-width="1.5"/>
+        <line x1="65" y1="25" x2="65" y2="225" stroke="#64748b" stroke-width="1.5"/>
+    `;
+    [10, 20, 30, 40, 50].forEach(v => {
+        const y = 225 - (v / 52) * 185;
+        html += `
+            <line x1="65" y1="${y}" x2="505" y2="${y}" stroke="#222730" stroke-width="1"/>
+            <text x="58" y="${y+4}" fill="#64748b" font-size="10" text-anchor="end">${v}%</text>
+        `;
+    });
+    bars.forEach((b, i) => {
+        const bw = 95;
+        const bx = 105 + i * 135;
+        const bh = (b.v / 52) * 185;
+        const by = 225 - bh;
+        html += `
+            <rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="8" fill="${b.col}" fill-opacity="0.88"/>
+            <text x="${bx + bw/2}" y="${by - 8}" fill="#f1f5f9" font-size="13" font-weight="bold" text-anchor="middle">${b.v}%</text>
+            <text x="${bx + bw/2}" y="245" fill="#94a3b8" font-size="10.5" text-anchor="middle">${b.label}</text>
+        `;
+    });
+    svg.innerHTML = html;
+}
+
+// =========================================================================
+// TAB 5: NEGATIVE INCOME TAX (NIT) SIMULATOR
+// =========================================================================
+function updateNitSim() {
+    const G = Number($('nitGuarSlider').value);
+    const tPct = Number($('nitRateSlider').value);
+    const t = tPct / 100;
+    const Y = Number($('nitEarnSlider').value);
+    const L = currentLang === 'ru';
+
+    const breakEven = Math.round(G / t);
+    const netTax = Math.round(t * Y - G);
+    const disp = Y - netTax;
+    const netGain1000 = Math.round(1000 * (1 - t));
+
+    $('nitGuarVal').textContent = `$${G.toLocaleString('en-US')}`;
+    $('nitRateVal').textContent = `${tPct}%`;
+    $('nitEarnVal').textContent = `$${Y.toLocaleString('en-US')}`;
+
+    $('nitBreakOut').textContent = `$${breakEven.toLocaleString('en-US')}`;
+    if (netTax < 0) {
+        $('nitTaxOut').textContent = L ? `−$${Math.abs(netTax).toLocaleString('en-US')} (пособие)` : `−$${Math.abs(netTax).toLocaleString('en-US')} (subsidy)`;
+        $('nitTaxOut').style.color = 'var(--neon-emerald)';
+    } else if (netTax > 0) {
+        $('nitTaxOut').textContent = L ? `+$${netTax.toLocaleString('en-US')} (налог)` : `+$${netTax.toLocaleString('en-US')} (tax)`;
+        $('nitTaxOut').style.color = 'var(--neon-red)';
+    } else {
+        $('nitTaxOut').textContent = '$0';
+        $('nitTaxOut').style.color = 'var(--neon-amber)';
+    }
+    $('nitDispOut').textContent = `$${disp.toLocaleString('en-US')}`;
+    $('nitGainOut').textContent = `+$${netGain1000}`;
+
+    const svg = $('svgNitChart');
+    const maxVal = 85000;
+    const gx = x => 65 + (x / maxVal) * 535;
+    const gy = y => 225 - (y / maxVal) * 190;
+
+    let html = `
+        <line x1="65" y1="225" x2="610" y2="225" stroke="#64748b" stroke-width="1.5"/>
+        <line x1="65" y1="25" x2="65" y2="225" stroke="#64748b" stroke-width="1.5"/>
+        <text x="335" y="258" fill="#94a3b8" font-size="11" text-anchor="middle">${L ? 'Рыночный заработок семьи, Y ($)' : 'Market Earnings, Y ($)'}</text>
+        <text x="16" y="125" fill="#94a3b8" font-size="11" transform="rotate(-90 16 125)" text-anchor="middle">${L ? 'Располагаемый доход ($)' : 'Disposable Income ($)'}</text>
+    `;
+
+    [20000, 40000, 60000, 80000].forEach(v => {
+        html += `
+            <line x1="65" y1="${gy(v)}" x2="600" y2="${gy(v)}" stroke="#222730" stroke-width="1"/>
+            <text x="58" y="${gy(v)+4}" fill="#64748b" font-size="9.5" text-anchor="end">${v/1000}k</text>
+            <text x="${gx(v)}" y="241" fill="#64748b" font-size="9.5" text-anchor="middle">${v/1000}k</text>
+        `;
+    });
+
+    // 45-degree no-tax line
+    html += `
+        <line x1="${gx(0)}" y1="${gy(0)}" x2="${gx(80000)}" y2="${gy(80000)}" stroke="#64748b" stroke-dasharray="4,4" stroke-width="1.5"/>
+        <text x="${gx(74000)}" y="${gy(76000)}" fill="#64748b" font-size="9.5">${L ? 'Без налогов (45°)' : 'No Tax (45°)'}</text>
+    `;
+
+    // NIT disposable income line: Disp = G + (1 - t)*Y
+    const d0 = G;
+    const d80 = G + (1 - t) * 80000;
+    html += `<line x1="${gx(0)}" y1="${gy(d0)}" x2="${gx(80000)}" y2="${gy(d80)}" stroke="#a78bfa" stroke-width="3.5"/>`;
+
+    // Break-even marker if within 80k
+    if (breakEven <= 80000) {
+        html += `
+            <circle cx="${gx(breakEven)}" cy="${gy(breakEven)}" r="5" fill="#fbbf24"/>
+            <text x="${gx(breakEven)}" y="${gy(breakEven) - 10}" fill="#fbbf24" font-size="10" font-weight="bold" text-anchor="middle">G/t = $${(breakEven/1000).toFixed(1)}k</text>
+        `;
+    }
+
+    // Current household point
+    html += `
+        <line x1="${gx(Y)}" y1="${gy(disp)}" x2="${gx(Y)}" y2="225" stroke="#38bdf8" stroke-dasharray="3,3"/>
+        <circle cx="${gx(Y)}" cy="${gy(disp)}" r="6" fill="#38bdf8" stroke="#121417" stroke-width="1.5"/>
+    `;
+
+    svg.innerHTML = html;
+}
+
+$('ineqSlider').addEventListener('input', () => {
+    document.querySelectorAll('.btn-preset').forEach(b => b.classList.remove('active'));
+    updateLorenzSim();
+});
+$('tsaPmSlider').addEventListener('input', updateTsaSim);
+$('tsaIncSlider').addEventListener('input', updateTsaSim);
+$('tsaSizeSlider').addEventListener('input', updateTsaSim);
+$('tsaKidsSlider').addEventListener('input', updateTsaSim);
+$('nitGuarSlider').addEventListener('input', updateNitSim);
+$('nitRateSlider').addEventListener('input', updateNitSim);
+$('nitEarnSlider').addEventListener('input', updateNitSim);
+
+setLang('ru');
+</script>
+</body>
+</html>
