@@ -19,116 +19,211 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            padding: 15px 20px;
+            padding: 20px;
             position: relative;
         }
 
+        /* Логотип слева по краю на уровне названия */
         .top-left-logo {
             position: absolute;
-            top: 25px;
-            left: 30px;
-            width: 55px;
-            height: 55px;
+            top: 22px;
+            left: 20px;
+            width: 56px;
+            height: 56px;
             object-fit: contain;
+            z-index: 10;
         }
 
-        /* Кнопка "Назад" к списку тем */
+        /* Кнопка "Назад" справа по краю на уровне названия */
         .back-button {
             position: absolute;
-            top: 35px;
-            right: 30px;
+            top: 30px;
+            right: 20px;
             text-decoration: none;
             background-color: #001e50;
             color: white;
-            padding: 8px 16px;
+            padding: 9px 18px;
             border-radius: 8px;
             font-weight: 600;
             font-size: 14px;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 30, 80, 0.15);
+            white-space: nowrap;
+            z-index: 10;
         }
 
         .back-button:hover {
             background-color: #003380;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0, 30, 80, 0.25);
         }
 
         header {
             text-align: center;
             margin-top: 10px;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
+            padding: 0 180px;
+            width: 100%;
         }
 
         h1 {
-            font-size: 30px;
+            font-size: 28px;
             font-weight: 700;
             color: #001e50;
             margin-bottom: 8px;
-            margin-top: 20px;
+            line-height: 1.25;
         }
 
         .subtitle {
-            font-size: 15px;
+            font-size: 14px;
             color: #555555;
-            max-width: 650px;
-            line-height: 1.5;
+            max-width: 680px;
+            line-height: 1.45;
             margin: 0 auto;
         }
 
         /* Сетка для 5 материалов первого топика */
         .grid-container {
             display: flex;
-            flex-wrap: wrap;
-            gap: 24px;
-            max-width: 1200px;
+            flex-wrap: nowrap;
+            gap: 18px;
+            max-width: 1450px;
             width: 100%;
             justify-content: center;
             align-items: center;
-            padding-bottom: 40px;
+            margin: auto 0;
+            padding: 20px 0;
         }
 
-        /* Единые стильные карточки с синими рамками */
+        /* Единые карточки с аккуратным кантом */
         .card {
-            display: inline-block;
+            display: block;
             text-decoration: none;
-            background: #ffffff;
-            border: 2px solid #e2e8f0;
+            background: #cbd5e1;
+            border: 2px solid #94a3b8;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            width: 170px; 
-            height: 260px; 
+            box-shadow: 0 5px 15px rgba(71, 85, 105, 0.18);
+            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 185px;
+            height: 295px;
+            flex-shrink: 0;
+            cursor: pointer;
+            position: relative;
+            padding: 3px;
         }
 
         .card img {
             width: 100%;
             height: 100%;
-            object-fit: fill; /* Идеальная подгонка картинок */
+            object-fit: fill;
+            border-radius: 8px;
             display: block;
-            transition: transform 0.3s ease;
         }
 
         /* Эффект увеличения и красивой синей тени при наведении */
         .card:hover {
-            transform: translateY(-8px) scale(1.04);
+            transform: translateY(-10px) scale(1.04);
             border-color: #001e50;
-            box-shadow: 0 16px 30px rgba(0, 30, 80, 0.18);
+            background: #e2e8f0;
+            box-shadow: 0 16px 30px rgba(0, 30, 80, 0.22);
         }
 
         footer {
             margin-top: auto;
-            font-size: 14px;
+            font-size: 13px;
             color: #718096;
-            padding-top: 30px;
-            padding-bottom: 20px;
+            padding-top: 25px;
+            padding-bottom: 15px;
             text-align: center;
             line-height: 1.6;
+        }
+
+        /* Планшеты и средние экраны */
+        @media (max-width: 1150px) {
+            .grid-container {
+                flex-wrap: wrap;
+                gap: 16px;
+            }
+        }
+
+        @media (max-width: 960px) {
+            header {
+                padding: 0 150px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+        }
+
+        /* Адаптация под смартфон: логотип по центру, кнопка ниже по центру, заголовок и 2 колонки карточек */
+        @media (max-width: 768px) {
+            body {
+                padding: 14px 12px;
+            }
+
+            .top-left-logo {
+                position: static;
+                display: block;
+                margin: 0 auto 10px auto;
+                width: 52px;
+                height: 52px;
+            }
+
+            .back-button {
+                position: static;
+                display: inline-block;
+                margin: 0 auto 14px auto;
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+
+            header {
+                margin-top: 0;
+                margin-bottom: 16px;
+                padding: 0 8px;
+            }
+
+            h1 {
+                font-size: 21px;
+            }
+
+            .subtitle {
+                font-size: 13px;
+                line-height: 1.4;
+            }
+
+            .grid-container {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(140px, 165px));
+                justify-content: center;
+                gap: 14px;
+                margin: 8px auto;
+                padding: 10px 0 24px;
+                width: 100%;
+            }
+
+            .card {
+                width: 100%;
+                height: auto;
+                aspect-ratio: 185 / 295;
+            }
+
+            .card:hover {
+                transform: translateY(-4px) scale(1.02);
+            }
+
+            footer {
+                font-size: 12px;
+            }
         }
     </style>
 </head>
 <body>
 
     <!-- Логотип AlmaU -->
-    <img src="https://ogaydv-prog.github.io/Industrial-Economics/almau.jpg" alt="AlmaU Logo" class="top-left-logo">
+    <img src="https://ogaydv-prog.github.io/Industrial-Economics/almau.jpg" alt="AlmaU Logo" class="top-left-logo" onerror="this.onerror=null; this.src='./almau.jpg';">
     
     <!-- Кнопка возврата к выбору тем -->
     <a href="topics.html" class="back-button">← К темам курса</a>
@@ -142,7 +237,7 @@
 
     <main class="grid-container">
         <!-- 1. Презентация Google Drive -->
-        <a href="https://drive.google.com/file/d/1ShLH1zjJhvQLHDU1Rzt7grQwd1yeel9K/view?usp=sharing" target="_blank" rel="noopener" class="card" title="Презентация: Введение в микроэкономику">
+        <a href="https://drive.google.com/file/d/1ShLH1zjJhvQLHDU1Rzt7grQwd1yeel9K/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="card" title="Презентация: Введение в микроэкономику">
             <img src="pic-preza-1.png" alt="Презентация: Введение в микроэкономику">
         </a>
 
