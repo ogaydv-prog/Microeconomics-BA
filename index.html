@@ -53,17 +53,17 @@
             padding: 0 90px;
         }
 
-        /* Увеличенный и слегка расширенный заголовок с аккуратным интервалом между буквами */
+        /* Заголовок: +20% к ширине каждой буквы (1.34) и +20% к высоте (1.66) */
         h1 {
             display: inline-block;
             font-size: 58px;
             font-weight: 900;
             color: #001e50;
             -webkit-text-stroke: 1.4px #001e50;
-            transform: scale(1.12, 1.38);
+            transform: scale(1.34, 1.66);
             transform-origin: center;
-            margin-top: 14px;
-            margin-bottom: 24px;
+            margin-top: 22px;
+            margin-bottom: 32px;
             letter-spacing: 3px;
             text-transform: uppercase;
             line-height: 1.1;
@@ -154,8 +154,10 @@
             h1 {
                 font-size: 44px;
                 -webkit-text-stroke: 1.1px #001e50;
-                transform: scale(1.1, 1.32);
+                transform: scale(1.32, 1.58);
                 letter-spacing: 2.2px;
+                margin-top: 18px;
+                margin-bottom: 26px;
             }
         }
 
@@ -180,13 +182,13 @@
             }
 
             h1 {
-                font-size: clamp(24px, 7.6vw, 36px);
+                font-size: clamp(21px, 6.8vw, 33px);
                 -webkit-text-stroke: 1px #001e50;
-                transform: scale(1.08, 1.32);
+                transform: scale(1.22, 1.52);
                 transform-origin: center;
                 letter-spacing: 1.8px;
-                margin-top: 10px;
-                margin-bottom: 18px;
+                margin-top: 14px;
+                margin-bottom: 22px;
             }
 
             .subtitle {
