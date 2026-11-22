@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тема 14 | Microeconomics BA AlmaU 2026</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #ffffff;
+            color: #333333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Десктоп: логотип прижат к крайнему левому краю на одной линии с названием темы */
+        .top-left-logo {
+            position: absolute;
+            top: 22px;
+            left: 20px;
+            width: 56px;
+            height: 56px;
+            object-fit: contain;
+            z-index: 10;
+        }
+
+        /* Десктоп: кнопка возврата симметрично прижата к крайнему правому краю */
+        .back-button {
+            position: absolute;
+            top: 30px;
+            right: 20px;
+            text-decoration: none;
+            background-color: #001e50;
+            color: white;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 30, 80, 0.15);
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        .back-button:hover {
+            background-color: #003380;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0, 30, 80, 0.25);
+        }
+
+        .header-titles {
+            text-align: center;
+            margin-top: 10px;
+            margin-bottom: 25px;
+            padding: 0 180px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 700;
+            color: #001e50;
+            line-height: 1.25;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #555555;
+            line-height: 1.45;
+            max-width: 820px;
+            margin: 0 auto;
+        }
+
+        /* Контейнер карточек */
+        .grid-container {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 18px;
+            max-width: 1450px;
+            width: 100%;
+            justify-content: center;
+            align-items: center;
+            margin: auto 0;
+            padding: 25px 0;
+        }
+
+        /* Карточки: тонкая серая рамка, адаптация под любые пропорции картинок */
+        .card {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            background: #f8fafc;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+            transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                        border-color 0.25s ease,
+                        border-width 0.25s ease,
+                        box-shadow 0.3s ease;
+            width: 190px;
+            height: auto;
+            flex-shrink: 0;
+            cursor: pointer;
+            position: relative;
+            padding: 0;
+            line-height: 0;
+        }
+
+        .card img {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: contain;
+            border-radius: 11px;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* При наведении: рамка толще, средне-серая и с мягкой подсветкой */
+        .card:hover {
+            transform: translateY(-10px) scale(1.05);
+            border-width: 2.5px;
+            border-color: #64748b;
+            box-shadow: 0 14px 30px rgba(100, 116, 139, 0.28),
+                        0 0 18px rgba(148, 163, 184, 0.55);
+        }
+
+        footer {
+            margin-top: auto;
+            font-size: 14px;
+            color: #718096;
+            padding-top: 30px;
+            padding-bottom: 20px;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        /* Адаптивность для средних экранов / ноутбуков */
+        @media (max-width: 1280px) {
+            .grid-container {
+                flex-wrap: wrap;
+                gap: 16px;
+            }
+            .header-titles {
+                padding: 0 140px;
+            }
+        }
+
+        /* Адаптивность для смартфонов: всё отцентровано, карточки в 2 колонки */
+        @media (max-width: 768px) {
+            body {
+                padding: 16px 12px;
+            }
+
+            .top-left-logo {
+                position: static;
+                display: block;
+                margin: 0 auto 10px auto;
+                width: 52px;
+                height: 52px;
+            }
+
+            .back-button {
+                position: static;
+                display: inline-block;
+                margin: 0 auto 14px auto;
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+
+            .header-titles {
+                margin-top: 0;
+                margin-bottom: 16px;
+                padding: 0 6px;
+            }
+
+            h1 {
+                font-size: 21px;
+            }
+
+            .subtitle {
+                font-size: 13px;
+                line-height: 1.4;
+            }
+
+            .grid-container {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 14px;
+                margin: 8px auto;
+                padding: 10px 0 24px;
+                width: 100%;
+                max-width: 400px;
+                align-items: center;
+            }
+
+            .card {
+                width: 100%;
+                height: auto;
+            }
+
+            .card:hover {
+                transform: translateY(-4px) scale(1.02);
+            }
+
+            footer {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Логотип AlmaU -->
+    <img src="almau.jpg" alt="AlmaU Logo" class="top-left-logo" onerror="this.onerror=null; this.src='almau.png';">
+
+    <!-- Кнопка возврата к темам курса -->
+    <a href="topics.html" class="back-button">← К темам курса</a>
+
+    <!-- Заголовок и подзаголовок -->
+    <div class="header-titles">
+        <h1>Тема 14: Неравенство доходов и бедность</h1>
+        <p class="subtitle">
+            Выберите учебный материал ниже: интерактивный конспект лекции, симуляторы кривой Лоренца и коэффициента Джини, материалы для чтения, практическое задание или видеолекцию.
+        </p>
+    </div>
+
+    <!-- Основная сетка карточек -->
+    <main class="grid-container">
+        
+        <!-- 1. Интерактивный конспект лекции -->
+        <a href="lecture14.html" class="card" title="Конспект лекции по теме 14">
+            <img src="pic-lecture14-mic.png" alt="Конспект лекции">
+        </a>
+
+        <!-- 2. Симулятор: Кривая Лоренца -->
+        <a href="sim-lorenz7.html" class="card" title="Симулятор: Кривая Лоренца">
+            <img src="pic-sim-lorenz-mic.png" alt="Симулятор: Кривая Лоренца">
+        </a>
+
+        <!-- 3. Симулятор: Коэффициент Джини (World Bank PIP) -->
+        <a href="sim-gini-mic.html" class="card" title="Симулятор: Коэффициент Джини">
+            <img src="pic-gini-mic.png" alt="Симулятор: Коэффициент Джини">
+        </a>
+
+        <!-- 4. Материалы для чтения (Google Docs) -->
+        <a href="https://docs.google.com/document/d/1nyGC6YpNG-4CGCe1wjfvkCLjBEjtFqcl/edit?usp=sharing&ouid=109725301150629205728&rtpof=true&sd=true" 
+           target="_blank" rel="noopener noreferrer" class="card" title="Материалы для чтения по теме 14">
+            <img src="pic-reading14-mic.png" alt="Материалы для чтения">
+        </a>
+
+        <!-- 5. Практическое задание / Тренажёр -->
+        <a href="sim-task14-mic%20(2).html" class="card" title="Практическое задание по теме 14">
+            <img src="pic-task14-mic.png" alt="Практическое задание по теме 14">
+        </a>
+
+        <!-- 6. Видеолекция (YouTube — прямой переход без переворота карточки) -->
+        <a href="https://www.youtube.com/watch?v=RdQPVWh4TuU&list=PLGssI1JnCp5tLzqscvLuyB7mT7Ij7Y7Qs&index=3"
+           target="_blank" rel="noopener noreferrer" class="card" title="Видеолекция по теме 14">
+            <img src="pic-video14-mic.png" alt="Видеолекция">
+        </a>
+
+    </main>
+
+    <footer>
+        <p>Разработано для студентов Microeconomics BA AlmaU 2026 | Курс: Микроэкономика</p>
+        <p>© Almaty Management University | Школа цифровых технологий и экономики</p>
+    </footer>
+
+</body>
+</html>
