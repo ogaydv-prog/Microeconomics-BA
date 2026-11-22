@@ -22,7 +22,7 @@
             padding: 20px 30px;
         }
 
-        /* Навигационная панель: на ПК логотип в крайнем левом углу напротив названия */
+        /* Навигационная панель: на ПК логотип слева скраю напротив названия */
         .top-bar {
             width: 100%;
             max-width: 1450px;
@@ -36,17 +36,17 @@
 
         .top-left-logo {
             position: absolute;
-            left: 0;
+            left: 110px;
             top: 50%;
             transform: translateY(-50%);
-            width: 58px;
-            height: 58px;
+            width: 56px;
+            height: 56px;
             object-fit: contain;
         }
 
         .header-titles {
             text-align: center;
-            padding: 0 155px 0 76px;
+            padding: 0 180px;
             max-width: 100%;
         }
 
@@ -68,7 +68,7 @@
 
         .back-button {
             position: absolute;
-            right: 0;
+            right: 110px;
             top: 50%;
             transform: translateY(-50%);
             text-decoration: none;
@@ -258,9 +258,29 @@
                 flex-wrap: wrap;
                 gap: 16px;
             }
+
+            .top-left-logo {
+                left: 24px;
+            }
+
+            .back-button {
+                right: 24px;
+            }
+
+            .header-titles {
+                padding: 0 165px 0 95px;
+            }
         }
 
         @media (max-width: 960px) {
+            .top-left-logo {
+                left: 0;
+            }
+
+            .back-button {
+                right: 0;
+            }
+
             .header-titles {
                 padding: 0 140px 0 68px;
             }
