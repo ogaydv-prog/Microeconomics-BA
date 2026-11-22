@@ -32,23 +32,25 @@
             position: relative;
         }
 
+        /* Логотип AlmaU прижат в самый левый верхний угол экрана */
+        .top-left-logo {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            width: 58px;
+            height: 58px;
+            object-fit: contain;
+            z-index: 10;
+        }
+
         /* Шапка страницы */
         .header-container {
             width: 100%;
             max-width: 1150px;
-            position: relative;
             text-align: center;
             margin-top: 10px;
             margin-bottom: 25px;
-        }
-
-        .top-left-logo {
-            position: absolute;
-            top: 5px;
-            left: 0;
-            width: 55px;
-            height: 55px;
-            object-fit: contain;
+            padding: 0 80px;
         }
 
         h1 {
@@ -59,6 +61,7 @@
             margin-top: 5px;
             letter-spacing: 0.5px;
             text-transform: uppercase;
+            line-height: 1.15;
         }
 
         .subtitle {
@@ -79,6 +82,7 @@
             width: 100%;
             justify-content: center;
             align-items: center;
+            margin: auto 0;
             padding-bottom: 30px;
         }
 
@@ -155,6 +159,7 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
+            padding: 16px;
         }
 
         .modal-overlay.active {
@@ -165,8 +170,8 @@
         .modal-card {
             background: #ffffff;
             border-radius: 20px;
-            padding: 30px;
-            width: 90%;
+            padding: 28px 24px;
+            width: 100%;
             max-width: 400px;
             text-align: center;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
@@ -256,32 +261,33 @@
         /* ПОЛНАЯ АДАПТИВНОСТЬ ДЛЯ МОБИЛЬНЫХ УСТРОЙСТВ */
         @media (max-width: 768px) {
             body {
-                padding: 12px 10px;
-            }
-
-            .header-container {
-                margin-top: 0;
-                margin-bottom: 20px;
+                padding: 14px 12px;
             }
 
             .top-left-logo {
                 position: static;
                 display: block;
                 margin: 0 auto 10px auto;
-                width: 50px;
-                height: 50px;
+                width: 52px;
+                height: 52px;
+            }
+
+            .header-container {
+                margin-top: 0;
+                margin-bottom: 20px;
+                padding: 0 6px;
             }
 
             h1 {
-                font-size: clamp(22px, 7vw, 32px) !important;
+                font-size: clamp(22px, 6.8vw, 32px);
                 margin-top: 0;
                 margin-bottom: 6px;
             }
 
             .subtitle {
-                font-size: 13px !important;
+                font-size: 13px;
                 line-height: 1.4;
-                padding: 0 5px;
+                padding: 0 4px;
             }
 
             /* Четкая сетка из 2 колонок для всех смартфонов */
@@ -316,10 +322,13 @@
 </head>
 <body>
 
-    <header class="header-container">
-        <!-- Логотип AlmaU (по центру на смартфонах, слева на ПК) -->
-        <img src="https://ogaydv-prog.github.io/Microeconomics-BA/almau.jpg" alt="AlmaU Logo" class="top-left-logo">
+    <!-- Логотип AlmaU (прижат в левый верхний угол на ПК, по центру на смартфонах) -->
+    <img src="https://ogaydv-prog.github.io/Microeconomics-BA/almau.jpg"
+         alt="AlmaU Logo"
+         class="top-left-logo"
+         onerror="this.onerror=null; this.src='./almau.jpg';">
 
+    <header class="header-container">
         <h1>МИКРОЭКОНОМИКА</h1>
         <div style="max-width: 800px; margin: 0 auto; line-height: 1.6;">
             <p class="subtitle">
@@ -384,7 +393,7 @@
     </main>
 
     <!-- МОДАЛЬНОЕ ОКНО ПАРОЛЯ -->
-    <div id="mc1-modal" class="modal-overlay">
+    <div id="mc1-modal" class="modal-overlay" onclick="if(event.target === this) closeMC1Modal()">
         <div class="modal-card">
             <h3>Рубежный контроль 1</h3>
             <p>Введите ключ доступа:</p>
