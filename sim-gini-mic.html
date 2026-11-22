@@ -66,9 +66,9 @@
 
         .logo-wrapper {
             position: relative;
-            width: 64px;
-            height: 64px;
-            border-radius: 12px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
             background: #FFFFFF;
             border: 2px solid var(--almau-red);
             display: flex;
@@ -90,6 +90,7 @@
             height: 100%;
             object-fit: contain;
             padding: 4px;
+            display: block;
         }
 
         .logo-upload-hint {
@@ -673,15 +674,15 @@
 <header>
     <div class="header-inner">
         <div class="brand-left">
-            <!-- AlmaU Logo with local AlmaU.jpeg support + clean SVG fallback + click-to-upload -->
-            <div class="logo-wrapper" id="logoBox" title="Нажмите, чтобы загрузить AlmaU.jpeg">
-                <img id="almauLogoImg" src="AlmaU.jpeg" alt="AlmaU Logo" onerror="handleLogoError()">
+            <!-- Круглый логотип almau.jpg -->
+            <div class="logo-wrapper" id="logoBox" title="Нажмите, чтобы загрузить almau.jpg">
+                <img id="almauLogoImg" src="almau.jpg" alt="AlmaU Logo" onerror="handleLogoError()">
                 <svg id="almauFallbackSvg" viewBox="0 0 100 100" style="display:none; width:100%; height:100%; padding:6px;">
-                    <rect x="4" y="4" width="92" height="92" rx="16" fill="#B81D24"/>
+                    <circle cx="50" cy="50" r="46" fill="#B81D24"/>
                     <polygon points="50,18 82,34 50,50 18,34" fill="#FFFFFF"/>
                     <text x="50" y="76" text-anchor="middle" fill="#FFFFFF" font-family="Arial, sans-serif" font-weight="900" font-size="21" letter-spacing="0.5">AlmaU</text>
                 </svg>
-                <span class="logo-upload-hint" data-i18n="logoHint">AlmaU.jpeg</span>
+                <span class="logo-upload-hint" data-i18n="logoHint">almau.jpg</span>
                 <input type="file" id="logoFileInput" accept="image/*" style="display:none;">
             </div>
 
@@ -840,7 +841,7 @@
 
                     <div class="formula-card">
                         <h4 data-i18n="fAlgTitle">2. Алгебраическая формула (Попарные разности)</h4>
-                        <div class="math-display">G = ∑∑ |yᵢ − yⱼ| / (2n² · ȳ)</div>
+                        <div class="math-display">G = ∑∑ |yᵢ − yⱼ| / (2n² · ȳ)</div>
                         <p data-i18n="fAlgDesc">Половина относительной средней абсолютной разности доходов между всеми парами домохозяйств в выборке. Если Джини равен 30, ожидаемая разница между двумя случайными людьми составляет 60% от среднего дохода.</p>
                     </div>
                 </div>
@@ -892,7 +893,12 @@
 <script>
     // ================= LOGO FALLBACK & LOCAL UPLOAD =================
     function handleLogoError() {
-        document.getElementById('almauLogoImg').style.display = 'none';
+        const img = document.getElementById('almauLogoImg');
+        if (img.src.endsWith('almau.jpg')) {
+            img.src = 'AlmaU.jpeg';
+            return;
+        }
+        img.style.display = 'none';
         document.getElementById('almauFallbackSvg').style.display = 'block';
     }
 
@@ -918,7 +924,7 @@
 
     const I18N = {
         ru: {
-            logoHint: 'AlmaU.jpeg',
+            logoHint: 'almau.jpg',
             mainTitle: 'Микроэкономика — Школа цифровых технологий и экономики',
             lectureTag: 'Лекция 14',
             subTitle: 'Неравенство доходов и коэффициент Джини • По данным World Bank Poverty and Inequality Platform (PIP)',
@@ -975,7 +981,7 @@
             }
         },
         en: {
-            logoHint: 'AlmaU.jpeg',
+            logoHint: 'almau.jpg',
             mainTitle: 'Microeconomics — School of Digital Technologies and Economics',
             lectureTag: 'Lecture 14',
             subTitle: 'Income Inequality & the Gini Coefficient • World Bank Poverty and Inequality Platform (PIP)',
@@ -1327,10 +1333,9 @@
 
     // ================= SLIDER LOGIC =================
     function handleTaxTransfer(val) {
-        const rate = parseFloat(val) / 100; // -0.25 to +0.45
+        const rate = parseFloat(val) / 100;
         document.getElementById('taxVal').textContent = (val > 0 ? '+' : '') + val + '%';
 
-        // Redistribute between Q5 (richest 20%) and Q1+Q2 (poorest 40%)
         const q = [...baseQuintiles];
         if (rate >= 0) {
             const taxAmount = (q[4] - 20) * rate;
@@ -1338,14 +1343,12 @@
             q[0] += taxAmount * 0.65;
             q[1] += taxAmount * 0.35;
         } else {
-            // Regressive shift toward top quintile
             const regAmount = (q[0] + q[1]) * Math.abs(rate) * 0.6;
             q[0] -= regAmount * 0.6;
             q[1] -= regAmount * 0.4;
             q[4] += regAmount;
         }
 
-        // Normalize to 100% and maintain ascending order
         const sum = q.reduce((a, b) => a + b, 0);
         activeQuintiles = q.map(x => Math.max(0.5, (x / sum) * 100));
         const normSum = activeQuintiles.reduce((a, b) => a + b, 0);
@@ -1391,7 +1394,6 @@
 
     // ================= CALCULATE GINI & DRAW LORENZ CURVE =================
     function calculateGiniFromQuintiles(q) {
-        // Cumulative shares: (0,0), (0.2, c1), (0.4, c2), (0.6, c3), (0.8, c4), (1.0, 1.0)
         const cumY = [0];
         let acc = 0;
         for (let i = 0; i < 5; i++) {
@@ -1400,12 +1402,10 @@
         }
         cumY[5] = 1;
 
-        // Area B under Lorenz curve via trapezoidal rule: B = sum_{i=1..5} 0.2 * (y_{i-1} + y_i)/2
         let areaB = 0;
         for (let i = 1; i <= 5; i++) {
             areaB += 0.2 * (cumY[i - 1] + cumY[i]) / 2;
         }
-        // Gini = 1 - 2B (with slight Brown/unbiased correction factor ~1.045 for 5-bin grouping so country presets match PIP)
         let rawGini = Math.max(0, Math.min(0.99, (1 - 2 * areaB) * 1.055));
         if (Math.max(...q) - Math.min(...q) < 0.2) rawGini = 0;
 
@@ -1417,7 +1417,6 @@
         const gini100 = (gini * 100).toFixed(1);
         const giniDec = gini.toFixed(3);
 
-        // Palma Ratio approx: Top 10% (~58% of Q5) / Bottom 40% (Q1 + Q2)
         const bottom40 = activeQuintiles[0] + activeQuintiles[1];
         const top10Est = activeQuintiles[4] * 0.57;
         const palma = bottom40 > 0 ? (top10Est / bottom40).toFixed(2) : '—';
@@ -1442,12 +1441,11 @@
     function drawLorenzSvg(cumY, gini100) {
         const svg = document.getElementById('lorenzSvg');
         const padL = 46, padR = 20, padT = 20, padB = 42;
-        const size = 270; // 270x270 plot area
+        const size = 270;
 
         const toX = p => padL + p * size;
         const toY = y => padT + (1 - y) * size;
 
-        // Build polygon for Area A (between equality line and Lorenz curve)
         const pointsLorenz = cumY.map((y, idx) => `${toX(idx * 0.2).toFixed(1)},${toY(y).toFixed(1)}`);
         const areaPolygon = [
             `${toX(0)},${toY(0)}`,
@@ -1485,20 +1483,14 @@
             </defs>
             <rect x="${padL}" y="${padT}" width="${size}" height="${size}" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.2"/>
             ${gridLines}
-            <!-- Area A -->
             <polygon points="${areaPolygon}" fill="url(#areaAGrad)"/>
-            <!-- Line of Perfect Equality -->
             <line x1="${toX(0)}" y1="${toY(0)}" x2="${toX(1)}" y2="${toY(1)}" stroke="#64748B" stroke-width="2" stroke-dasharray="5,4"/>
-            <!-- Lorenz Curve -->
             <polyline points="${pointsLorenz.join(' ')}" fill="none" stroke="#B81D24" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
             ${dots}
-            <!-- Area Labels -->
             <text x="${toX(0.58)}" y="${toY(0.46)}" fill="#8F141A" font-weight="800" font-size="13">A</text>
             <text x="${toX(0.82)}" y="${toY(0.18)}" fill="#64748B" font-weight="700" font-size="13">B</text>
-            <!-- Live Badge Inside Chart -->
             <rect x="${padL + 10}" y="${padT + 10}" width="114" height="28" rx="6" fill="#1E232A"/>
             <text x="${padL + 67}" y="${padT + 28}" text-anchor="middle" fill="#FFFFFF" font-weight="800" font-size="12">Gini = ${gini100}</text>
-            <!-- Axis Titles -->
             <text x="${padL + size / 2}" y="${padT + size + 34}" text-anchor="middle" fill="#334155" font-weight="700" font-size="11">${dict.axisPop}</text>
             <text x="14" y="${padT + size / 2}" text-anchor="middle" fill="#334155" font-weight="700" font-size="11" transform="rotate(-90, 14, ${padT + size / 2})">${dict.axisInc}</text>
         `;
