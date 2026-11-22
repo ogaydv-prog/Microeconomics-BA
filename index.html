@@ -53,18 +53,18 @@
             padding: 0 90px;
         }
 
-        /* Крупный массивный заголовок с высотой +50% и небольшим интервалом между буквами */
+        /* Увеличенный и слегка расширенный заголовок с аккуратным интервалом между буквами */
         h1 {
             display: inline-block;
-            font-size: 60px;
+            font-size: 58px;
             font-weight: 900;
             color: #001e50;
-            -webkit-text-stroke: 1.5px #001e50;
-            transform: scaleY(1.5);
+            -webkit-text-stroke: 1.4px #001e50;
+            transform: scale(1.12, 1.38);
             transform-origin: center;
             margin-top: 14px;
             margin-bottom: 24px;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             text-transform: uppercase;
             line-height: 1.1;
         }
@@ -91,14 +91,15 @@
             padding-bottom: 30px;
         }
 
+        /* Тонкая серая рамка под цвет карточек */
         .card {
             display: block;
             text-decoration: none;
-            background: #ffffff;
-            border: 1px solid #d1d5db;
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
             border-radius: 16px;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 12px rgba(100, 116, 139, 0.08);
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             width: 195px;
             height: 255px;
@@ -128,13 +129,13 @@
 
         .card.disabled {
             cursor: default;
-            opacity: 0.85;
+            opacity: 0.88;
         }
 
         .card.disabled:hover {
             transform: none;
-            border-color: #d1d5db;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            border-color: #cbd5e1;
+            box-shadow: 0 4px 12px rgba(100, 116, 139, 0.08);
         }
 
         footer {
@@ -151,9 +152,10 @@
         /* Планшеты и средние экраны */
         @media (max-width: 960px) {
             h1 {
-                font-size: 46px;
-                -webkit-text-stroke: 1.2px #001e50;
-                letter-spacing: 1.5px;
+                font-size: 44px;
+                -webkit-text-stroke: 1.1px #001e50;
+                transform: scale(1.1, 1.32);
+                letter-spacing: 2.2px;
             }
         }
 
@@ -178,11 +180,11 @@
             }
 
             h1 {
-                font-size: clamp(28px, 8.6vw, 42px);
+                font-size: clamp(24px, 7.6vw, 36px);
                 -webkit-text-stroke: 1px #001e50;
-                transform: scaleY(1.5);
+                transform: scale(1.08, 1.32);
                 transform-origin: center;
-                letter-spacing: 1.2px;
+                letter-spacing: 1.8px;
                 margin-top: 10px;
                 margin-bottom: 18px;
             }
