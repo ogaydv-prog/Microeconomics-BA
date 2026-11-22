@@ -19,54 +19,63 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            padding: 15px 20px;
+            padding: 20px;
             position: relative;
         }
 
+        /* Логотип слева по краю на одном уровне с названием */
         .top-left-logo {
             position: absolute;
-            top: 25px;
-            left: 30px;
-            width: 55px;
-            height: 55px;
+            top: 22px;
+            left: 20px;
+            width: 56px;
+            height: 56px;
             object-fit: contain;
+            z-index: 10;
         }
 
-        /* Кнопка "Назад" на главный дашборд */
+        /* Кнопка "Назад" справа по краю на одном уровне с названием */
         .back-button {
             position: absolute;
-            top: 35px;
-            right: 30px;
+            top: 30px;
+            right: 20px;
             text-decoration: none;
             background-color: #001e50;
             color: white;
-            padding: 8px 16px;
+            padding: 9px 18px;
             border-radius: 8px;
             font-weight: 600;
             font-size: 14px;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 30, 80, 0.15);
+            white-space: nowrap;
+            z-index: 10;
         }
 
         .back-button:hover {
             background-color: #003380;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0, 30, 80, 0.25);
         }
 
         header {
             text-align: center;
             margin-top: 10px;
-            margin-bottom: 30px;
+            margin-bottom: 28px;
+            padding: 0 180px;
+            width: 100%;
         }
 
         h1 {
-            font-size: 32px;
+            font-size: 30px;
             font-weight: 700;
             color: #001e50;
             margin-bottom: 8px;
-            margin-top: 20px;
+            line-height: 1.25;
         }
 
         .subtitle {
-            font-size: 16px;
+            font-size: 15px;
             color: #555555;
             max-width: 650px;
             line-height: 1.5;
@@ -85,18 +94,19 @@
             padding-bottom: 40px;
         }
 
-        /* ЕДИНАЯ РАМКА ДЛЯ ВСЕХ 14 КАРТОЧЕК */
+        /* ЕДИНАЯ РАМКА ДЛЯ ВСЕХ 14 КАРТОЧЕК — совсем тонкая серая по умолчанию */
         .card {
-            display: inline-block;
+            display: block;
             text-decoration: none;
             background: #ffffff;
-            border: 2px solid #e2e8f0;
+            border: 1px solid #d1d5db;
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            width: 160px; 
-            height: 250px; 
+            width: 160px;
+            height: 250px;
+            flex-shrink: 0;
         }
 
         .card img {
@@ -123,66 +133,78 @@
             line-height: 1.6;
         }
 
+        @media (max-width: 960px) {
+            header {
+                padding: 0 150px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+        }
+
         /* === АДАПТАЦИЯ ДЛЯ СМАРТФОНОВ И ПЛАНШЕТОВ === */
         @media (max-width: 768px) {
             body {
-                padding: 10px 15px;
+                padding: 14px 12px;
             }
 
             .top-bar-mobile {
                 display: flex;
                 width: 100%;
+                max-width: 360px;
                 justify-content: space-between;
                 align-items: center;
-                margin-bottom: 15px;
+                margin-bottom: 14px;
             }
 
             .top-left-logo {
-                position: relative;
-                top: 0;
-                left: 0;
+                position: static;
                 width: 48px;
                 height: 48px;
+                flex-shrink: 0;
             }
 
             .back-button {
-                position: relative;
-                top: 0;
-                right: 0;
-                padding: 6px 12px;
+                position: static;
+                padding: 7px 14px;
                 font-size: 13px;
             }
 
             header {
                 margin-top: 0;
-                margin-bottom: 20px;
+                margin-bottom: 18px;
+                padding: 0 8px;
             }
 
             h1 {
-                font-size: 26px;
-                margin-top: 0;
+                font-size: 24px;
             }
 
             .subtitle {
-                font-size: 14px;
+                font-size: 13.5px;
             }
 
             .grid-container {
-                gap: 12px;
+                display: grid;
+                grid-template-columns: repeat(2, minmax(140px, 165px));
+                justify-content: center;
+                gap: 14px;
                 padding-bottom: 25px;
             }
 
             .card {
-                width: calc(50% - 6px);
+                width: 100%;
                 height: auto;
                 aspect-ratio: 160 / 250;
             }
-        }
 
-        @media (max-width: 360px) {
-            .card {
-                width: 100%;
-                max-width: 220px;
+            .card:hover {
+                transform: translateY(-4px) scale(1.02);
+            }
+
+            footer {
+                font-size: 12px;
             }
         }
     </style>
@@ -192,7 +214,7 @@
     <!-- Верхняя шапка для логотипа и кнопки "Назад" -->
     <div class="top-bar-mobile">
         <!-- Логотип AlmaU -->
-        <img src="https://ogaydv-prog.github.io/Industrial-Economics/almau.jpg" alt="AlmaU Logo" class="top-left-logo">
+        <img src="https://ogaydv-prog.github.io/Industrial-Economics/almau.jpg" alt="AlmaU Logo" class="top-left-logo" onerror="this.onerror=null; this.src='./almau.jpg';">
         
         <!-- Кнопка возврата на главный дашборд -->
         <a href="index.html" class="back-button">← Back to Dashboard</a>
@@ -227,7 +249,7 @@
 
     <footer>
         <p>Разработано для студентов БА и Э | Микроэкономика</p>
-        <p>© Almaty Management University | School of Digital Technologies & Economics</p>
+        <p>© Almaty Management University | School of Digital Technologies &amp; Economics</p>
     </footer>
 
 </body>
