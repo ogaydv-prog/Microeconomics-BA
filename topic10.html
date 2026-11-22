@@ -23,27 +23,22 @@
             position: relative;
         }
 
-        /* Навигационная шапка */
-        .top-nav {
-            width: 100%;
-            max-width: 1200px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0px;
-            padding-top: 10px;
-        }
-
-        /* Логотип AlmaU прижат влево и опущен на уровень заголовка */
+        /* Логотип AlmaU прижат к левому краю на одной линии с названием темы */
         .top-left-logo {
-            width: 60px;
-            height: 60px;
+            position: absolute;
+            top: 22px;
+            left: 20px;
+            width: 56px;
+            height: 56px;
             object-fit: contain;
-            margin-top: 25px;
-            margin-left: -5px;
+            z-index: 10;
         }
 
+        /* Кнопка возврата симметрично прижата к правому краю на той же линии */
         .back-button {
+            position: absolute;
+            top: 30px;
+            right: 20px;
             text-decoration: none;
             background-color: #001e50;
             color: white;
@@ -54,6 +49,7 @@
             transition: all 0.3s ease;
             box-shadow: 0 4px 10px rgba(0, 30, 80, 0.15);
             white-space: nowrap;
+            z-index: 10;
         }
 
         .back-button:hover {
@@ -64,9 +60,9 @@
 
         header {
             text-align: center;
+            margin-top: 10px;
             margin-bottom: 30px;
-            padding: 0 10px;
-            margin-top: -15px;
+            padding: 0 190px;
         }
 
         h1 {
@@ -74,6 +70,7 @@
             font-weight: 700;
             color: #001e50;
             margin-bottom: 8px;
+            line-height: 1.25;
         }
 
         .subtitle {
@@ -143,67 +140,72 @@
             line-height: 1.6;
         }
 
-        /* Полная мобильная адаптация для смартфонов */
-        @media (max-width: 640px) {
+        /* Полная мобильная адаптация для планшетов и смартфонов */
+        @media (max-width: 768px) {
             body {
-                padding: 12px;
-            }
-
-            .top-nav {
-                flex-direction: column;
-                align-items: center;
-                gap: 12px;
-                margin-bottom: 15px;
+                padding: 14px 12px;
             }
 
             .top-left-logo {
-                width: 50px;
-                height: 50px;
-                margin-top: 0;
-                margin-left: 0;
+                position: static;
+                display: block;
+                margin: 0 auto 10px auto;
+                width: 52px;
+                height: 52px;
+            }
+
+            .back-button {
+                position: static;
+                display: inline-block;
+                margin: 0 auto 16px auto;
+                padding: 8px 16px;
+                font-size: 13px;
             }
 
             header {
                 margin-top: 0;
-            }
-
-            .back-button {
-                padding: 7px 14px;
-                font-size: 12px;
+                margin-bottom: 20px;
+                padding: 0 8px;
             }
 
             h1 {
-                font-size: 20px;
+                font-size: 22px;
             }
 
             .subtitle {
-                font-size: 12px;
+                font-size: 13px;
+                line-height: 1.4;
             }
 
             .grid-container {
                 display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 12px;
+                grid-template-columns: repeat(2, minmax(140px, 165px));
+                justify-content: center;
+                gap: 14px;
                 width: 100%;
-                max-width: 380px;
-                margin: 15px auto;
+                margin: 8px auto;
+                padding-bottom: 25px;
             }
 
             .card {
                 width: 100%;
                 height: auto;
-                aspect-ratio: 2 / 3;
+                aspect-ratio: 175 / 262;
+            }
+
+            footer {
+                font-size: 12px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- Навигация: Логотип AlmaU и кнопка возврата -->
-    <div class="top-nav">
-        <img src="almau.jpg" alt="AlmaU Logo" class="top-left-logo" onerror="this.src='./almau.png'">
-        <a href="topics.html" class="back-button">← К темам курса</a>
-    </div>
+    <!-- Логотип AlmaU в левом верхнем углу напротив заголовка -->
+    <img src="almau.jpg" alt="AlmaU Logo" class="top-left-logo" onerror="this.onerror=null; this.src='./almau.png';">
+
+    <!-- Кнопка возврата в правом верхнем углу на той же линии -->
+    <a href="topics.html" class="back-button">← К темам курса</a>
 
     <header>
         <h1>Тема 10: Теория игр и стратегическое поведение</h1>
@@ -218,29 +220,29 @@
         <!-- 1. Презентация (Google Slides) -->
         <a href="https://docs.google.com/presentation/d/17WKXXgiTU7y361iFplm0S5GlgpBwPmWL/edit?usp=sharing&ouid=109725301150629205728&rtpof=true&sd=true" 
            target="_blank" rel="noopener noreferrer" class="card" title="Презентация: Теория игр">
-            <img src="pic-preza8.png" alt="Презентация Теория игр" onerror="this.src='./pic-preza8.png'">
+            <img src="pic-preza8.png" alt="Презентация Теория игр" onerror="this.onerror=null; this.src='./pic-preza8.png';">
         </a>
 
         <!-- 2. Электронный конспект / Ридер (Google Docs) -->
         <a href="https://docs.google.com/document/d/11SqUTjXUXjoBSHplLvLfTseYFrHv8j1Woq2cbyp2yv8/edit?usp=sharing" 
            target="_blank" rel="noopener noreferrer" class="card" title="Лекционный конспект (Ридер)">
-            <img src="pic-lecture8.png" alt="Лекция Теория игр" onerror="this.src='./pic-lecture8.png'">
+            <img src="pic-lecture8.png" alt="Лекция Теория игр" onerror="this.onerror=null; this.src='./pic-lecture8.png';">
         </a>
 
         <!-- 3. Симулятор: Задачи Теории игр -->
         <a href="sim-game-theory-task.html" class="card" title="Интерактивный симулятор матриц Теории игр">
-            <img src="pic-sim-gt.png" alt="Симулятор Теории игр" onerror="this.src='./pic-sim-gt.png'">
+            <img src="pic-sim-gt.png" alt="Симулятор Теории игр" onerror="this.onerror=null; this.src='./pic-sim-gt.png';">
         </a>
 
         <!-- 4. Практикум / Сборник задач -->
         <a href="sim-game-theory-tasks.html" class="card" title="Практические задачи по Теории игр">
-            <img src="pic-task8.png" alt="Задачи по Теории игр" onerror="this.src='./pic-task8.png'">
+            <img src="pic-task8.png" alt="Задачи по Теории игр" onerror="this.onerror=null; this.src='./pic-task8.png';">
         </a>
 
         <!-- 5. Книга / Дополнительное чтение -->
         <a href="https://loveread.ec/read_book.php?id=45085&p=1" 
            target="_blank" rel="noopener noreferrer" class="card" title="Книга / Дополнительное чтение">
-            <img src="pic-articles8.png" alt="Книга Теория игр" onerror="this.src='./pic-articles8.png'">
+            <img src="pic-articles8.png" alt="Книга Теория игр" onerror="this.onerror=null; this.src='./pic-articles8.png';">
         </a>
 
     </main>
