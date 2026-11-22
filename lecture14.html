@@ -79,19 +79,17 @@
             gap: 14px;
         }
 
-        .brand-badge {
-            width: 46px;
-            height: 46px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(251, 113, 133, 0.2));
-            border: 1px solid var(--neon-blue);
-            box-shadow: 0 0 18px var(--neon-blue-glow);
-            display: grid;
-            place-items: center;
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 800;
-            font-size: 16px;
-            color: var(--neon-blue);
+        .brand-logo-circle {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #ffffff;
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 16px var(--neon-blue-glow);
+            padding: 3px;
+            object-fit: contain;
+            flex-shrink: 0;
+            display: block;
         }
 
         .brand h1 {
@@ -637,7 +635,7 @@
     <div class="container">
         <div class="topbar">
             <div class="brand">
-                <div class="brand-badge">ID</div>
+                <img src="almau.jpg" alt="AlmaU Logo" class="brand-logo-circle" onerror="this.onerror=null; this.src='almau.png';">
                 <div>
                     <h1 data-i18n="mainTitle">Распределение доходов, неравенство и бедность</h1>
                     <p data-i18n="mainSub">Микроэкономика • Измерение неравенства и бедности, мобильность, философия и политика перераспределения</p>
