@@ -19,72 +19,67 @@
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            padding: 20px 30px;
-        }
-
-        /* Навигационная панель */
-        .top-bar {
-            width: 100%;
-            max-width: 1450px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 25px;
+            padding: 20px;
             position: relative;
-            padding-top: 10px;
         }
 
+        /* Логотип прижат к крайнему левому краю на одной линии с названием темы */
         .top-left-logo {
             position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 60px;
-            height: 60px;
+            top: 22px;
+            left: 20px;
+            width: 56px;
+            height: 56px;
             object-fit: contain;
+            z-index: 10;
+        }
+
+        /* Кнопка возврата симметрично прижата к крайнему правому краю на той же линии */
+        .back-button {
+            position: absolute;
+            top: 30px;
+            right: 20px;
+            text-decoration: none;
+            background-color: #001e50;
+            color: white;
+            padding: 9px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 30, 80, 0.15);
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        .back-button:hover {
+            background-color: #003380;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 14px rgba(0, 30, 80, 0.25);
         }
 
         .header-titles {
             text-align: center;
-            padding: 0 150px;
+            margin-top: 10px;
+            margin-bottom: 25px;
+            padding: 0 180px;
+            width: 100%;
         }
 
         h1 {
             font-size: 28px;
             font-weight: 700;
             color: #001e50;
-            line-height: 1.2;
+            line-height: 1.25;
             margin-bottom: 6px;
         }
 
         .subtitle {
             font-size: 14px;
             color: #555555;
-            line-height: 1.4;
+            line-height: 1.45;
             max-width: 820px;
             margin: 0 auto;
-        }
-
-        .back-button {
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            text-decoration: none;
-            background-color: #001e50;
-            color: white;
-            padding: 10px 18px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            white-space: nowrap;
-            box-shadow: 0 4px 10px rgba(0, 30, 80, 0.15);
-        }
-
-        .back-button:hover {
-            background-color: #003380;
-            transform: translateY(-52%);
         }
 
         /* Контейнер карточек */
@@ -157,35 +152,36 @@
                 gap: 16px;
             }
             .header-titles {
-                padding: 0 130px;
+                padding: 0 140px;
             }
         }
 
         /* Адаптивность для смартфонов */
         @media (max-width: 768px) {
             body {
-                padding: 15px;
-            }
-
-            .top-bar {
-                flex-direction: column;
-                justify-content: center;
-                gap: 12px;
-                margin-bottom: 20px;
-            }
-
-            .top-left-logo, .back-button {
-                position: static;
-                transform: none;
+                padding: 15px 12px;
             }
 
             .top-left-logo {
+                position: static;
+                display: block;
+                margin: 0 auto 10px auto;
                 width: 52px;
                 height: 52px;
             }
 
+            .back-button {
+                position: static;
+                display: inline-block;
+                margin: 0 auto 14px auto;
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+
             .header-titles {
-                padding: 0;
+                margin-top: 0;
+                margin-bottom: 16px;
+                padding: 0 6px;
             }
 
             h1 {
@@ -194,18 +190,15 @@
 
             .subtitle {
                 font-size: 13px;
-            }
-
-            .back-button {
-                padding: 8px 14px;
-                font-size: 13px;
+                line-height: 1.4;
             }
 
             .grid-container {
                 display: grid;
                 grid-template-columns: repeat(2, 1fr);
                 gap: 14px;
-                margin: 10px 0;
+                margin: 8px auto;
+                padding: 10px 0 24px;
                 width: 100%;
                 max-width: 400px;
                 align-items: start;
@@ -219,21 +212,27 @@
             .card:hover {
                 transform: translateY(-4px) scale(1.02);
             }
+
+            footer {
+                font-size: 12px;
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- Верхняя панель -->
-    <div class="top-bar">
-        <img src="almau.jpg" alt="AlmaU Logo" class="top-left-logo" onerror="this.src='./almau.png'">
-        <div class="header-titles">
-            <h1>Тема 13: Рынки факторов производства</h1>
-            <p class="subtitle">
-                Выберите учебный материал ниже: лекционный конспект, презентацию, интерактивные симуляторы факторов производства и рынка труда, материалы для чтения или видеолекцию.
-            </p>
-        </div>
-        <a href="topics.html" class="back-button">← К темам курса</a>
+    <!-- Логотип AlmaU в крайнем левом верхнем углу напротив заголовка -->
+    <img src="almau.jpg" alt="AlmaU Logo" class="top-left-logo" onerror="this.onerror=null; this.src='almau.png';">
+
+    <!-- Кнопка возврата симметрично в крайнем правом верхнем углу на той же линии -->
+    <a href="topics.html" class="back-button">← К темам курса</a>
+
+    <!-- Заголовок и подзаголовок -->
+    <div class="header-titles">
+        <h1>Тема 13: Рынки факторов производства</h1>
+        <p class="subtitle">
+            Выберите учебный материал ниже: лекционный конспект, презентацию, интерактивные симуляторы факторов производства и рынка труда, материалы для чтения или видеолекцию.
+        </p>
     </div>
 
     <!-- Основная сетка карточек -->
@@ -242,34 +241,34 @@
         <!-- 1. Конспект лекции (Google Docs) -->
         <a href="https://docs.google.com/document/d/1hYotKFX9k-5hHITSMYg2e2aa_zqGC_Az/edit?usp=sharing&ouid=109725301150629205728&rtpof=true&sd=true"
            target="_blank" rel="noopener noreferrer" class="card" title="Конспект лекции по теме 13">
-            <img src="pic-lecture13-mic.png" alt="Конспект лекции" onerror="this.src='./pic-lecture13-mic.png'">
+            <img src="pic-lecture13-mic.png" alt="Конспект лекции">
         </a>
 
         <!-- 2. Презентация (Google Slides) -->
         <a href="https://docs.google.com/presentation/d/1qtfcN5faTR_jK0gOJ2o7NSJ_-nbgVmOm/edit?usp=sharing&ouid=109725301150629205728&rtpof=true&sd=true" 
            target="_blank" rel="noopener noreferrer" class="card" title="Презентация по теме 13">
-            <img src="pic-preza13-mic.png" alt="Презентация по теме 13" onerror="this.src='./pic-preza13-mic.png'">
+            <img src="pic-preza13-mic.png" alt="Презентация по теме 13">
         </a>
 
         <!-- 3. Симулятор: Рынки факторов производства -->
         <a href="sim-factors-product-mic.html" class="card" title="Симулятор: Рынки факторов производства">
-            <img src="pic-sim-factors-mic.png" alt="Симулятор: Рынки факторов производства" onerror="this.src='./pic-sim-factors-mic.png'">
+            <img src="pic-sim-factors-mic.png" alt="Симулятор: Рынки факторов производства">
         </a>
 
         <!-- 4. Симулятор: Рынок труда и минимальная зарплата -->
         <a href="sim-labor-market-mic.html" class="card" title="Симулятор: Рынок труда">
-            <img src="pic-sim-labor-market-mic.png" alt="Симулятор: Рынок труда" onerror="this.src='./pic-sim-labor-market-mic.png'">
+            <img src="pic-sim-labor-market-mic.png" alt="Симулятор: Рынок труда">
         </a>
 
         <!-- 5. Материалы для чтения (PDF) -->
         <a href="reading13-factors-mic.pdf" target="_blank" rel="noopener noreferrer" class="card" title="Материалы для чтения по теме 13 (PDF)">
-            <img src="pic-reading13-mic.png" alt="Материалы для чтения" onerror="this.src='./pic-reading13-mic.png'">
+            <img src="pic-reading13-mic.png" alt="Материалы для чтения">
         </a>
 
         <!-- 6. Видеолекция (YouTube — одна карточка без переворота) -->
         <a href="https://www.youtube.com/watch?v=r3MsYwcDCac&t=43s"
            target="_blank" rel="noopener noreferrer" class="card" title="Видеолекция по теме 13">
-            <img src="pic-video13-mic.png" alt="Видеолекция" onerror="this.src='./pic-video13-mic.png'">
+            <img src="pic-video13-mic.png" alt="Видеолекция">
         </a>
 
     </main>
