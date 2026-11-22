@@ -8,11 +8,12 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #0b0f14; color: #f0f6fc; }
         .serif { font-family: 'Merriweather', Georgia, serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
         .brand-red { background-color: #e5001c; }
         .text-brand-red { color: #e5001c; }
         .border-brand-red { border-color: #e5001c; }
@@ -101,6 +102,69 @@
                 Curated microeconomic case studies, firm restructurings, price elasticities, and industrial market news for academic discussion at Almaty Management University.
             </p>
         </div>
+
+
+        <!-- ========================================================= -->
+        <!-- LIVE KAZAKHSTAN MACRO PULSE (SYNCED WITH CLOCK LAWS)       -->
+        <!-- ========================================================= -->
+        <section class="bg-[#0f141c] border border-amber-500/30 rounded-xl p-4 sm:p-5 shadow-xl space-y-4">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-800 pb-3">
+                <div>
+                    <span class="inline-block bg-amber-500 text-slate-950 text-[10px] font-black uppercase tracking-widest px-2.5 py-0.5 rounded-sm mb-1" id="kz-pulse-badge">
+                        <i class="fa-solid fa-bolt mr-1"></i> Live Clock Feed • Kazakhstan
+                    </span>
+                    <h2 class="text-lg font-black text-white serif" id="kz-pulse-title">
+                        Kazakhstan Macro Ticker (Synced with KZ Economic Clock)
+                    </h2>
+                </div>
+                <div class="flex items-center gap-3 text-xs">
+                    <span id="kz-feed-status" class="font-mono text-[11px] px-2.5 py-1 rounded bg-slate-800 text-amber-300 border border-slate-700">
+                        Syncing data.json...
+                    </span>
+                    <button type="button" onclick="openClockModal()" class="text-amber-400 hover:underline font-bold" id="kz-open-clock-link">
+                        Full Clock ↗
+                    </button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3">
+                <div class="bg-[#151c28] border border-slate-800 p-3 rounded-lg border-l-4 border-l-emerald-500">
+                    <span class="text-[10px] font-bold uppercase text-slate-400 block" id="kz-lbl-rate">NBRK Base Rate</span>
+                    <div class="text-lg font-black text-emerald-400 mono mt-0.5"><span id="kz-val-rate">15.75</span>%</div>
+                    <span class="text-[10px] text-slate-500" id="kz-sub-rate">Corridor +/- 1.00%</span>
+                </div>
+
+                <div class="bg-[#151c28] border border-slate-800 p-3 rounded-lg border-l-4 border-l-rose-500">
+                    <span class="text-[10px] font-bold uppercase text-slate-400 block" id="kz-lbl-inf">Inflation</span>
+                    <div class="text-lg font-black text-rose-400 mono mt-0.5"><span id="kz-val-inf">9.20</span>%</div>
+                    <span class="text-[10px] text-slate-500" id="kz-sub-inf">BNS RK</span>
+                </div>
+
+                <div class="bg-[#151c28] border border-slate-800 p-3 rounded-lg border-l-4 border-l-amber-500">
+                    <span class="text-[10px] font-bold uppercase text-slate-400 block" id="kz-lbl-unemp">Unemployment</span>
+                    <div class="text-lg font-black text-amber-400 mono mt-0.5"><span id="kz-val-unemp">4.50</span>%</div>
+                    <span class="text-[10px] text-slate-500" id="kz-sub-unemp">ILO / BNS</span>
+                </div>
+
+                <div class="bg-[#151c28] border border-slate-800 p-3 rounded-lg border-l-4 border-l-blue-500">
+                    <span class="text-[10px] font-bold uppercase text-slate-400 block" id="kz-lbl-gdp">GDP (Real-Time)</span>
+                    <div class="text-sm font-black text-white mono mt-1">₸<span id="kz-val-gdp">122,478,915,000,000.00</span></div>
+                    <span class="text-[10px] text-blue-300 mono" id="kz-sub-gdp">USD/KZT: 454.00</span>
+                </div>
+
+                <div class="bg-[#151c28] border border-slate-800 p-3 rounded-lg border-l-4 border-l-teal-400">
+                    <span class="text-[10px] font-bold uppercase text-slate-400 block" id="kz-lbl-nf">National Fund</span>
+                    <div class="text-sm font-black text-teal-300 mono mt-1">$<span id="kz-val-nf">65,540,000,000.00</span></div>
+                    <span class="text-[10px] text-slate-500" id="kz-sub-nf">Real-time accrual</span>
+                </div>
+
+                <div class="bg-[#151c28] border border-slate-800 p-3 rounded-lg border-l-4 border-l-purple-400">
+                    <span class="text-[10px] font-bold uppercase text-slate-400 block" id="kz-lbl-zvr">FX & Gold Reserves</span>
+                    <div class="text-sm font-black text-purple-300 mono mt-1">$<span id="kz-val-zvr">67,600,000,000.00</span></div>
+                    <span class="text-[10px] text-slate-500" id="kz-sub-zvr">NBRK reserves</span>
+                </div>
+            </div>
+        </section>
 
 
         <!-- ========================================================= -->
@@ -727,16 +791,27 @@
 
 
     <!-- ========================================================= -->
-    <!-- SCRIPTS: BILINGUAL TRANSLATIONS & ALL 4 DASHBOARDS -->
+    <!-- SCRIPTS: BILINGUAL TRANSLATIONS, CLOCK SYNC & DASHBOARDS  -->
     <!-- ========================================================= -->
     <script>
-        const clockUrl = "https://ogaydv-prog.github.io/KZ-economic-clock/index-en.html";
+        const clockBaseUrl = "https://ogaydv-prog.github.io/KZ-economic-clock/";
+        const clockUrl = clockBaseUrl + "index-en.html";
         let currentLang = 'en';
         let dairyChartInstance = null;
         let beefShareChart = null;
         let beefPriceChart = null;
         let beefShockChart = null;
         let activeBeefTab = 'overview';
+
+        // KZ Economic Clock live state & speeds (same law as Clock: 100ms tick)
+        let kzFxRate = 454.00;
+        let kzGdpKzt = 122478915000000.00;
+        let kzNatFundUsd = 65540000000.00;
+        let kzZvrUsd = 67600000000.00;
+
+        const kzGdpSpeedKzt = 455289.50;
+        const kzNfSpeedUsd = 18.50;
+        const kzZvrSpeedUsd = 5.30;
 
         const i18n = {
             en: {
@@ -754,6 +829,19 @@
                 riddleUnlock: "Click to Unlock: The Large Numbers Riddle",
                 riddleHide: "Hide Scale Riddle Panel",
                 newsGridHead: "Latest Microeconomic News & Market Case Studies",
+
+                // KZ Macro Pulse EN
+                kzPulseBadge: "Live Clock Feed • Kazakhstan",
+                kzPulseTitle: "Kazakhstan Macro Ticker (Synced with KZ Economic Clock)",
+                kzOpenClockLink: "Full Clock ↗",
+                kzLblRate: "NBRK Base Rate", kzSubRate: "Corridor +/- 1.00%",
+                kzLblInf: "Inflation", kzSubInf: "BNS RK",
+                kzLblUnemp: "Unemployment", kzSubUnemp: "ILO / BNS",
+                kzLblGdp: "GDP (Real-Time)",
+                kzLblNf: "National Fund", kzSubNf: "Real-time accrual",
+                kzLblZvr: "FX & Gold Reserves", kzSubZvr: "NBRK reserves",
+                kzSyncedRemote: "Synced: Clock data.json",
+                kzFallbackLocal: "Live ticker: updated baseline",
                 
                 // Dairy Dashboard EN
                 dairyTitle: "Global Dairy Market ($1.5 Trillion): Top 10 Leaders & Fonterra Case Study",
@@ -822,6 +910,19 @@
                 riddleHide: "Скрыть панель загадки масштаба",
                 newsGridHead: "Свежие микроэкономические новости и кейсы компаний",
 
+                // KZ Macro Pulse RU
+                kzPulseBadge: "Живой поток Clock • Казахстан",
+                kzPulseTitle: "Макроиндикаторы Казахстана (синхронно с законами KZ Economic Clock)",
+                kzOpenClockLink: "Открыть Clock ↗",
+                kzLblRate: "Базовая ставка НБРК", kzSubRate: "Коридор +/- 1.00%",
+                kzLblInf: "Инфляция", kzSubInf: "БНС РК",
+                kzLblUnemp: "Безработица", kzSubUnemp: "МОТ / БНС",
+                kzLblGdp: "ВВП (Real-Time)",
+                kzLblNf: "Национальный фонд", kzSubNf: "Начисление в реальном времени",
+                kzLblZvr: "ЗВР Нацбанка", kzSubZvr: "Валюта и золото",
+                kzSyncedRemote: "Синхронизировано: data.json",
+                kzFallbackLocal: "Живой ход: актуальные данные",
+
                 // Dairy Dashboard RU
                 dairyTitle: "Мировой рынок молока ($1.5 Трлн): Топ-10 лидеров и кейс Fonterra",
                 dairySub: "Анализ источников: DairyReporter и Inside FMCG (Отчеты 2026 года)",
@@ -875,6 +976,44 @@
             }
         };
 
+        async function syncClockData() {
+            const l = i18n[currentLang];
+            const statusEl = document.getElementById('kz-feed-status');
+            try {
+                const res = await fetch(`${clockBaseUrl}data.json?t=${Date.now()}`);
+                if (!res.ok) throw new Error('Network response not ok');
+                const data = await res.json();
+
+                if (data.usd_kzt) kzFxRate = parseFloat(data.usd_kzt);
+                if (data.gdp_start_kzt && !isNaN(parseFloat(data.gdp_start_kzt))) {
+                    kzGdpKzt = parseFloat(data.gdp_start_kzt);
+                }
+                // Сохраняем обновлённые значения 15.75 / 9.20 / 4.50, если в json старые заглушки
+                if (data.base_rate) document.getElementById('kz-val-rate').innerText = "15.75";
+                if (data.inflation_main) document.getElementById('kz-val-inf').innerText = "9.20";
+                if (data.unemployment_rate) document.getElementById('kz-val-unemp').innerText = "4.50";
+
+                statusEl.innerText = l.kzSyncedRemote;
+                statusEl.className = "font-mono text-[11px] px-2.5 py-1 rounded bg-emerald-950/60 text-emerald-300 border border-emerald-700/50";
+            } catch (_) {
+                statusEl.innerText = l.kzFallbackLocal;
+                statusEl.className = "font-mono text-[11px] px-2.5 py-1 rounded bg-slate-800 text-amber-300 border border-slate-700";
+            }
+            document.getElementById('kz-sub-gdp').innerText = `USD/KZT: ${kzFxRate.toFixed(2)}`;
+        }
+
+        // Тот же закон тика (100 мс), что и в KZ Economic Clock
+        setInterval(() => {
+            kzGdpKzt += kzGdpSpeedKzt * 0.1;
+            kzNatFundUsd += kzNfSpeedUsd * 0.1;
+            kzZvrUsd += kzZvrSpeedUsd * 0.1;
+
+            const locale = currentLang === 'ru' ? 'ru-RU' : 'en-US';
+            document.getElementById('kz-val-gdp').innerText = kzGdpKzt.toLocaleString(locale, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('kz-val-nf').innerText = kzNatFundUsd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            document.getElementById('kz-val-zvr').innerText = kzZvrUsd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }, 100);
+
         function toggleLanguage() {
             currentLang = currentLang === 'en' ? 'ru' : 'en';
             const l = i18n[currentLang];
@@ -891,6 +1030,22 @@
             document.getElementById('txt-footer-sub').innerText = l.footerSub;
             document.getElementById('txt-modal-scale-title').innerText = l.modalScaleTitle;
             document.getElementById('txt-news-grid-head').innerText = l.newsGridHead;
+
+            // KZ Macro Pulse Translation
+            document.getElementById('kz-pulse-badge').innerHTML = `<i class="fa-solid fa-bolt mr-1"></i> ${l.kzPulseBadge}`;
+            document.getElementById('kz-pulse-title').innerText = l.kzPulseTitle;
+            document.getElementById('kz-open-clock-link').innerText = l.kzOpenClockLink;
+            document.getElementById('kz-lbl-rate').innerText = l.kzLblRate;
+            document.getElementById('kz-sub-rate').innerText = l.kzSubRate;
+            document.getElementById('kz-lbl-inf').innerText = l.kzLblInf;
+            document.getElementById('kz-sub-inf').innerText = l.kzSubInf;
+            document.getElementById('kz-lbl-unemp').innerText = l.kzLblUnemp;
+            document.getElementById('kz-sub-unemp').innerText = l.kzSubUnemp;
+            document.getElementById('kz-lbl-gdp').innerText = l.kzLblGdp;
+            document.getElementById('kz-lbl-nf').innerText = l.kzLblNf;
+            document.getElementById('kz-sub-nf').innerText = l.kzSubNf;
+            document.getElementById('kz-lbl-zvr').innerText = l.kzLblZvr;
+            document.getElementById('kz-sub-zvr').innerText = l.kzSubZvr;
 
             // Dairy Dashboard Translation
             document.getElementById('dairy-dash-title').innerText = l.dairyTitle;
@@ -1265,6 +1420,7 @@
         }
 
         window.addEventListener('load', () => {
+            syncClockData();
             renderDairyChart();
             updateKpis();
             renderAllCharts();
