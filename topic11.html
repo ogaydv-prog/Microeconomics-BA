@@ -13,125 +13,131 @@
         }
 
         body {
-            background-color: #f8fafc;
+            background-color: #ffffff;
             color: #333333;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
-            position: relative;
+            padding: 20px 30px;
         }
 
-        /* Логотип прижат к левому краю на одной линии с названием темы */
+        /* Навигационная панель: логотип и кнопка напротив заголовка внутри контейнера */
+        .top-bar {
+            width: 100%;
+            max-width: 1220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            position: relative;
+            padding-top: 8px;
+        }
+
         .top-left-logo {
             position: absolute;
-            top: 22px;
-            left: 20px;
-            width: 56px;
-            height: 56px;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 58px;
+            height: 58px;
             object-fit: contain;
-            z-index: 10;
         }
 
-        /* Кнопка возврата симметрично прижата к правому краю на той же линии */
-        .back-button {
-            position: absolute;
-            top: 30px;
-            right: 20px;
-            text-decoration: none;
-            background-color: #001e50;
-            color: white;
-            padding: 9px 18px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 10px rgba(0, 30, 80, 0.15);
-            z-index: 10;
-        }
-
-        .back-button:hover {
-            background-color: #003380;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 14px rgba(0, 30, 80, 0.25);
-        }
-
-        header {
+        .header-titles {
             text-align: center;
-            margin-top: 10px;
-            margin-bottom: 30px;
-            padding: 0 190px;
+            padding: 0 175px 0 80px;
         }
 
         h1 {
             font-size: 28px;
             font-weight: 700;
             color: #001e50;
-            margin-bottom: 8px;
             line-height: 1.25;
+            margin-bottom: 6px;
         }
 
         .subtitle {
             font-size: 14px;
             color: #555555;
-            max-width: 760px;
-            line-height: 1.5;
+            line-height: 1.45;
+            max-width: 780px;
             margin: 0 auto;
         }
 
-        /* Сетка карточек с выравниванием в ряд */
+        .back-button {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            text-decoration: none;
+            background-color: #001e50;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            white-space: nowrap;
+            box-shadow: 0 4px 10px rgba(0, 30, 80, 0.15);
+        }
+
+        .back-button:hover {
+            background-color: #003380;
+            transform: translateY(calc(-50% - 2px));
+        }
+
+        /* Контейнер карточек */
         .grid-container {
             display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            max-width: 1250px;
+            flex-wrap: nowrap;
+            gap: 18px;
+            max-width: 1220px;
             width: 100%;
             justify-content: center;
             align-items: center;
             margin: auto 0;
-            padding-bottom: 40px;
+            padding: 25px 0;
         }
 
-        /* Карточка с точной подгонкой по высоте */
+        /* Карточки с оригинальной полной высотой без обрезки */
         .card {
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: block;
             text-decoration: none;
-            background: #ffffff;
-            border: 2px solid #cbd5e1;
+            background: #78350f;
+            border: 3px solid #78350f;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            width: 175px;
-            height: 262px;
+            box-shadow: 0 4px 14px rgba(120, 53, 15, 0.2);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            width: 185px;
+            height: 304px;
+            flex-shrink: 0;
+            cursor: pointer;
             position: relative;
-            padding: 4px;
+            padding: 1px;
         }
 
         .card img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            object-position: center top;
-            border-radius: 8px;
             display: block;
+            object-fit: fill;
+            border-radius: 8px;
         }
 
         .card:hover {
-            transform: translateY(-8px) scale(1.03);
-            border-color: #001e50;
-            box-shadow: 0 16px 30px rgba(0, 30, 80, 0.22);
+            transform: translateY(-10px) scale(1.05);
+            border: 3px solid #f59e0b;
+            box-shadow: 0 12px 30px rgba(245, 158, 11, 0.5), inset 0 0 12px rgba(245, 158, 11, 0.25);
         }
 
-        /* 3D-Flip карточка для Видео */
+        /* 3D FLIP CARD (Для 6-й карточки с 2 видео) */
         .flip-card {
-            background-color: transparent;
-            width: 175px;
-            height: 262px;
+            width: 185px;
+            height: 304px;
             perspective: 1000px;
+            flex-shrink: 0;
             cursor: pointer;
         }
 
@@ -140,46 +146,43 @@
             width: 100%;
             height: 100%;
             text-align: center;
-            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transform-style: preserve-3d;
+            border: 3px solid #78350f;
             border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(120, 53, 15, 0.2);
+            background: #001e50;
         }
 
         .flip-card:hover .flip-card-inner,
         .flip-card.flipped .flip-card-inner {
             transform: rotateY(180deg);
+            border: 3px solid #f59e0b;
+            box-shadow: 0 12px 30px rgba(245, 158, 11, 0.5), inset 0 0 12px rgba(245, 158, 11, 0.25);
         }
 
         .flip-card-front, .flip-card-back {
             position: absolute;
             width: 100%;
             height: 100%;
+            top: 0;
+            left: 0;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
-            border-radius: 12px;
+            border-radius: 8px;
             overflow: hidden;
-            border: 2px solid #cbd5e1;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            padding: 4px;
-            background: #ffffff;
+        }
+
+        .flip-card-front {
+            z-index: 2;
+            transform: rotateY(0deg);
         }
 
         .flip-card-front img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-            object-position: center top;
-            border-radius: 8px;
+            object-fit: fill;
             display: block;
-        }
-
-        .flip-card:hover .flip-card-front,
-        .flip-card:hover .flip-card-back,
-        .flip-card.flipped .flip-card-front,
-        .flip-card.flipped .flip-card-back {
-            border-color: #001e50;
-            box-shadow: 0 16px 30px rgba(0, 30, 80, 0.22);
         }
 
         .flip-card-back {
@@ -190,9 +193,9 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 12px;
-            gap: 10px;
-            border-radius: 12px;
+            padding: 16px 10px;
+            gap: 12px;
+            z-index: 1;
             pointer-events: none;
         }
 
@@ -202,111 +205,141 @@
         }
 
         .flip-card-back h3 {
-            font-size: 11px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #f59e0b;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            color: #38bdf8;
             margin-bottom: 2px;
+            border-bottom: 1px solid rgba(245, 158, 11, 0.4);
+            padding-bottom: 6px;
+            width: 100%;
         }
 
-        .video-link {
+        .video-btn {
             display: flex;
             align-items: center;
             justify-content: center;
             width: 100%;
-            padding: 9px 6px;
-            background: #ffffff;
-            color: #001e50;
+            padding: 10px 6px;
+            background: #002d72;
+            color: #ffffff;
             text-decoration: none;
-            border-radius: 8px;
-            font-size: 10px;
-            font-weight: 700;
+            font-size: 10.5px;
+            font-weight: 600;
+            border-radius: 6px;
+            border: 1px solid #f59e0b;
             transition: all 0.2s ease;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-            text-align: center;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
             line-height: 1.2;
+            cursor: pointer;
+            position: relative;
+            z-index: 10;
         }
 
-        .video-link:hover {
-            background: #38bdf8;
+        .video-btn:hover {
+            background: #f59e0b;
             color: #001e50;
+            font-weight: 700;
             transform: scale(1.04);
+            box-shadow: 0 0 12px rgba(245, 158, 11, 0.9);
         }
 
         footer {
             margin-top: auto;
-            font-size: 13px;
+            font-size: 14px;
             color: #718096;
-            padding-top: 20px;
+            padding-top: 30px;
             padding-bottom: 20px;
             text-align: center;
             line-height: 1.6;
         }
 
-        /* Мобильная адаптация под планшеты и смартфоны */
+        /* Планшеты и средние экраны */
+        @media (max-width: 1250px) {
+            .grid-container {
+                flex-wrap: wrap;
+                gap: 16px;
+            }
+        }
+
+        /* Мобильная адаптация под смартфоны: логотип сверху по центру, карточки в 2 колонки без обрезки */
         @media (max-width: 768px) {
             body {
-                padding: 14px 12px;
+                padding: 15px 12px;
+            }
+
+            .top-bar {
+                flex-direction: column;
+                justify-content: center;
+                gap: 10px;
+                margin-bottom: 18px;
+                padding-top: 0;
             }
 
             .top-left-logo {
                 position: static;
-                display: block;
-                margin: 0 auto 10px auto;
+                transform: none;
                 width: 52px;
                 height: 52px;
+                margin: 0 auto;
             }
 
-            .back-button {
-                position: static;
-                display: inline-block;
-                margin: 0 auto 16px auto;
-                padding: 8px 16px;
-                font-size: 13px;
-            }
-
-            header {
-                margin-top: 0;
-                margin-bottom: 20px;
-                padding: 0 8px;
+            .header-titles {
+                padding: 0 6px;
             }
 
             h1 {
-                font-size: 22px;
+                font-size: 21px;
             }
 
             .subtitle {
                 font-size: 13px;
-                line-height: 1.4;
+            }
+
+            .back-button {
+                position: static;
+                transform: none;
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+
+            .back-button:hover {
+                transform: translateY(-2px);
             }
 
             .grid-container {
                 display: grid;
-                grid-template-columns: repeat(2, minmax(140px, 165px));
+                grid-template-columns: repeat(2, minmax(140px, 175px));
                 justify-content: center;
                 gap: 14px;
+                margin: 8px 0;
+                padding: 10px 0 24px;
                 width: 100%;
-                padding-bottom: 25px;
             }
 
             .card, .flip-card {
                 width: 100%;
                 height: auto;
-                aspect-ratio: 175 / 262;
+                aspect-ratio: 185 / 304;
+            }
+
+            .card:hover {
+                transform: translateY(-4px) scale(1.02);
             }
 
             .flip-card-back {
-                padding: 8px;
-                gap: 6px;
+                padding: 10px 8px;
+                gap: 8px;
             }
 
             .flip-card-back h3 {
                 font-size: 10px;
             }
 
-            .video-link {
-                font-size: 9px;
-                padding: 7px 4px;
+            .video-btn {
+                font-size: 9.5px;
+                padding: 8px 4px;
             }
 
             footer {
@@ -317,20 +350,21 @@
 </head>
 <body>
 
-    <!-- Логотип AlmaU в левом верхнем углу напротив заголовка -->
-    <img src="almau.jpg" alt="AlmaU Logo" class="top-left-logo" onerror="this.onerror=null; this.src='almau.png';">
+    <!-- Верхняя панель -->
+    <div class="top-bar">
+        <img src="almau.jpg" alt="AlmaU Logo" class="top-left-logo" onerror="this.onerror=null; this.src='almau.png';">
+        <div class="header-titles">
+            <h1>Тема 11: Общественные блага, экстерналии и государственное регулирование</h1>
+            <p class="subtitle">
+                Выберите учебный материал ниже: лекционный конспект, интерактивную презентацию, симуляторы общественных благ и регулирования или видеолекции.
+            </p>
+        </div>
+        <a href="topics.html" class="back-button">← К темам курса</a>
+    </div>
 
-    <!-- Кнопка возврата в правом верхнем углу на той же линии -->
-    <a href="topics.html" class="back-button">← К темам курса</a>
-
-    <header>
-        <h1>Тема 11: Общественные блага, экстерналии и государственное регулирование</h1>
-        <p class="subtitle">
-            Выберите учебный материал ниже: лекционный конспект, интерактивную презентацию, симуляторы общественных благ и регулирования или видеолекции.
-        </p>
-    </header>
-
+    <!-- Основная сетка карточек -->
     <main class="grid-container">
+        
         <!-- 1. Конспект лекции (Reader) -->
         <a href="gre.html" class="card" title="Электронный лекционный конспект">
             <img src="pic-lecture9.png" alt="Конспект лекции">
@@ -364,20 +398,21 @@
                 <div class="flip-card-front">
                     <img src="pic-video9.png" alt="Видеолекции">
                 </div>
-                <!-- Обратная сторона -->
+                <!-- Обратная сторона с 2 видеокнопками -->
                 <div class="flip-card-back">
                     <h3>Видеолекции</h3>
                     <a href="https://www.youtube.com/watch?v=Lp9cvR6LNrE&t=8s" 
-                       target="_blank" rel="noopener noreferrer" class="video-link" onclick="event.stopPropagation()">
+                       target="_blank" rel="noopener noreferrer" class="video-btn" onclick="event.stopPropagation()">
                         ▶ Часть 1: Блага & Экстерналии
                     </a>
                     <a href="https://www.youtube.com/watch?v=7F8ifv7UnhU&list=PLGssI1JnCp5tLzqscvLuyB7mT7Ij7Y7Qs&index=18" 
-                       target="_blank" rel="noopener noreferrer" class="video-link" onclick="event.stopPropagation()">
+                       target="_blank" rel="noopener noreferrer" class="video-btn" onclick="event.stopPropagation()">
                         ▶ Часть 2: Гос. регулирование
                     </a>
                 </div>
             </div>
         </div>
+
     </main>
 
     <footer>
