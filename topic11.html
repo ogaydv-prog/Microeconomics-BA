@@ -99,11 +99,11 @@
         .card {
             display: block;
             text-decoration: none;
-            background: #78350f;
-            border: 3px solid #78350f;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 4px 14px rgba(120, 53, 15, 0.2);
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             width: 185px;
             height: 304px;
@@ -118,13 +118,13 @@
             height: 100%;
             display: block;
             object-fit: fill;
-            border-radius: 8px;
+            border-radius: 10px;
         }
 
         .card:hover {
             transform: translateY(-10px) scale(1.05);
-            border: 3px solid #f59e0b;
-            box-shadow: 0 12px 30px rgba(245, 158, 11, 0.5), inset 0 0 12px rgba(245, 158, 11, 0.25);
+            border: 2.5px solid #64748b;
+            box-shadow: 0 14px 28px rgba(100, 116, 139, 0.35), 0 0 14px rgba(148, 163, 184, 0.45);
         }
 
         /* 3D FLIP CARD (Для 6-й карточки с 2 видео) */
@@ -143,17 +143,17 @@
             text-align: center;
             transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             transform-style: preserve-3d;
-            border: 3px solid #78350f;
+            border: 1px solid #cbd5e1;
             border-radius: 12px;
-            box-shadow: 0 4px 14px rgba(120, 53, 15, 0.2);
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
             background: #001e50;
         }
 
         .flip-card:hover .flip-card-inner,
         .flip-card.flipped .flip-card-inner {
-            transform: rotateY(180deg);
-            border: 3px solid #f59e0b;
-            box-shadow: 0 12px 30px rgba(245, 158, 11, 0.5), inset 0 0 12px rgba(245, 158, 11, 0.25);
+            transform: rotateY(180deg) scale(1.05);
+            border: 2.5px solid #64748b;
+            box-shadow: 0 14px 28px rgba(100, 116, 139, 0.35), 0 0 14px rgba(148, 163, 184, 0.45);
         }
 
         .flip-card-front, .flip-card-back {
@@ -164,7 +164,7 @@
             left: 0;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
-            border-radius: 8px;
+            border-radius: 10px;
             overflow: hidden;
         }
 
@@ -352,14 +352,14 @@
 
     <!-- Основная сетка карточек -->
     <main class="grid-container">
-        
+
         <!-- 1. Конспект лекции (Reader) -->
         <a href="gre.html" class="card" title="Электронный лекционный конспект">
             <img src="pic-lecture9.png" alt="Конспект лекции">
         </a>
 
         <!-- 2. Презентация (Google Slides) -->
-        <a href="https://docs.google.com/presentation/d/1stX-mkcUYBy6hNQXsNonOZbKO6YZj51F/edit?usp=sharing&ouid=109725301150629205728&rtpof=true&sd=true" 
+        <a href="https://docs.google.com/presentation/d/1stX-mkcUYBy6hNQXsNonOZbKO6YZj51F/edit?usp=sharing&ouid=109725301150629205728&rtpof=true&sd=true"
            target="_blank" rel="noopener noreferrer" class="card" title="Презентация по теме 11">
             <img src="pic-preza9.png" alt="Презентация по теме 11">
         </a>
@@ -389,11 +389,11 @@
                 <!-- Обратная сторона с 2 видеокнопками -->
                 <div class="flip-card-back">
                     <h3>Видеолекции</h3>
-                    <a href="https://www.youtube.com/watch?v=Lp9cvR6LNrE&t=8s" 
+                    <a href="https://www.youtube.com/watch?v=Lp9cvR6LNrE&t=8s"
                        target="_blank" rel="noopener noreferrer" class="video-btn" onclick="event.stopPropagation()">
                         ▶ Часть 1: Блага & Экстерналии
                     </a>
-                    <a href="https://www.youtube.com/watch?v=7F8ifv7UnhU&list=PLGssI1JnCp5tLzqscvLuyB7mT7Ij7Y7Qs&index=18" 
+                    <a href="https://www.youtube.com/watch?v=7F8ifv7UnhU&list=PLGssI1JnCp5tLzqscvLuyB7mT7Ij7Y7Qs&index=18"
                        target="_blank" rel="noopener noreferrer" class="video-btn" onclick="event.stopPropagation()">
                         ▶ Часть 2: Гос. регулирование
                     </a>
@@ -404,8 +404,8 @@
     </main>
 
     <footer>
-        <p>Разработано для студентов Microeconomics BA AlmaU 2026 | Курс: Микроэкономика</p>
-        <p>© Almaty Management University | Школа цифровых технологий и экономики</p>
+        <p>Разработано для студентов БАиЭ | Микроэкономика</p>
+        <p>Школа цифровых технологий и экономики | AlmaU</p>
     </footer>
 
 </body>
