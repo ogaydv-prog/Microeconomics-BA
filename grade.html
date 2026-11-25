@@ -67,11 +67,6 @@
                     <span class="h-2 w-2 bg-indigo-400 rounded-full animate-pulse"></span>
                     <span>Режим студента</span>
                 </div>
-                
-                <button id="auth-action-btn" onclick="openAuthModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-xs sm:text-sm font-semibold transition-all border border-slate-700 hover:border-slate-600 flex items-center space-x-2">
-                    <i class="fa-solid fa-user-tie text-indigo-400"></i>
-                    <span id="auth-btn-text">Портал преподавателя</span>
-                </button>
             </div>
         </div>
     </header>
@@ -487,27 +482,6 @@
 
     </main>
 
-    <!-- Модальное окно авторизации преподавателя -->
-    <div id="auth-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200">
-        <div class="bg-slate-900 p-6 rounded-2xl max-w-sm w-full mx-4 shadow-2xl border border-slate-800 transform scale-95 transition-transform duration-200">
-            <div class="h-12 w-12 bg-indigo-500/10 text-indigo-400 rounded-full flex items-center justify-center text-xl mb-4 border border-indigo-500/20">
-                <i class="fa-solid fa-key"></i>
-            </div>
-            <h3 class="text-lg font-extrabold text-white">Доступ преподавателя</h3>
-            <p class="text-slate-400 text-xs mt-1">Введите пароль для входа в панель управления.</p>
-            
-            <div class="mt-4">
-                <input type="password" id="auth-password" onkeydown="handleAuthKeyDown(event)" placeholder="Введите пароль..." 
-                    class="w-full px-3.5 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder-slate-700">
-            </div>
-            
-            <div class="mt-6 flex justify-end space-x-3">
-                <button onclick="closeAuthModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold rounded-xl text-xs transition-colors">Отмена</button>
-                <button onclick="verifyTeacherPassword()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-xs transition-colors shadow-lg shadow-indigo-600/30">Войти</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Модальное окно подтверждения сброса -->
     <div id="confirm-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-200">
         <div class="bg-slate-900 p-6 rounded-2xl max-w-md w-full mx-4 shadow-2xl border border-slate-800 transform scale-95 transition-transform duration-200">
@@ -575,11 +549,17 @@
     </div>
 
     <!-- Всплывающие уведомления (Toast) -->
-    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-2"></div>
+    <div id="toast-container" class="fixed bottom-12 right-5 z-50 flex flex-col space-y-2"></div>
+
+    <!-- Скрытый маленький ключик переключения режима в правом нижнем углу -->
+    <button id="secret-teacher-key" onclick="toggleTeacherMode()" title="Переключить режим преподавателя"
+        class="fixed bottom-3 right-3 z-50 w-7 h-7 rounded-full flex items-center justify-center text-slate-600/40 hover:text-indigo-400/90 hover:bg-slate-900/70 transition-all duration-300 opacity-25 hover:opacity-100 focus:outline-none">
+        <i class="fa-solid fa-key text-[11px]"></i>
+    </button>
 
     <!-- Подвал -->
     <footer class="bg-slate-950 border-t border-slate-900 py-6 text-center text-xs text-slate-500">
-        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+        <div class="max-w-7xl mx-auto px-4 pr-12 flex flex-col sm:flex-row justify-between items-center gap-3">
             <p>© 2026 ALMAU Школа Цифровых Технологий и Экономики. Все права защищены.</p>
             <p class="text-slate-600">Силлабус: Пос (10%) | Акт (10%) | ТК1 (10%) | РК1 (10%) | ТК2 (10%) | РК2 (10%) | Экзамен (40%)</p>
         </div>
@@ -636,9 +616,6 @@
         let personalExamChart = null;
         let groupChart = null;
         let isTeacherMode = false;
-        
-        // Пароль для входа преподавателя
-        const correctPassword = 'MIC-12092026';
 
         let activeEditingStudentId = null;
         let tempAttendanceHours = [];
@@ -665,10 +642,10 @@
                 try {
                     students = JSON.parse(savedData);
                 } catch(e) {
-                    students = initialGroupStudents;
+                    students = JSON.parse(JSON.stringify(initialGroupStudents));
                 }
             } else {
-                students = initialGroupStudents;
+                students = JSON.parse(JSON.stringify(initialGroupStudents));
             }
             students.forEach(student => ensureAttendanceHours(student));
         }
@@ -861,23 +838,14 @@
             circle.style.strokeDashoffset = strokeOffset;
         }
 
-        function verifyTeacherPassword() {
-            const pwdInput = document.getElementById('auth-password');
-            if (pwdInput.value === correctPassword) {
-                isTeacherMode = true;
-                pwdInput.value = '';
-                closeAuthModal();
-                updateViewMode();
-                showToast('Доступ к кабинету преподавателя открыт.', 'success');
+        // Мгновенное переключение между режимом студента и кабинетом преподавателя по клику на ключик
+        function toggleTeacherMode() {
+            isTeacherMode = !isTeacherMode;
+            updateViewMode();
+            if (isTeacherMode) {
+                showToast('Открыт кабинет преподавателя.', 'success');
             } else {
-                showToast('Неверный пароль доступа!', 'error');
-                pwdInput.select();
-            }
-        }
-
-        function handleAuthKeyDown(event) {
-            if (event.key === 'Enter') {
-                verifyTeacherPassword();
+                showToast('Переключено в режим студента.', 'info');
             }
         }
 
@@ -885,47 +853,24 @@
             const studentView = document.getElementById('student-view');
             const teacherView = document.getElementById('teacher-view');
             const badge = document.getElementById('mode-badge');
-            const authBtnText = document.getElementById('auth-btn-text');
+            const keyBtn = document.getElementById('secret-teacher-key');
 
             if (isTeacherMode) {
                 studentView.classList.add('hidden');
                 teacherView.classList.remove('hidden');
                 badge.innerHTML = `<span class="h-2 w-2 bg-emerald-400 rounded-full animate-pulse"></span><span>Режим преподавателя</span>`;
                 badge.className = "px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center space-x-1.5";
-                authBtnText.textContent = "Выйти из кабинета";
+                keyBtn.classList.remove('text-slate-600/40', 'opacity-25');
+                keyBtn.classList.add('text-emerald-400/80', 'opacity-60');
                 updateDashboardData();
             } else {
                 studentView.classList.remove('hidden');
                 teacherView.classList.add('hidden');
                 badge.innerHTML = `<span class="h-2 w-2 bg-indigo-400 rounded-full animate-pulse"></span><span>Режим студента</span>`;
                 badge.className = "px-3.5 py-1.5 rounded-full text-xs font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 flex items-center space-x-1.5";
-                authBtnText.textContent = "Портал преподавателя";
+                keyBtn.classList.remove('text-emerald-400/80', 'opacity-60');
+                keyBtn.classList.add('text-slate-600/40', 'opacity-25');
             }
-        }
-
-        function openAuthModal() {
-            if (isTeacherMode) {
-                isTeacherMode = false;
-                updateViewMode();
-                showToast('Сессия завершена.', 'info');
-                return;
-            }
-            const modal = document.getElementById('auth-modal');
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                modal.querySelector('div').classList.remove('scale-95');
-                document.getElementById('auth-password').focus();
-            }, 10);
-        }
-
-        function closeAuthModal() {
-            const modal = document.getElementById('auth-modal');
-            modal.classList.add('opacity-0');
-            modal.querySelector('div').classList.add('scale-95');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 200);
         }
 
         function renderTeacherTable(filterQuery = '') {
@@ -1412,7 +1357,7 @@
         }
 
         function resetAllData() {
-            students = initialGroupStudents;
+            students = JSON.parse(JSON.stringify(initialGroupStudents));
             students.forEach(student => ensureAttendanceHours(student));
             saveDatabase();
             updateDashboardData();
