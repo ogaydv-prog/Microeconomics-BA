@@ -312,7 +312,7 @@
                             Кривая нормального распределения баллов (Bell Curve / Кривая Гаусса)
                         </h3>
                         <p class="text-xs text-slate-400 mt-0.5">
-                            Сравнение фактического распределения оценок с теоретической кривой Гаусса
+                            Сравнение фактического распределения оценок с теоретической кривой Гаусса и регламентом AlmaU (п. 8.2)
                         </p>
                     </div>
                     <div class="flex flex-wrap items-center gap-3">
@@ -331,6 +331,39 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Блок контроля соответствия регламенту AlmaU (п. 8.2 Bell Curve) -->
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-3 bg-slate-950/80 p-3.5 rounded-xl border border-slate-800/90 text-xs">
+                    <div class="flex flex-col justify-between bg-slate-900/70 px-3 py-2 rounded-lg border border-slate-800">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase">Отлично (A, A- / 90–100)</span>
+                        <div class="flex items-baseline justify-between mt-1">
+                            <span id="bell-reg-a-val" class="font-extrabold text-sm text-emerald-400">0.0% (0 чел.)</span>
+                            <span class="text-[10px] text-slate-500">Норма ≤15% (+5%)</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col justify-between bg-slate-900/70 px-3 py-2 rounded-lg border border-slate-800">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase">Неуд. (F, FX / &lt;50)</span>
+                        <div class="flex items-baseline justify-between mt-1">
+                            <span id="bell-reg-f-val" class="font-extrabold text-sm text-emerald-400">0.0% (0 чел.)</span>
+                            <span class="text-[10px] text-slate-500">Норма ≤15% (+5%)</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col justify-between bg-slate-900/70 px-3 py-2 rounded-lg border border-slate-800">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase">Сумма крайних (A/A- + F/FX)</span>
+                        <div class="flex items-baseline justify-between mt-1">
+                            <span id="bell-reg-sum-val" class="font-extrabold text-sm text-indigo-300">0.0%</span>
+                            <span class="text-[10px] text-slate-500">Лимит ≤30% (+10%)</span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col justify-between bg-slate-900/70 px-3 py-2 rounded-lg border border-slate-800">
+                        <span class="text-[10px] font-bold text-slate-400 uppercase">Статус по п. 8.2 AlmaU</span>
+                        <div id="bell-reg-status" class="mt-1 font-bold text-xs text-emerald-400 flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-check"></i>
+                            <span>В пределах нормы</span>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="relative w-full h-72">
                     <canvas id="bellCurveCanvas"></canvas>
                 </div>
@@ -621,10 +654,6 @@
             "Неделя 15"
         ];
 
-        // Единый источник данных, вшитый напрямую в HTML-код:
-        // activities = Активность (Акт)
-        // ca1 = ТК 1, mc1 = РК 1, ca2 = ТК 2, mc2 = РК 2, exam = Экзамен
-        // absences = номера часов (1..39), где стоит отметка «н» (недели 14-15 = часы 40..45 пока не отмечены)
         const platonusData = [
             { name: "Айболқызы Алиназ", activities: 30, ca1: 65.00, mc1: 65.00, ca2: 73, mc2: 0, exam: 0, absences: [] },
             { name: "Айткали Амир Русланулы", activities: 30, ca1: 74.33, mc1: 74.33, ca2: 75, mc2: 0, exam: 0, absences: [4, 10] },
@@ -910,7 +939,7 @@
             renderBellCurveChart();
         }
 
-        /* КРИВАЯ БЕЛЛА: ФАКТИЧЕСКИЙ ПРОФИЛЬ + ЗОЛОТОЙ ЭТАЛОН ГАУССА */
+        /* КРИВАЯ БЕЛЛА: ФАКТИЧЕСКИЙ ПРОФИЛЬ + ИДЕАЛЬНЫЙ ГАУСС + КОНТРОЛЬ ПО П. 8.2 ALMAU */
         function renderBellCurveChart() {
             if (bellCurveChart) bellCurveChart.destroy();
 
@@ -934,7 +963,7 @@
             document.getElementById('bell-mean-val').textContent = mean.toFixed(1);
             document.getElementById('bell-std-val').textContent = stdDev.toFixed(1);
 
-            const bins = ['0-49', '50-59', '60-69', '70-79', '80-89', '90-100'];
+            const bins = ['0-49 (F)', '50-59 (D)', '60-69 (C)', '70-79 (B-/C+)', '80-89 (B/B+)', '90-100 (A/A-)'];
             const counts = [0, 0, 0, 0, 0, 0];
 
             scores.forEach(s => {
@@ -946,24 +975,59 @@
                 else counts[5]++;
             });
 
+            // Проверка соответствия регламенту AlmaU (п. 8.2):
+            // A/A- (90-100) <= 15% (допуск +5% => 20%)
+            // F/FX (<50) <= 15% (допуск +5% => 20%)
+            // Суммарно <= 30% (допуск +10% => 40%)
+            const countF = counts[0];
+            const countA = counts[5];
+            const pctA = (countA / n) * 100;
+            const pctF = (countF / n) * 100;
+            const pctSum = pctA + pctF;
+
+            const elA = document.getElementById('bell-reg-a-val');
+            const elF = document.getElementById('bell-reg-f-val');
+            const elSum = document.getElementById('bell-reg-sum-val');
+            const elStatus = document.getElementById('bell-reg-status');
+
+            elA.textContent = `${pctA.toFixed(1)}% (${countA} чел.)`;
+            elA.className = `font-extrabold text-sm ${pctA <= 15 ? 'text-emerald-400' : (pctA <= 20 ? 'text-amber-400' : 'text-rose-400')}`;
+
+            elF.textContent = `${pctF.toFixed(1)}% (${countF} чел.)`;
+            elF.className = `font-extrabold text-sm ${pctF <= 15 ? 'text-emerald-400' : (pctF <= 20 ? 'text-amber-400' : 'text-rose-400')}`;
+
+            elSum.textContent = `${pctSum.toFixed(1)}%`;
+            elSum.className = `font-extrabold text-sm ${pctSum <= 30 ? 'text-indigo-300' : (pctSum <= 40 ? 'text-amber-400' : 'text-rose-400')}`;
+
+            if (pctA <= 15 && pctF <= 15 && pctSum <= 30) {
+                elStatus.className = 'mt-1 font-bold text-xs text-emerald-400 flex items-center gap-1.5';
+                elStatus.innerHTML = `<i class="fa-solid fa-circle-check"></i><span>Отклонений нет (строго в норме)</span>`;
+            } else if (pctA <= 20 && pctF <= 20 && pctSum <= 40) {
+                elStatus.className = 'mt-1 font-bold text-xs text-amber-400 flex items-center gap-1.5';
+                elStatus.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i><span>В пределах допуска (+5%)</span>`;
+            } else {
+                elStatus.className = 'mt-1 font-bold text-xs text-rose-400 flex items-center gap-1.5';
+                elStatus.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i><span>Отклонение > 5% от нормы</span>`;
+            }
+
             const actualProfilePoints = counts.map(val => val);
 
+            // Идеальная кривая Гаусса с целевым центром группы (mu = 72, sigma = 14 -> A/A- ~10%, F ~6%, пик на 70-79)
             function gaussianPDF(x, mu, sigma) {
                 return (1 / (sigma * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mu) / sigma, 2));
             }
 
-            const binCenters = [25, 54.5, 64.5, 74.5, 84.5, 95];
-            const binWidths = [50, 10, 10, 10, 10, 10];
+            const idealMu = 72;
+            const idealSigma = 14;
+            const binCenters = [35, 54.5, 64.5, 74.5, 84.5, 95];
+            const binWidths = [30, 10, 10, 10, 10, 10];
 
-            const rawTheoretical = binCenters.map((center, idx) => {
-                return gaussianPDF(center, mean, stdDev) * binWidths[idx] * n;
+            const idealGaussianPoints = binCenters.map((center, idx) => {
+                const prob = gaussianPDF(center, idealMu, idealSigma) * binWidths[idx];
+                return parseFloat((prob * n).toFixed(2));
             });
 
-            const peakTheoretical = gaussianPDF(mean, mean, stdDev) * 10 * n;
             const maxActual = Math.max(...counts, 1);
-            const scaleFactor = maxActual / Math.max(peakTheoretical, 0.001);
-
-            const idealGaussianPoints = rawTheoretical.map(val => parseFloat((val * scaleFactor).toFixed(2)));
             const yAxisCeiling = Math.ceil(Math.max(maxActual, ...idealGaussianPoints)) + 2;
 
             const ctx = document.getElementById('bellCurveCanvas').getContext('2d');
@@ -974,7 +1038,7 @@
                     datasets: [
                         {
                             type: 'bar',
-                            label: 'Фактически студентов (Барчат)',
+                            label: 'Фактически студентов',
                             data: counts,
                             backgroundColor: 'rgba(99, 102, 241, 0.45)',
                             borderColor: '#6366f1',
@@ -984,7 +1048,7 @@
                         },
                         {
                             type: 'line',
-                            label: 'Фактический профиль (Огибающая)',
+                            label: 'Фактический профиль группы',
                             data: actualProfilePoints,
                             borderColor: '#c084fc',
                             borderWidth: 3,
@@ -996,7 +1060,7 @@
                         },
                         {
                             type: 'line',
-                            label: 'Идеальный Гаусс (Эталон)',
+                            label: 'Идеальная кривая Бэлла (Эталон AlmaU)',
                             data: idealGaussianPoints,
                             borderColor: '#f59e0b',
                             borderWidth: 2,
