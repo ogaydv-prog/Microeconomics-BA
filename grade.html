@@ -303,6 +303,37 @@
                 </div>
             </div>
 
+            <!-- КРИВАЯ БЕЛЛА (НОРМАЛЬНОЕ РАСПРЕДЕЛЕНИЕ ГАУССА) -->
+            <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-2xl space-y-4">
+                <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-3 border-b border-slate-800 pb-4">
+                    <div>
+                        <h3 class="text-base font-extrabold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-chart-area text-indigo-400"></i>
+                            Кривая нормального распределения баллов (Bell Curve / Кривая Гаусса)
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-0.5">
+                            Сравнение фактического распределения оценок с теоретической кривой Гаусса
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-3">
+                        <div class="flex items-center space-x-1 bg-slate-950 p-1 rounded-xl border border-slate-800 text-[11px] font-bold">
+                            <button onclick="setBellMetric('mc1')" id="bell-btn-mc1" class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white transition-all">РК 1</button>
+                            <button onclick="setBellMetric('ca1')" id="bell-btn-ca1" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-all">ТК 1</button>
+                            <button onclick="setBellMetric('total')" id="bell-btn-total" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-all">Итог</button>
+                            <button onclick="setBellMetric('mc2')" id="bell-btn-mc2" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-all">РК 2</button>
+                            <button onclick="setBellMetric('exam')" id="bell-btn-exam" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-all">Экзамен</button>
+                        </div>
+                        <div class="flex items-center space-x-3 text-xs bg-slate-950 px-3.5 py-1.5 rounded-xl border border-slate-800 font-mono">
+                            <span class="text-indigo-400 font-bold">μ (Среднее): <span id="bell-mean-val" class="text-white">0.0</span></span>
+                            <span class="text-violet-400 font-bold">σ (Отклонение): <span id="bell-std-val" class="text-white">0.0</span></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative w-full h-64">
+                    <canvas id="bellCurveCanvas"></canvas>
+                </div>
+            </div>
+
             <!-- Общий график успеваемости группы -->
             <div class="bg-slate-900 rounded-2xl border border-slate-800 p-6 shadow-2xl">
                 <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
@@ -364,8 +395,8 @@
                                         <th class="py-3.5 px-3">Студент (Микроэкономика BA)</th>
                                         <th class="py-3.5 px-1.5 text-center w-16">Пос (10%)</th>
                                         <th class="py-3.5 px-1.5 text-center w-14">Акт (10%)</th>
-                                        <th class="py-3.5 px-1.5 text-center w-14">ТК1 (10%)</th>
-                                        <th class="py-3.5 px-1.5 text-center w-14">РК1 (10%)</th>
+                                        <th class="py-3.5 px-1.5 text-center w-16">ТК1 (10%)</th>
+                                        <th class="py-3.5 px-1.5 text-center w-16">РК1 (10%)</th>
                                         <th class="py-3.5 px-1.5 text-center w-14">ТК2 (10%)</th>
                                         <th class="py-3.5 px-1.5 text-center w-14">РК2 (10%)</th>
                                         <th class="py-3.5 px-1.5 text-center w-14">Экз (40%)</th>
@@ -433,37 +464,37 @@
                             <div class="grid grid-cols-4 gap-2">
                                 <div>
                                     <label class="block text-[8px] font-bold text-slate-400 mb-1" title="Посещаемость">Пос</label>
-                                    <input type="number" id="add-student-attendance" min="0" max="100" placeholder="0" 
+                                    <input type="number" step="any" id="add-student-attendance" min="0" max="100" placeholder="0" 
                                         class="w-full px-1.5 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 </div>
                                 <div>
                                     <label class="block text-[8px] font-bold text-slate-400 mb-1" title="Активность">Акт</label>
-                                    <input type="number" id="add-student-activities" min="0" max="100" placeholder="0" 
+                                    <input type="number" step="any" id="add-student-activities" min="0" max="100" placeholder="0" 
                                         class="w-full px-1.5 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 </div>
                                 <div>
                                     <label class="block text-[8px] font-bold text-slate-400 mb-1" title="Текущий контроль 1">ТК 1</label>
-                                    <input type="number" id="add-student-ca1" min="0" max="100" placeholder="0" 
+                                    <input type="number" step="any" id="add-student-ca1" min="0" max="100" placeholder="0" 
                                         class="w-full px-1.5 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 </div>
                                 <div>
                                     <label class="block text-[8px] font-bold text-slate-400 mb-1" title="Рубежный контроль 1">РК 1</label>
-                                    <input type="number" id="add-student-mc1" min="0" max="100" placeholder="0" 
+                                    <input type="number" step="any" id="add-student-mc1" min="0" max="100" placeholder="0" 
                                         class="w-full px-1.5 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 </div>
                                 <div>
                                     <label class="block text-[8px] font-bold text-slate-400 mb-1" title="Текущий контроль 2">ТК 2</label>
-                                    <input type="number" id="add-student-ca2" min="0" max="100" placeholder="0" 
+                                    <input type="number" step="any" id="add-student-ca2" min="0" max="100" placeholder="0" 
                                         class="w-full px-1.5 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 </div>
                                 <div>
                                     <label class="block text-[8px] font-bold text-slate-400 mb-1" title="Рубежный контроль 2">РК 2</label>
-                                    <input type="number" id="add-student-mc2" min="0" max="100" placeholder="0" 
+                                    <input type="number" step="any" id="add-student-mc2" min="0" max="100" placeholder="0" 
                                         class="w-full px-1.5 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 </div>
                                 <div class="col-span-2">
                                     <label class="block text-[8px] font-bold text-slate-400 mb-1" title="Экзамен">Экзамен (40%)</label>
-                                    <input type="number" id="add-student-exam" min="0" max="100" placeholder="0" 
+                                    <input type="number" step="any" id="add-student-exam" min="0" max="100" placeholder="0" 
                                         class="w-full px-1.5 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500">
                                 </div>
                             </div>
@@ -489,7 +520,7 @@
                 <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
             <h3 class="text-lg font-bold text-white">Вы уверены?</h3>
-            <p class="text-slate-400 text-xs mt-2">Это действие сбросит текущие оценки всех студентов к начальным значениям. Отменить операцию будет невозможно.</p>
+            <p class="text-slate-400 text-xs mt-2">Это действие сбросит текущие оценки и посещаемость к загруженным данным из Platonus.</p>
             <div class="mt-6 flex justify-end space-x-3">
                 <button onclick="closeConfirmModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold rounded-xl text-xs transition-colors">Отмена</button>
                 <button onclick="resetAllData()" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-xl text-xs transition-colors shadow-lg shadow-rose-600/30">Сбросить базу</button>
@@ -566,47 +597,78 @@
     </footer>
 
     <script>
-        const STORAGE_KEY = 'almau_micro_ba_students_2026_v2';
-
-        // Полный список академической группы (19 человек в алфавитном порядке)
-        const rawStudentList = [
-            "Айболқызы Алиназ",
-            "Айткали Амир Русланулы",
-            "Амантай Әмина Бейбітқызы",
-            "Гуляев Никита",
-            "Ефремов Далир",
-            "Жалпакова Ажар Бауыржановна",
-            "Казумов Руслан",
-            "Канатова Сауле Канатовна",
-            "Ким Екатерина Максимовна",
-            "Курбанов Игорь",
-            "Марат Жанибек",
-            "Мехтипур Альберт Мерабович",
-            "Рамазанова Аяла Амиржановна",
-            "Снесарев Даниил",
-            "Ткаченко Алина",
-            "Тойбай Тогжан",
-            "Тухтамова Анель Романовна",
-            "Чаблина Карина Сергеевна",
-            "Құдайберген Бақыт Нұрланұлы"
-        ];
-
-        // Всего часов посещаемости: 15 недель * 3 часа = 45 часов
+        const STORAGE_KEY = 'almau_micro_ba_students_2026_v3';
         const TOTAL_ATTENDANCE_HOURS = 45;
 
-        // Инициализация структуры данных студентов
-        const initialGroupStudents = rawStudentList.map((stName, idx) => {
+        const weekLabels = [
+            "Неделя 1 (27 авг)",
+            "Неделя 2 (3 сен)",
+            "Неделя 3 (10 сен)",
+            "Неделя 4 (17 сен)",
+            "Неделя 5 (24 сен)",
+            "Неделя 6 (1 окт)",
+            "Неделя 7 (8 окт)",
+            "Неделя 8 (15 окт)",
+            "Неделя 9 (22 окт)",
+            "Неделя 10 (29 окт)",
+            "Неделя 11 (5 ноя)",
+            "Неделя 12 (12 ноя)",
+            "Неделя 13 (19 ноя)",
+            "Неделя 14",
+            "Неделя 15"
+        ];
+
+        // Данные из Platonus:
+        // ca1 = СР. 1 (Средняя текущая оценка 1), mc1 = Р 1 (Рубежный контроль 1)
+        // absences = номера часов (1..39), где в Platonus стоит отметка «н» (недели 14-15 = часы 40..45 пока не отмечены)
+        const platonusData = [
+            { name: "Айболқызы Алиназ", ca1: 65.00, mc1: 65.00, absences: [] },
+            { name: "Айткали Амир Русланулы", ca1: 74.33, mc1: 74.33, absences: [4, 10] },
+            { name: "Амантай Әмина Бейбітқызы", ca1: 68.33, mc1: 68.33, absences: [13, 25, 26, 27] },
+            { name: "Гуляев Никита Константинович", ca1: 79.00, mc1: 79.00, absences: [4, 5, 10, 13, 14, 15, 22, 23, 24, 34, 37] },
+            { name: "Ефремов Далир Игоревич", ca1: 91.67, mc1: 91.67, absences: [] },
+            { name: "Жалпакова Ажар Бауыржановна", ca1: 76.67, mc1: 76.67, absences: [7, 13, 16, 17, 18, 22, 23, 24] },
+            { name: "Казумов Руслан", ca1: 56.00, mc1: 56.00, absences: [10, 13, 14, 15, 31, 32, 33] },
+            { name: "Канатова Сауле Канатовна", ca1: 76.67, mc1: 76.67, absences: [19] },
+            { name: "Ким Екатерина Максимовна", ca1: 57.67, mc1: 57.67, absences: [1, 2, 3, 4, 5, 6, 7, 10, 13, 22, 23, 24, 28, 31, 32, 33, 34, 37, 38] },
+            { name: "Курбанов Игорь Сергеевич", ca1: 75.00, mc1: 75.00, absences: [4, 10, 13, 14, 25, 26, 28, 29, 30, 34, 35, 36] },
+            { name: "Құдайберген Бақыт Нұрланұлы", ca1: 50.00, mc1: 50.00, absences: [7, 10, 11, 12, 13, 14, 15, 16, 17, 18, 22, 23, 24, 25, 26, 27] },
+            { name: "Марат Жанибек Досжанұлы", ca1: 55.00, mc1: 55.00, absences: [12, 13, 14, 15, 16, 17, 22, 23, 24] },
+            { name: "Мехтипур Альберт Мерабович", ca1: 76.67, mc1: 76.67, absences: [7, 10, 13, 14, 15, 28, 31, 32, 33, 37, 38] },
+            { name: "Рамазанова Аяла Амиржановна", ca1: 61.67, mc1: 61.67, absences: [10, 13, 14, 15, 25] },
+            { name: "Снесарев Даниил Сергеевич", ca1: 81.67, mc1: 81.67, absences: [7, 10, 13, 14, 15, 25, 26, 27, 31] },
+            { name: "Ткаченко Алина Евгеньевна", ca1: 65.00, mc1: 65.00, absences: [7, 10, 13, 14, 15] },
+            { name: "Тойбай Тогжан Талғатқызы", ca1: 69.00, mc1: 69.00, absences: [4, 5, 10, 13, 14, 15, 22, 23, 24, 28, 29, 30, 34, 37, 38] },
+            { name: "Тухтамова Анель Романовна", ca1: 71.67, mc1: 71.67, absences: [7, 10, 13, 14, 15, 22, 23, 24, 34, 37, 38] },
+            { name: "Чаблина Карина Сергеевна", ca1: 71.67, mc1: 71.67, absences: [7, 10, 13, 14, 15, 22, 23, 24, 28, 29, 30, 34, 35, 36, 37, 38] }
+        ];
+
+        function buildAttendanceArray(absences) {
+            const arr = Array(TOTAL_ATTENDANCE_HOURS).fill(false);
+            // Проставляем посещения за прошедшие 13 недель (39 часов), исключая часы с «н»
+            for (let hour = 1; hour <= 39; hour++) {
+                if (!absences.includes(hour)) {
+                    arr[hour - 1] = true;
+                }
+            }
+            return arr;
+        }
+
+        const initialGroupStudents = platonusData.map((st, idx) => {
+            const attHours = buildAttendanceArray(st.absences);
+            const presentCount = attHours.filter(Boolean).length;
+            const attPercent = Math.round((presentCount / TOTAL_ATTENDANCE_HOURS) * 100);
             return {
                 id: `st-microba2026-${idx + 1}`,
-                name: stName,
-                attendance: 0,
+                name: st.name,
+                attendance: attPercent,
                 activities: 0,
-                ca1: 0,
-                mc1: 0,
+                ca1: st.ca1,
+                mc1: st.mc1,
                 ca2: 0,
                 mc2: 0,
                 exam: 0,
-                attendanceHours: Array(TOTAL_ATTENDANCE_HOURS).fill(false)
+                attendanceHours: attHours
             };
         });
 
@@ -615,6 +677,8 @@
         let personalActChart = null;
         let personalExamChart = null;
         let groupChart = null;
+        let bellCurveChart = null;
+        let bellMetric = 'mc1';
         let isTeacherMode = false;
 
         let activeEditingStudentId = null;
@@ -646,6 +710,7 @@
                 }
             } else {
                 students = JSON.parse(JSON.stringify(initialGroupStudents));
+                saveDatabase();
             }
             students.forEach(student => ensureAttendanceHours(student));
         }
@@ -838,6 +903,140 @@
             circle.style.strokeDashoffset = strokeOffset;
         }
 
+        function setBellMetric(metric) {
+            bellMetric = metric;
+            ['mc1', 'ca1', 'total', 'mc2', 'exam'].forEach(m => {
+                const btn = document.getElementById(`bell-btn-${m}`);
+                if (!btn) return;
+                if (m === metric) {
+                    btn.className = "px-2.5 py-1 rounded-lg bg-indigo-600 text-white transition-all";
+                } else {
+                    btn.className = "px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-all";
+                }
+            });
+            renderBellCurveChart();
+        }
+
+        /* КРИВАЯ БЕЛЛА: ФАКТИЧЕСКИЙ ПРОФИЛЬ + ЗОЛОТОЙ ЭТАЛОН ГАУССА */
+        function renderBellCurveChart() {
+            if (bellCurveChart) bellCurveChart.destroy();
+
+            const scores = students.map(s => {
+                if (bellMetric === 'mc1') return Number(s.mc1) || 0;
+                if (bellMetric === 'ca1') return Number(s.ca1) || 0;
+                if (bellMetric === 'mc2') return Number(s.mc2) || 0;
+                if (bellMetric === 'exam') return Number(s.exam) || 0;
+                return calculateWeightedScore(s.attendance, s.activities, s.ca1, s.mc1, s.ca2, s.mc2, s.exam);
+            });
+
+            if (scores.length === 0) return;
+
+            const n = scores.length;
+            const mean = scores.reduce((a, b) => a + b, 0) / n;
+            const variance = scores.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / n;
+            const stdDev = Math.sqrt(variance) || 1;
+
+            document.getElementById('bell-mean-val').textContent = mean.toFixed(1);
+            document.getElementById('bell-std-val').textContent = stdDev.toFixed(1);
+
+            const bins = ['0-49', '50-59', '60-69', '70-79', '80-89', '90-100'];
+            const counts = [0, 0, 0, 0, 0, 0];
+
+            scores.forEach(s => {
+                if (s < 50) counts[0]++;
+                else if (s < 60) counts[1]++;
+                else if (s < 70) counts[2]++;
+                else if (s < 80) counts[3]++;
+                else if (s < 90) counts[4]++;
+                else counts[5]++;
+            });
+
+            const actualProfilePoints = counts.map(val => val);
+
+            function gaussianPDF(x, mu, sigma) {
+                return (1 / (sigma * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mu) / sigma, 2));
+            }
+
+            const binCenters = [25, 54.5, 64.5, 74.5, 84.5, 95];
+            const binWidths = [50, 10, 10, 10, 10, 10];
+
+            const rawTheoretical = binCenters.map((center, idx) => {
+                return gaussianPDF(center, mean, stdDev) * binWidths[idx] * n;
+            });
+
+            const maxActual = Math.max(...counts, 1);
+            const maxTheoretical = Math.max(...rawTheoretical, 0.001);
+            const scaleFactor = maxActual / maxTheoretical;
+
+            const idealGaussianPoints = rawTheoretical.map(val => parseFloat((val * scaleFactor).toFixed(2)));
+
+            const ctx = document.getElementById('bellCurveCanvas').getContext('2d');
+            bellCurveChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: bins,
+                    datasets: [
+                        {
+                            type: 'bar',
+                            label: 'Фактически студентов (Барчат)',
+                            data: counts,
+                            backgroundColor: 'rgba(99, 102, 241, 0.45)',
+                            borderColor: '#6366f1',
+                            borderWidth: 1,
+                            borderRadius: 8,
+                            barPercentage: 0.65
+                        },
+                        {
+                            type: 'line',
+                            label: 'Фактический профиль (Огибающая)',
+                            data: actualProfilePoints,
+                            borderColor: '#c084fc',
+                            borderWidth: 3,
+                            pointBackgroundColor: '#c084fc',
+                            pointBorderColor: '#ffffff',
+                            pointRadius: 4,
+                            fill: false,
+                            tension: 0.4
+                        },
+                        {
+                            type: 'line',
+                            label: 'Идеальный Гаусс (Эталон)',
+                            data: idealGaussianPoints,
+                            borderColor: '#f59e0b',
+                            borderWidth: 2,
+                            borderDash: [6, 6],
+                            pointBackgroundColor: '#f59e0b',
+                            pointRadius: 3,
+                            fill: false,
+                            tension: 0.45
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: true,
+                            labels: { color: '#94a3b8', font: { size: 11, weight: 'bold' } }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { color: '#1e293b' },
+                            ticks: { color: '#94a3b8', font: { size: 10, weight: '600' } }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#1e293b' },
+                            ticks: { color: '#94a3b8', precision: 0 },
+                            title: { display: true, text: 'Количество студентов', color: '#64748b', font: { size: 10 } }
+                        }
+                    }
+                }
+            });
+        }
+
         // Мгновенное переключение между режимом студента и кабинетом преподавателя по клику на ключик
         function toggleTeacherMode() {
             isTeacherMode = !isTeacherMode;
@@ -913,32 +1112,32 @@
                         </button>
                     </td>
                     <td class="py-2.5 px-1">
-                        <input type="number" min="0" max="100" value="${student.activities || 0}" 
+                        <input type="number" step="any" min="0" max="100" value="${student.activities || 0}" 
                             onchange="updateStudentGrade('${student.id}', 'activities', this.value)"
                             class="w-full text-center py-1 bg-slate-950 border border-slate-800 hover:border-slate-700 focus:border-indigo-500 rounded-lg text-teal-300 text-xs font-semibold transition-all">
                     </td>
                     <td class="py-2.5 px-1">
-                        <input type="number" min="0" max="100" value="${student.ca1 || 0}" 
+                        <input type="number" step="any" min="0" max="100" value="${student.ca1 || 0}" 
                             onchange="updateStudentGrade('${student.id}', 'ca1', this.value)"
                             class="w-full text-center py-1 bg-slate-950 border border-slate-800 hover:border-slate-700 focus:border-indigo-500 rounded-lg text-slate-100 text-xs font-semibold transition-all">
                     </td>
                     <td class="py-2.5 px-1">
-                        <input type="number" min="0" max="100" value="${student.mc1 || 0}" 
+                        <input type="number" step="any" min="0" max="100" value="${student.mc1 || 0}" 
                             onchange="updateStudentGrade('${student.id}', 'mc1', this.value)"
                             class="w-full text-center py-1 bg-slate-950 border border-slate-800 hover:border-slate-700 focus:border-indigo-500 rounded-lg text-amber-300 text-xs font-semibold transition-all">
                     </td>
                     <td class="py-2.5 px-1">
-                        <input type="number" min="0" max="100" value="${student.ca2 || 0}" 
+                        <input type="number" step="any" min="0" max="100" value="${student.ca2 || 0}" 
                             onchange="updateStudentGrade('${student.id}', 'ca2', this.value)"
                             class="w-full text-center py-1 bg-slate-950 border border-slate-800 hover:border-slate-700 focus:border-indigo-500 rounded-lg text-slate-100 text-xs font-semibold transition-all">
                     </td>
                     <td class="py-2.5 px-1">
-                        <input type="number" min="0" max="100" value="${student.mc2 || 0}" 
+                        <input type="number" step="any" min="0" max="100" value="${student.mc2 || 0}" 
                             onchange="updateStudentGrade('${student.id}', 'mc2', this.value)"
                             class="w-full text-center py-1 bg-slate-950 border border-slate-800 hover:border-slate-700 focus:border-indigo-500 rounded-lg text-orange-300 text-xs font-semibold transition-all">
                     </td>
                     <td class="py-2.5 px-1">
-                        <input type="number" min="0" max="100" value="${student.exam || 0}" 
+                        <input type="number" step="any" min="0" max="100" value="${student.exam || 0}" 
                             onchange="updateStudentGrade('${student.id}', 'exam', this.value)"
                             class="w-full text-center py-1 bg-slate-950 border border-slate-800 hover:border-slate-700 focus:border-indigo-500 rounded-lg text-rose-300 text-xs font-semibold transition-all">
                     </td>
@@ -961,10 +1160,11 @@
         }
 
         function updateStudentGrade(id, field, value) {
-            let numVal = parseInt(value);
+            let numVal = parseFloat(String(value).replace(',', '.'));
             if (isNaN(numVal)) numVal = 0;
             if (numVal < 0) numVal = 0;
             if (numVal > 100) numVal = 100;
+            numVal = Math.round(numVal * 100) / 100;
 
             const student = students.find(s => s.id === id);
             if (student) {
@@ -975,6 +1175,7 @@
                 renderTeacherTable(searchFilter);
                 updateStats();
                 updateGroupChart();
+                renderBellCurveChart();
                 showToast(`Оценка обновлена для: ${student.name}`, 'success');
             }
         }
@@ -1074,6 +1275,7 @@
             renderTeacherTable();
             updateStats();
             updateGroupChart();
+            renderBellCurveChart();
         }
 
         function toggleStudentAttDetails() {
@@ -1104,7 +1306,7 @@
                 dateRow.innerHTML = `
                     <span class="font-bold text-slate-300 flex items-center gap-1.5">
                         <i class="fa-solid fa-calendar-week text-indigo-400 text-[11px]"></i>
-                        Неделя ${week}
+                        ${weekLabels[week - 1]}
                     </span>
                     <div class="flex items-center justify-between space-x-1">
                         <span class="px-1.5 py-0.5 rounded font-semibold text-[9px] flex items-center gap-0.5 ${h1 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-slate-950 text-slate-600 border border-slate-800'}">
@@ -1147,7 +1349,7 @@
                 row.innerHTML = `
                     <span class="text-xs font-bold text-slate-300 flex items-center gap-2">
                         <span class="h-5 w-5 rounded bg-slate-950 flex items-center justify-center text-[10px] text-indigo-400 border border-indigo-900/30">Н${week}</span>
-                        Неделя ${week}
+                        ${weekLabels[week - 1]}
                     </span>
                     <div class="flex items-center space-x-1.5">
                         <button onclick="toggleTempHour(${h1Idx})" id="temp-chk-${h1Idx}" class="px-2.5 py-1 rounded-lg text-[10px] font-bold border transition-all flex items-center gap-1">
@@ -1235,6 +1437,7 @@
                 renderTeacherTable(searchFilter);
                 updateStats();
                 updateGroupChart();
+                renderBellCurveChart();
                 closeAttendanceModal();
                 showToast(`Посещаемость обновлена для ${student.name}.`, 'success');
             }
@@ -1256,16 +1459,21 @@
                 return;
             }
 
+            const parseGrade = (el) => {
+                const v = parseFloat(String(el.value).replace(',', '.'));
+                return isNaN(v) ? 0 : Math.max(0, Math.min(100, Math.round(v * 100) / 100));
+            };
+
             const newStudent = {
                 id: 'st-' + Date.now(),
                 name,
-                attendance: Math.max(0, Math.min(100, parseInt(attInput.value) || 0)),
-                activities: Math.max(0, Math.min(100, parseInt(actInput.value) || 0)),
-                ca1: Math.max(0, Math.min(100, parseInt(ca1Input.value) || 0)),
-                mc1: Math.max(0, Math.min(100, parseInt(mc1Input.value) || 0)),
-                ca2: Math.max(0, Math.min(100, parseInt(ca2Input.value) || 0)),
-                mc2: Math.max(0, Math.min(100, parseInt(mc2Input.value) || 0)),
-                exam: Math.max(0, Math.min(100, parseInt(exmInput.value) || 0))
+                attendance: parseGrade(attInput),
+                activities: parseGrade(actInput),
+                ca1: parseGrade(ca1Input),
+                mc1: parseGrade(mc1Input),
+                ca2: parseGrade(ca2Input),
+                mc2: parseGrade(mc2Input),
+                exam: parseGrade(exmInput)
             };
 
             ensureAttendanceHours(newStudent);
@@ -1290,7 +1498,7 @@
             const text = textarea.value.trim();
 
             if (!text) {
-                showToast('Введите ФИО студентов (по одного в строке)!', 'error');
+                showToast('Введите ФИО студентов (по одному в строке)!', 'error');
                 return;
             }
 
@@ -1362,7 +1570,7 @@
             saveDatabase();
             updateDashboardData();
             closeConfirmModal();
-            showToast('Журнал сброшен к начальному списку группы.', 'info');
+            showToast('Журнал сброшен к данным из Platonus.', 'info');
         }
 
         function exportToCSV() {
