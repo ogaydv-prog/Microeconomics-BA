@@ -391,10 +391,11 @@
 
                         <!-- Интерактивная таблица -->
                         <div class="overflow-x-auto custom-scrollbar">
-                            <table class="w-full text-left border-collapse min-w-[780px]">
+                            <table class="w-full text-left border-collapse min-w-[810px]">
                                 <thead>
                                     <tr class="border-b border-slate-800 bg-slate-900/40 text-slate-400 text-[9px] font-bold uppercase tracking-wider">
-                                        <th class="py-3.5 px-3">Студент (Микроэкономика BA)</th>
+                                        <th class="py-3.5 px-2 text-center w-9">№</th>
+                                        <th class="py-3.5 px-2">Студент (Микроэкономика BA)</th>
                                         <th class="py-3.5 px-1.5 text-center w-16">Пос (10%)</th>
                                         <th class="py-3.5 px-1.5 text-center w-14">Акт (10%)</th>
                                         <th class="py-3.5 px-1.5 text-center w-16">ТК1 (10%)</th>
@@ -599,7 +600,7 @@
     </footer>
 
     <script>
-        const STORAGE_KEY = 'almau_micro_ba_students_2026_master_v2';
+        const STORAGE_KEY = 'almau_micro_ba_students_2026_final';
         const TOTAL_ATTENDANCE_HOURS = 45;
 
         const weekLabels = [
@@ -620,7 +621,7 @@
             "Неделя 15"
         ];
 
-        // Единый источник данных, вшитый напрямую в HTML-код (игнорирует старый кэш на всех компьютерах):
+        // Единый источник данных, вшитый напрямую в HTML-код:
         // activities = Активность (Акт)
         // ca1 = ТК 1, mc1 = РК 1, ca2 = ТК 2, mc2 = РК 2, exam = Экзамен
         // absences = номера часов (1..39), где стоит отметка «н» (недели 14-15 = часы 40..45 пока не отмечены)
@@ -648,7 +649,6 @@
 
         function buildAttendanceArray(absences) {
             const arr = Array(TOTAL_ATTENDANCE_HOURS).fill(false);
-            // Проставляем посещения за прошедшие 13 недель (39 часов), исключая часы с «н»
             for (let hour = 1; hour <= 39; hour++) {
                 if (!absences.includes(hour)) {
                     arr[hour - 1] = true;
@@ -703,7 +703,6 @@
             }
         }
 
-        // Всегда загружаем актуальные данные напрямую из кода файла при открытии страницы
         function loadDatabase() {
             students = JSON.parse(JSON.stringify(initialGroupStudents));
             students.forEach(student => ensureAttendanceHours(student));
@@ -714,7 +713,6 @@
             localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
         }
 
-        // Формула взвешенной оценки: 10% Пос, 10% Акт, 10% ТК1, 10% РК1, 10% ТК2, 10% РК2, 40% Экзамен
         function calculateWeightedScore(att, act, ca1, mc1, ca2, mc2, exam) {
             const wAtt = (att || 0) * 0.10;
             const wAct = (act || 0) * 0.10;
@@ -961,7 +959,6 @@
                 return gaussianPDF(center, mean, stdDev) * binWidths[idx] * n;
             });
 
-            // Масштабируем кривую относительно истинного пика Гаусса в точке x = mean, чтобы купол не обрезался сверху
             const peakTheoretical = gaussianPDF(mean, mean, stdDev) * 10 * n;
             const maxActual = Math.max(...counts, 1);
             const scaleFactor = maxActual / Math.max(peakTheoretical, 0.001);
@@ -1038,7 +1035,6 @@
             });
         }
 
-        // Мгновенное переключение между режимом студента и кабинетом преподавателя по клику на ключик
         function toggleTeacherMode() {
             isTeacherMode = !isTeacherMode;
             updateViewMode();
@@ -1088,6 +1084,7 @@
             }
 
             filtered.forEach(student => {
+                const rowNumber = students.indexOf(student) + 1;
                 const finalScore = calculateWeightedScore(
                     student.attendance, 
                     student.activities,
@@ -1102,8 +1099,11 @@
                 const row = document.createElement('tr');
                 row.className = "hover:bg-slate-900/60 transition-colors border-b border-slate-800/40";
                 row.innerHTML = `
-                    <td class="py-2.5 px-3 font-medium text-slate-100">
-                        <span class="block font-bold text-slate-200 truncate max-w-[240px]" title="${student.name}">${student.name}</span>
+                    <td class="py-2.5 px-2 text-center text-xs font-mono font-bold text-slate-500">
+                        ${rowNumber}
+                    </td>
+                    <td class="py-2.5 px-2 font-medium text-slate-100">
+                        <span class="block font-bold text-slate-200 truncate max-w-[230px]" title="${student.name}">${student.name}</span>
                     </td>
                     <td class="py-2.5 px-1">
                         <button onclick="openAttendanceModal('${student.id}')" id="att-trigger-${student.id}"
@@ -1581,12 +1581,12 @@
             }
 
             let csvContent = "\uFEFF";
-            csvContent += "ФИО Студента;Посещаемость (10%);Активность (10%);ТК1 (10%);РК1 (10%);ТК2 (10%);РК2 (10%);Экзамен (40%);Итоговый балл;Оценка\n";
+            csvContent += "№;ФИО Студента;Посещаемость (10%);Активность (10%);ТК1 (10%);РК1 (10%);ТК2 (10%);РК2 (10%);Экзамен (40%);Итоговый балл;Оценка\n";
 
-            students.forEach(s => {
+            students.forEach((s, index) => {
                 const final = calculateWeightedScore(s.attendance, s.activities, s.ca1, s.mc1, s.ca2, s.mc2, s.exam);
                 const letter = getLetterGrade(final).letter;
-                csvContent += `"${s.name.replace(/"/g, '""')}";${s.attendance};${s.activities || 0};${s.ca1 || 0};${s.mc1 || 0};${s.ca2 || 0};${s.mc2 || 0};${s.exam || 0};${final};${letter}\n`;
+                csvContent += `${index + 1};"${s.name.replace(/"/g, '""')}";${s.attendance};${s.activities || 0};${s.ca1 || 0};${s.mc1 || 0};${s.ca2 || 0};${s.mc2 || 0};${s.exam || 0};${final};${letter}\n`;
             });
 
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
