@@ -1235,7 +1235,7 @@
     </section>
 
     <!-- =====================================================================
-         TAB 5: SHOCKS MATRIX, ALGORITHM & SELF-CHECK QUIZ
+         TAB 8: SHOCKS MATRIX, ALGORITHM & SELF-CHECK QUIZ
          ===================================================================== -->
     <section id="tab-summary" class="view-section">
         <div class="hero-box">
@@ -1697,7 +1697,7 @@ const CONTENT = {
             ['1. Why does VMPL, rather than MPL, determine a firm’s demand for labor?', 'A firm maximizes monetary profit, not physical output. Therefore, physical incremental output MPL must be converted into revenue by multiplying by output price: VMPL = P × MPL.'],
             ['2. How does a shift in labor supply differ from movement along it?', 'A change in the wage W ceteris paribus causes movement along the existing supply curve S. The entire curve S shifts only when non-wage determinants change: worker population (immigration/emigration), tastes for work vs. leisure, or outside opportunities.'],
             ['3. Why does employment rise while the wage falls in Figure 5?', 'Worker inflows shift S right, creating a labor surplus at W₁. Competition pushes W down. As firms hire more workers along VMPL, diminishing MPL means each extra worker adds less output, lowering VMPL and driving the new equilibrium wage W₂ down.'],
-            ['4. Why do both the wage and employment rise in Figure 6?', 'A higher product price P increases VMPL = P × MPL at every quantity of labor, shifting labor demand D right. At W₁, firms face a labor shortage and bid wages up, moving upward along the unchanged supply curve S to higher W₂ and L₂.'],
+            ['4. Why do both the wage and employment rise in Figure 6?', 'A higher product price P increases VMPL = P × MPL at every quantity of labor, shifting labor demand D right. At W₁, firms face a labor shortage and bid wages up, moving upward along S₁ to higher W₂ and L₂.'],
             ['5. How is a rise in product price transmitted to the labor market?', 'Through VMPL = P × MPL: a higher price P increases the monetary value of the output produced by each marginal worker, making additional hiring profitable and shifting labor demand D to the right.'],
             ['6. How does a reduction in capital stock affect MPL and W?', 'Capital and labor are typically complements (e.g., apple pickers and ladders). Losing capital lowers workers’ physical productivity MPL, shifting VMPL left and reducing both equilibrium employment L and wage W.'],
             ['7. Why does the purchase price of capital depend on future VMPs?', 'The purchase price pays for permanent ownership of an asset that yields a stream of period rental incomes. Since each period’s rental price equals the capital’s VMP, the asset’s value reflects current and expected future VMPs.']
@@ -2227,8 +2227,6 @@ function updateLaborSupplyLab() {
     const wage = Number($('leisureWageSlider').value);
     const nonLabor = Number($('nonLaborIncomeSlider').value);
     const isRu = currentLang === 'ru';
-    // Teaching calibration: substitution dominates at low/moderate wages;
-    // income effects dominate after the turning point.
     const baseHours = 4 + 0.38 * wage - 0.0029 * wage * wage;
     const hours = Math.max(2, Math.min(16, baseHours - nonLabor * 0.035));
     const leisure = 24 - hours;
@@ -2282,44 +2280,104 @@ function drawLeisureBudget(wage, nonLabor, leisure) {
 }
 
 // -------------------------------------------------------------------------
-// MONOPSONY MODULE
+// MONOPSONY MODULE (Exact consistent equations: S: W=13+L, MCL: 13+2L, D: 153-L)
 // -------------------------------------------------------------------------
 function updateMonopsony() {
     const floor = Number($('minWageSlider').value);
     const isRu = currentLang === 'ru';
-    const Wm=55, Lm=42, Wc=85, Lc=68;
-    let W=Wm, L=Lm, verdict;
+    // Exact analytical solutions:
+    // S(L) = 13 + L  =>  MCL(L) = 13 + 2L (same vertical intercept 13, exact double slope)
+    // D(L) = VMPL(L) = 153 - L
+    // Monopsony M: MCL = VMPL => 13 + 2L = 153 - L => Lm = 46.67, Wm = 13 + 46.67 = 59.67
+    // Competition C: S = D => 13 + L = 153 - L => Lc = 70, Wc = 83
+    const a = 13, dInt = 153;
+    const Lm = (dInt - a) / 3; // 46.67
+    const Wm = a + Lm;         // 59.67
+    const Lc = (dInt - a) / 2; // 70.00
+    const Wc = a + Lc;         // 83.00
+
+    let W = Wm, L = Lm, verdict;
     if (floor === 0 || floor <= Wm) {
-        verdict = isRu ? 'Минимум не связывает фирму: сохраняется монопсонический исход Wm, Lm.' : 'The floor is non-binding: the monopsony outcome Wm, Lm remains.';
+        verdict = isRu
+            ? `Минимум не связывает фирму (Wmin ≤ ${Math.round(Wm)}): сохраняется монопсонический исход Wm = ${Math.round(Wm)}, Lm = ${Math.round(Lm)}.`
+            : `The floor is non-binding (Wmin ≤ ${Math.round(Wm)}): the monopsony outcome Wm = ${Math.round(Wm)}, Lm = ${Math.round(Lm)} remains.`;
     } else if (floor <= Wc) {
-        W=floor; L=Lm+(floor-Wm)/(Wc-Wm)*(Lc-Lm);
-        verdict = isRu ? 'Умеренный минимум ограничивает власть монопсониста: зарплата и занятость растут одновременно.' : 'A moderate floor limits monopsony power: wage and employment rise together.';
+        W = floor;
+        L = floor - a; // Employment expands along S(L) = 13 + L up to Lc = 70
+        verdict = isRu
+            ? `Умеренный минимум (${Math.round(Wm)} < Wmin ≤ ${Wc}) ограничивает власть монопсониста: MCL становится горизонтальным на уровне Wmin, зарплата и занятость растут одновременно.`
+            : `A moderate floor (${Math.round(Wm)} < Wmin ≤ ${Wc}) limits monopsony power: MCL becomes flat at Wmin, and both wage and employment rise together.`;
     } else {
-        W=floor; L=Math.max(18, Lc-(floor-Wc)*.9);
-        verdict = isRu ? 'Минимум выше конкурентного уровня создаёт избыток труда и сокращает фактическую занятость.' : 'A floor above the competitive wage creates excess labor supply and reduces employment.';
+        W = floor;
+        L = Math.max(10, dInt - floor); // Above Wc, employment is constrained by demand D = 153 - L
+        verdict = isRu
+            ? `Минимум выше конкурентного уровня (Wmin > ${Wc}) создаёт избыток труда и сокращает фактическую занятость вдоль кривой спроса D = VMPL.`
+            : `A floor above the competitive wage (Wmin > ${Wc}) creates excess labor supply and reduces employment along demand D = VMPL.`;
     }
-    $('minWageVal').textContent = floor === 0 ? (isRu?'Нет':'None') : floor;
+
+    $('minWageVal').textContent = floor === 0 ? (isRu ? 'Нет' : 'None') : floor;
     $('monoWageKpi').textContent = Math.round(W);
     $('monoLaborKpi').textContent = Math.round(L);
     $('monopsonyVerdict').textContent = verdict;
-    drawMonopsony(floor,W,L);
+    drawMonopsony(floor, W, L, Lm, Wm, Lc, Wc);
 }
 
-function drawMonopsony(floor,W,L) {
-    const svg=$('svgMonopsony'); const X=q=>65+q/100*570, Y=w=>330-w/150*270;
-    const line=(x1,y1,x2,y2,c,w=3,d='')=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${w}" ${d?`stroke-dasharray="${d}"`:''}/>`;
-    let html=`${line(60,330,650,330,'#64748b',1.5)}${line(60,35,60,330,'#64748b',1.5)}
-      ${line(X(8),Y(25),X(92),Y(125),'#fb7185',3)}
-      ${line(X(8),Y(35),X(72),Y(145),'#fbbf24',3)}
-      ${line(X(8),Y(135),X(92),Y(35),'#38bdf8',3)}
-      <text x="590" y="${Y(125)-8}" fill="#fb7185" font-size="12">S</text><text x="470" y="${Y(145)-8}" fill="#fbbf24" font-size="12">MCL</text><text x="590" y="${Y(35)+18}" fill="#38bdf8" font-size="12">D = VMPL</text>
-      <circle cx="${X(42)}" cy="${Y(55)}" r="6" fill="#a78bfa"/><text x="${X(42)+8}" y="${Y(55)-8}" fill="#a78bfa" font-size="11">M</text>
-      <circle cx="${X(68)}" cy="${Y(85)}" r="6" fill="#34d399"/><text x="${X(68)+8}" y="${Y(85)-8}" fill="#34d399" font-size="11">C</text>
-      ${line(X(L),Y(W),X(L),330,'#f1f5f9',1.4,'4,4')}${line(60,Y(W),X(L),Y(W),'#f1f5f9',1.4,'4,4')}
-      <circle cx="${X(L)}" cy="${Y(W)}" r="7" fill="#f1f5f9"/>`;
-    if(floor>0) html+=`${line(60,Y(floor),650,Y(floor),'#fbbf24',2.5,'7,4')}<text x="610" y="${Y(floor)-7}" fill="#fbbf24" font-size="11">Wmin</text>`;
-    html+=`<text x="355" y="372" fill="#94a3b8" font-size="12" text-anchor="middle">${currentLang==='ru'?'Занятость L':'Employment L'}</text><text x="20" y="180" fill="#94a3b8" font-size="12" transform="rotate(-90 20 180)">W</text>`;
-    svg.innerHTML=html;
+function drawMonopsony(floor, W, L, Lm, Wm, Lc, Wc) {
+    const svg = $('svgMonopsony');
+    const X = q => 65 + (q / 105) * 575;
+    const Y = w => 330 - (w / 160) * 280;
+    const line = (x1, y1, x2, y2, c, w = 3, d = '') =>
+        `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="${w}" ${d ? `stroke-dasharray="${d}"` : ''}/>`;
+
+    const vmplAtLm = 153 - Lm; // 106.33 (MCL = VMPL intersection)
+
+    let html = `
+        ${line(60, 330, 650, 330, '#64748b', 1.5)}
+        ${line(60, 35, 60, 330, '#64748b', 1.5)}
+        <!-- S: W = 13 + L (from L=0, W=13 to L=95, W=108) -->
+        ${line(X(0), Y(13), X(95), Y(108), '#fb7185', 3)}
+        <!-- MCL: W = 13 + 2L (exact same intercept 13 at L=0, exact double slope, up to L=68, W=149) -->
+        ${line(X(0), Y(13), X(68), Y(149), '#fbbf24', 3)}
+        <!-- D = VMPL: W = 153 - L (from L=5, W=148 to L=95, W=58) -->
+        ${line(X(5), Y(148), X(95), Y(58), '#38bdf8', 3)}
+
+        <text x="${X(95) + 6}" y="${Y(108) + 4}" fill="#fb7185" font-size="12" font-weight="bold">S</text>
+        <text x="${X(68) + 6}" y="${Y(149) + 4}" fill="#fbbf24" font-size="12" font-weight="bold">MCL</text>
+        <text x="${X(95) + 6}" y="${Y(58) + 4}" fill="#38bdf8" font-size="12" font-weight="bold">D = VMPL</text>
+
+        <!-- Vertical guide from MCL=VMPL down through M(Lm, Wm) to Lm -->
+        ${line(X(Lm), Y(vmplAtLm), X(Lm), 330, '#a78bfa', 1.4, '4,4')}
+        ${line(60, Y(Wm), X(Lm), Y(Wm), '#a78bfa', 1.4, '4,4')}
+        <circle cx="${X(Lm)}" cy="${Y(vmplAtLm)}" r="4.5" fill="#fbbf24" stroke="#121417" stroke-width="1.2"/>
+        <circle cx="${X(Lm)}" cy="${Y(Wm)}" r="6" fill="#a78bfa"/>
+        <text x="${X(Lm) + 8}" y="${Y(Wm) + 14}" fill="#a78bfa" font-size="11" font-weight="bold">M (Wm, Lm)</text>
+        <text x="54" y="${Y(Wm) + 4}" fill="#a78bfa" font-size="10" font-weight="bold" text-anchor="end">Wm</text>
+        <text x="${X(Lm)}" y="346" fill="#a78bfa" font-size="10" font-weight="bold" text-anchor="middle">Lm</text>
+
+        <!-- Competitive benchmark C(Lc, Wc) at S = D -->
+        ${line(X(Lc), Y(Wc), X(Lc), 330, '#34d399', 1.4, '4,4')}
+        ${line(60, Y(Wc), X(Lc), Y(Wc), '#34d399', 1.4, '4,4')}
+        <circle cx="${X(Lc)}" cy="${Y(Wc)}" r="6" fill="#34d399"/>
+        <text x="${X(Lc) + 8}" y="${Y(Wc) - 8}" fill="#34d399" font-size="11" font-weight="bold">C (Wc, Lc)</text>
+        <text x="54" y="${Y(Wc) + 4}" fill="#34d399" font-size="10" font-weight="bold" text-anchor="end">Wc</text>
+        <text x="${X(Lc)}" y="346" fill="#34d399" font-size="10" font-weight="bold" text-anchor="middle">Lc</text>
+
+        <!-- Active outcome marker -->
+        ${line(X(L), Y(W), X(L), 330, '#f1f5f9', 1.5, '3,3')}
+        ${line(60, Y(W), X(L), Y(W), '#f1f5f9', 1.5, '3,3')}
+        <circle cx="${X(L)}" cy="${Y(W)}" r="7" fill="#f1f5f9" stroke="#121417" stroke-width="1.5"/>
+    `;
+
+    if (floor > 0) {
+        html += `${line(60, Y(floor), 650, Y(floor), '#fbbf24', 2.5, '7,4')}
+                 <text x="642" y="${Y(floor) - 7}" fill="#fbbf24" font-size="11" font-weight="bold" text-anchor="end">Wmin = ${floor}</text>`;
+    }
+
+    html += `
+        <text x="355" y="375" fill="#94a3b8" font-size="12" text-anchor="middle">${currentLang === 'ru' ? 'Занятость L' : 'Employment L'}</text>
+        <text x="20" y="180" fill="#94a3b8" font-size="12" transform="rotate(-90 20 180)">W</text>
+    `;
+    svg.innerHTML = html;
 }
 
 // -------------------------------------------------------------------------
@@ -2334,7 +2392,7 @@ const WAGE_FACTORS = [
     ['barriers','Barriers / discrimination','Барьеры / дискриминация',-30,0,0,'#ef4444']
 ];
 function buildWageControls(){
-    $('wageFactorControls').innerHTML=WAGE_FACTORS.map(f=>`<div class="vintage-control"><div class="vintage-header"><span style="color:${f[6]}">● ${currentLang==='ru'?f[2]:f[1]}</span><span class="vintage-readout" id="wf-${f[0]}-v">0</span></div><div class="radio-dial-wrap"><div class="radio-ticks"></div><input type="range" id="wf-${f[0]}" class="vintage-slider" min="${f[3]}" max="${f[4]}" value="0" step="1" style="--thumb-stripe:${f[6]};--thumb-glow:${f[6]}88"></div></div></div>`).join('');
+    $('wageFactorControls').innerHTML=WAGE_FACTORS.map(f=>`<div class="vintage-control"><div class="vintage-header"><span style="color:${f[6]}">● ${currentLang==='ru'?f[2]:f[1]}</span><span class="vintage-readout" id="wf-${f[0]}-v">0</span></div><div class="radio-dial-wrap"><div class="radio-ticks"></div><input type="range" id="wf-${f[0]}" class="vintage-slider" min="${f[3]}" max="${f[4]}" value="0" step="1" style="--thumb-stripe:${f[6]};--thumb-glow:${f[6]}88"></div></div>`).join('');
     WAGE_FACTORS.forEach(f=>$(`wf-${f[0]}`).addEventListener('input',updateWageFactors));
 }
 function resetWageFactors(){WAGE_FACTORS.forEach(f=>$(`wf-${f[0]}`).value=0);updateWageFactors();}
