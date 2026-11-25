@@ -319,6 +319,7 @@
                         <div class="flex items-center space-x-1 bg-slate-950 p-1 rounded-xl border border-slate-800 text-[11px] font-bold">
                             <button onclick="setBellMetric('mc1')" id="bell-btn-mc1" class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white transition-all">РК 1</button>
                             <button onclick="setBellMetric('ca1')" id="bell-btn-ca1" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-all">ТК 1</button>
+                            <button onclick="setBellMetric('ca2')" id="bell-btn-ca2" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-all">ТК 2</button>
                             <button onclick="setBellMetric('activities')" id="bell-btn-activities" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-all">Акт</button>
                             <button onclick="setBellMetric('total')" id="bell-btn-total" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-all">Итог</button>
                             <button onclick="setBellMetric('mc2')" id="bell-btn-mc2" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-all">РК 2</button>
@@ -330,7 +331,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="relative w-full h-64">
+                <div class="relative w-full h-72">
                     <canvas id="bellCurveCanvas"></canvas>
                 </div>
             </div>
@@ -521,7 +522,7 @@
                 <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
             <h3 class="text-lg font-bold text-white">Вы уверены?</h3>
-            <p class="text-slate-400 text-xs mt-2">Это действие сбросит текущие оценки и посещаемость к загруженным данным из Platonus.</p>
+            <p class="text-slate-400 text-xs mt-2">Это действие вернёт значения, записанные в коде файла.</p>
             <div class="mt-6 flex justify-end space-x-3">
                 <button onclick="closeConfirmModal()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold rounded-xl text-xs transition-colors">Отмена</button>
                 <button onclick="resetAllData()" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white font-semibold rounded-xl text-xs transition-colors shadow-lg shadow-rose-600/30">Сбросить базу</button>
@@ -598,7 +599,7 @@
     </footer>
 
     <script>
-        const STORAGE_KEY = 'almau_micro_ba_students_2026_v4';
+        const STORAGE_KEY = 'almau_micro_ba_students_2026_master_v2';
         const TOTAL_ATTENDANCE_HOURS = 45;
 
         const weekLabels = [
@@ -619,30 +620,30 @@
             "Неделя 15"
         ];
 
-        // Данные из Platonus + Активность:
-        // activities = Процент активности (Акт)
-        // ca1 = СР. 1 (Средняя текущая оценка 1), mc1 = Р 1 (Рубежный контроль 1)
-        // absences = номера часов (1..39), где в Platonus стоит отметка «н» (недели 14-15 = часы 40..45 пока не отмечены)
+        // Единый источник данных, вшитый напрямую в HTML-код (игнорирует старый кэш на всех компьютерах):
+        // activities = Активность (Акт)
+        // ca1 = ТК 1, mc1 = РК 1, ca2 = ТК 2, mc2 = РК 2, exam = Экзамен
+        // absences = номера часов (1..39), где стоит отметка «н» (недели 14-15 = часы 40..45 пока не отмечены)
         const platonusData = [
-            { name: "Айболқызы Алиназ", activities: 30, ca1: 65.00, mc1: 65.00, absences: [] },
-            { name: "Айткали Амир Русланулы", activities: 30, ca1: 74.33, mc1: 74.33, absences: [4, 10] },
-            { name: "Амантай Әмина Бейбітқызы", activities: 50, ca1: 68.33, mc1: 68.33, absences: [13, 25, 26, 27] },
-            { name: "Гуляев Никита Константинович", activities: 45, ca1: 79.00, mc1: 79.00, absences: [4, 5, 10, 13, 14, 15, 22, 23, 24, 34, 37] },
-            { name: "Ефремов Далир Игоревич", activities: 90, ca1: 91.67, mc1: 91.67, absences: [] },
-            { name: "Жалпакова Ажар Бауыржановна", activities: 85, ca1: 76.67, mc1: 76.67, absences: [] },
-            { name: "Казумов Руслан", activities: 10, ca1: 56.00, mc1: 56.00, absences: [10, 13, 14, 15,17,22, 31, 32, 33,34,] },
-            { name: "Канатова Сауле Канатовна", activities: 40, ca1: 76.67, mc1: 76.67, absences: [19] },
-            { name: "Ким Екатерина Максимовна", activities: 5, ca1: 57.67, mc1: 57.67, absences: [1, 2, 3, 4, 5, 6, 7, 10, 13, 22, 23, 24, 28, 31, 32, 33, 34, 37, 38] },
-            { name: "Курбанов Игорь Сергеевич", activities: 10, ca1: 75.00, mc1: 75.00, absences: [4, 10, 13, 14, 25, 26, 28, 29, 30, 34, 35, 36] },
-            { name: "Құдайберген Бақыт Нұрланұлы", activities: 5, ca1: 50.00, mc1: 50.00, absences: [7, 10, 11, 12, 13, 14, 15, 16, 17, 18, 22, 23, 24, 25, 26, 27] },
-            { name: "Марат Жанибек Досжанұлы", activities: 0, ca1: 55.00, mc1: 55.00, absences: [12, 13, 14, 15, 16, 17, 22, 23, 24] },
-            { name: "Мехтипур Альберт Мерабович", activities: 15, ca1: 76.67, mc1: 76.67, absences: [7, 10, 13, 14, 15, 28, 31, 32, 33] },
-            { name: "Рамазанова Аяла Амиржановна", activities: 40, ca1: 61.67, mc1: 61.67, absences: [10, 13, 14, 15, 25] },
-            { name: "Снесарев Даниил Сергеевич", activities: 95, ca1: 81.67, mc1: 81.67, absences: [7, 10, 13, 14, 15, 25, 26, 27] },
-            { name: "Ткаченко Алина Евгеньевна", activities: 30, ca1: 65.00, mc1: 65.00, absences: [7, 10, 13, 14, 15] },
-            { name: "Тойбай Тогжан Талғатқызы", activities: 87, ca1: 69.00, mc1: 69.00, absences: [4, 5, 10, 13, 14, 15, 22, 23, 24, 28, 29, 30, 34, 37, 38] },
-            { name: "Тухтамова Анель Романовна", activities: 10, ca1: 71.67, mc1: 71.67, absences: [7, 10, 13, 14, 15, 22, 23, 24, 34, 37, 38] },
-            { name: "Чаблина Карина Сергеевна", activities: 60, ca1: 71.67, mc1: 71.67, absences: [7, 10, 13, 14, 15, 22, 23, 24, 28, 29, 30, 34, 35, 36] }
+            { name: "Айболқызы Алиназ", activities: 30, ca1: 65.00, mc1: 65.00, ca2: 73, mc2: 0, exam: 0, absences: [] },
+            { name: "Айткали Амир Русланулы", activities: 30, ca1: 74.33, mc1: 74.33, ca2: 75, mc2: 0, exam: 0, absences: [4, 10] },
+            { name: "Амантай Әмина Бейбітқызы", activities: 50, ca1: 68.33, mc1: 68.33, ca2: 82, mc2: 0, exam: 0, absences: [13, 25, 26, 27] },
+            { name: "Гуляев Никита Константинович", activities: 45, ca1: 79.00, mc1: 79.00, ca2: 74, mc2: 0, exam: 0, absences: [4, 5, 10, 13, 14, 15, 22, 23, 24, 34, 37] },
+            { name: "Ефремов Далир Игоревич", activities: 90, ca1: 91.67, mc1: 91.67, ca2: 93, mc2: 0, exam: 0, absences: [] },
+            { name: "Жалпакова Ажар Бауыржановна", activities: 85, ca1: 76.67, mc1: 76.67, ca2: 87, mc2: 0, exam: 0, absences: [7, 13, 16, 17, 18, 22, 23, 24] },
+            { name: "Казумов Руслан", activities: 10, ca1: 56.00, mc1: 56.00, ca2: 52, mc2: 0, exam: 0, absences: [10, 13, 14, 15, 31, 32, 33] },
+            { name: "Канатова Сауле Канатовна", activities: 40, ca1: 76.67, mc1: 76.67, ca2: 82, mc2: 0, exam: 0, absences: [19] },
+            { name: "Ким Екатерина Максимовна", activities: 5, ca1: 57.67, mc1: 57.67, ca2: 40, mc2: 0, exam: 0, absences: [1, 2, 3, 4, 5, 6, 7, 10, 13, 22, 23, 24, 28, 31, 32, 33, 34, 37, 38] },
+            { name: "Курбанов Игорь Сергеевич", activities: 10, ca1: 75.00, mc1: 75.00, ca2: 65, mc2: 0, exam: 0, absences: [4, 10, 13, 14, 25, 26, 28, 29, 30, 34, 35, 36] },
+            { name: "Құдайберген Бақыт Нұрланұлы", activities: 5, ca1: 50.00, mc1: 50.00, ca2: 45, mc2: 0, exam: 0, absences: [7, 10, 11, 12, 13, 14, 15, 16, 17, 18, 22, 23, 24, 25, 26, 27] },
+            { name: "Марат Жанибек Досжанұлы", activities: 0, ca1: 55.00, mc1: 55.00, ca2: 0, mc2: 0, exam: 0, absences: [12, 13, 14, 15, 16, 17, 22, 23, 24] },
+            { name: "Мехтипур Альберт Мерабович", activities: 15, ca1: 76.67, mc1: 76.67, ca2: 65, mc2: 0, exam: 0, absences: [7, 10, 13, 14, 15, 28, 31, 32, 33, 37, 38] },
+            { name: "Рамазанова Аяла Амиржановна", activities: 40, ca1: 61.67, mc1: 61.67, ca2: 67, mc2: 0, exam: 0, absences: [10, 13, 14, 15, 25] },
+            { name: "Снесарев Даниил Сергеевич", activities: 95, ca1: 81.67, mc1: 81.67, ca2: 90, mc2: 0, exam: 0, absences: [7, 10, 13, 14, 15, 25, 26, 27, 31] },
+            { name: "Ткаченко Алина Евгеньевна", activities: 30, ca1: 65.00, mc1: 65.00, ca2: 66, mc2: 0, exam: 0, absences: [7, 10, 13, 14, 15] },
+            { name: "Тойбай Тогжан Талғатқызы", activities: 87, ca1: 69.00, mc1: 69.00, ca2: 65, mc2: 0, exam: 0, absences: [4, 5, 10, 13, 14, 15, 22, 23, 24, 28, 29, 30, 34, 37, 38] },
+            { name: "Тухтамова Анель Романовна", activities: 10, ca1: 71.67, mc1: 71.67, ca2: 60, mc2: 0, exam: 0, absences: [7, 10, 13, 14, 15, 22, 23, 24, 34, 37, 38] },
+            { name: "Чаблина Карина Сергеевна", activities: 60, ca1: 71.67, mc1: 71.67, ca2: 70, mc2: 0, exam: 0, absences: [7, 10, 13, 14, 15, 22, 23, 24, 28, 29, 30, 34, 35, 36, 37, 38] }
         ];
 
         function buildAttendanceArray(absences) {
@@ -667,9 +668,9 @@
                 activities: st.activities,
                 ca1: st.ca1,
                 mc1: st.mc1,
-                ca2: 0,
-                mc2: 0,
-                exam: 0,
+                ca2: st.ca2 || 0,
+                mc2: st.mc2 || 0,
+                exam: st.exam || 0,
                 attendanceHours: attHours
             };
         });
@@ -702,19 +703,11 @@
             }
         }
 
+        // Всегда загружаем актуальные данные напрямую из кода файла при открытии страницы
         function loadDatabase() {
-            const savedData = localStorage.getItem(STORAGE_KEY);
-            if (savedData) {
-                try {
-                    students = JSON.parse(savedData);
-                } catch(e) {
-                    students = JSON.parse(JSON.stringify(initialGroupStudents));
-                }
-            } else {
-                students = JSON.parse(JSON.stringify(initialGroupStudents));
-                saveDatabase();
-            }
+            students = JSON.parse(JSON.stringify(initialGroupStudents));
             students.forEach(student => ensureAttendanceHours(student));
+            saveDatabase();
         }
 
         function saveDatabase() {
@@ -907,7 +900,7 @@
 
         function setBellMetric(metric) {
             bellMetric = metric;
-            ['mc1', 'ca1', 'activities', 'total', 'mc2', 'exam'].forEach(m => {
+            ['mc1', 'ca1', 'ca2', 'activities', 'total', 'mc2', 'exam'].forEach(m => {
                 const btn = document.getElementById(`bell-btn-${m}`);
                 if (!btn) return;
                 if (m === metric) {
@@ -926,6 +919,7 @@
             const scores = students.map(s => {
                 if (bellMetric === 'mc1') return Number(s.mc1) || 0;
                 if (bellMetric === 'ca1') return Number(s.ca1) || 0;
+                if (bellMetric === 'ca2') return Number(s.ca2) || 0;
                 if (bellMetric === 'activities') return Number(s.activities) || 0;
                 if (bellMetric === 'mc2') return Number(s.mc2) || 0;
                 if (bellMetric === 'exam') return Number(s.exam) || 0;
@@ -967,11 +961,13 @@
                 return gaussianPDF(center, mean, stdDev) * binWidths[idx] * n;
             });
 
+            // Масштабируем кривую относительно истинного пика Гаусса в точке x = mean, чтобы купол не обрезался сверху
+            const peakTheoretical = gaussianPDF(mean, mean, stdDev) * 10 * n;
             const maxActual = Math.max(...counts, 1);
-            const maxTheoretical = Math.max(...rawTheoretical, 0.001);
-            const scaleFactor = maxActual / maxTheoretical;
+            const scaleFactor = maxActual / Math.max(peakTheoretical, 0.001);
 
             const idealGaussianPoints = rawTheoretical.map(val => parseFloat((val * scaleFactor).toFixed(2)));
+            const yAxisCeiling = Math.ceil(Math.max(maxActual, ...idealGaussianPoints)) + 2;
 
             const ctx = document.getElementById('bellCurveCanvas').getContext('2d');
             bellCurveChart = new Chart(ctx, {
@@ -999,7 +995,7 @@
                             pointBorderColor: '#ffffff',
                             pointRadius: 4,
                             fill: false,
-                            tension: 0.4
+                            tension: 0.35
                         },
                         {
                             type: 'line',
@@ -1011,7 +1007,8 @@
                             pointBackgroundColor: '#f59e0b',
                             pointRadius: 3,
                             fill: false,
-                            tension: 0.45
+                            cubicInterpolationMode: 'monotone',
+                            tension: 0.4
                         }
                     ]
                 },
@@ -1031,6 +1028,7 @@
                         },
                         y: {
                             beginAtZero: true,
+                            suggestedMax: yAxisCeiling,
                             grid: { color: '#1e293b' },
                             ticks: { color: '#94a3b8', precision: 0 },
                             title: { display: true, text: 'Количество студентов', color: '#64748b', font: { size: 10 } }
@@ -1573,7 +1571,7 @@
             saveDatabase();
             updateDashboardData();
             closeConfirmModal();
-            showToast('Журнал сброшен к данным из Platonus.', 'info');
+            showToast('Журнал восстановлен из кода файла.', 'info');
         }
 
         function exportToCSV() {
