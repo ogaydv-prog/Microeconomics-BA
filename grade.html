@@ -49,7 +49,7 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
 
-    <!-- Шапка с брендингом ALMAU -->
+    <!-- Шапка с брендингом ALMAU и вкладкой переключения режимов -->
     <header class="bg-slate-900 text-white border-b border-slate-800 shadow-xl sticky top-0 z-40 backdrop-blur-md bg-opacity-95">
         <div class="max-w-7xl mx-auto px-4 py-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
             <div class="flex items-center space-x-4">
@@ -62,11 +62,18 @@
                 </div>
             </div>
             
-            <div class="flex items-center space-x-3">
-                <div id="mode-badge" class="px-3.5 py-1.5 rounded-full text-xs font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 flex items-center space-x-1.5">
-                    <span class="h-2 w-2 bg-indigo-400 rounded-full animate-pulse"></span>
-                    <span>Режим студента</span>
-                </div>
+            <!-- Вкладки переключения (вход в панель преподавателя без пароля) -->
+            <div class="flex items-center bg-slate-950 p-1 rounded-xl border border-slate-800 shadow-inner">
+                <button id="tab-student-btn" onclick="switchMode(false)"
+                    class="px-4 py-2 rounded-lg text-xs font-bold bg-indigo-600 text-white shadow-md transition-all flex items-center space-x-2">
+                    <i class="fa-solid fa-user-graduate"></i>
+                    <span>Студент</span>
+                </button>
+                <button id="tab-teacher-btn" onclick="switchMode(true)"
+                    class="px-4 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-all flex items-center space-x-2">
+                    <i class="fa-solid fa-chalkboard-user"></i>
+                    <span>Панель преподавателя</span>
+                </button>
             </div>
         </div>
     </header>
@@ -110,11 +117,18 @@
                         <span class="text-[10px] font-bold bg-indigo-900/50 text-indigo-300 px-2.5 py-1 rounded-full border border-indigo-800/30 uppercase tracking-wider">Студент группы Микроэкономика BA</span>
                         <h3 id="sr-name" class="text-xl font-extrabold text-white mt-1.5">ФИО Студента</h3>
                     </div>
-                    <div class="text-right">
-                        <span class="text-xs text-slate-400 block font-medium">Итоговый балл</span>
-                        <div class="flex items-center justify-end space-x-2.5 mt-1">
-                            <span id="sr-letter" class="text-2xl font-black bg-indigo-600 px-3 py-1 rounded-xl text-white shadow-md">-</span>
-                            <span id="sr-total-score" class="text-3xl font-extrabold text-slate-100">0.0</span>
+                    <div class="flex items-center space-x-5">
+                        <div class="text-right">
+                            <span class="text-[11px] text-purple-300 block font-semibold">Промежуточный результат</span>
+                            <span id="sr-midterm-score" class="text-2xl font-extrabold text-purple-400">0.0</span>
+                        </div>
+                        <div class="h-10 w-px bg-slate-800"></div>
+                        <div class="text-right">
+                            <span class="text-xs text-slate-400 block font-medium">Итоговый балл</span>
+                            <div class="flex items-center justify-end space-x-2.5 mt-1">
+                                <span id="sr-letter" class="text-2xl font-black bg-indigo-600 px-3 py-1 rounded-xl text-white shadow-md">-</span>
+                                <span id="sr-total-score" class="text-3xl font-extrabold text-slate-100">0.0</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -180,7 +194,7 @@
                     </div>
                 </div>
 
-                <!-- 8 Колонок с детальными оценками (включая СРСП-2 перед ТК-2) -->
+                <!-- 8 Колонок с детальными оценками -->
                 <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 divide-y sm:divide-y-0 divide-x divide-slate-800 border-b border-slate-800 bg-slate-900/20">
                     <div class="p-3 text-center space-y-1">
                         <h4 class="text-[9px] font-semibold text-slate-400 uppercase tracking-wider">Посещаемость</h4>
@@ -254,7 +268,7 @@
                     <div>
                         <h5 class="text-xs font-bold text-slate-300">Политика оценивания</h5>
                         <p class="text-[11px] text-slate-400 mt-0.5 leading-relaxed">
-                            Формула итоговой оценки: Посещаемость (10%) + Активность (10%) + ТК1 (10%) + РК1 (10%) + ТК2 (10%) + РК2 (10%) + Финальный экзамен (40%). Пороговый балл: 50 баллов (Оценка D).
+                            Формула итоговой оценки: Посещаемость (10%) + Активность (10%) + ТК1 (10%) + РК1 (10%) + ТК2 (10%) + РК2 (10%) + Финальный экзамен (40%). Промежуточный результат: среднее по (Посещаемость, ТК1, РК1, СРСП2, ТК2). Пороговый балл: 50 баллов (Оценка D).
                         </p>
                     </div>
                 </div>
@@ -329,15 +343,15 @@
                         </p>
                     </div>
                     <div class="flex flex-wrap items-center gap-3">
-                        <div class="flex items-center space-x-1 bg-slate-950 p-1 rounded-xl border border-slate-800 text-[11px] font-bold">
-                            <button onclick="setBellMetric('mc1')" id="bell-btn-mc1" class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white transition-all">РК 1</button>
+                        <div class="flex flex-wrap items-center gap-1 bg-slate-950 p-1 rounded-xl border border-slate-800 text-[11px] font-bold">
+                            <button onclick="setBellMetric('mc1')" id="bell-btn-mc1" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-all">РК 1</button>
                             <button onclick="setBellMetric('ca1')" id="bell-btn-ca1" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-all">ТК 1</button>
                             <button onclick="setBellMetric('srsp2')" id="bell-btn-srsp2" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-all">СРСП 2</button>
                             <button onclick="setBellMetric('ca2')" id="bell-btn-ca2" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-all">ТК 2</button>
-                            <button onclick="setBellMetric('activities')" id="bell-btn-activities" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-all">Акт</button>
-                            <button onclick="setBellMetric('total')" id="bell-btn-total" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-all">Итог</button>
                             <button onclick="setBellMetric('mc2')" id="bell-btn-mc2" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-all">РК 2</button>
                             <button onclick="setBellMetric('exam')" id="bell-btn-exam" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-all">Экзамен</button>
+                            <button onclick="setBellMetric('total')" id="bell-btn-total" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-all">Итог</button>
+                            <button onclick="setBellMetric('midterm')" id="bell-btn-midterm" class="px-2.5 py-1 rounded-lg bg-purple-600 text-white transition-all" title="Среднее по: Посещение, ТК-1, РК-1, СРСП-2, ТК-2">Пром. итог</button>
                         </div>
                         <div class="flex items-center space-x-3 text-xs bg-slate-950 px-3.5 py-1.5 rounded-xl border border-slate-800 font-mono">
                             <span class="text-indigo-400 font-bold">μ (Среднее): <span id="bell-mean-val" class="text-white">0.0</span></span>
@@ -392,7 +406,7 @@
                             Сводный график успеваемости группы
                         </h3>
                         <p class="text-xs text-slate-400 mt-1">
-                            Наглядное сравнение показателей: Посещаемость, Активность, ТК, РК, СРСП-2, Экзамен и Итоговый балл.
+                            Наглядное сравнение показателей: Посещаемость, Активность, ТК, РК, СРСП-2, Промежуточный и Итоговый балл.
                         </p>
                     </div>
                     <div class="flex flex-wrap items-center gap-3 text-[11px] font-semibold">
@@ -402,6 +416,7 @@
                         <div class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-amber-500"></span><span class="text-slate-300">РК1</span></div>
                         <div class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-cyan-500"></span><span class="text-slate-300">СРСП2</span></div>
                         <div class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-indigo-500"></span><span class="text-slate-300">ТК2</span></div>
+                        <div class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-purple-500"></span><span class="text-slate-300">Пром</span></div>
                         <div class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-orange-500"></span><span class="text-slate-300">РК2</span></div>
                         <div class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-rose-500"></span><span class="text-slate-300">Экз</span></div>
                         <div class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-violet-500"></span><span class="text-slate-300">Итог</span></div>
@@ -436,7 +451,7 @@
 
                     <!-- Интерактивная таблица -->
                     <div class="overflow-x-auto custom-scrollbar">
-                        <table class="w-full text-left border-collapse min-w-[1140px]">
+                        <table class="w-full text-left border-collapse min-w-[1200px]">
                             <thead>
                                 <tr class="border-b border-slate-800 bg-slate-900/40 text-slate-400 text-[9px] font-bold uppercase tracking-wider">
                                     <th class="py-3.5 px-2 text-center w-9">№</th>
@@ -446,8 +461,9 @@
                                     <th class="py-3.5 px-1.5 text-center w-16">ТК1 (10%)</th>
                                     <th class="py-3.5 px-1.5 text-center w-16">РК1 (10%)</th>
                                     <th class="py-3.5 px-1.5 text-center w-16 text-cyan-400 bg-cyan-950/20">СРСП-2</th>
-                                    <th class="py-3.5 px-2 text-left min-w-[240px] text-cyan-400 bg-cyan-950/20">Комментарий к СРСП-2</th>
+                                    <th class="py-3.5 px-2 text-left min-w-[230px] text-cyan-400 bg-cyan-950/20">Комментарий к СРСП-2</th>
                                     <th class="py-3.5 px-1.5 text-center w-14">ТК2 (10%)</th>
+                                    <th class="py-3.5 px-1.5 text-center w-16 text-purple-300 bg-purple-950/25" title="Среднее по: Пос, ТК1, РК1, СРСП2, ТК2">Пром. итог</th>
                                     <th class="py-3.5 px-1.5 text-center w-14">РК2 (10%)</th>
                                     <th class="py-3.5 px-1.5 text-center w-14">Экз (40%)</th>
                                     <th class="py-3.5 px-2 text-right w-14 bg-indigo-950/20">Итог</th>
@@ -472,7 +488,7 @@
                     <!-- Подсказка по редактированию -->
                     <div class="bg-indigo-950/10 p-4 border-t border-slate-800/80 text-xs text-indigo-300 flex items-center space-x-3.5">
                         <i class="fa-solid fa-circle-info text-indigo-400 text-lg"></i>
-                        <p><strong>Учет посещаемости и СРСП-2:</strong> Нажмите на процент в колонке «Пос», чтобы открыть чек-лист за 15 недель (45 часов). Баллы и комментарии по СРСП-2 можно редактировать прямо в таблице.</p>
+                        <p><strong>Учет посещаемости и промежуточного итога:</strong> Колонка «Пром. итог» автоматически вычисляет среднее по текущим показателям (Пос, ТК1, РК1, СРСП2, ТК2) без учёта активности, РК2 и экзамена.</p>
                     </div>
                 </div>
             </div>
@@ -550,22 +566,16 @@
     <!-- Всплывающие уведомления (Toast) -->
     <div id="toast-container" class="fixed bottom-12 right-5 z-50 flex flex-col space-y-2"></div>
 
-    <!-- Скрытый маленький ключик переключения режима в правом нижнем углу -->
-    <button id="secret-teacher-key" onclick="toggleTeacherMode()" title="Переключить режим преподавателя"
-        class="fixed bottom-3 right-3 z-50 w-7 h-7 rounded-full flex items-center justify-center text-slate-600/40 hover:text-indigo-400/90 hover:bg-slate-900/70 transition-all duration-300 opacity-25 hover:opacity-100 focus:outline-none">
-        <i class="fa-solid fa-key text-[11px]"></i>
-    </button>
-
     <!-- Подвал -->
     <footer class="bg-slate-950 border-t border-slate-900 py-6 text-center text-xs text-slate-500">
-        <div class="max-w-7xl mx-auto px-4 pr-12 flex flex-col sm:flex-row justify-between items-center gap-3">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-3">
             <p>© 2026 ALMAU Школа Цифровых Технологий и Экономики. Все права защищены.</p>
             <p class="text-slate-600">Силлабус: Пос (10%) | Акт (10%) | ТК1 (10%) | РК1 (10%) | СРСП-2 | ТК2 (10%) | РК2 (10%) | Экзамен (40%)</p>
         </div>
     </footer>
 
     <script>
-        const STORAGE_KEY = 'almau_micro_ba_students_2026_srsp2_v1';
+        const STORAGE_KEY = 'almau_micro_ba_students_2026_srsp2_v2';
         const TOTAL_ATTENDANCE_HOURS = 45;
 
         const weekLabels = [
@@ -593,12 +603,12 @@
             { name: "Гуляев Никита Константинович", activities: 45, ca1: 79.00, mc1: 79.00, srsp2: 62, srsp2Comment: "Сделаны 5 ошибок. Развёрнутый анализ с источниками.", ca2: 74, mc2: 0, exam: 0, absences: [4, 5, 10, 13, 14, 15, 22, 23, 24, 34, 37] },
             { name: "Ефремов Далир Игоревич", activities: 90, ca1: 91.67, mc1: 91.67, srsp2: 87, srsp2Comment: "Сделаны 2 ошибки. Подробный разбор квинтилей.", ca2: 93, mc2: 0, exam: 0, absences: [] },
             { name: "Жалпакова Ажар Бауыржановна", activities: 85, ca1: 76.67, mc1: 76.67, srsp2: 92, srsp2Comment: "Сделана 1 ошибка. Анализ разрыва доходов выполнен.", ca2: 87, mc2: 0, exam: 0, absences: [7, 13, 16, 17, 18, 22, 23, 24] },
-            { name: "Казумов Руслан", activities: 10, ca1: 56.00, mc1: 56.00, srsp2: 85, srsp2Comment: "Сделаны 2 ошибки. Указаны причины распределения.", ca2: 52, mc2: 0, exam: 0, absences: [10, 13, 14, 15, 31, 32, 33] },
-            { name: "Канатова Сауле Канатовна", activities: 40, ca1: 76.67, mc1: 76.67, srsp2: 95, srsp2Comment: "Сделана 1 ошибка. Содержательный разбор квинтилей.", ca2: 82, mc2: 0, exam: 0, absences: [19] },
+            { name: "Казумов Руслан", activities: 10, ca1: 56.00, mc1: 56.00, srsp2: 85, srsp2Comment: "Указаны причины распределения.", ca2: 52, mc2: 0, exam: 0, absences: [10, 13, 14, 15, 31, 32, 33] },
+            { name: "Канатова Сауле Канатовна", activities: 40, ca1: 76.67, mc1: 76.67, srsp2: 92, srsp2Comment: "Сделана 1 ошибка. Содержательный разбор квинтилей.", ca2: 82, mc2: 0, exam: 0, absences: [19] },
             { name: "Ким Екатерина Максимовна", activities: 5, ca1: 57.67, mc1: 57.67, srsp2: 0, srsp2Comment: "Задание не сдано", ca2: 40, mc2: 0, exam: 0, absences: [1, 2, 3, 4, 5, 6, 7, 10, 13, 22, 23, 24, 28, 31, 32, 33, 34, 37, 38] },
             { name: "Курбанов Игорь Сергеевич", activities: 10, ca1: 75.00, mc1: 75.00, srsp2: 85, srsp2Comment: "Сделаны 2 ошибки. Сопоставление с данными Всемирного банка.", ca2: 65, mc2: 0, exam: 0, absences: [4, 10, 13, 14, 25, 26, 28, 29, 30, 34, 35, 36] },
             { name: "Құдайберген Бақыт Нұрланұлы", activities: 5, ca1: 50.00, mc1: 50.00, srsp2: 0, srsp2Comment: "Задание не сдано", ca2: 45, mc2: 0, exam: 0, absences: [7, 10, 11, 12, 13, 14, 15, 16, 17, 18, 22, 23, 24, 25, 26, 27] },
-            { name: "Марат Жанибек Досжанұлы", activities: 0, ca1: 55.00, mc1: 55.00, srsp2: 70, srsp2Comment: "", ca2: 0, mc2: 0, exam: 0, absences: [12, 13, 14, 15, 16, 17, 22, 23, 24] },
+            { name: "Марат Жанибек Досжанұлы", activities: 0, ca1: 0, mc1: 0, srsp2: 0, srsp2Comment: "Отчислен", ca2: 0, mc2: 0, exam: 0, expelled: true, absences: [] },
             { name: "Мехтипур Альберт Мерабович", activities: 15, ca1: 76.67, mc1: 76.67, srsp2: 0, srsp2Comment: "Задание не сдано", ca2: 65, mc2: 0, exam: 0, absences: [7, 10, 13, 14, 15, 28, 31, 32, 33, 37, 38] },
             { name: "Рамазанова Аяла Амиржановна", activities: 40, ca1: 61.67, mc1: 61.67, srsp2: 82, srsp2Comment: "Сделаны 2 ошибки. Основной вывод сформулирован.", ca2: 67, mc2: 0, exam: 0, absences: [10, 13, 14, 15, 25] },
             { name: "Снесарев Даниил Сергеевич", activities: 95, ca1: 81.67, mc1: 81.67, srsp2: 92, srsp2Comment: "Сделана 1 ошибка. Анализ по квинтилям выполнен.", ca2: 90, mc2: 0, exam: 0, absences: [7, 10, 13, 14, 15, 25, 26, 27, 31] },
@@ -608,8 +618,9 @@
             { name: "Чаблина Карина Сергеевна", activities: 60, ca1: 71.67, mc1: 71.67, srsp2: 82, srsp2Comment: "Сделаны 2 ошибки. Основной вывод сформулирован.", ca2: 70, mc2: 0, exam: 0, absences: [7, 10, 13, 14, 15, 22, 23, 24, 28, 29, 30, 34, 35, 36, 37, 38] }
         ];
 
-        function buildAttendanceArray(absences) {
+        function buildAttendanceArray(absences, expelled = false) {
             const arr = Array(TOTAL_ATTENDANCE_HOURS).fill(false);
+            if (expelled) return arr;
             for (let hour = 1; hour <= 39; hour++) {
                 if (!absences.includes(hour)) {
                     arr[hour - 1] = true;
@@ -619,7 +630,7 @@
         }
 
         const initialGroupStudents = platonusData.map((st, idx) => {
-            const attHours = buildAttendanceArray(st.absences);
+            const attHours = buildAttendanceArray(st.absences, st.expelled);
             const presentCount = attHours.filter(Boolean).length;
             const attPercent = Math.round((presentCount / TOTAL_ATTENDANCE_HOURS) * 100);
             return {
@@ -644,7 +655,7 @@
         let personalExamChart = null;
         let groupChart = null;
         let bellCurveChart = null;
-        let bellMetric = 'mc1';
+        let bellMetric = 'midterm';
         let isTeacherMode = false;
 
         let activeEditingStudentId = null;
@@ -674,6 +685,16 @@
 
         function saveDatabase() {
             localStorage.setItem(STORAGE_KEY, JSON.stringify(students));
+        }
+
+        /* Средняя оценка по 5 текущим показателям: Посещение, ТК-1, РК-1, СРСП-2, ТК-2 */
+        function calculateMidtermAverage(s) {
+            const att = Number(s.attendance) || 0;
+            const ca1 = Number(s.ca1) || 0;
+            const mc1 = Number(s.mc1) || 0;
+            const srsp2 = Number(s.srsp2) || 0;
+            const ca2 = Number(s.ca2) || 0;
+            return parseFloat(((att + ca1 + mc1 + srsp2 + ca2) / 5).toFixed(1));
         }
 
         function calculateWeightedScore(att, act, ca1, mc1, ca2, mc2, exam) {
@@ -729,9 +750,11 @@
                     matchedStudent.mc2, 
                     matchedStudent.exam
                 );
+                const midtermScore = calculateMidtermAverage(matchedStudent);
                 const gradeInfo = getLetterGrade(finalScore);
 
                 document.getElementById('sr-name').textContent = matchedStudent.name;
+                document.getElementById('sr-midterm-score').textContent = midtermScore.toFixed(1);
                 
                 const letterBadge = document.getElementById('sr-letter');
                 letterBadge.textContent = gradeInfo.letter;
@@ -872,11 +895,13 @@
 
         function setBellMetric(metric) {
             bellMetric = metric;
-            ['mc1', 'ca1', 'srsp2', 'ca2', 'activities', 'total', 'mc2', 'exam'].forEach(m => {
+            ['mc1', 'ca1', 'srsp2', 'ca2', 'mc2', 'exam', 'total', 'midterm'].forEach(m => {
                 const btn = document.getElementById(`bell-btn-${m}`);
                 if (!btn) return;
                 if (m === metric) {
-                    btn.className = "px-2.5 py-1 rounded-lg bg-indigo-600 text-white transition-all";
+                    btn.className = m === 'midterm'
+                        ? "px-2.5 py-1 rounded-lg bg-purple-600 text-white transition-all"
+                        : "px-2.5 py-1 rounded-lg bg-indigo-600 text-white transition-all";
                 } else {
                     btn.className = "px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-all";
                 }
@@ -893,9 +918,9 @@
                 if (bellMetric === 'ca1') return Number(s.ca1) || 0;
                 if (bellMetric === 'srsp2') return Number(s.srsp2) || 0;
                 if (bellMetric === 'ca2') return Number(s.ca2) || 0;
-                if (bellMetric === 'activities') return Number(s.activities) || 0;
                 if (bellMetric === 'mc2') return Number(s.mc2) || 0;
                 if (bellMetric === 'exam') return Number(s.exam) || 0;
+                if (bellMetric === 'midterm') return calculateMidtermAverage(s);
                 return calculateWeightedScore(s.attendance, s.activities, s.ca1, s.mc1, s.ca2, s.mc2, s.exam);
             });
 
@@ -1040,11 +1065,12 @@
             });
         }
 
-        function toggleTeacherMode() {
-            isTeacherMode = !isTeacherMode;
+        function switchMode(teacherState) {
+            if (isTeacherMode === teacherState) return;
+            isTeacherMode = teacherState;
             updateViewMode();
             if (isTeacherMode) {
-                showToast('Открыт кабинет преподавателя.', 'success');
+                showToast('Открыта панель преподавателя.', 'success');
             } else {
                 showToast('Переключено в режим студента.', 'info');
             }
@@ -1053,24 +1079,23 @@
         function updateViewMode() {
             const studentView = document.getElementById('student-view');
             const teacherView = document.getElementById('teacher-view');
-            const badge = document.getElementById('mode-badge');
-            const keyBtn = document.getElementById('secret-teacher-key');
+            const studentBtn = document.getElementById('tab-student-btn');
+            const teacherBtn = document.getElementById('tab-teacher-btn');
 
             if (isTeacherMode) {
                 studentView.classList.add('hidden');
                 teacherView.classList.remove('hidden');
-                badge.innerHTML = `<span class="h-2 w-2 bg-emerald-400 rounded-full animate-pulse"></span><span>Режим преподавателя</span>`;
-                badge.className = "px-3.5 py-1.5 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 flex items-center space-x-1.5";
-                keyBtn.classList.remove('text-slate-600/40', 'opacity-25');
-                keyBtn.classList.add('text-emerald-400/80', 'opacity-60');
+
+                teacherBtn.className = "px-4 py-2 rounded-lg text-xs font-bold bg-emerald-600 text-white shadow-md transition-all flex items-center space-x-2";
+                studentBtn.className = "px-4 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-all flex items-center space-x-2";
+                
                 updateDashboardData();
             } else {
                 studentView.classList.remove('hidden');
                 teacherView.classList.add('hidden');
-                badge.innerHTML = `<span class="h-2 w-2 bg-indigo-400 rounded-full animate-pulse"></span><span>Режим студента</span>`;
-                badge.className = "px-3.5 py-1.5 rounded-full text-xs font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 flex items-center space-x-1.5";
-                keyBtn.classList.remove('text-emerald-400/80', 'opacity-60');
-                keyBtn.classList.add('text-slate-600/40', 'opacity-25');
+
+                studentBtn.className = "px-4 py-2 rounded-lg text-xs font-bold bg-indigo-600 text-white shadow-md transition-all flex items-center space-x-2";
+                teacherBtn.className = "px-4 py-2 rounded-lg text-xs font-bold text-slate-400 hover:text-white transition-all flex items-center space-x-2";
             }
         }
 
@@ -1094,6 +1119,7 @@
 
             filtered.forEach(student => {
                 const rowNumber = students.indexOf(student) + 1;
+                const midtermScore = calculateMidtermAverage(student);
                 const finalScore = calculateWeightedScore(
                     student.attendance, 
                     student.activities,
@@ -1106,15 +1132,16 @@
                 const gradeInfo = getLetterGrade(finalScore);
                 const srspVal = student.srsp2 !== undefined ? student.srsp2 : 0;
                 const isZeroSrsp = srspVal === 0;
+                const isExpelled = student.srsp2Comment === 'Отчислен';
 
                 const row = document.createElement('tr');
-                row.className = "hover:bg-slate-900/60 transition-colors border-b border-slate-800/40";
+                row.className = `${isExpelled ? 'bg-rose-950/15 hover:bg-rose-950/25' : 'hover:bg-slate-900/60'} transition-colors border-b border-slate-800/40`;
                 row.innerHTML = `
                     <td class="py-2.5 px-2 text-center text-xs font-mono font-bold text-slate-500">
                         ${rowNumber}
                     </td>
                     <td class="py-2.5 px-2 font-medium text-slate-100">
-                        <span class="block font-bold text-slate-200 truncate max-w-[210px]" title="${escapeHtmlAttr(student.name)}">${escapeHtmlAttr(student.name)}</span>
+                        <span class="block font-bold ${isExpelled ? 'text-rose-400 line-through' : 'text-slate-200'} truncate max-w-[210px]" title="${escapeHtmlAttr(student.name)}">${escapeHtmlAttr(student.name)}</span>
                     </td>
                     <td class="py-2.5 px-1">
                         <button onclick="openAttendanceModal('${student.id}')" id="att-trigger-${student.id}"
@@ -1147,12 +1174,15 @@
                         <input type="text" value="${escapeHtmlAttr(student.srsp2Comment)}" placeholder="—"
                             onchange="updateStudentComment('${student.id}', this.value)"
                             title="${escapeHtmlAttr(student.srsp2Comment)}"
-                            class="w-full px-2 py-1 bg-slate-950/90 border border-slate-800 hover:border-slate-700 focus:border-cyan-500 rounded-lg ${isZeroSrsp ? 'text-rose-400/90' : 'text-slate-300'} text-[11px] transition-all">
+                            class="w-full px-2 py-1 bg-slate-950/90 border border-slate-800 hover:border-slate-700 focus:border-cyan-500 rounded-lg ${isZeroSrsp ? 'text-rose-400/90 font-semibold' : 'text-slate-300'} text-[11px] transition-all">
                     </td>
                     <td class="py-2.5 px-1">
                         <input type="number" step="any" min="0" max="100" value="${student.ca2 || 0}" 
                             onchange="updateStudentGrade('${student.id}', 'ca2', this.value)"
                             class="w-full text-center py-1 bg-slate-950 border border-slate-800 hover:border-slate-700 focus:border-indigo-500 rounded-lg text-slate-100 text-xs font-semibold transition-all">
+                    </td>
+                    <td class="py-2.5 px-1.5 text-center font-extrabold text-purple-300 bg-purple-950/15 text-xs">
+                        ${midtermScore.toFixed(1)}
                     </td>
                     <td class="py-2.5 px-1">
                         <input type="number" step="any" min="0" max="100" value="${student.mc2 || 0}" 
@@ -1260,6 +1290,7 @@
                         { label: 'РК1', data: [], backgroundColor: 'rgba(245, 158, 11, 0.85)', borderRadius: 2, maxBarThickness: 6 },
                         { label: 'СРСП2', data: [], backgroundColor: 'rgba(6, 182, 212, 0.85)', borderRadius: 2, maxBarThickness: 6 },
                         { label: 'ТК2', data: [], backgroundColor: 'rgba(99, 102, 241, 0.85)', borderRadius: 2, maxBarThickness: 6 },
+                        { label: 'Пром', data: [], backgroundColor: 'rgba(168, 85, 247, 0.85)', borderRadius: 2, maxBarThickness: 7 },
                         { label: 'РК2', data: [], backgroundColor: 'rgba(249, 115, 22, 0.85)', borderRadius: 2, maxBarThickness: 6 },
                         { label: 'Экз', data: [], backgroundColor: 'rgba(244, 63, 94, 0.85)', borderRadius: 2, maxBarThickness: 6 },
                         { label: 'Итог', data: [], backgroundColor: 'rgba(139, 92, 246, 0.85)', borderRadius: 2, maxBarThickness: 8 }
@@ -1293,9 +1324,10 @@
             groupChart.data.datasets[3].data = sorted.map(s => s.mc1 || 0);
             groupChart.data.datasets[4].data = sorted.map(s => s.srsp2 || 0);
             groupChart.data.datasets[5].data = sorted.map(s => s.ca2 || 0);
-            groupChart.data.datasets[6].data = sorted.map(s => s.mc2 || 0);
-            groupChart.data.datasets[7].data = sorted.map(s => s.exam || 0);
-            groupChart.data.datasets[8].data = sorted.map(s => calculateWeightedScore(s.attendance, s.activities, s.ca1, s.mc1, s.ca2, s.mc2, s.exam));
+            groupChart.data.datasets[6].data = sorted.map(s => calculateMidtermAverage(s));
+            groupChart.data.datasets[7].data = sorted.map(s => s.mc2 || 0);
+            groupChart.data.datasets[8].data = sorted.map(s => s.exam || 0);
+            groupChart.data.datasets[9].data = sorted.map(s => calculateWeightedScore(s.attendance, s.activities, s.ca1, s.mc1, s.ca2, s.mc2, s.exam));
 
             groupChart.update();
         }
@@ -1506,13 +1538,14 @@
             }
 
             let csvContent = "\uFEFF";
-            csvContent += "№;ФИО Студента;Посещаемость (10%);Активность (10%);ТК1 (10%);РК1 (10%);СРСП-2;Комментарий к СРСП-2;ТК2 (10%);РК2 (10%);Экзамен (40%);Итоговый балл;Оценка\n";
+            csvContent += "№;ФИО Студента;Посещаемость (10%);Активность (10%);ТК1 (10%);РК1 (10%);СРСП-2;Комментарий к СРСП-2;ТК2 (10%);Промежуточный результат;РК2 (10%);Экзамен (40%);Итоговый балл;Оценка\n";
 
             students.forEach((s, index) => {
+                const midterm = calculateMidtermAverage(s);
                 const final = calculateWeightedScore(s.attendance, s.activities, s.ca1, s.mc1, s.ca2, s.mc2, s.exam);
                 const letter = getLetterGrade(final).letter;
                 const comm = (s.srsp2Comment || '').replace(/"/g, '""');
-                csvContent += `${index + 1};"${s.name.replace(/"/g, '""')}";${s.attendance};${s.activities || 0};${s.ca1 || 0};${s.mc1 || 0};${s.srsp2 || 0};"${comm}";${s.ca2 || 0};${s.mc2 || 0};${s.exam || 0};${final};${letter}\n`;
+                csvContent += `${index + 1};"${s.name.replace(/"/g, '""')}";${s.attendance};${s.activities || 0};${s.ca1 || 0};${s.mc1 || 0};${s.srsp2 || 0};"${comm}";${s.ca2 || 0};${midterm};${s.mc2 || 0};${s.exam || 0};${final};${letter}\n`;
             });
 
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
