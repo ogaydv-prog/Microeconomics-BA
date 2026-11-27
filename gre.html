@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Государство на рынке | Микроэкономика</title>
+    <title>Государство на рынке | Микроэкономика • AlmaU</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -28,11 +28,11 @@
         .chart-container {
             position: relative;
             width: 100%;
-            max-width: 700px;
+            max-width: 720px;
             margin-left: auto;
             margin-right: auto;
-            height: 320px;
-            max-height: 380px;
+            height: 310px;
+            max-height: 360px;
         }
         @media (max-width: 768px) {
             .chart-container {
@@ -46,6 +46,9 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
         .nav-item.active {
             background-color: #e0e7ff;
             color: #4338ca;
@@ -57,12 +60,13 @@
         .mobile-tab.active {
             background-color: #4338ca;
             color: #ffffff;
+            border-color: #4338ca;
             font-weight: 700;
         }
 
         .view-section {
             display: none;
-            animation: fadeIn 0.35s ease-in-out;
+            animation: fadeIn 0.3s ease-in-out;
         }
         .view-section.active {
             display: block;
@@ -77,11 +81,11 @@
         .formula-box {
             background-color: #f1f5f9;
             border-left: 4px solid #4338ca;
-            padding: 0.75rem 1rem;
+            padding: 0.65rem 0.95rem;
             border-radius: 0 0.5rem 0.5rem 0;
             font-family: 'Courier New', Courier, monospace;
-            font-size: 1rem;
-            margin: 0.75rem 0;
+            font-size: 0.95rem;
+            margin: 0.65rem 0;
             overflow-x: auto;
             white-space: nowrap;
         }
@@ -89,51 +93,56 @@
 </head>
 <body class="flex flex-col md:flex-row h-screen overflow-hidden antialiased">
 
-    <!-- Sidebar Navigation (для десктопа) -->
+    <!-- Sidebar Navigation (Desktop) -->
     <aside class="w-64 bg-white border-r border-slate-200 flex-col hidden md:flex z-10 shadow-sm shrink-0 justify-between">
         <div>
-            <div class="p-6 border-b border-slate-200 flex items-center justify-between">
-                <div>
-                    <h1 class="text-base font-extrabold text-indigo-900 leading-tight" id="sidebar-title">🏛️ Государство на рынке</h1>
-                    <p class="text-[10px] text-slate-500 mt-0.5 font-semibold uppercase tracking-wider" id="sidebar-subtitle">Микроэкономика • Лекция</p>
+            <div class="p-5 border-b border-slate-200">
+                <div class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 text-[10px] font-bold uppercase tracking-wider mb-1.5" id="sidebar-badge">
+                    Интерактивный дашборд
                 </div>
+                <h1 class="text-base font-extrabold text-indigo-950 leading-tight" id="sidebar-title">🏛️ Государство на рынке</h1>
+                <p class="text-[11px] text-slate-500 mt-0.5 font-semibold" id="sidebar-subtitle">Микроэкономика • Лекция</p>
             </div>
             
             <!-- Переключатель языка на десктопе -->
-            <div class="px-6 py-3 border-b border-slate-100 bg-slate-50 flex items-center justify-between">
+            <div class="px-5 py-2.5 border-b border-slate-100 bg-slate-50/80 flex items-center justify-between">
                 <span class="text-xs font-bold text-slate-500" id="lbl-lang">Язык / Lang:</span>
-                <button onclick="toggleLanguage()" class="px-2.5 py-1 bg-indigo-600 text-white font-extrabold rounded text-xs hover:bg-indigo-700 transition flex items-center gap-1 shadow-sm">
+                <button onclick="toggleLanguage()" class="px-3 py-1 bg-indigo-600 text-white font-extrabold rounded-md text-xs hover:bg-indigo-700 transition flex items-center gap-1.5 shadow-sm cursor-pointer">
                     🌐 <span id="lang-btn-text">EN</span>
                 </button>
             </div>
 
             <nav class="flex-1 overflow-y-auto py-2">
                 <ul class="space-y-1">
-                    <li><button class="nav-item active w-full text-left px-6 py-3 text-xs text-slate-600 hover:bg-slate-50 transition-colors" data-target="view-overview" id="nav-overview">📋 Провалы рынка</button></li>
-                    <li><button class="nav-item w-full text-left px-6 py-3 text-xs text-slate-600 hover:bg-slate-50 transition-colors" data-target="view-monopoly" id="nav-monopoly">⚖️ Монополии и HHI</button></li>
-                    <li><button class="nav-item w-full text-left px-6 py-3 text-xs text-slate-600 hover:bg-slate-50 transition-colors" data-target="view-public-goods" id="nav-public">🌳 Общественные блага</button></li>
-                    <li><button class="nav-item w-full text-left px-6 py-3 text-xs text-slate-600 hover:bg-slate-50 transition-colors" data-target="view-international" id="nav-trade">🛳️ Международные рынки</button></li>
-                    <li><button class="nav-item w-full text-left px-6 py-3 text-xs text-slate-600 hover:bg-slate-50 transition-colors" data-target="view-insights" id="nav-insights">💡 Бизнес-инсайты</button></li>
+                    <li><button class="nav-item active w-full text-left px-5 py-3 text-xs text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer" data-target="view-overview" id="nav-overview">📋 Провалы и роль государства</button></li>
+                    <li><button class="nav-item w-full text-left px-5 py-3 text-xs text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer" data-target="view-externalities" id="nav-ext">🏭 Внешние эффекты и Пигу</button></li>
+                    <li><button class="nav-item w-full text-left px-5 py-3 text-xs text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer" data-target="view-monopoly" id="nav-monopoly">⚖️ Монополии и HHI</button></li>
+                    <li><button class="nav-item w-full text-left px-5 py-3 text-xs text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer" data-target="view-public-goods" id="nav-public">🌳 Общественные блага</button></li>
+                    <li><button class="nav-item w-full text-left px-5 py-3 text-xs text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer" data-target="view-international" id="nav-trade">🛳️ Международные рынки</button></li>
+                    <li><button class="nav-item w-full text-left px-5 py-3 text-xs text-slate-600 hover:bg-slate-50 transition-colors cursor-pointer" data-target="view-insights" id="nav-insights">💡 Бизнес-инсайты</button></li>
                 </ul>
             </nav>
         </div>
 
-        <div class="p-4 border-t border-slate-100 text-center text-[10px] text-slate-400 font-bold" id="sidebar-footer">
-            School of Economics and Digital Technologies • Almaty, AlmaU 2026
+        <div class="p-4 border-t border-slate-100 text-center text-[10px] text-slate-400 font-bold leading-relaxed" id="sidebar-footer">
+            School of Digital Technologies & Economics • AlmaU 2026
         </div>
     </aside>
 
-    <!-- Header & Mobile Tabs (для смартфонов) -->
+    <!-- Header & Mobile Tabs (Mobile) -->
     <div class="md:hidden bg-white border-b border-slate-200 sticky top-0 z-20 shadow-sm">
         <div class="p-3 flex justify-between items-center border-b border-slate-100">
-            <h1 class="text-xs font-black text-indigo-950 uppercase tracking-wide" id="mob-title">🏛️ Государство на рынке</h1>
-            <button onclick="toggleLanguage()" class="text-xs bg-indigo-600 text-white px-2.5 py-1 rounded-md font-bold">🌐 <span id="mob-lang-btn">EN</span></button>
+            <div>
+                <h1 class="text-xs font-black text-indigo-950 uppercase tracking-wide" id="mob-title">🏛️ Государство на рынке</h1>
+                <p class="text-[10px] text-slate-500 font-medium" id="mob-subtitle">Микроэкономика • Лекционный дашборд</p>
+            </div>
+            <button onclick="toggleLanguage()" class="text-xs bg-indigo-600 text-white px-2.5 py-1 rounded-md font-bold shadow-sm">🌐 <span id="mob-lang-btn">EN</span></button>
         </div>
-        <!-- Горизонтальная прокрутка разделов на смартфоне -->
         <div class="flex overflow-x-auto p-2 gap-1.5 no-scrollbar bg-slate-50">
-            <button class="mobile-tab active text-xs whitespace-nowrap px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700" data-target="view-overview" id="mob-tab-overview">📋 Провалы</button>
+            <button class="mobile-tab active text-xs whitespace-nowrap px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700" data-target="view-overview" id="mob-tab-overview">📋 Провалы и роль</button>
+            <button class="mobile-tab text-xs whitespace-nowrap px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700" data-target="view-externalities" id="mob-tab-ext">🏭 Экстерналии</button>
             <button class="mobile-tab text-xs whitespace-nowrap px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700" data-target="view-monopoly" id="mob-tab-monopoly">⚖️ HHI</button>
-            <button class="mobile-tab text-xs whitespace-nowrap px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700" data-target="view-public-goods" id="mob-tab-public">🌳 Общественные</button>
+            <button class="mobile-tab text-xs whitespace-nowrap px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700" data-target="view-public-goods" id="mob-tab-public">🌳 Блага</button>
             <button class="mobile-tab text-xs whitespace-nowrap px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700" data-target="view-international" id="mob-tab-trade">🛳️ Тарифы</button>
             <button class="mobile-tab text-xs whitespace-nowrap px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-slate-700" data-target="view-insights" id="mob-tab-insights">💡 Инсайты</button>
         </div>
@@ -141,55 +150,289 @@
 
     <!-- Main Content Area -->
     <main class="flex-1 h-full overflow-y-auto bg-slate-50 relative flex flex-col justify-between">
+        
+        <!-- Верхняя плашка дашборда (Desktop) -->
+        <div class="hidden md:flex items-center justify-between px-8 py-3 bg-white border-b border-slate-200/80 sticky top-0 z-10">
+            <div class="flex items-center gap-2 text-xs text-slate-500 font-semibold">
+                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span id="topbar-status">Учебный модуль: Провалы рынка, экстерналии и государственное регулирование</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <span class="text-[11px] font-bold text-slate-400" id="topbar-ref">По материалам N.G. Mankiw (Ch. 10)</span>
+                <button onclick="toggleLanguage()" class="text-xs font-bold px-2.5 py-1 rounded border border-slate-200 hover:bg-slate-50 text-indigo-700 transition cursor-pointer">
+                    <span id="topbar-lang-indicator">RU ⇄ EN</span>
+                </button>
+            </div>
+        </div>
+
         <div class="p-4 md:p-8 max-w-5xl mx-auto w-full">
 
-            <!-- ================= VIEW: OVERVIEW ================= -->
+            <!-- ================= VIEW 1: OVERVIEW & ROLE OF GOVERNMENT ================= -->
             <section id="view-overview" class="view-section active">
                 <header class="mb-6 md:mb-8">
-                    <h2 class="text-xl md:text-3xl font-extrabold text-slate-900 mb-2" id="ov-h2">Концепция провалов рынка</h2>
+                    <h2 class="text-xl md:text-3xl font-extrabold text-slate-900 mb-2" id="ov-h2">Провалы рынка и роль государства</h2>
                     <p class="text-slate-600 leading-relaxed text-sm md:text-base" id="ov-p">
-                        Обзор фундаментальных причин, по которым свободный рынок не обеспечивает социально оптимальное распределение ресурсов.
+                        Почему «невидимая рука» Адама Смита не всегда обеспечивает оптимум, и какие ключевые функции выполняет государство в современной экономике.
                     </p>
                 </header>
 
+                <!-- 4 провала рынка -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6 mb-6">
                     <p class="mb-4 text-sm md:text-base text-slate-700" id="ov-intro">
-                        В идеальных условиях рынок ведёт к Парето-эффективности (<span class="font-bold text-indigo-700">P = MC</span>). Однако на практике возникают <strong>провалы рынка (Market Failures)</strong>, требующие государственного вмешательства:
+                        В идеальных условиях конкурентный рынок ведёт к Парето-эффективности (<span class="font-bold text-indigo-700">P = MC</span>), максимизируя сумму излишков потребителя и производителя. Однако на практике возникают <strong>провалы рынка (Market Failures)</strong>:
                     </p>
                     
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4 mt-4">
                         <div class="p-4 bg-indigo-50/70 rounded-xl border border-indigo-100">
                             <div class="text-xl mb-1">⚖️</div>
-                            <h3 class="font-bold text-indigo-950 text-sm md:text-base mb-1" id="mf1-title">1. Рыночная власть</h3>
-                            <p class="text-xs md:text-sm text-slate-600 leading-snug" id="mf1-desc">Монополии устанавливают P > MC, вызывая безвозвратные потери общества (Deadweight Loss).</p>
+                            <h3 class="font-bold text-indigo-950 text-sm md:text-base mb-1" id="mf1-title">1. Рыночная власть (Market Power)</h3>
+                            <p class="text-xs md:text-sm text-slate-600 leading-snug" id="mf1-desc">Монополии и олигополии ограничивают выпуск и устанавливают P > MC, вызывая безвозвратные потери (Deadweight Loss).</p>
                         </div>
-                        <div class="p-4 bg-teal-50/70 rounded-xl border border-teal-100">
-                            <div class="text-xl mb-1">🏭</div>
-                            <h3 class="font-bold text-teal-950 text-sm md:text-base mb-1" id="mf2-title">2. Внешние эффекты</h3>
-                            <p class="text-xs md:text-sm text-slate-600 leading-snug" id="mf2-desc">Издержки или выгоды перекладываются на третьих лиц (MSC = MC + MEC).</p>
+                        <div class="p-4 bg-teal-50/70 rounded-xl border border-teal-100 cursor-pointer hover:border-teal-300 transition" onclick="activateSection('view-externalities')">
+                            <div class="flex justify-between items-start">
+                                <div class="text-xl mb-1">🏭</div>
+                                <span class="text-[10px] font-bold bg-teal-600 text-white px-2 py-0.5 rounded-full" id="mf2-badge">Подробнее →</span>
+                            </div>
+                            <h3 class="font-bold text-teal-950 text-sm md:text-base mb-1" id="mf2-title">2. Внешние эффекты (Externalities)</h3>
+                            <p class="text-xs md:text-sm text-slate-600 leading-snug" id="mf2-desc">Некомпенсированное воздействие на третьих лиц: загрязнение среды или польза от образования и R&D (MSC ≠ MPC).</p>
                         </div>
-                        <div class="p-4 bg-emerald-50/70 rounded-xl border border-emerald-100">
+                        <div class="p-4 bg-emerald-50/70 rounded-xl border border-emerald-100 cursor-pointer hover:border-emerald-300 transition" onclick="activateSection('view-public-goods')">
                             <div class="text-xl mb-1">🌳</div>
-                            <h3 class="font-bold text-emerald-950 text-sm md:text-base mb-1" id="mf3-title">3. Общественные блага</h3>
-                            <p class="text-xs md:text-sm text-slate-600 leading-snug" id="mf3-desc">Несоперничество и неисключаемость порождают «проблему безбилетника» (Free-Rider).</p>
+                            <h3 class="font-bold text-emerald-950 text-sm md:text-base mb-1" id="mf3-title">3. Общественные блага (Public Goods)</h3>
+                            <p class="text-xs md:text-sm text-slate-600 leading-snug" id="mf3-desc">Несоперничество и неисключаемость порождают «проблему безбилетника» (Free-Rider) и недопроизводство благ.</p>
                         </div>
                         <div class="p-4 bg-rose-50/70 rounded-xl border border-rose-100">
                             <div class="text-xl mb-1">🕵️‍♂️</div>
                             <h3 class="font-bold text-rose-950 text-sm md:text-base mb-1" id="mf4-title">4. Асимметрия информации</h3>
-                            <p class="text-xs md:text-sm text-slate-600 leading-snug" id="mf4-desc">Ведёт к неблагоприятному отбору (Adverse Selection) и моральному риску (Moral Hazard).</p>
+                            <p class="text-xs md:text-sm text-slate-600 leading-snug" id="mf4-desc">Неравномерное распределение данных ведёт к неблагоприятному отбору (Adverse Selection) и моральному риску (Moral Hazard).</p>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-amber-50/80 rounded-xl shadow-sm border border-amber-200 p-4 md:p-6">
-                    <h3 class="font-bold text-amber-950 mb-1 flex items-center gap-2 text-sm md:text-base" id="rent-title"><span>💰</span> Поиск ренты (Rent Seeking)</h3>
+                <!-- 4 функции государства -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6 mb-6">
+                    <h3 class="text-base md:text-lg font-extrabold text-slate-900 mb-1 flex items-center gap-2" id="gov-role-h3">
+                        <span>🏛️</span> Четыре ключевые функции государства в экономике
+                    </h3>
+                    <p class="text-xs md:text-sm text-slate-500 mb-4" id="gov-role-sub">
+                        Согласно принципу Г. Мэнкью: «Правительство иногда может улучшить рыночные результаты» (Government action can sometimes improve market outcomes).
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="border border-slate-200 rounded-xl p-4 bg-slate-50/60">
+                            <span class="inline-block text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-indigo-100 text-indigo-800 mb-2" id="gr1-tag">Функция 1 • Эффективность</span>
+                            <h4 class="font-bold text-slate-800 text-sm mb-1" id="gr1-title">Коррекция провалов рынка</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed" id="gr1-desc">Антимонопольное регулирование, налоги Пигу на выбросы, субсидирование науки и образования, финансирование национальной обороны и инфраструктуры.</p>
+                        </div>
+                        <div class="border border-slate-200 rounded-xl p-4 bg-slate-50/60">
+                            <span class="inline-block text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 mb-2" id="gr2-tag">Функция 2 • Справедливость</span>
+                            <h4 class="font-bold text-slate-800 text-sm mb-1" id="gr2-title">Перераспределение доходов (Equity)</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed" id="gr2-desc">Рынок вознаграждает за продуктивность, но не гарантирует социальную защиту. Прогрессивное налогообложение, пенсии и социальные трансферты сглаживают неравенство.</p>
+                        </div>
+                        <div class="border border-slate-200 rounded-xl p-4 bg-slate-50/60">
+                            <span class="inline-block text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-amber-100 text-amber-800 mb-2" id="gr3-tag">Функция 3 • Стабильность</span>
+                            <h4 class="font-bold text-slate-800 text-sm mb-1" id="gr3-title">Макроэкономическая стабилизация</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed" id="gr3-desc">Сглаживание деловых циклов, контроль инфляции и безработицы с помощью фискальной (бюджет и налоги) и монетарной (центральный банк) политики.</p>
+                        </div>
+                        <div class="border border-slate-200 rounded-xl p-4 bg-slate-50/60">
+                            <span class="inline-block text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded bg-sky-100 text-sky-800 mb-2" id="gr4-tag">Функция 4 • Институты</span>
+                            <h4 class="font-bold text-slate-800 text-sm mb-1" id="gr4-title">Защита прав собственности и контрактов</h4>
+                            <p class="text-xs text-slate-600 leading-relaxed" id="gr4-desc">Рынки невозможны без правовой базы: суды, патентное право, стандарты безопасности и защита прав инвесторов снижают трансакционные издержки.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Провалы государства и Поиск ренты -->
+                <div class="bg-amber-50/90 rounded-xl shadow-sm border border-amber-200 p-4 md:p-6">
+                    <h3 class="font-bold text-amber-950 mb-1 flex items-center gap-2 text-sm md:text-base" id="rent-title"><span>⚠️</span> Провалы государства и поиск ренты (Rent Seeking)</h3>
                     <p class="text-xs md:text-sm text-amber-900 leading-relaxed" id="rent-desc">
-                        Деятельность фирм по лоббированию своих интересов в правительстве для получения монопольных прав, квот или тарифов. Ресурсы тратятся не на создание ценности, а на перераспределение богатства.
+                        Вмешательство государства не всегда идеально: политики и чиновники обладают неполной информацией и подвержены лоббизму. <strong>Поиск ренты</strong> — трата ресурсов фирмами на получение монопольных прав, квот или субсидий вместо создания новой ценности.
                     </p>
                 </div>
             </section>
 
-            <!-- ================= VIEW: MONOPOLY & HHI ================= -->
+            <!-- ================= VIEW 2: EXTERNALITIES & PIGOU (NEW!) ================= -->
+            <section id="view-externalities" class="view-section">
+                <header class="mb-6 md:mb-8">
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-800 text-[11px] font-bold mb-2" id="ext-badge">
+                        Грегори Мэнкью • Глава 10
+                    </div>
+                    <h2 class="text-xl md:text-3xl font-extrabold text-slate-900 mb-2" id="ext-h2">Внешние эффекты и Налог Пигу</h2>
+                    <p class="text-slate-600 leading-relaxed text-sm md:text-base" id="ext-p">
+                        Внешний эффект (экстерналия) — некомпенсированное воздействие действий одного экономического агента на благосостояние третьего лица (bystander).
+                    </p>
+                </header>
+
+                <!-- Карточка Артура Пигу + Базовая теория -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                    <!-- Arthur Pigou Card -->
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex flex-col items-center text-center">
+                        <div class="w-28 h-36 rounded-lg overflow-hidden border-2 border-indigo-100 shadow-sm mb-3 bg-slate-100">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Arthur_Cecil_Pigou.jpg/440px-Arthur_Cecil_Pigou.jpg" 
+                                 onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%22150%22 viewBox=%220 0 120 150%22><rect width=%22120%22 height=%22150%22 fill=%22%23e0e7ff%22/><text x=%2250%%22 y=%2248%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Inter,sans-serif%22 font-weight=%22bold%22 font-size=%2228%22 fill=%22%234338ca%22>A.C.P.</text><text x=%2250%%22 y=%2266%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Inter,sans-serif%22 font-size=%2210%22 fill=%22%234f46e5%22>1877–1959</text></svg>';"
+                                 alt="Arthur Cecil Pigou" 
+                                 class="w-full h-full object-cover grayscale contrast-110">
+                        </div>
+                        <h3 class="font-extrabold text-slate-900 text-sm md:text-base" id="pigou-name">Артур Сесил Пигу</h3>
+                        <p class="text-[11px] font-bold text-indigo-600 mb-2">1877 – 1959 • Cambridge</p>
+                        <p class="text-xs text-slate-600 leading-relaxed" id="pigou-bio">
+                            Британский экономист, автор труда <em>«Экономическая теория благосостояния»</em> (1920). Обосновал концепцию <strong>корректирующих налогов и субсидий</strong> для интернализации экстерналий.
+                        </p>
+                    </div>
+
+                    <!-- Сравнение отрицательных и положительных экстерналий -->
+                    <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="bg-white rounded-xl shadow-sm border-t-4 border-t-rose-500 border border-slate-200 p-4 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <span class="text-xs font-extrabold uppercase text-rose-600" id="neg-tag">Отрицательные</span>
+                                    <span class="text-lg">🏭💨</span>
+                                </div>
+                                <h4 class="font-bold text-slate-900 text-sm md:text-base mb-1" id="neg-title">Издержки для общества</h4>
+                                <p class="text-xs text-slate-600 leading-relaxed mb-2" id="neg-desc">
+                                    Выбросы диоксина при производстве бумаги, выхлопы авто, лай собак. Общественные издержки превышают частные:
+                                </p>
+                                <div class="formula-box text-xs py-1.5 border-l-rose-500">
+                                    MSC = MPC + MEC
+                                </div>
+                            </div>
+                            <div class="mt-2 pt-2 border-t border-slate-100 text-xs font-semibold text-rose-700" id="neg-result">
+                                Итог рынка: Q<sub>Market</sub> > Q<sub>Optimum</sub> (перепроизводство). Решение: <strong>Налог Пигу (T = MEC)</strong>.
+                            </div>
+                        </div>
+
+                        <div class="bg-white rounded-xl shadow-sm border-t-4 border-t-emerald-500 border border-slate-200 p-4 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <span class="text-xs font-extrabold uppercase text-emerald-600" id="pos-tag">Положительные</span>
+                                    <span class="text-lg">🎓🔬</span>
+                                </div>
+                                <h4 class="font-bold text-slate-900 text-sm md:text-base mb-1" id="pos-title">Выгоды для общества</h4>
+                                <p class="text-xs text-slate-600 leading-relaxed mb-2" id="pos-desc">
+                                    Образование, вакцинация, реставрация памятников, технологические спилловеры (R&D). Общественная ценность выше частной:
+                                </p>
+                                <div class="formula-box text-xs py-1.5 border-l-emerald-500">
+                                    MSB = MPB + MEB
+                                </div>
+                            </div>
+                            <div class="mt-2 pt-2 border-t border-slate-100 text-xs font-semibold text-emerald-700" id="pos-result">
+                                Итог рынка: Q<sub>Market</sub> < Q<sub>Optimum</sub> (недопроизводство). Решение: <strong>Субсидия Пигу (S = MEB)</strong>.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ИНТЕРАКТИВНЫЙ ГРАФИК ЭКСТЕРНАЛИЙ -->
+                <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6 mb-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100">
+                        <div>
+                            <h3 class="font-extrabold text-slate-900 text-base md:text-lg" id="ext-sim-title">Интерактивная модель интернализации</h3>
+                            <p class="text-xs text-slate-500" id="ext-sim-sub">Сравните рыночное равновесие (Q<sub>M</sub>) и общественный оптимум (Q*)</p>
+                        </div>
+                        <div class="flex bg-slate-100 p-1 rounded-lg self-start">
+                            <button id="btn-ext-neg" onclick="setExtMode('neg')" class="px-3 py-1.5 rounded-md text-xs font-bold bg-indigo-600 text-white shadow-sm transition cursor-pointer">
+                                🏭 Отрицательная (Сталь)
+                            </button>
+                            <button id="btn-ext-pos" onclick="setExtMode('pos')" class="px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:text-slate-900 transition cursor-pointer">
+                                🎓 Положительная (Образование)
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
+                        <!-- Слайдеры и метрики -->
+                        <div class="space-y-4">
+                            <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                                <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
+                                    <span id="lbl-ext-size">Внешний эффект (MEC):</span>
+                                    <span id="val-ext-size" class="text-rose-600 font-black">20</span>
+                                </div>
+                                <input type="range" id="slider-ext-size" min="0" max="40" step="2" value="20" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-rose-600">
+                                <p class="text-[11px] text-slate-500 mt-1" id="hint-ext-size">Величина ущерба третьим лицам на единицу выпуска</p>
+                            </div>
+
+                            <div class="bg-indigo-50/70 p-3.5 rounded-xl border border-indigo-200">
+                                <div class="flex justify-between text-xs font-bold text-indigo-950 mb-1">
+                                    <span id="lbl-pigou-policy">Налог Пигу (T):</span>
+                                    <span id="val-pigou-policy" class="text-indigo-700 font-black">0</span>
+                                </div>
+                                <input type="range" id="slider-pigou-policy" min="0" max="40" step="2" value="0" class="w-full h-2 bg-indigo-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
+                                <button onclick="matchPigouOptimal()" class="mt-2 w-full py-1.5 px-2 bg-indigo-600 hover:bg-indigo-700 text-white text-[11px] font-bold rounded-lg transition shadow-sm cursor-pointer" id="btn-auto-pigou">
+                                    ⚡ Установить оптимальный уровень (T = MEC)
+                                </button>
+                            </div>
+
+                            <!-- Показатели -->
+                            <div class="grid grid-cols-3 gap-2 text-center">
+                                <div class="bg-slate-100 p-2 rounded-lg">
+                                    <div class="text-[10px] font-bold text-slate-500 uppercase" id="lbl-qm">Рынок Q<sub>M</sub></div>
+                                    <div id="ext-qm-val" class="text-base font-black text-slate-800">40.0</div>
+                                </div>
+                                <div class="bg-emerald-50 border border-emerald-200 p-2 rounded-lg">
+                                    <div class="text-[10px] font-bold text-emerald-700 uppercase" id="lbl-qopt">Оптимум Q*</div>
+                                    <div id="ext-qopt-val" class="text-base font-black text-emerald-700">30.0</div>
+                                </div>
+                                <div class="bg-rose-50 border border-rose-200 p-2 rounded-lg">
+                                    <div class="text-[10px] font-bold text-rose-700 uppercase" id="lbl-ext-dwl">DWL потери</div>
+                                    <div id="ext-dwl-val" class="text-base font-black text-rose-600">100</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- График Chart.js -->
+                        <div class="lg:col-span-2">
+                            <div class="chart-container">
+                                <canvas id="externalityChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Инструменты политики и Теорема Коуза -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Государственные меры -->
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6">
+                        <h3 class="font-extrabold text-slate-900 text-sm md:text-base mb-3 flex items-center gap-2" id="pol-title">
+                            <span>🏛️</span> Государственная политика (Public Policies)
+                        </h3>
+                        <div class="space-y-3 text-xs md:text-sm text-slate-600">
+                            <div class="p-3 rounded-lg bg-slate-50 border border-slate-200">
+                                <div class="font-bold text-slate-800 mb-0.5" id="pol1-t">1. Командно-административное регулирование</div>
+                                <p class="text-xs" id="pol1-d">Прямые запреты (сброс токсинов) или жёсткие квоты выбросов (стандарты EPA). Минус: не учитывает различия в издержках очистки у разных заводов.</p>
+                            </div>
+                            <div class="p-3 rounded-lg bg-indigo-50/60 border border-indigo-100">
+                                <div class="font-bold text-indigo-950 mb-0.5" id="pol2-t">2. Корректирующие налоги Пигу (Pigovian Taxes)</div>
+                                <p class="text-xs" id="pol2-d">Устанавливают <strong>цену</strong> на право загрязнять (например, акциз на бензин или углеродный налог). Стимулируют внедрение чистых технологий и приносят доход бюджету без создания DWL.</p>
+                            </div>
+                            <div class="p-3 rounded-lg bg-teal-50/60 border border-teal-100">
+                                <div class="font-bold text-teal-950 mb-0.5" id="pol3-t">3. Торгуемые разрешения (Cap-and-Trade)</div>
+                                <p class="text-xs" id="pol3-d">Государство фиксирует <strong>объём</strong> выбросов (квоты на SO<sub>2</sub> или CO<sub>2</sub>). Заводы с дешёвой очисткой продают квоты тем, кому очистка обходится дорого.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Частные решения и Теорема Коуза -->
+                    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-extrabold text-slate-900 text-sm md:text-base mb-3 flex items-center gap-2" id="coase-title">
+                                <span>🤝</span> Частные решения и Теорема Коуза
+                            </h3>
+                            <p class="text-xs md:text-sm text-slate-600 leading-relaxed mb-3" id="coase-desc">
+                                <strong>Теорема Рональда Коуза:</strong> если права собственности чётко определены, а <em>трансакционные издержки</em> равны нулю, частные стороны способны самостоятельно договориться об эффективном распределении ресурсов независимо от первоначального распределения прав.
+                            </p>
+                            <div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs text-amber-950 mb-3">
+                                <div class="font-bold mb-1" id="coase-ex-t">✈️ Пример из главы 10 (Кейс с креслом в самолёте):</div>
+                                <p id="coase-ex-d">Пассажир впереди имеет право откинуть спинку, но пассажир сзади может заплатить ему компенсацию, если ценность свободного пространства для него выше.</p>
+                            </div>
+                        </div>
+                        <div class="p-3 bg-rose-50/80 border border-rose-100 rounded-lg text-xs text-rose-900">
+                            <strong id="coase-lim-t">Почему переговоры срываются?</strong> <span id="coase-lim-d">Высокие трансакционные издержки (юристы, переводчики), упрямство при торге и большое число участников (например, тысячи рыбаков против одного комбината).</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ================= VIEW 3: MONOPOLY & HHI ================= -->
             <section id="view-monopoly" class="view-section">
                 <header class="mb-6 md:mb-8">
                     <h2 class="text-xl md:text-3xl font-extrabold text-slate-900 mb-2" id="mon-h2">Антимонопольный анализ и HHI</h2>
@@ -206,18 +449,18 @@
                             <div class="formula-box">
                                 DWL = ½ × (P<sub>M</sub> - MC) × (Q<sub>C</sub> - Q<sub>M</sub>)
                             </div>
-                            <p class="text-xs text-slate-500" id="dwl-sub">P<sub>M</sub>, Q<sub>M</sub> — монополия; Q<sub>C</sub> — конкуренция.</p>
+                            <p class="text-xs text-slate-500" id="dwl-sub">P<sub>M</sub>, Q<sub>M</sub> — монополия; Q<sub>C</sub> — совершенная конкуренция.</p>
                         </div>
 
                         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6">
-                            <h3 class="font-bold text-slate-800 text-sm md:text-base mb-1" id="hhi-formula-title">Индекс HHI</h3>
+                            <h3 class="font-bold text-slate-800 text-sm md:text-base mb-1" id="hhi-formula-title">Индекс Херфиндаля-Хиршмана (HHI)</h3>
                             <div class="formula-box">
-                                HHI = ∑ (w<sub>i</sub>)<sup>2</sup>
+                                HHI = ∑ (s<sub>i</sub>)<sup>2</sup>
                             </div>
                             <ul class="text-xs md:text-sm text-slate-600 space-y-1.5 mt-3">
-                                <li>🟢 <span class="font-semibold" id="hhi-scale-low">HHI < 1500: Низкая концентрация</span></li>
+                                <li>🟢 <span class="font-semibold" id="hhi-scale-low">HHI < 1500: Низкая концентрация (конкурентный рынок)</span></li>
                                 <li>🟡 <span class="font-semibold" id="hhi-scale-mod">1500 – 2500: Умеренная концентрация</span></li>
-                                <li>🔴 <span class="font-semibold" id="hhi-scale-high">HHI > 2500: Высокая концентрация</span></li>
+                                <li>🔴 <span class="font-semibold" id="hhi-scale-high">HHI > 2500: Высокая концентрация (риск монополизации)</span></li>
                             </ul>
                         </div>
                     </div>
@@ -244,46 +487,45 @@
                                 <input type="number" id="firm4" value="10" min="0" max="100" class="border border-slate-300 rounded px-2 py-1 w-14 text-xs hhi-input"> %
                             </div>
                         </div>
-                        <div class="text-xs text-rose-500 hidden font-semibold mb-2" id="hhi-error">Сумма долей > 100%!</div>
+                        <div class="text-xs text-rose-500 hidden font-semibold mb-2" id="hhi-error">Сумма долей превышает 100%!</div>
 
-                        <!-- Chart Container -->
                         <div class="chart-container" style="height: 200px;">
                             <canvas id="hhiChart"></canvas>
                         </div>
                         
                         <div class="text-center mt-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
                             <div class="text-xs text-slate-500 uppercase font-bold" id="lbl-hhi-val">Значение HHI:</div>
-                            <div id="hhi-result" class="text-2xl md:text-3xl font-black text-indigo-700">2500</div>
+                            <div id="hhi-result" class="text-2xl md:text-3xl font-black text-indigo-700">3,000</div>
                             <div id="hhi-status" class="text-xs md:text-sm font-bold text-rose-600">Высокая концентрация</div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            <!-- ================= VIEW: PUBLIC GOODS ================= -->
+            <!-- ================= VIEW 4: PUBLIC GOODS ================= -->
             <section id="view-public-goods" class="view-section">
                 <header class="mb-6 md:mb-8">
-                    <h2 class="text-xl md:text-3xl font-extrabold text-slate-900 mb-2" id="pg-h2">Общественные блага</h2>
+                    <h2 class="text-xl md:text-3xl font-extrabold text-slate-900 mb-2" id="pg-h2">Общественные блага (Public Goods)</h2>
                     <p class="text-slate-600 leading-relaxed text-sm md:text-base" id="pg-p">
-                        Вертикальное суммирование спроса и поиск оптимального Q* при изменении издержек (MC).
+                        Вертикальное суммирование индивидуального спроса и поиск социально оптимального выпуска Q* при изменении предельных издержек (MC).
                     </p>
                 </header>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="lg:col-span-1 space-y-4">
                         <div class="bg-emerald-50/80 rounded-xl p-4 border border-emerald-100">
-                            <h3 class="font-bold text-emerald-950 text-sm mb-1" id="pg-props-title">Свойства благ:</h3>
-                            <ul class="text-xs text-emerald-800 space-y-1 list-disc pl-4">
-                                <li id="pg-prop1"><strong>Несоперничество</strong></li>
-                                <li id="pg-prop2"><strong>Неисключаемость</strong></li>
+                            <h3 class="font-bold text-emerald-950 text-sm mb-1.5" id="pg-props-title">Свойства чистых общественных благ:</h3>
+                            <ul class="text-xs text-emerald-900 space-y-1.5 list-disc pl-4">
+                                <li id="pg-prop1"><strong>Несоперничество (Non-rivalry):</strong> потребление блага одним человеком не уменьшает его доступность для других.</li>
+                                <li id="pg-prop2"><strong>Неисключаемость (Non-excludability):</strong> невозможно технически или экономически ограничить доступ неплательщиков.</li>
                             </ul>
                         </div>
 
                         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4">
-                            <h3 class="font-bold text-slate-800 text-sm mb-1" id="vsum-title">Вертикальное суммирование</h3>
-                            <p class="text-xs text-slate-600 mb-2" id="vsum-desc">Суммируется готовность платить (P), а не количество (Q):</p>
+                            <h3 class="font-bold text-slate-800 text-sm mb-1" id="vsum-title">Правило Самуэльсона</h3>
+                            <p class="text-xs text-slate-600 mb-2" id="vsum-desc">Суммируется предельная готовность платить (MRS / P) всех потребителей, а не объём Q:</p>
                             <div class="formula-box text-xs py-1">
-                                ∑P<sub>T</sub> = 60 - 2Q
+                                ∑P<sub>i</sub> = 60 - 2Q = MC
                             </div>
                         </div>
                     </div>
@@ -298,7 +540,7 @@
                         </div>
 
                         <div class="mb-3 bg-slate-50 p-2.5 rounded-lg border border-slate-200">
-                            <label class="block text-xs font-semibold text-slate-700 mb-1"><span id="lbl-mc">Издержки (MC):</span> <span id="mc-val-display" class="font-bold text-indigo-600">15</span></label>
+                            <label class="block text-xs font-semibold text-slate-700 mb-1"><span id="lbl-mc">Предельные издержки (MC):</span> <span id="mc-val-display" class="font-bold text-indigo-600">15</span></label>
                             <input type="range" id="mc-slider" min="0" max="60" value="15" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-600">
                         </div>
 
@@ -309,12 +551,12 @@
                 </div>
             </section>
 
-            <!-- ================= VIEW: INTERNATIONAL MARKETS ================= -->
+            <!-- ================= VIEW 5: INTERNATIONAL MARKETS ================= -->
             <section id="view-international" class="view-section">
                 <header class="mb-6 md:mb-8">
-                    <h2 class="text-xl md:text-3xl font-extrabold text-slate-900 mb-2" id="tr-h2">Тарифы и Квоты</h2>
+                    <h2 class="text-xl md:text-3xl font-extrabold text-slate-900 mb-2" id="tr-h2">Международные рынки: Тарифы и Квоты</h2>
                     <p class="text-slate-600 leading-relaxed text-sm md:text-base" id="tr-p">
-                        Моделирование специфицированного импортного тарифа и его влияние на рынок.
+                        Моделирование специфицированного импортного тарифа (T) и его влияние на внутреннее производство, объём импорта и доходы госбюджета.
                     </p>
                 </header>
 
@@ -322,30 +564,30 @@
                     <div class="lg:col-span-1 space-y-4">
                         <div class="bg-indigo-900 text-white rounded-xl p-4 shadow-sm">
                             <h3 class="font-bold text-sm mb-1" id="tr-card-title">Импортный тариф (T)</h3>
-                            <p class="text-xs text-indigo-200 mb-3" id="tr-card-desc">Поднимает цену до P<sub>t</sub> = P<sub>w</sub> + T.</p>
+                            <p class="text-xs text-indigo-200 mb-3" id="tr-card-desc">Поднимает внутреннюю цену с мировой P<sub>w</sub> = 4 до P<sub>t</sub> = P<sub>w</sub> + T.</p>
                             
                             <label class="block text-xs font-semibold text-indigo-300 mb-1"><span id="lbl-tariff">Тариф (T):</span> <span id="tariff-val-display" class="font-bold text-white">2.0</span></label>
                             <input type="range" id="tariff-slider" min="0" max="6" step="0.5" value="2" class="w-full h-2 bg-indigo-700 rounded-lg appearance-none cursor-pointer accent-white mb-4">
                             
                             <div class="grid grid-cols-2 gap-2 text-center">
                                 <div class="bg-indigo-800/60 p-2 rounded-lg">
-                                    <div class="text-[9px] uppercase text-indigo-300" id="lbl-local-prod">Пр-во</div>
-                                    <div id="metric-local" class="text-base font-bold text-teal-300">30</div>
+                                    <div class="text-[9px] uppercase text-indigo-300" id="lbl-local-prod">Внутр. пр-во (Qs)</div>
+                                    <div id="metric-local" class="text-base font-bold text-teal-300">50</div>
                                 </div>
                                 <div class="bg-indigo-800/60 p-2 rounded-lg">
-                                    <div class="text-[9px] uppercase text-indigo-300" id="lbl-import-vol">Импорт</div>
-                                    <div id="metric-import" class="text-base font-bold text-rose-300">40</div>
+                                    <div class="text-[9px] uppercase text-indigo-300" id="lbl-import-vol">Импорт (Qd - Qs)</div>
+                                    <div id="metric-import" class="text-base font-bold text-rose-300">10</div>
                                 </div>
                                 <div class="bg-indigo-800/60 p-2 rounded-lg col-span-2">
-                                    <div class="text-[9px] uppercase text-indigo-300" id="lbl-budget-rev">Доход бюджета</div>
-                                    <div id="metric-revenue" class="text-lg font-bold text-amber-400">80.0</div>
+                                    <div class="text-[9px] uppercase text-indigo-300" id="lbl-budget-rev">Доход бюджета (T × Импорт)</div>
+                                    <div id="metric-revenue" class="text-lg font-bold text-amber-400">20.0</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6">
-                        <h3 class="font-bold text-slate-800 text-sm md:text-base mb-2" id="tr-model-title">Модель тарифа</h3>
+                        <h3 class="font-bold text-slate-800 text-sm md:text-base mb-2" id="tr-model-title">Равновесие малой открытой экономики с тарифом</h3>
                         <div class="chart-container">
                             <canvas id="tariffChart"></canvas>
                         </div>
@@ -353,37 +595,37 @@
                 </div>
             </section>
 
-            <!-- ================= VIEW: BUSINESS INSIGHTS ================= -->
+            <!-- ================= VIEW 6: BUSINESS INSIGHTS ================= -->
             <section id="view-insights" class="view-section">
                 <header class="mb-6 md:mb-8">
-                    <h2 class="text-xl md:text-3xl font-extrabold text-slate-900 mb-2" id="ins-h2">Стратегические выводы</h2>
+                    <h2 class="text-xl md:text-3xl font-extrabold text-slate-900 mb-2" id="ins-h2">Стратегические бизнес-инсайты</h2>
                     <p class="text-slate-600 leading-relaxed text-sm md:text-base" id="ins-p">
-                        Применение теории провалов рынка в управленческих решениях.
+                        Практическое применение теории провалов рынка и экстерналий в управленческих решениях.
                     </p>
                 </header>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6">
                         <div class="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-base mb-2">⚖️</div>
-                        <h3 class="font-bold text-slate-800 text-sm md:text-base mb-1" id="ins1-title">1. Антимонопольный контроль</h3>
+                        <h3 class="font-bold text-slate-800 text-sm md:text-base mb-1" id="ins1-title">1. Антимонопольный комплаенс и M&A</h3>
                         <p class="text-xs md:text-sm text-slate-600 leading-relaxed" id="ins1-desc">
-                            Оценивайте M&A через HHI. Слияния на концентрированных рынках (HHI > 2500) будут заблокированы.
+                            Оценивайте сделки слияния и поглощения через HHI и ΔHHI. На высококонцентрированных рынках (HHI > 2500) антимонопольный орган заблокирует сделку или потребует продажи активов.
                         </p>
                     </div>
 
                     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6">
                         <div class="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center text-teal-600 text-base mb-2">🌱</div>
-                        <h3 class="font-bold text-slate-800 text-sm md:text-base mb-1" id="ins2-title">2. Экстерналии и ESG</h3>
+                        <h3 class="font-bold text-slate-800 text-sm md:text-base mb-1" id="ins2-title">2. Углеродный след и налоги Пигу</h3>
                         <p class="text-xs md:text-sm text-slate-600 leading-relaxed" id="ins2-desc">
-                            Превращайте экологические риски в бренд-преимущества до введения жестких налогов Пигу.
+                            Внедряйте чистые технологии проактивно: в системах Cap-and-Trade и при введении углеродного налога компании с низкими издержками сокращения выбросов получают конкурентное преимущество и продают квоты.
                         </p>
                     </div>
 
                     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6">
                         <div class="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-600 text-base mb-2">📡</div>
-                        <h3 class="font-bold text-slate-800 text-sm md:text-base mb-1" id="ins3-title">3. Платформенные модели</h3>
+                        <h3 class="font-bold text-slate-800 text-sm md:text-base mb-1" id="ins3-title">3. Монетизация информационных благ</h3>
                         <p class="text-xs md:text-sm text-slate-600 leading-relaxed" id="ins3-desc">
-                            Общественные блага монетизируются косвенно — через рекламу и агрегацию внимания.
+                            Цифровой контент и базовый софт близки к общественным благам (нулевые предельные издержки копирования). Бизнес решает проблему безбилетника через freemium-подписки, рекламу и патентную защиту.
                         </p>
                     </div>
 
@@ -391,7 +633,7 @@
                         <div class="w-8 h-8 rounded-full bg-rose-100 flex items-center justify-center text-rose-600 text-base mb-2">🛡️</div>
                         <h3 class="font-bold text-slate-800 text-sm md:text-base mb-1" id="ins4-title">4. Сигналы и Скрининг</h3>
                         <p class="text-xs md:text-sm text-slate-600 leading-relaxed" id="ins4-desc">
-                            Преодолевайте асимметрию информации гарантиями (signaling) и проверкой контрагентов (screening).
+                            Преодолевайте асимметрию информации на рынках B2B и B2C с помощью расширенных гарантий и сертификации (signaling), а также скоринга контрагентов (screening).
                         </p>
                     </div>
                 </div>
@@ -400,7 +642,7 @@
         </div>
 
         <!-- Main Footer -->
-        <footer class="text-center text-[11px] text-slate-400 py-4 border-t border-slate-200 bg-white font-semibold">
+        <footer class="text-center text-[11px] text-slate-400 py-4 border-t border-slate-200 bg-white font-semibold" id="main-footer">
             Школа цифровых технологий и экономики • AlmaU 2026
         </footer>
     </main>
@@ -408,288 +650,499 @@
     <!-- Application Logic -->
     <script>
         let currentLang = 'RU';
+        let extMode = 'neg'; // 'neg' or 'pos'
 
         const dict = {
             RU: {
+                sidebarBadge: "Интерактивный дашборд",
                 sidebarTitle: "🏛️ Государство на рынке",
-                sidebarSubtitle: "Микроэкономика • Экономика • Лекция ",
+                sidebarSubtitle: "Микроэкономика • Лекция",
+                mobSubtitle: "Микроэкономика • Лекционный дашборд",
+                topbarStatus: "Учебный модуль: Провалы рынка, экстерналии и государственное регулирование",
+                topbarRef: "По материалам N.G. Mankiw (Ch. 10)",
                 lblLang: "Язык / Lang:",
-                navOverview: "📋 Провалы рынка",
+                navOverview: "📋 Провалы и роль государства",
+                navExt: "🏭 Внешние эффекты и Пигу",
                 navMonopoly: "⚖️ Монополии и HHI",
                 navPublic: "🌳 Общественные блага",
                 navTrade: "🛳️ Международные рынки",
                 navInsights: "💡 Бизнес-инсайты",
-                mobOverview: "📋 Провалы",
+                mobOverview: "📋 Провалы и роль",
+                mobExt: "🏭 Экстерналии",
                 mobMonopoly: "⚖️ HHI",
-                mobPublic: "🌳 Общественные",
+                mobPublic: "🌳 Блага",
                 mobTrade: "🛳️ Тарифы",
                 mobInsights: "💡 Инсайты",
-                ovH2: "Концепция провалов рынка",
-                ovP: "Обзор фундаментальных причин, по которым свободный рынок не обеспечивает социально оптимальное распределение ресурсов.",
-                ovIntro: "В идеальных условиях рынок ведёт к Парето-эффективности (P = MC). Однако на практике возникают провалы рынка (Market Failures), требующие государственного вмешательства:",
-                mf1Title: "1. Рыночная власть",
-                mf1Desc: "Монополии устанавливают P > MC, вызывая безвозвратные потери общества (Deadweight Loss).",
-                mf2Title: "2. Внешние эффекты",
-                mf2Desc: "Издержки или выгоды перекладываются на третьих лиц (MSC = MC + MEC).",
-                mf3Title: "3. Общественные блага",
-                mf3Desc: "Несоперничество и неисключаемость порождают «проблему безбилетника» (Free-Rider).",
+
+                // View 1
+                ovH2: "Провалы рынка и роль государства",
+                ovP: "Почему «невидимая рука» Адама Смита не всегда обеспечивает оптимум, и какие ключевые функции выполняет государство в современной экономике.",
+                ovIntro: "В идеальных условиях конкурентный рынок ведёт к Парето-эффективности (<span class='font-bold text-indigo-700'>P = MC</span>), максимизируя сумму излишков потребителя и производителя. Однако на практике возникают <strong>провалы рынка (Market Failures)</strong>:",
+                mf1Title: "1. Рыночная власть (Market Power)",
+                mf1Desc: "Монополии и олигополии ограничивают выпуск и устанавливают P > MC, вызывая безвозвратные потери (Deadweight Loss).",
+                mf2Badge: "Подробнее →",
+                mf2Title: "2. Внешние эффекты (Externalities)",
+                mf2Desc: "Некомпенсированное воздействие на третьих лиц: загрязнение среды или польза от образования и R&D (MSC ≠ MPC).",
+                mf3Title: "3. Общественные блага (Public Goods)",
+                mf3Desc: "Несоперничество и неисключаемость порождают «проблему безбилетника» (Free-Rider) и недопроизводство благ.",
                 mf4Title: "4. Асимметрия информации",
-                mf4Desc: "Ведёт к неблагоприятному отбору (Adverse Selection) и моральному риску (Moral Hazard).",
-                rentTitle: "💰 Поиск ренты (Rent Seeking)",
-                rentDesc: "Деятельность фирм по лоббированию своих интересов в правительстве для получения монопольных прав, квот или тарифов. Ресурсы тратятся не на создание ценности, а на перераспределение богатства.",
+                mf4Desc: "Неравномерное распределение данных ведёт к неблагоприятному отбору (Adverse Selection) и моральному риску (Moral Hazard).",
+                govRoleH3: "<span>🏛️</span> Четыре ключевые функции государства в экономике",
+                govRoleSub: "Согласно принципу Г. Мэнкью: «Правительство иногда может улучшить рыночные результаты» (Government action can sometimes improve market outcomes).",
+                gr1Tag: "Функция 1 • Эффективность",
+                gr1Title: "Коррекция провалов рынка",
+                gr1Desc: "Антимонопольное регулирование, налоги Пигу на выбросы, субсидирование науки и образования, финансирование национальной обороны и инфраструктуры.",
+                gr2Tag: "Функция 2 • Справедливость",
+                gr2Title: "Перераспределение доходов (Equity)",
+                gr2Desc: "Рынок вознаграждает за продуктивность, но не гарантирует социальную защиту. Прогрессивное налогообложение, пенсии и социальные трансферты сглаживают неравенство.",
+                gr3Tag: "Функция 3 • Стабильность",
+                gr3Title: "Макроэкономическая стабилизация",
+                gr3Desc: "Сглаживание деловых циклов, контроль инфляции и безработицы с помощью фискальной (бюджет и налоги) и монетарной (центральный банк) политики.",
+                gr4Tag: "Функция 4 • Институты",
+                gr4Title: "Защита прав собственности и контрактов",
+                gr4Desc: "Рынки невозможны без правовой базы: суды, патентное право, стандарты безопасности и защита прав инвесторов снижают трансакционные издержки.",
+                rentTitle: "<span>⚠️</span> Провалы государства и поиск ренты (Rent Seeking)",
+                rentDesc: "Вмешательство государства не всегда идеально: политики и чиновники обладают неполной информацией и подвержены лоббизму. <strong>Поиск ренты</strong> — трата ресурсов фирмами на получение монопольных прав, квот или субсидий вместо создания новой ценности.",
+
+                // View 2: Externalities
+                extBadge: "Грегори Мэнкью • Глава 10",
+                extH2: "Внешние эффекты и Налог Пигу",
+                extP: "Внешний эффект (экстерналия) — некомпенсированное воздействие действий одного экономического агента на благосостояние третьего лица (bystander).",
+                pigouName: "Артур Сесил Пигу",
+                pigouBio: "Британский экономист, автор труда <em>«Экономическая теория благосостояния»</em> (1920). Обосновал концепцию <strong>корректирующих налогов и субсидий</strong> для интернализации экстерналий.",
+                negTag: "Отрицательные",
+                negTitle: "Издержки для общества",
+                negDesc: "Выбросы диоксина при производстве бумаги, выхлопы авто, лай собак. Общественные издержки превышают частные:",
+                negResult: "Итог рынка: Q<sub>Market</sub> > Q<sub>Optimum</sub> (перепроизводство). Решение: <strong>Налог Пигу (T = MEC)</strong>.",
+                posTag: "Положительные",
+                posTitle: "Выгоды для общества",
+                posDesc: "Образование, вакцинация, реставрация памятников, технологические спилловеры (R&D). Общественная ценность выше частной:",
+                posResult: "Итог рынка: Q<sub>Market</sub> < Q<sub>Optimum</sub> (недопроизводство). Решение: <strong>Субсидия Пигу (S = MEB)</strong>.",
+                extSimTitle: "Интерактивная модель интернализации",
+                extSimSub: "Сравните рыночное равновесие (Q<sub>M</sub>) и общественный оптимум (Q*)",
+                btnExtNeg: "🏭 Отрицательная (Сталь)",
+                btnExtPos: "🎓 Положительная (Образование)",
+                lblQm: "Рынок Q<sub>M</sub>",
+                lblQopt: "Оптимум Q*",
+                lblExtDwl: "DWL потери",
+                polTitle: "<span>🏛️</span> Государственная политика (Public Policies)",
+                pol1T: "1. Командно-административное регулирование",
+                pol1D: "Прямые запреты (сброс токсинов) или жёсткие квоты выбросов (стандарты EPA). Минус: не учитывает различия в издержках очистки у разных заводов.",
+                pol2T: "2. Корректирующие налоги Пигу (Pigovian Taxes)",
+                pol2D: "Устанавливают <strong>цену</strong> на право загрязнять (например, акциз на бензин или углеродный налог). Стимулируют внедрение чистых технологий и приносят доход бюджету без создания DWL.",
+                pol3T: "3. Торгуемые разрешения (Cap-and-Trade)",
+                pol3D: "Государство фиксирует <strong>объём</strong> выбросов (квоты на SO<sub>2</sub> или CO<sub>2</sub>). Заводы с дешёвой очисткой продают квоты тем, кому очистка обходится дорого.",
+                coaseTitle: "<span>🤝</span> Частные решения и Теорема Коуза",
+                coaseDesc: "<strong>Теорема Рональда Коуза:</strong> если права собственности чётко определены, а <em>трансакционные издержки</em> равны нулю, частные стороны способны самостоятельно договориться об эффективном распределении ресурсов независимо от первоначального распределения прав.",
+                coaseExT: "✈️ Пример из главы 10 (Кейс с креслом в самолёте):",
+                coaseExD: "Пассажир впереди имеет право откинуть спинку, но пассажир сзади может заплатить ему компенсацию, если ценность свободного пространства для него выше.",
+                coaseLimT: "Почему переговоры срываются?",
+                coaseLimD: "Высокие трансакционные издержки (юристы, переводчики), упрямство при торге и большое число участников (например, тысячи рыбаков против одного комбината).",
+
+                // View 3: Monopoly
                 monH2: "Антимонопольный анализ и HHI",
                 monP: "Оценка рыночной концентрации. Введите доли рынка компаний в калькулятор для расчёта индекса Херфиндаля-Хиршмана (HHI).",
                 dwlTitle: "Безвозвратные потери (DWL)",
-                dwlSub: "PM, QM — монополия; QC — конкуренция.",
-                hhiFormulaTitle: "Индекс HHI",
-                hhiScaleLow: "HHI < 1500: Низкая концентрация",
+                dwlSub: "P<sub>M</sub>, Q<sub>M</sub> — монополия; Q<sub>C</sub> — совершенная конкуренция.",
+                hhiFormulaTitle: "Индекс Херфиндаля-Хиршмана (HHI)",
+                hhiScaleLow: "HHI < 1500: Низкая концентрация (конкурентный рынок)",
                 hhiScaleMod: "1500 – 2500: Умеренная концентрация",
-                hhiScaleHigh: "HHI > 2500: Высокая концентрация",
+                hhiScaleHigh: "HHI > 2500: Высокая концентрация (риск монополизации)",
                 calcTitle: "Калькулятор HHI",
                 lblF1: "Фирма 1:",
                 lblF2: "Фирма 2:",
                 lblF3: "Фирма 3:",
                 lblF4: "Фирма 4:",
+                hhiError: "Сумма долей превышает 100%!",
                 lblHhiVal: "Значение HHI:",
-                pgH2: "Общественные блага",
-                pgP: "Вертикальное суммирование спроса и поиск оптимального Q* при изменении издержек (MC).",
-                pgPropsTitle: "Свойства благ:",
-                pgProp1: "Несоперничество",
-                pgProp2: "Неисключаемость",
-                vsumTitle: "Вертикальное суммирование",
-                vsumDesc: "Суммируется готовность платить (P), а не количество (Q):",
-                pgOptTitle: "Оптимум (∑P = MC)",
-                lblMc: "Издержки (MC):",
-                trH2: "Тарифы и Квоты",
-                trP: "Моделирование специфицированного импортного тарифа и его влияние на рынок.",
-                trCardTitle: "Импортный тариф (T)",
-                trCardDesc: "Поднимает цену до Pt = Pw + T.",
-                lblTariff: "Тариф (T):",
-                lblLocalProd: "Пр-во",
-                lblImportVol: "Импорт",
-                lblBudgetRev: "Доход бюджета",
-                trModelTitle: "Модель тарифа",
-                insH2: "Стратегические выводы",
-                insP: "Применение теории провалов рынка в управленческих решениях.",
-                ins1Title: "1. Антимонопольный контроль",
-                ins1Desc: "Оценивайте M&A через HHI. Слияния на концентрированных рынках (HHI > 2500) будут заблокированы.",
-                ins2Title: "2. Экстерналии и ESG",
-                ins2Desc: "Превращайте экологические риски в бренд-преимущества до введения жестких налогов Пигу.",
-                ins3Title: "3. Платформенные модели",
-                ins3Desc: "Общественные блага монетизируются косвенно — через рекламу и агрегацию внимания.",
-                ins4Title: "4. Сигналы и Скрининг",
-                ins4Desc: "Преодолевайте асимметрию информации гарантиями (signaling) и проверкой контрагентов (screening).",
                 hhiLow: "Низкая концентрация",
                 hhiMod: "Умеренная концентрация",
                 hhiHigh: "Высокая концентрация",
                 firmLabels: ['Фирма 1', 'Фирма 2', 'Фирма 3', 'Фирма 4'],
-                pgDatasetInd: 'Индив. (A,B)',
+
+                // View 4: Public goods
+                pgH2: "Общественные блага (Public Goods)",
+                pgP: "Вертикальное суммирование индивидуального спроса и поиск социально оптимального выпуска Q* при изменении предельных издержек (MC).",
+                pgPropsTitle: "Свойства чистых общественных благ:",
+                pgProp1: "<strong>Несоперничество (Non-rivalry):</strong> потребление блага одним человеком не уменьшает его доступность для других.",
+                pgProp2: "<strong>Неисключаемость (Non-excludability):</strong> невозможно технически или экономически ограничить доступ неплательщиков.",
+                vsumTitle: "Правило Самуэльсона",
+                vsumDesc: "Суммируется предельная готовность платить (MRS / P) всех потребителей, а не объём Q:",
+                pgOptTitle: "Оптимум (∑P = MC)",
+                lblMc: "Предельные издержки (MC):",
+                pgDatasetInd: 'Индив. (A, B)',
                 pgDatasetTotal: 'Совокуп. (∑P)',
-                trDatasetDemand: 'Спрос',
-                trDatasetSupply: 'Предложение',
-                trDatasetPt: 'Pt (с Тарифом)'
+
+                // View 5: Trade
+                trH2: "Международные рынки: Тарифы и Квоты",
+                trP: "Моделирование специфицированного импортного тарифа (T) и его влияние на внутреннее производство, объём импорта и доходы госбюджета.",
+                trCardTitle: "Импортный тариф (T)",
+                trCardDesc: "Поднимает внутреннюю цену с мировой P<sub>w</sub> = 4 до P<sub>t</sub> = P<sub>w</sub> + T.",
+                lblTariff: "Тариф (T):",
+                lblLocalProd: "Внутр. пр-во (Qs)",
+                lblImportVol: "Импорт (Qd - Qs)",
+                lblBudgetRev: "Доход бюджета (T × Импорт)",
+                trModelTitle: "Равновесие малой открытой экономики с тарифом",
+                trDatasetDemand: 'Спрос (D)',
+                trDatasetSupply: 'Предложение (S)',
+                trDatasetPt: 'Pt (с Тарифом)',
+
+                // View 6: Insights
+                insH2: "Стратегические бизнес-инсайты",
+                insP: "Практическое применение теории провалов рынка и экстерналий в управленческих решениях.",
+                ins1Title: "1. Антимонопольный комплаенс и M&A",
+                ins1Desc: "Оценивайте сделки слияния и поглощения через HHI и ΔHHI. На высококонцентрированных рынках (HHI > 2500) антимонопольный орган заблокирует сделку или потребует продажи активов.",
+                ins2Title: "2. Углеродный след и налоги Пигу",
+                ins2Desc: "Внедряйте чистые технологии проактивно: в системах Cap-and-Trade и при введении углеродного налога компании с низкими издержками сокращения выбросов получают конкурентное преимущество и продают квоты.",
+                ins3Title: "3. Монетизация информационных благ",
+                ins3Desc: "Цифровой контент и базовый софт близки к общественным благам (нулевые предельные издержки копирования). Бизнес решает проблему безбилетника через freemium-подписки, рекламу и патентную защиту.",
+                ins4Title: "4. Сигналы и Скрининг",
+                ins4Desc: "Преодолевайте асимметрию информации на рынках B2B и B2C с помощью расширенных гарантий и сертификации (signaling), а также скоринга контрагентов (screening).",
+                mainFooter: "Школа цифровых технологий и экономики • AlmaU 2026"
             },
             EN: {
+                sidebarBadge: "Interactive Dashboard",
                 sidebarTitle: "🏛️ Government in the Market",
-                sidebarSubtitle: "Microeconomics • Economics • Lecture",
+                sidebarSubtitle: "Microeconomics • Lecture",
+                mobSubtitle: "Microeconomics • Lecture Dashboard",
+                topbarStatus: "Module: Market Failures, Externalities & Public Policy",
+                topbarRef: "Based on N.G. Mankiw (Ch. 10)",
                 lblLang: "Language / Язык:",
-                navOverview: "📋 Market Failures",
+                navOverview: "📋 Failures & Gov Role",
+                navExt: "🏭 Externalities & Pigou",
                 navMonopoly: "⚖️ Monopolies & HHI",
                 navPublic: "🌳 Public Goods",
-                navTrade: "🛳️️ Trade & Tariffs",
+                navTrade: "🛳️ International Trade",
                 navInsights: "💡 Business Insights",
-                mobOverview: "📋 Failures",
+                mobOverview: "📋 Failures & Role",
+                mobExt: "🏭 Externalities",
                 mobMonopoly: "⚖️ HHI",
-                mobPublic: "🌳 Public",
+                mobPublic: "🌳 Public Goods",
                 mobTrade: "🛳️ Tariffs",
                 mobInsights: "💡 Insights",
-                ovH2: "Concept of Market Failures",
-                ovP: "Overview of fundamental reasons why the free market fails to allocate resources socially optimally.",
-                ovIntro: "Under ideal conditions, market competition achieves Pareto efficiency (P = MC). However, real-world Market Failures require state intervention:",
+
+                // View 1
+                ovH2: "Market Failures & Role of Government",
+                ovP: "Why Adam Smith's 'invisible hand' does not always allocate resources efficiently, and the four core economic functions of government.",
+                ovIntro: "Under ideal conditions, competitive markets achieve Pareto efficiency (<span class='font-bold text-indigo-700'>P = MC</span>), maximizing total surplus. In practice, however, <strong>Market Failures</strong> occur:",
                 mf1Title: "1. Market Power",
-                mf1Desc: "Monopolies set P > MC, creating social Deadweight Loss (DWL).",
+                mf1Desc: "Monopolies and oligopolies restrict output and set P > MC, generating social Deadweight Loss (DWL).",
+                mf2Badge: "Explore →",
                 mf2Title: "2. Externalities",
-                mf2Desc: "Costs or benefits are spilled over onto third parties (MSC = MC + MEC).",
+                mf2Desc: "Uncompensated impact on bystanders: environmental pollution or spillovers from education and R&D (MSC ≠ MPC).",
                 mf3Title: "3. Public Goods",
-                mf3Desc: "Non-rivalry and non-excludability trigger the Free-Rider problem.",
+                mf3Desc: "Non-rivalry and non-excludability trigger the Free-Rider problem and underprovision by private markets.",
                 mf4Title: "4. Asymmetric Information",
-                mf4Desc: "Leads to Adverse Selection and Moral Hazard.",
-                rentTitle: "💰 Rent Seeking",
-                rentDesc: "Lobbying efforts by firms to secure government privileges, quotas, or tariffs. Resources are spent on wealth redistribution rather than value creation.",
+                mf4Desc: "Unequal information leads to Adverse Selection and Moral Hazard.",
+                govRoleH3: "<span>🏛️</span> Four Key Economic Functions of Government",
+                govRoleSub: "Mankiw's Principle #7: 'Government action can sometimes improve market outcomes.'",
+                gr1Tag: "Function 1 • Efficiency",
+                gr1Title: "Correcting Market Failures",
+                gr1Desc: "Antitrust enforcement, Pigovian taxes on emissions, subsidies for R&D and education, and funding national defense and infrastructure.",
+                gr2Tag: "Function 2 • Equity",
+                gr2Title: "Income Redistribution",
+                gr2Desc: "Markets reward productivity rather than need. Progressive taxation, pensions, and social safety nets reduce severe inequality.",
+                gr3Tag: "Function 3 • Stability",
+                gr3Title: "Macroeconomic Stabilization",
+                gr3Desc: "Smoothing business cycles and controlling inflation and unemployment through fiscal policy and central bank monetary policy.",
+                gr4Tag: "Function 4 • Institutions",
+                gr4Title: "Protecting Property Rights & Contracts",
+                gr4Desc: "Markets rely on legal infrastructure: courts, patent law, safety regulations, and investor protection reduce transaction costs.",
+                rentTitle: "<span>⚠️</span> Government Failure & Rent Seeking",
+                rentDesc: "State intervention is imperfect due to limited information and political lobbying. <strong>Rent Seeking</strong> occurs when firms spend resources lobbying for monopoly privileges, quotas, or subsidies instead of creating economic value.",
+
+                // View 2: Externalities
+                extBadge: "N. Gregory Mankiw • Chapter 10",
+                extH2: "Externalities & Pigovian Taxes",
+                extP: "An externality arises when a person engages in an activity that influences the well-being of a bystander but neither pays nor receives compensation for that effect.",
+                pigouName: "Arthur Cecil Pigou",
+                pigouBio: "British economist, author of <em>The Economics of Welfare</em> (1920). Pioneered <strong>corrective taxes and subsidies</strong> to internalize externalities.",
+                negTag: "Negative Externality",
+                negTitle: "External Costs on Society",
+                negDesc: "Dioxin emissions from paper mills, automobile exhaust, barking dogs. Social cost exceeds private cost:",
+                negResult: "Market outcome: Q<sub>Market</sub> > Q<sub>Optimum</sub> (overproduction). Remedy: <strong>Pigovian Tax (T = MEC)</strong>.",
+                posTag: "Positive Externality",
+                posTitle: "External Benefits on Society",
+                posDesc: "Education, vaccinations, restored historic buildings, technology spillovers (R&D). Social value exceeds private value:",
+                posResult: "Market outcome: Q<sub>Market</sub> < Q<sub>Optimum</sub> (underproduction). Remedy: <strong>Pigovian Subsidy (S = MEB)</strong>.",
+                extSimTitle: "Interactive Internalization Simulator",
+                extSimSub: "Compare free-market equilibrium (Q<sub>M</sub>) against the social optimum (Q*)",
+                btnExtNeg: "🏭 Negative (Steel Pollution)",
+                btnExtPos: "🎓 Positive (Education)",
+                lblQm: "Market Q<sub>M</sub>",
+                lblQopt: "Optimum Q*",
+                lblExtDwl: "DWL Loss",
+                polTitle: "<span>🏛️</span> Public Policies toward Externalities",
+                pol1T: "1. Command-and-Control Regulation",
+                pol1D: "Direct bans (dumping toxic chemicals) or rigid emission caps (EPA standards). Drawback: ignores differing abatement costs across firms.",
+                pol2T: "2. Corrective (Pigovian) Taxes",
+                pol2D: "Sets a <strong>price</strong> on the right to pollute (e.g., gasoline or carbon taxes). Encourages cleaner technology and raises revenue without causing DWL.",
+                pol3T: "3. Tradable Pollution Permits (Cap-and-Trade)",
+                pol3D: "Sets a fixed <strong>quantity</strong> of pollution (SO<sub>2</sub> or CO<sub>2</sub> permits). Firms with low abatement costs sell permits to high-cost firms.",
+                coaseTitle: "<span>🤝</span> Private Solutions & The Coase Theorem",
+                coaseDesc: "<strong>Ronald Coase Theorem:</strong> if property rights are well-defined and <em>transaction costs</em> are zero, private parties can bargain without cost to reach an efficient outcome regardless of the initial distribution of rights.",
+                coaseExT: "✈️ Chapter 10 Case Study (Reclining Airline Seats):",
+                coaseExD: "The passenger in front owns the right to recline, yet the passenger behind could pay them to stay upright if legroom is valued more.",
+                coaseLimT: "Why Private Bargaining Fails:",
+                coaseLimD: "High transaction costs (lawyers, translators), bargaining breakdowns, and large numbers of affected parties (e.g., thousands of fishermen vs. one factory).",
+
+                // View 3: Monopoly
                 monH2: "Antitrust Analysis & HHI",
-                monP: "Measuring market concentration. Input firm market shares to calculate the Herfindahl-Hirschman Index (HHI).",
+                monP: "Measuring market concentration. Input firm market shares into the calculator to compute the Herfindahl-Hirschman Index (HHI).",
                 dwlTitle: "Deadweight Loss (DWL)",
-                dwlSub: "PM, QM — monopoly; QC — competition.",
-                hhiFormulaTitle: "HHI Index",
+                dwlSub: "P<sub>M</sub>, Q<sub>M</sub> — monopoly; Q<sub>C</sub> — perfect competition.",
+                hhiFormulaTitle: "Herfindahl-Hirschman Index (HHI)",
                 hhiScaleLow: "HHI < 1500: Unconcentrated Market",
                 hhiScaleMod: "1500 – 2500: Moderately Concentrated",
-                hhiScaleHigh: "HHI > 2500: Highly Concentrated",
+                hhiScaleHigh: "HHI > 2500: Highly Concentrated (Antitrust Scrutiny)",
                 calcTitle: "HHI Calculator",
                 lblF1: "Firm 1:",
                 lblF2: "Firm 2:",
                 lblF3: "Firm 3:",
                 lblF4: "Firm 4:",
+                hhiError: "Total market share exceeds 100%!",
                 lblHhiVal: "HHI Value:",
-                pgH2: "Public Goods",
-                pgP: "Vertical summation of demand and finding optimal Q* as MC varies.",
-                pgPropsTitle: "Good Properties:",
-                pgProp1: "Non-rivalry",
-                pgProp2: "Non-excludability",
-                vsumTitle: "Vertical Summation",
-                vsumDesc: "Willingness to pay (P) is summed vertically, not quantity (Q):",
-                pgOptTitle: "Optimum (∑P = MC)",
-                lblMc: "Marginal Cost (MC):",
-                trH2: "Tariffs & Quotas",
-                trP: "Modeling specific import tariff impacts on local and international welfare.",
-                trCardTitle: "Import Tariff (T)",
-                trCardDesc: "Raises price to Pt = Pw + T.",
-                lblTariff: "Tariff (T):",
-                lblLocalProd: "Local Qs",
-                lblImportVol: "Imports",
-                lblBudgetRev: "Tariff Revenue",
-                trModelTitle: "Tariff Model",
-                insH2: "Strategic Insights",
-                insP: "Applying market failure theory in executive decision making.",
-                ins1Title: "1. Antitrust Policy",
-                ins1Desc: "Evaluate M&A using HHI. Mergers in concentrated markets (HHI > 2500) face regulatory blockades.",
-                ins2Title: "2. Externalities & ESG",
-                ins2Desc: "Turn environmental risks into brand advantages before Pigouvian taxes are imposed.",
-                ins3Title: "3. Platform Models",
-                ins3Desc: "Public goods can be monetized indirectly via advertising and attention aggregation.",
-                ins4Title: "4. Signaling & Screening",
-                ins4Desc: "Overcome information asymmetry using warranties (signaling) and vendor screening.",
                 hhiLow: "Low Concentration",
                 hhiMod: "Moderate Concentration",
                 hhiHigh: "High Concentration",
                 firmLabels: ['Firm 1', 'Firm 2', 'Firm 3', 'Firm 4'],
-                pgDatasetInd: 'Indiv. (A,B)',
+
+                // View 4: Public goods
+                pgH2: "Public Goods",
+                pgP: "Vertical summation of individual demand curves and finding socially optimal Q* as marginal cost (MC) varies.",
+                pgPropsTitle: "Properties of Pure Public Goods:",
+                pgProp1: "<strong>Non-rivalry:</strong> one person's consumption does not diminish availability for others.",
+                pgProp2: "<strong>Non-excludability:</strong> it is impossible or prohibitively costly to exclude non-payers.",
+                vsumTitle: "Samuelson Condition",
+                vsumDesc: "Marginal willingness to pay (MRS / P) is summed vertically across consumers, not quantity Q:",
+                pgOptTitle: "Optimum (∑P = MC)",
+                lblMc: "Marginal Cost (MC):",
+                pgDatasetInd: 'Indiv. (A, B)',
                 pgDatasetTotal: 'Total (∑P)',
-                trDatasetDemand: 'Demand',
-                trDatasetSupply: 'Supply',
-                trDatasetPt: 'Pt (with Tariff)'
+
+                // View 5: Trade
+                trH2: "International Markets: Tariffs & Quotas",
+                trP: "Modeling a specific import tariff (T) and its impact on domestic output, imports, and government tariff revenue.",
+                trCardTitle: "Import Tariff (T)",
+                trCardDesc: "Raises domestic price from world price P<sub>w</sub> = 4 to P<sub>t</sub> = P<sub>w</sub> + T.",
+                lblTariff: "Tariff (T):",
+                lblLocalProd: "Local Qs",
+                lblImportVol: "Imports (Qd - Qs)",
+                lblBudgetRev: "Tariff Revenue",
+                trModelTitle: "Small Open Economy Tariff Model",
+                trDatasetDemand: 'Demand (D)',
+                trDatasetSupply: 'Supply (S)',
+                trDatasetPt: 'Pt (with Tariff)',
+
+                // View 6: Insights
+                insH2: "Strategic Business Insights",
+                insP: "Applying market failure and externality theory to executive decision-making.",
+                ins1Title: "1. Antitrust Compliance & M&A",
+                ins1Desc: "Evaluate M&A transactions using HHI and ΔHHI. Mergers in highly concentrated markets (HHI > 2500) face regulatory blocks or forced divestitures.",
+                ins2Title: "2. Carbon Footprint & Pigovian Taxes",
+                ins2Desc: "Invest in clean technology proactively: under Cap-and-Trade or carbon taxes, firms with low abatement costs gain margin advantages and sell surplus permits.",
+                ins3Title: "3. Monetizing Information Goods",
+                ins3Desc: "Digital content and software resemble public goods (near-zero marginal reproduction cost). Firms solve the free-rider problem via freemium tiers, ads, and patents.",
+                ins4Title: "4. Signaling & Screening",
+                ins4Desc: "Overcome asymmetric information in B2B and B2C markets through credible warranties and certifications (signaling) alongside counterparty due diligence (screening).",
+                mainFooter: "School of Digital Technologies & Economics • AlmaU 2026"
             }
         };
 
-        function toggleLanguage() {
-            currentLang = currentLang === 'RU' ? 'EN' : 'RU';
-            document.getElementById('lang-btn-text').innerText = currentLang === 'RU' ? 'EN' : 'RU';
-            document.getElementById('mob-lang-btn').innerText = currentLang === 'RU' ? 'EN' : 'RU';
-
-            const l = dict[currentLang];
-            document.getElementById('sidebar-title').innerText = l.sidebarTitle;
-            document.getElementById('sidebar-subtitle').innerText = l.sidebarSubtitle;
-            document.getElementById('mob-title').innerText = l.sidebarTitle;
-            document.getElementById('lbl-lang').innerText = l.lblLang;
-
-            document.getElementById('nav-overview').innerText = l.navOverview;
-            document.getElementById('nav-monopoly').innerText = l.navMonopoly;
-            document.getElementById('nav-public').innerText = l.navPublic;
-            document.getElementById('nav-trade').innerText = l.navTrade;
-            document.getElementById('nav-insights').innerText = l.navInsights;
-
-            document.getElementById('mob-tab-overview').innerText = l.mobOverview;
-            document.getElementById('mob-tab-monopoly').innerText = l.mobMonopoly;
-            document.getElementById('mob-tab-public').innerText = l.mobPublic;
-            document.getElementById('mob-tab-trade').innerText = l.mobTrade;
-            document.getElementById('mob-tab-insights').innerText = l.mobInsights;
-
-            document.getElementById('ov-h2').innerText = l.ovH2;
-            document.getElementById('ov-p').innerText = l.ovP;
-            document.getElementById('ov-intro').innerHTML = l.ovIntro;
-            document.getElementById('mf1-title').innerText = l.mf1Title;
-            document.getElementById('mf1-desc').innerText = l.mf1Desc;
-            document.getElementById('mf2-title').innerText = l.mf2Title;
-            document.getElementById('mf2-desc').innerText = l.mf2Desc;
-            document.getElementById('mf3-title').innerText = l.mf3Title;
-            document.getElementById('mf3-desc').innerText = l.mf3Desc;
-            document.getElementById('mf4-title').innerText = l.mf4Title;
-            document.getElementById('mf4-desc').innerText = l.mf4Desc;
-            document.getElementById('rent-title').innerHTML = l.rentTitle;
-            document.getElementById('rent-desc').innerText = l.rentDesc;
-
-            document.getElementById('mon-h2').innerText = l.monH2;
-            document.getElementById('mon-p').innerText = l.monP;
-            document.getElementById('dwl-title').innerText = l.dwlTitle;
-            document.getElementById('dwl-sub').innerHTML = l.dwlSub;
-            document.getElementById('hhi-formula-title').innerText = l.hhiFormulaTitle;
-            document.getElementById('hhi-scale-low').innerText = l.hhiScaleLow;
-            document.getElementById('hhi-scale-mod').innerText = l.hhiScaleMod;
-            document.getElementById('hhi-scale-high').innerText = l.hhiScaleHigh;
-            document.getElementById('calc-title').innerText = l.calcTitle;
-            document.getElementById('lbl-f1').innerText = l.lblF1;
-            document.getElementById('lbl-f2').innerText = l.lblF2;
-            document.getElementById('lbl-f3').innerText = l.lblF3;
-            document.getElementById('lbl-f4').innerText = l.lblF4;
-            document.getElementById('lbl-hhi-val').innerText = l.lblHhiVal;
-
-            document.getElementById('pg-h2').innerText = l.pgH2;
-            document.getElementById('pg-p').innerText = l.pgP;
-            document.getElementById('pg-props-title').innerText = l.pgPropsTitle;
-            document.getElementById('pg-prop1').innerHTML = `<strong>${l.pgProp1}</strong>`;
-            document.getElementById('pg-prop2').innerHTML = `<strong>${l.pgProp2}</strong>`;
-            document.getElementById('vsum-title').innerText = l.vsumTitle;
-            document.getElementById('vsum-desc').innerText = l.vsumDesc;
-            document.getElementById('pg-opt-title').innerText = l.pgOptTitle;
-            document.getElementById('lbl-mc').innerText = l.lblMc;
-
-            document.getElementById('tr-h2').innerText = l.trH2;
-            document.getElementById('tr-p').innerText = l.trP;
-            document.getElementById('tr-card-title').innerText = l.trCardTitle;
-            document.getElementById('tr-card-desc').innerHTML = l.trCardDesc;
-            document.getElementById('lbl-tariff').innerText = l.lblTariff;
-            document.getElementById('lbl-local-prod').innerText = l.lblLocalProd;
-            document.getElementById('lbl-import-vol').innerText = l.lblImportVol;
-            document.getElementById('lbl-budget-rev').innerText = l.lblBudgetRev;
-            document.getElementById('tr-model-title').innerText = l.trModelTitle;
-
-            document.getElementById('ins-h2').innerText = l.insH2;
-            document.getElementById('ins-p').innerText = l.insP;
-            document.getElementById('ins1-title').innerText = l.ins1Title;
-            document.getElementById('ins1-desc').innerText = l.ins1Desc;
-            document.getElementById('ins2-title').innerText = l.ins2Title;
-            document.getElementById('ins2-desc').innerText = l.ins2Desc;
-            document.getElementById('ins3-title').innerText = l.ins3Title;
-            document.getElementById('ins3-desc').innerText = l.ins3Desc;
-            document.getElementById('ins4-title').innerText = l.ins4Title;
-            document.getElementById('ins4-desc').innerText = l.ins4Desc;
-
-            // Chart labels
-            hhiChart.data.labels = l.firmLabels;
-            pgChart.data.datasets[0].label = l.pgDatasetInd;
-            pgChart.data.datasets[1].label = l.pgDatasetTotal;
-            tariffChart.data.datasets[0].label = l.trDatasetDemand;
-            tariffChart.data.datasets[1].label = l.trDatasetSupply;
-            tariffChart.data.datasets[3].label = l.trDatasetPt;
-
-            updateHHI();
-            pgChart.update();
-            tariffChart.update();
-        }
-
-        // Navigation Logic
+        // ================= NAVIGATION =================
         const navItems = document.querySelectorAll('.nav-item');
         const mobileTabs = document.querySelectorAll('.mobile-tab');
         const sections = document.querySelectorAll('.view-section');
 
         function activateSection(targetId) {
             navItems.forEach(item => {
-                if(item.dataset.target === targetId) item.classList.add('active');
+                if (item.dataset.target === targetId) item.classList.add('active');
                 else item.classList.remove('active');
             });
             mobileTabs.forEach(tab => {
-                if(tab.dataset.target === targetId) tab.classList.add('active');
+                if (tab.dataset.target === targetId) tab.classList.add('active');
                 else tab.classList.remove('active');
             });
             sections.forEach(sec => {
-                if(sec.id === targetId) sec.classList.add('active');
+                if (sec.id === targetId) sec.classList.add('active');
                 else sec.classList.remove('active');
             });
+            // Обновляем графики при переключении вкладок для корректного рендера
+            if (targetId === 'view-externalities') externalityChart.update();
+            if (targetId === 'view-monopoly') hhiChart.update();
+            if (targetId === 'view-public-goods') pgChart.update();
+            if (targetId === 'view-international') tariffChart.update();
         }
 
-        navItems.forEach(item => item.addEventListener('click', (e) => activateSection(e.target.dataset.target)));
-        mobileTabs.forEach(tab => tab.addEventListener('click', (e) => activateSection(e.target.dataset.target)));
+        navItems.forEach(item => item.addEventListener('click', (e) => activateSection(e.currentTarget.dataset.target)));
+        mobileTabs.forEach(tab => tab.addEventListener('click', (e) => activateSection(e.currentTarget.dataset.target)));
 
-        // HHI Chart
+        // ================= EXTERNALITIES CHART & LOGIC =================
+        const extCtx = document.getElementById('externalityChart').getContext('2d');
+        const extQPoints = Array.from({length: 71}, (_, i) => i); // Q from 0 to 70
+
+        const externalityChart = new Chart(extCtx, {
+            type: 'line',
+            data: {
+                labels: extQPoints,
+                datasets: [
+                    { label: 'Demand / MPB', data: [], borderColor: '#4f46e5', borderWidth: 2.5, pointRadius: 0 },
+                    { label: 'Supply / MPC', data: [], borderColor: '#0ea5e9', borderWidth: 2.5, pointRadius: 0 },
+                    { label: 'Social Cost (MSC)', data: [], borderColor: '#e11d48', borderWidth: 2.5, borderDash: [6, 4], pointRadius: 0 },
+                    { label: 'MPC + Tax (T)', data: [], borderColor: '#10b981', borderWidth: 2.5, pointRadius: 0 }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { mode: 'index', intersect: false },
+                scales: {
+                    x: { title: { display: true, text: 'Q', font: { size: 10, weight: 'bold' } }, ticks: { font: { size: 9 } } },
+                    y: { min: 0, max: 110, title: { display: true, text: 'P / Cost', font: { size: 10, weight: 'bold' } }, ticks: { font: { size: 9 } } }
+                },
+                plugins: {
+                    legend: { labels: { boxWidth: 12, font: { size: 10, family: 'Inter' } } }
+                }
+            }
+        });
+
+        const sliderExtSize = document.getElementById('slider-ext-size');
+        const sliderPigouPolicy = document.getElementById('slider-pigou-policy');
+
+        function setExtMode(mode) {
+            extMode = mode;
+            const btnNeg = document.getElementById('btn-ext-neg');
+            const btnPos = document.getElementById('btn-ext-pos');
+            if (mode === 'neg') {
+                btnNeg.className = "px-3 py-1.5 rounded-md text-xs font-bold bg-indigo-600 text-white shadow-sm transition cursor-pointer";
+                btnPos.className = "px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:text-slate-900 transition cursor-pointer";
+                sliderExtSize.className = "w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-rose-600";
+            } else {
+                btnPos.className = "px-3 py-1.5 rounded-md text-xs font-bold bg-emerald-600 text-white shadow-sm transition cursor-pointer";
+                btnNeg.className = "px-3 py-1.5 rounded-md text-xs font-bold text-slate-600 hover:text-slate-900 transition cursor-pointer";
+                sliderExtSize.className = "w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-emerald-600";
+            }
+            updateExternalityModel();
+        }
+
+        function matchPigouOptimal() {
+            sliderPigouPolicy.value = sliderExtSize.value;
+            updateExternalityModel();
+        }
+
+        function updateExternalityModel() {
+            const extVal = parseFloat(sliderExtSize.value);
+            const polVal = parseFloat(sliderPigouPolicy.value);
+
+            document.getElementById('val-ext-size').innerText = extVal;
+            document.getElementById('val-pigou-policy').innerText = polVal;
+
+            const lblExt = document.getElementById('lbl-ext-size');
+            const hintExt = document.getElementById('hint-ext-size');
+            const lblPol = document.getElementById('lbl-pigou-policy');
+            const btnAuto = document.getElementById('btn-auto-pigou');
+            const valExtSpan = document.getElementById('val-ext-size');
+
+            // Базовые линейные кривые:
+            // MPB (Demand): P = 90 - Q
+            // MPC (Supply): P = 10 + Q
+            // Без вмешательства: 90 - Q = 10 + Q => Q_free = 40, P_free = 50
+            const mpbData = extQPoints.map(q => Math.max(0, 90 - q));
+            const mpcData = extQPoints.map(q => 10 + q);
+
+            let qActual, qOpt, dwl;
+
+            if (extMode === 'neg') {
+                valExtSpan.className = "text-rose-600 font-black";
+                if (currentLang === 'RU') {
+                    lblExt.innerText = "Внешний ущерб (MEC):";
+                    hintExt.innerText = "Экологический ущерб на единицу стали";
+                    lblPol.innerText = "Налог Пигу (T):";
+                    btnAuto.innerText = "⚡ Установить оптимум (T = MEC)";
+                    externalityChart.data.datasets[0].label = "Спрос (MPB = MSB)";
+                    externalityChart.data.datasets[1].label = "Частные изд. (MPC)";
+                    externalityChart.data.datasets[2].label = "Обществ. изд. (MSC)";
+                    externalityChart.data.datasets[3].label = "MPC + Налог (T)";
+                } else {
+                    lblExt.innerText = "External Cost (MEC):";
+                    hintExt.innerText = "Pollution damage per ton of steel";
+                    lblPol.innerText = "Pigovian Tax (T):";
+                    btnAuto.innerText = "⚡ Set Optimal Tax (T = MEC)";
+                    externalityChart.data.datasets[0].label = "Demand (MPB = MSB)";
+                    externalityChart.data.datasets[1].label = "Private Cost (MPC)";
+                    externalityChart.data.datasets[2].label = "Social Cost (MSC)";
+                    externalityChart.data.datasets[3].label = "MPC + Tax (T)";
+                }
+
+                // MSC = 10 + Q + extVal
+                // MPC + T = 10 + Q + polVal
+                const mscData = extQPoints.map(q => 10 + q + extVal);
+                const taxSupplyData = extQPoints.map(q => 10 + q + polVal);
+
+                externalityChart.data.datasets[0].data = mpbData;
+                externalityChart.data.datasets[1].data = mpcData;
+                externalityChart.data.datasets[2].data = mscData;
+                externalityChart.data.datasets[2].borderColor = '#e11d48';
+                externalityChart.data.datasets[3].data = taxSupplyData;
+                externalityChart.data.datasets[3].borderColor = '#10b981';
+
+                // 90 - Q = 10 + Q + polVal => 2Q = 80 - polVal
+                qActual = Math.max(0, (80 - polVal) / 2);
+                qOpt = Math.max(0, (80 - extVal) / 2);
+                // DWL = 0.5 * |extVal - polVal| * |qActual - qOpt|
+                dwl = 0.5 * Math.abs(extVal - polVal) * Math.abs(qActual - qOpt);
+
+            } else {
+                valExtSpan.className = "text-emerald-600 font-black";
+                if (currentLang === 'RU') {
+                    lblExt.innerText = "Внешняя выгода (MEB):";
+                    hintExt.innerText = "Польза обществу от образования / R&D";
+                    lblPol.innerText = "Субсидия Пигу (S):";
+                    btnAuto.innerText = "⚡ Установить оптимум (S = MEB)";
+                    externalityChart.data.datasets[0].label = "Частная выгода (MPB)";
+                    externalityChart.data.datasets[1].label = "Предложение (MPC = MSC)";
+                    externalityChart.data.datasets[2].label = "Обществ. выгода (MSB)";
+                    externalityChart.data.datasets[3].label = "MPB + Субсидия (S)";
+                } else {
+                    lblExt.innerText = "External Benefit (MEB):";
+                    hintExt.innerText = "Spillover benefit from education / R&D";
+                    lblPol.innerText = "Pigovian Subsidy (S):";
+                    btnAuto.innerText = "⚡ Set Optimal Subsidy (S = MEB)";
+                    externalityChart.data.datasets[0].label = "Private Value (MPB)";
+                    externalityChart.data.datasets[1].label = "Supply (MPC = MSC)";
+                    externalityChart.data.datasets[2].label = "Social Value (MSB)";
+                    externalityChart.data.datasets[3].label = "MPB + Subsidy (S)";
+                }
+
+                // MSB = 90 - Q + extVal
+                // MPB + S = 90 - Q + polVal
+                const msbData = extQPoints.map(q => Math.max(0, 90 - q + extVal));
+                const subDemandData = extQPoints.map(q => Math.max(0, 90 - q + polVal));
+
+                externalityChart.data.datasets[0].data = mpbData;
+                externalityChart.data.datasets[1].data = mpcData;
+                externalityChart.data.datasets[2].data = msbData;
+                externalityChart.data.datasets[2].borderColor = '#059669';
+                externalityChart.data.datasets[3].data = subDemandData;
+                externalityChart.data.datasets[3].borderColor = '#6366f1';
+
+                // 90 - Q + polVal = 10 + Q => 2Q = 80 + polVal
+                qActual = (80 + polVal) / 2;
+                qOpt = (80 + extVal) / 2;
+                dwl = 0.5 * Math.abs(extVal - polVal) * Math.abs(qOpt - qActual);
+            }
+
+            document.getElementById('ext-qm-val').innerText = qActual.toFixed(1);
+            document.getElementById('ext-qopt-val').innerText = qOpt.toFixed(1);
+            document.getElementById('ext-dwl-val').innerText = Math.round(dwl);
+
+            externalityChart.update();
+        }
+
+        sliderExtSize.addEventListener('input', updateExternalityModel);
+        sliderPigouPolicy.addEventListener('input', updateExternalityModel);
+
+        // ================= HHI CHART & LOGIC =================
         const hhiCtx = document.getElementById('hhiChart').getContext('2d');
         const hhiChart = new Chart(hhiCtx, {
             type: 'doughnut',
@@ -707,7 +1160,7 @@
                 maintainAspectRatio: false,
                 cutout: '65%',
                 plugins: {
-                    legend: { position: 'right', labels: { boxWidth: 10, font: {size: 10, family: 'Inter'} } }
+                    legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10, family: 'Inter' } } }
                 }
             }
         });
@@ -728,6 +1181,7 @@
             });
 
             if (totalShare > 100) {
+                hhiError.innerText = l.hhiError;
                 hhiError.classList.remove('hidden');
                 hhiResult.innerText = "Error";
                 hhiStatus.innerText = "Sum > 100%";
@@ -751,9 +1205,8 @@
             }
         }
         inputs.forEach(input => input.addEventListener('input', updateHHI));
-        updateHHI();
 
-        // Public Goods Chart
+        // ================= PUBLIC GOODS CHART & LOGIC =================
         const pgCtx = document.getElementById('publicGoodsChart').getContext('2d');
         const qPoints = Array.from({length: 31}, (_, i) => i);
         const d_individual = qPoints.map(q => Math.max(0, 30 - q));
@@ -764,7 +1217,7 @@
             data: {
                 labels: qPoints,
                 datasets: [
-                    { label: 'Индив. (A,B)', data: d_individual, borderColor: '#94a3b8', borderWidth: 1.5, borderDash: [4, 4], pointRadius: 0 },
+                    { label: 'Индив. (A, B)', data: d_individual, borderColor: '#94a3b8', borderWidth: 1.5, borderDash: [4, 4], pointRadius: 0 },
                     { label: 'Совокуп. (∑P)', data: d_total, borderColor: '#4338ca', borderWidth: 2.5, pointRadius: 0 },
                     { label: 'MC', data: Array(31).fill(15), borderColor: '#f59e0b', borderWidth: 2.5, pointRadius: 0 }
                 ]
@@ -795,7 +1248,7 @@
             pgOptimalQ.innerText = optQ.toFixed(1);
         });
 
-        // Tariff Chart
+        // ================= TARIFF CHART & LOGIC =================
         const tariffCtx = document.getElementById('tariffChart').getContext('2d');
         const tQPoints = Array.from({length: 121}, (_, i) => i);
         const tDemand = tQPoints.map(q => Math.max(0, 12 - 0.1 * q));
@@ -807,9 +1260,9 @@
             data: {
                 labels: tQPoints,
                 datasets: [
-                    { label: 'Спрос', data: tDemand, borderColor: '#6366f1', borderWidth: 2, pointRadius: 0 },
-                    { label: 'Предложение', data: tSupply, borderColor: '#14b8a6', borderWidth: 2, pointRadius: 0 },
-                    { label: 'Pw', data: Array(121).fill(Pw), borderColor: '#94a3b8', borderWidth: 1.5, borderDash: [4, 4], pointRadius: 0 },
+                    { label: 'Спрос (D)', data: tDemand, borderColor: '#6366f1', borderWidth: 2, pointRadius: 0 },
+                    { label: 'Предложение (S)', data: tSupply, borderColor: '#14b8a6', borderWidth: 2, pointRadius: 0 },
+                    { label: 'Pw (Мировая)', data: Array(121).fill(Pw), borderColor: '#94a3b8', borderWidth: 1.5, borderDash: [4, 4], pointRadius: 0 },
                     { label: 'Pt (с Тарифом)', data: Array(121).fill(6), borderColor: '#e11d48', borderWidth: 2.5, pointRadius: 0 }
                 ]
             },
@@ -847,6 +1300,172 @@
             mImport.innerText = imports.toFixed(0);
             mRev.innerText = revenue.toFixed(1);
         });
+
+        // ================= LANGUAGE SWITCHER =================
+        function toggleLanguage() {
+            currentLang = currentLang === 'RU' ? 'EN' : 'RU';
+            const nextLangLabel = currentLang === 'RU' ? 'EN' : 'RU';
+            document.getElementById('lang-btn-text').innerText = nextLangLabel;
+            document.getElementById('mob-lang-btn').innerText = nextLangLabel;
+
+            const l = dict[currentLang];
+            document.getElementById('sidebar-badge').innerText = l.sidebarBadge;
+            document.getElementById('sidebar-title').innerText = l.sidebarTitle;
+            document.getElementById('sidebar-subtitle').innerText = l.sidebarSubtitle;
+            document.getElementById('mob-title').innerText = l.sidebarTitle;
+            document.getElementById('mob-subtitle').innerText = l.mobSubtitle;
+            document.getElementById('topbar-status').innerText = l.topbarStatus;
+            document.getElementById('topbar-ref').innerText = l.topbarRef;
+            document.getElementById('lbl-lang').innerText = l.lblLang;
+
+            // Nav
+            document.getElementById('nav-overview').innerText = l.navOverview;
+            document.getElementById('nav-ext').innerText = l.navExt;
+            document.getElementById('nav-monopoly').innerText = l.navMonopoly;
+            document.getElementById('nav-public').innerText = l.navPublic;
+            document.getElementById('nav-trade').innerText = l.navTrade;
+            document.getElementById('nav-insights').innerText = l.navInsights;
+
+            document.getElementById('mob-tab-overview').innerText = l.mobOverview;
+            document.getElementById('mob-tab-ext').innerText = l.mobExt;
+            document.getElementById('mob-tab-monopoly').innerText = l.mobMonopoly;
+            document.getElementById('mob-tab-public').innerText = l.mobPublic;
+            document.getElementById('mob-tab-trade').innerText = l.mobTrade;
+            document.getElementById('mob-tab-insights').innerText = l.mobInsights;
+
+            // View 1
+            document.getElementById('ov-h2').innerText = l.ovH2;
+            document.getElementById('ov-p').innerText = l.ovP;
+            document.getElementById('ov-intro').innerHTML = l.ovIntro;
+            document.getElementById('mf1-title').innerText = l.mf1Title;
+            document.getElementById('mf1-desc').innerText = l.mf1Desc;
+            document.getElementById('mf2-badge').innerText = l.mf2Badge;
+            document.getElementById('mf2-title').innerText = l.mf2Title;
+            document.getElementById('mf2-desc').innerText = l.mf2Desc;
+            document.getElementById('mf3-title').innerText = l.mf3Title;
+            document.getElementById('mf3-desc').innerText = l.mf3Desc;
+            document.getElementById('mf4-title').innerText = l.mf4Title;
+            document.getElementById('mf4-desc').innerText = l.mf4Desc;
+            document.getElementById('gov-role-h3').innerHTML = l.govRoleH3;
+            document.getElementById('gov-role-sub').innerText = l.govRoleSub;
+            document.getElementById('gr1-tag').innerText = l.gr1Tag;
+            document.getElementById('gr1-title').innerText = l.gr1Title;
+            document.getElementById('gr1-desc').innerText = l.gr1Desc;
+            document.getElementById('gr2-tag').innerText = l.gr2Tag;
+            document.getElementById('gr2-title').innerText = l.gr2Title;
+            document.getElementById('gr2-desc').innerText = l.gr2Desc;
+            document.getElementById('gr3-tag').innerText = l.gr3Tag;
+            document.getElementById('gr3-title').innerText = l.gr3Title;
+            document.getElementById('gr3-desc').innerText = l.gr3Desc;
+            document.getElementById('gr4-tag').innerText = l.gr4Tag;
+            document.getElementById('gr4-title').innerText = l.gr4Title;
+            document.getElementById('gr4-desc').innerText = l.gr4Desc;
+            document.getElementById('rent-title').innerHTML = l.rentTitle;
+            document.getElementById('rent-desc').innerHTML = l.rentDesc;
+
+            // View 2: Externalities
+            document.getElementById('ext-badge').innerText = l.extBadge;
+            document.getElementById('ext-h2').innerText = l.extH2;
+            document.getElementById('ext-p').innerText = l.extP;
+            document.getElementById('pigou-name').innerText = l.pigouName;
+            document.getElementById('pigou-bio').innerHTML = l.pigouBio;
+            document.getElementById('neg-tag').innerText = l.negTag;
+            document.getElementById('neg-title').innerText = l.negTitle;
+            document.getElementById('neg-desc').innerText = l.negDesc;
+            document.getElementById('neg-result').innerHTML = l.negResult;
+            document.getElementById('pos-tag').innerText = l.posTag;
+            document.getElementById('pos-title').innerText = l.posTitle;
+            document.getElementById('pos-desc').innerText = l.posDesc;
+            document.getElementById('pos-result').innerHTML = l.posResult;
+            document.getElementById('ext-sim-title').innerText = l.extSimTitle;
+            document.getElementById('ext-sim-sub').innerHTML = l.extSimSub;
+            document.getElementById('btn-ext-neg').innerText = l.btnExtNeg;
+            document.getElementById('btn-ext-pos').innerText = l.btnExtPos;
+            document.getElementById('lbl-qm').innerHTML = l.lblQm;
+            document.getElementById('lbl-qopt').innerHTML = l.lblQopt;
+            document.getElementById('lbl-ext-dwl').innerText = l.lblExtDwl;
+            document.getElementById('pol-title').innerHTML = l.polTitle;
+            document.getElementById('pol1-t').innerText = l.pol1T;
+            document.getElementById('pol1-d').innerText = l.pol1D;
+            document.getElementById('pol2-t').innerText = l.pol2T;
+            document.getElementById('pol2-d').innerHTML = l.pol2D;
+            document.getElementById('pol3-t').innerText = l.pol3T;
+            document.getElementById('pol3-d').innerHTML = l.pol3D;
+            document.getElementById('coase-title').innerHTML = l.coaseTitle;
+            document.getElementById('coase-desc').innerHTML = l.coaseDesc;
+            document.getElementById('coase-ex-t').innerText = l.coaseExT;
+            document.getElementById('coase-ex-d').innerText = l.coaseExD;
+            document.getElementById('coase-lim-t').innerText = l.coaseLimT;
+            document.getElementById('coase-lim-d').innerText = l.coaseLimD;
+
+            // View 3: Monopoly
+            document.getElementById('mon-h2').innerText = l.monH2;
+            document.getElementById('mon-p').innerText = l.monP;
+            document.getElementById('dwl-title').innerText = l.dwlTitle;
+            document.getElementById('dwl-sub').innerHTML = l.dwlSub;
+            document.getElementById('hhi-formula-title').innerText = l.hhiFormulaTitle;
+            document.getElementById('hhi-scale-low').innerText = l.hhiScaleLow;
+            document.getElementById('hhi-scale-mod').innerText = l.hhiScaleMod;
+            document.getElementById('hhi-scale-high').innerText = l.hhiScaleHigh;
+            document.getElementById('calc-title').innerText = l.calcTitle;
+            document.getElementById('lbl-f1').innerText = l.lblF1;
+            document.getElementById('lbl-f2').innerText = l.lblF2;
+            document.getElementById('lbl-f3').innerText = l.lblF3;
+            document.getElementById('lbl-f4').innerText = l.lblF4;
+            document.getElementById('lbl-hhi-val').innerText = l.lblHhiVal;
+
+            // View 4: Public Goods
+            document.getElementById('pg-h2').innerText = l.pgH2;
+            document.getElementById('pg-p').innerText = l.pgP;
+            document.getElementById('pg-props-title').innerText = l.pgPropsTitle;
+            document.getElementById('pg-prop1').innerHTML = l.pgProp1;
+            document.getElementById('pg-prop2').innerHTML = l.pgProp2;
+            document.getElementById('vsum-title').innerText = l.vsumTitle;
+            document.getElementById('vsum-desc').innerText = l.vsumDesc;
+            document.getElementById('pg-opt-title').innerText = l.pgOptTitle;
+            document.getElementById('lbl-mc').innerText = l.lblMc;
+
+            // View 5: Trade
+            document.getElementById('tr-h2').innerText = l.trH2;
+            document.getElementById('tr-p').innerText = l.trP;
+            document.getElementById('tr-card-title').innerText = l.trCardTitle;
+            document.getElementById('tr-card-desc').innerHTML = l.trCardDesc;
+            document.getElementById('lbl-tariff').innerText = l.lblTariff;
+            document.getElementById('lbl-local-prod').innerText = l.lblLocalProd;
+            document.getElementById('lbl-import-vol').innerText = l.lblImportVol;
+            document.getElementById('lbl-budget-rev').innerText = l.lblBudgetRev;
+            document.getElementById('tr-model-title').innerText = l.trModelTitle;
+
+            // View 6: Insights
+            document.getElementById('ins-h2').innerText = l.insH2;
+            document.getElementById('ins-p').innerText = l.insP;
+            document.getElementById('ins1-title').innerText = l.ins1Title;
+            document.getElementById('ins1-desc').innerText = l.ins1Desc;
+            document.getElementById('ins2-title').innerText = l.ins2Title;
+            document.getElementById('ins2-desc').innerText = l.ins2Desc;
+            document.getElementById('ins3-title').innerText = l.ins3Title;
+            document.getElementById('ins3-desc').innerText = l.ins3Desc;
+            document.getElementById('ins4-title').innerText = l.ins4Title;
+            document.getElementById('ins4-desc').innerText = l.ins4Desc;
+            document.getElementById('main-footer').innerText = l.mainFooter;
+
+            // Update charts
+            hhiChart.data.labels = l.firmLabels;
+            pgChart.data.datasets[0].label = l.pgDatasetInd;
+            pgChart.data.datasets[1].label = l.pgDatasetTotal;
+            tariffChart.data.datasets[0].label = l.trDatasetDemand;
+            tariffChart.data.datasets[1].label = l.trDatasetSupply;
+            tariffChart.data.datasets[3].label = l.trDatasetPt;
+
+            updateExternalityModel();
+            updateHHI();
+            pgChart.update();
+            tariffChart.update();
+        }
+
+        // Initial render
+        updateExternalityModel();
+        updateHHI();
     </script>
 </body>
 </html>
