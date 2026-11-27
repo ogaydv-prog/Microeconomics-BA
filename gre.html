@@ -5,16 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Государство на рынке | Микроэкономика • AlmaU</title>
     
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
     <style>
         * { box-sizing: border-box; }
@@ -24,23 +20,18 @@
             color: #1e293b;
         }
         
-        /* Адаптивные контейнеры графиков Chart.js */
         .chart-container {
             position: relative;
             width: 100%;
             max-width: 720px;
-            margin-left: auto;
-            margin-right: auto;
+            margin: 0 auto;
             height: 310px;
             max-height: 360px;
         }
         @media (max-width: 768px) {
-            .chart-container {
-                height: 230px !important;
-            }
+            .chart-container { height: 230px !important; }
         }
 
-        /* Кастомный скроллбар */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #f1f5f9; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
@@ -56,7 +47,6 @@
             font-weight: 700;
         }
 
-        /* Стили для мобильных табов */
         .mobile-tab.active {
             background-color: #4338ca;
             color: #ffffff;
@@ -68,16 +58,13 @@
             display: none;
             animation: fadeIn 0.3s ease-in-out;
         }
-        .view-section.active {
-            display: block;
-        }
+        .view-section.active { display: block; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(6px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Оформление формул */
         .formula-box {
             background-color: #f1f5f9;
             border-left: 4px solid #4338ca;
@@ -104,7 +91,6 @@
                 <p class="text-[11px] text-slate-500 mt-0.5 font-semibold" id="sidebar-subtitle">Микроэкономика • Лекция</p>
             </div>
             
-            <!-- Переключатель языка на десктопе -->
             <div class="px-5 py-2.5 border-b border-slate-100 bg-slate-50/80 flex items-center justify-between">
                 <span class="text-xs font-bold text-slate-500" id="lbl-lang">Язык / Lang:</span>
                 <button onclick="toggleLanguage()" class="px-3 py-1 bg-indigo-600 text-white font-extrabold rounded-md text-xs hover:bg-indigo-700 transition flex items-center gap-1.5 shadow-sm cursor-pointer">
@@ -124,7 +110,7 @@
             </nav>
         </div>
 
-        <div class="p-4 border-t border-slate-100 text-center text-[10px] text-slate-400 font-bold leading-relaxed" id="sidebar-footer">
+        <div class="p-4 border-t border-slate-100 text-center text-[10px] text-slate-400 font-bold leading-relaxed">
             School of Digital Technologies & Economics • AlmaU 2026
         </div>
     </aside>
@@ -160,7 +146,7 @@
             <div class="flex items-center gap-3">
                 <span class="text-[11px] font-bold text-slate-400" id="topbar-ref">По материалам N.G. Mankiw (Ch. 10)</span>
                 <button onclick="toggleLanguage()" class="text-xs font-bold px-2.5 py-1 rounded border border-slate-200 hover:bg-slate-50 text-indigo-700 transition cursor-pointer">
-                    <span id="topbar-lang-indicator">RU ⇄ EN</span>
+                    RU ⇄ EN
                 </button>
             </div>
         </div>
@@ -176,7 +162,6 @@
                     </p>
                 </header>
 
-                <!-- 4 провала рынка -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6 mb-6">
                     <p class="mb-4 text-sm md:text-base text-slate-700" id="ov-intro">
                         В идеальных условиях конкурентный рынок ведёт к Парето-эффективности (<span class="font-bold text-indigo-700">P = MC</span>), максимизируя сумму излишков потребителя и производителя. Однако на практике возникают <strong>провалы рынка (Market Failures)</strong>:
@@ -209,7 +194,6 @@
                     </div>
                 </div>
 
-                <!-- 4 функции государства -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6 mb-6">
                     <h3 class="text-base md:text-lg font-extrabold text-slate-900 mb-1 flex items-center gap-2" id="gov-role-h3">
                         <span>🏛️</span> Четыре ключевые функции государства в экономике
@@ -242,7 +226,6 @@
                     </div>
                 </div>
 
-                <!-- Провалы государства и Поиск ренты -->
                 <div class="bg-amber-50/90 rounded-xl shadow-sm border border-amber-200 p-4 md:p-6">
                     <h3 class="font-bold text-amber-950 mb-1 flex items-center gap-2 text-sm md:text-base" id="rent-title"><span>⚠️</span> Провалы государства и поиск ренты (Rent Seeking)</h3>
                     <p class="text-xs md:text-sm text-amber-900 leading-relaxed" id="rent-desc">
@@ -251,7 +234,7 @@
                 </div>
             </section>
 
-            <!-- ================= VIEW 2: EXTERNALITIES & PIGOU (NEW!) ================= -->
+            <!-- ================= VIEW 2: EXTERNALITIES & PIGOU ================= -->
             <section id="view-externalities" class="view-section">
                 <header class="mb-6 md:mb-8">
                     <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-800 text-[11px] font-bold mb-2" id="ext-badge">
@@ -263,13 +246,12 @@
                     </p>
                 </header>
 
-                <!-- Карточка Артура Пигу + Базовая теория -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                     <!-- Arthur Pigou Card -->
                     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 flex flex-col items-center text-center">
                         <div class="w-28 h-36 rounded-lg overflow-hidden border-2 border-indigo-100 shadow-sm mb-3 bg-slate-100">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/45/Arthur_Cecil_Pigou.jpg/440px-Arthur_Cecil_Pigou.jpg" 
-                                 onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%22150%22 viewBox=%220 0 120 150%22><rect width=%22120%22 height=%22150%22 fill=%22%23e0e7ff%22/><text x=%2250%%22 y=%2248%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Inter,sans-serif%22 font-weight=%22bold%22 font-size=%2228%22 fill=%22%234338ca%22>A.C.P.</text><text x=%2250%%22 y=%2266%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Inter,sans-serif%22 font-size=%2210%22 fill=%22%234f46e5%22>1877–1959</text></svg>';"
+                            <img src="Arthur_Cecil_Pigou.jpg" 
+                                 onerror="if(!this.dataset.triedFallback){this.dataset.triedFallback='1'; this.src='https://upload.wikimedia.org/wikipedia/commons/4/45/Arthur_Cecil_Pigou.jpg';} else {this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22120%22 height=%22150%22 viewBox=%220 0 120 150%22><rect width=%22120%22 height=%22150%22 fill=%22%23e0e7ff%22/><text x=%2250%%22 y=%2248%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Inter,sans-serif%22 font-weight=%22bold%22 font-size=%2228%22 fill=%22%234338ca%22>A.C.P.</text><text x=%2250%%22 y=%2266%%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-family=%22Inter,sans-serif%22 font-size=%2210%22 fill=%22%234f46e5%22>1877–1959</text></svg>';}"
                                  alt="Arthur Cecil Pigou" 
                                  class="w-full h-full object-cover grayscale contrast-110">
                         </div>
@@ -280,7 +262,6 @@
                         </p>
                     </div>
 
-                    <!-- Сравнение отрицательных и положительных экстерналий -->
                     <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div class="bg-white rounded-xl shadow-sm border-t-4 border-t-rose-500 border border-slate-200 p-4 flex flex-col justify-between">
                             <div>
@@ -322,7 +303,7 @@
                     </div>
                 </div>
 
-                <!-- ИНТЕРАКТИВНЫЙ ГРАФИК ЭКСТЕРНАЛИЙ -->
+                <!-- Interactive Externality Simulator -->
                 <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6 mb-6">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-100">
                         <div>
@@ -340,11 +321,10 @@
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-center">
-                        <!-- Слайдеры и метрики -->
                         <div class="space-y-4">
                             <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
                                 <div class="flex justify-between text-xs font-bold text-slate-700 mb-1">
-                                    <span id="lbl-ext-size">Внешний эффект (MEC):</span>
+                                    <span id="lbl-ext-size">Внешний ущерб (MEC):</span>
                                     <span id="val-ext-size" class="text-rose-600 font-black">20</span>
                                 </div>
                                 <input type="range" id="slider-ext-size" min="0" max="40" step="2" value="20" class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-rose-600">
@@ -362,7 +342,6 @@
                                 </button>
                             </div>
 
-                            <!-- Показатели -->
                             <div class="grid grid-cols-3 gap-2 text-center">
                                 <div class="bg-slate-100 p-2 rounded-lg">
                                     <div class="text-[10px] font-bold text-slate-500 uppercase" id="lbl-qm">Рынок Q<sub>M</sub></div>
@@ -379,7 +358,6 @@
                             </div>
                         </div>
 
-                        <!-- График Chart.js -->
                         <div class="lg:col-span-2">
                             <div class="chart-container">
                                 <canvas id="externalityChart"></canvas>
@@ -388,9 +366,8 @@
                     </div>
                 </div>
 
-                <!-- Инструменты политики и Теорема Коуза -->
+                <!-- Public Policies & Coase Theorem -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Государственные меры -->
                     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6">
                         <h3 class="font-extrabold text-slate-900 text-sm md:text-base mb-3 flex items-center gap-2" id="pol-title">
                             <span>🏛️</span> Государственная политика (Public Policies)
@@ -411,7 +388,6 @@
                         </div>
                     </div>
 
-                    <!-- Частные решения и Теорема Коуза -->
                     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6 flex flex-col justify-between">
                         <div>
                             <h3 class="font-extrabold text-slate-900 text-sm md:text-base mb-3 flex items-center gap-2" id="coase-title">
@@ -442,7 +418,6 @@
                 </header>
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Formulas -->
                     <div class="space-y-4">
                         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6">
                             <h3 class="font-bold text-slate-800 text-sm md:text-base mb-1" id="dwl-title">Безвозвратные потери (DWL)</h3>
@@ -465,7 +440,6 @@
                         </div>
                     </div>
 
-                    <!-- Calculator -->
                     <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6 flex flex-col">
                         <h3 class="font-bold text-slate-800 text-sm md:text-base mb-3" id="calc-title">Калькулятор HHI</h3>
                         
@@ -641,7 +615,6 @@
 
         </div>
 
-        <!-- Main Footer -->
         <footer class="text-center text-[11px] text-slate-400 py-4 border-t border-slate-200 bg-white font-semibold" id="main-footer">
             Школа цифровых технологий и экономики • AlmaU 2026
         </footer>
@@ -650,7 +623,7 @@
     <!-- Application Logic -->
     <script>
         let currentLang = 'RU';
-        let extMode = 'neg'; // 'neg' or 'pos'
+        let extMode = 'neg';
 
         const dict = {
             RU: {
@@ -673,8 +646,6 @@
                 mobPublic: "🌳 Блага",
                 mobTrade: "🛳️ Тарифы",
                 mobInsights: "💡 Инсайты",
-
-                // View 1
                 ovH2: "Провалы рынка и роль государства",
                 ovP: "Почему «невидимая рука» Адама Смита не всегда обеспечивает оптимум, и какие ключевые функции выполняет государство в современной экономике.",
                 ovIntro: "В идеальных условиях конкурентный рынок ведёт к Парето-эффективности (<span class='font-bold text-indigo-700'>P = MC</span>), максимизируя сумму излишков потребителя и производителя. Однако на практике возникают <strong>провалы рынка (Market Failures)</strong>:",
@@ -703,8 +674,6 @@
                 gr4Desc: "Рынки невозможны без правовой базы: суды, патентное право, стандарты безопасности и защита прав инвесторов снижают трансакционные издержки.",
                 rentTitle: "<span>⚠️</span> Провалы государства и поиск ренты (Rent Seeking)",
                 rentDesc: "Вмешательство государства не всегда идеально: политики и чиновники обладают неполной информацией и подвержены лоббизму. <strong>Поиск ренты</strong> — трата ресурсов фирмами на получение монопольных прав, квот или субсидий вместо создания новой ценности.",
-
-                // View 2: Externalities
                 extBadge: "Грегори Мэнкью • Глава 10",
                 extH2: "Внешние эффекты и Налог Пигу",
                 extP: "Внешний эффект (экстерналия) — некомпенсированное воздействие действий одного экономического агента на благосостояние третьего лица (bystander).",
@@ -738,8 +707,6 @@
                 coaseExD: "Пассажир впереди имеет право откинуть спинку, но пассажир сзади может заплатить ему компенсацию, если ценность свободного пространства для него выше.",
                 coaseLimT: "Почему переговоры срываются?",
                 coaseLimD: "Высокие трансакционные издержки (юристы, переводчики), упрямство при торге и большое число участников (например, тысячи рыбаков против одного комбината).",
-
-                // View 3: Monopoly
                 monH2: "Антимонопольный анализ и HHI",
                 monP: "Оценка рыночной концентрации. Введите доли рынка компаний в калькулятор для расчёта индекса Херфиндаля-Хиршмана (HHI).",
                 dwlTitle: "Безвозвратные потери (DWL)",
@@ -759,8 +726,6 @@
                 hhiMod: "Умеренная концентрация",
                 hhiHigh: "Высокая концентрация",
                 firmLabels: ['Фирма 1', 'Фирма 2', 'Фирма 3', 'Фирма 4'],
-
-                // View 4: Public goods
                 pgH2: "Общественные блага (Public Goods)",
                 pgP: "Вертикальное суммирование индивидуального спроса и поиск социально оптимального выпуска Q* при изменении предельных издержек (MC).",
                 pgPropsTitle: "Свойства чистых общественных благ:",
@@ -772,8 +737,6 @@
                 lblMc: "Предельные издержки (MC):",
                 pgDatasetInd: 'Индив. (A, B)',
                 pgDatasetTotal: 'Совокуп. (∑P)',
-
-                // View 5: Trade
                 trH2: "Международные рынки: Тарифы и Квоты",
                 trP: "Моделирование специфицированного импортного тарифа (T) и его влияние на внутреннее производство, объём импорта и доходы госбюджета.",
                 trCardTitle: "Импортный тариф (T)",
@@ -786,8 +749,6 @@
                 trDatasetDemand: 'Спрос (D)',
                 trDatasetSupply: 'Предложение (S)',
                 trDatasetPt: 'Pt (с Тарифом)',
-
-                // View 6: Insights
                 insH2: "Стратегические бизнес-инсайты",
                 insP: "Практическое применение теории провалов рынка и экстерналий в управленческих решениях.",
                 ins1Title: "1. Антимонопольный комплаенс и M&A",
@@ -820,8 +781,6 @@
                 mobPublic: "🌳 Public Goods",
                 mobTrade: "🛳️ Tariffs",
                 mobInsights: "💡 Insights",
-
-                // View 1
                 ovH2: "Market Failures & Role of Government",
                 ovP: "Why Adam Smith's 'invisible hand' does not always allocate resources efficiently, and the four core economic functions of government.",
                 ovIntro: "Under ideal conditions, competitive markets achieve Pareto efficiency (<span class='font-bold text-indigo-700'>P = MC</span>), maximizing total surplus. In practice, however, <strong>Market Failures</strong> occur:",
@@ -850,8 +809,6 @@
                 gr4Desc: "Markets rely on legal infrastructure: courts, patent law, safety regulations, and investor protection reduce transaction costs.",
                 rentTitle: "<span>⚠️</span> Government Failure & Rent Seeking",
                 rentDesc: "State intervention is imperfect due to limited information and political lobbying. <strong>Rent Seeking</strong> occurs when firms spend resources lobbying for monopoly privileges, quotas, or subsidies instead of creating economic value.",
-
-                // View 2: Externalities
                 extBadge: "N. Gregory Mankiw • Chapter 10",
                 extH2: "Externalities & Pigovian Taxes",
                 extP: "An externality arises when a person engages in an activity that influences the well-being of a bystander but neither pays nor receives compensation for that effect.",
@@ -885,8 +842,6 @@
                 coaseExD: "The passenger in front owns the right to recline, yet the passenger behind could pay them to stay upright if legroom is valued more.",
                 coaseLimT: "Why Private Bargaining Fails:",
                 coaseLimD: "High transaction costs (lawyers, translators), bargaining breakdowns, and large numbers of affected parties (e.g., thousands of fishermen vs. one factory).",
-
-                // View 3: Monopoly
                 monH2: "Antitrust Analysis & HHI",
                 monP: "Measuring market concentration. Input firm market shares into the calculator to compute the Herfindahl-Hirschman Index (HHI).",
                 dwlTitle: "Deadweight Loss (DWL)",
@@ -906,8 +861,6 @@
                 hhiMod: "Moderate Concentration",
                 hhiHigh: "High Concentration",
                 firmLabels: ['Firm 1', 'Firm 2', 'Firm 3', 'Firm 4'],
-
-                // View 4: Public goods
                 pgH2: "Public Goods",
                 pgP: "Vertical summation of individual demand curves and finding socially optimal Q* as marginal cost (MC) varies.",
                 pgPropsTitle: "Properties of Pure Public Goods:",
@@ -919,8 +872,6 @@
                 lblMc: "Marginal Cost (MC):",
                 pgDatasetInd: 'Indiv. (A, B)',
                 pgDatasetTotal: 'Total (∑P)',
-
-                // View 5: Trade
                 trH2: "International Markets: Tariffs & Quotas",
                 trP: "Modeling a specific import tariff (T) and its impact on domestic output, imports, and government tariff revenue.",
                 trCardTitle: "Import Tariff (T)",
@@ -933,8 +884,6 @@
                 trDatasetDemand: 'Demand (D)',
                 trDatasetSupply: 'Supply (S)',
                 trDatasetPt: 'Pt (with Tariff)',
-
-                // View 6: Insights
                 insH2: "Strategic Business Insights",
                 insP: "Applying market failure and externality theory to executive decision-making.",
                 ins1Title: "1. Antitrust Compliance & M&A",
@@ -949,25 +898,16 @@
             }
         };
 
-        // ================= NAVIGATION =================
+        // Navigation
         const navItems = document.querySelectorAll('.nav-item');
         const mobileTabs = document.querySelectorAll('.mobile-tab');
         const sections = document.querySelectorAll('.view-section');
 
         function activateSection(targetId) {
-            navItems.forEach(item => {
-                if (item.dataset.target === targetId) item.classList.add('active');
-                else item.classList.remove('active');
-            });
-            mobileTabs.forEach(tab => {
-                if (tab.dataset.target === targetId) tab.classList.add('active');
-                else tab.classList.remove('active');
-            });
-            sections.forEach(sec => {
-                if (sec.id === targetId) sec.classList.add('active');
-                else sec.classList.remove('active');
-            });
-            // Обновляем графики при переключении вкладок для корректного рендера
+            navItems.forEach(item => item.classList.toggle('active', item.dataset.target === targetId));
+            mobileTabs.forEach(tab => tab.classList.toggle('active', tab.dataset.target === targetId));
+            sections.forEach(sec => sec.classList.toggle('active', sec.id === targetId));
+
             if (targetId === 'view-externalities') externalityChart.update();
             if (targetId === 'view-monopoly') hhiChart.update();
             if (targetId === 'view-public-goods') pgChart.update();
@@ -977,9 +917,9 @@
         navItems.forEach(item => item.addEventListener('click', (e) => activateSection(e.currentTarget.dataset.target)));
         mobileTabs.forEach(tab => tab.addEventListener('click', (e) => activateSection(e.currentTarget.dataset.target)));
 
-        // ================= EXTERNALITIES CHART & LOGIC =================
+        // Externalities Chart
         const extCtx = document.getElementById('externalityChart').getContext('2d');
-        const extQPoints = Array.from({length: 71}, (_, i) => i); // Q from 0 to 70
+        const extQPoints = Array.from({length: 71}, (_, i) => i);
 
         const externalityChart = new Chart(extCtx, {
             type: 'line',
@@ -1000,9 +940,7 @@
                     x: { title: { display: true, text: 'Q', font: { size: 10, weight: 'bold' } }, ticks: { font: { size: 9 } } },
                     y: { min: 0, max: 110, title: { display: true, text: 'P / Cost', font: { size: 10, weight: 'bold' } }, ticks: { font: { size: 9 } } }
                 },
-                plugins: {
-                    legend: { labels: { boxWidth: 12, font: { size: 10, family: 'Inter' } } }
-                }
+                plugins: { legend: { labels: { boxWidth: 12, font: { size: 10, family: 'Inter' } } } }
             }
         });
 
@@ -1043,13 +981,8 @@
             const btnAuto = document.getElementById('btn-auto-pigou');
             const valExtSpan = document.getElementById('val-ext-size');
 
-            // Базовые линейные кривые:
-            // MPB (Demand): P = 90 - Q
-            // MPC (Supply): P = 10 + Q
-            // Без вмешательства: 90 - Q = 10 + Q => Q_free = 40, P_free = 50
             const mpbData = extQPoints.map(q => Math.max(0, 90 - q));
             const mpcData = extQPoints.map(q => 10 + q);
-
             let qActual, qOpt, dwl;
 
             if (extMode === 'neg') {
@@ -1074,24 +1007,16 @@
                     externalityChart.data.datasets[3].label = "MPC + Tax (T)";
                 }
 
-                // MSC = 10 + Q + extVal
-                // MPC + T = 10 + Q + polVal
-                const mscData = extQPoints.map(q => 10 + q + extVal);
-                const taxSupplyData = extQPoints.map(q => 10 + q + polVal);
-
                 externalityChart.data.datasets[0].data = mpbData;
                 externalityChart.data.datasets[1].data = mpcData;
-                externalityChart.data.datasets[2].data = mscData;
+                externalityChart.data.datasets[2].data = extQPoints.map(q => 10 + q + extVal);
                 externalityChart.data.datasets[2].borderColor = '#e11d48';
-                externalityChart.data.datasets[3].data = taxSupplyData;
+                externalityChart.data.datasets[3].data = extQPoints.map(q => 10 + q + polVal);
                 externalityChart.data.datasets[3].borderColor = '#10b981';
 
-                // 90 - Q = 10 + Q + polVal => 2Q = 80 - polVal
                 qActual = Math.max(0, (80 - polVal) / 2);
                 qOpt = Math.max(0, (80 - extVal) / 2);
-                // DWL = 0.5 * |extVal - polVal| * |qActual - qOpt|
                 dwl = 0.5 * Math.abs(extVal - polVal) * Math.abs(qActual - qOpt);
-
             } else {
                 valExtSpan.className = "text-emerald-600 font-black";
                 if (currentLang === 'RU') {
@@ -1114,19 +1039,13 @@
                     externalityChart.data.datasets[3].label = "MPB + Subsidy (S)";
                 }
 
-                // MSB = 90 - Q + extVal
-                // MPB + S = 90 - Q + polVal
-                const msbData = extQPoints.map(q => Math.max(0, 90 - q + extVal));
-                const subDemandData = extQPoints.map(q => Math.max(0, 90 - q + polVal));
-
                 externalityChart.data.datasets[0].data = mpbData;
                 externalityChart.data.datasets[1].data = mpcData;
-                externalityChart.data.datasets[2].data = msbData;
+                externalityChart.data.datasets[2].data = extQPoints.map(q => Math.max(0, 90 - q + extVal));
                 externalityChart.data.datasets[2].borderColor = '#059669';
-                externalityChart.data.datasets[3].data = subDemandData;
+                externalityChart.data.datasets[3].data = extQPoints.map(q => Math.max(0, 90 - q + polVal));
                 externalityChart.data.datasets[3].borderColor = '#6366f1';
 
-                // 90 - Q + polVal = 10 + Q => 2Q = 80 + polVal
                 qActual = (80 + polVal) / 2;
                 qOpt = (80 + extVal) / 2;
                 dwl = 0.5 * Math.abs(extVal - polVal) * Math.abs(qOpt - qActual);
@@ -1135,14 +1054,13 @@
             document.getElementById('ext-qm-val').innerText = qActual.toFixed(1);
             document.getElementById('ext-qopt-val').innerText = qOpt.toFixed(1);
             document.getElementById('ext-dwl-val').innerText = Math.round(dwl);
-
             externalityChart.update();
         }
 
         sliderExtSize.addEventListener('input', updateExternalityModel);
         sliderPigouPolicy.addEventListener('input', updateExternalityModel);
 
-        // ================= HHI CHART & LOGIC =================
+        // HHI Chart
         const hhiCtx = document.getElementById('hhiChart').getContext('2d');
         const hhiChart = new Chart(hhiCtx, {
             type: 'doughnut',
@@ -1159,9 +1077,7 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 cutout: '65%',
-                plugins: {
-                    legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10, family: 'Inter' } } }
-                }
+                plugins: { legend: { position: 'right', labels: { boxWidth: 10, font: { size: 10, family: 'Inter' } } } }
             }
         });
 
@@ -1206,19 +1122,16 @@
         }
         inputs.forEach(input => input.addEventListener('input', updateHHI));
 
-        // ================= PUBLIC GOODS CHART & LOGIC =================
+        // Public Goods Chart
         const pgCtx = document.getElementById('publicGoodsChart').getContext('2d');
         const qPoints = Array.from({length: 31}, (_, i) => i);
-        const d_individual = qPoints.map(q => Math.max(0, 30 - q));
-        const d_total = qPoints.map(q => Math.max(0, 60 - 2 * q));
-
         const pgChart = new Chart(pgCtx, {
             type: 'line',
             data: {
                 labels: qPoints,
                 datasets: [
-                    { label: 'Индив. (A, B)', data: d_individual, borderColor: '#94a3b8', borderWidth: 1.5, borderDash: [4, 4], pointRadius: 0 },
-                    { label: 'Совокуп. (∑P)', data: d_total, borderColor: '#4338ca', borderWidth: 2.5, pointRadius: 0 },
+                    { label: 'Индив. (A, B)', data: qPoints.map(q => Math.max(0, 30 - q)), borderColor: '#94a3b8', borderWidth: 1.5, borderDash: [4, 4], pointRadius: 0 },
+                    { label: 'Совокуп. (∑P)', data: qPoints.map(q => Math.max(0, 60 - 2 * q)), borderColor: '#4338ca', borderWidth: 2.5, pointRadius: 0 },
                     { label: 'MC', data: Array(31).fill(15), borderColor: '#f59e0b', borderWidth: 2.5, pointRadius: 0 }
                 ]
             },
@@ -1233,26 +1146,18 @@
             }
         });
 
-        const mcSlider = document.getElementById('mc-slider');
-        const mcValDisplay = document.getElementById('mc-val-display');
-        const pgOptimalQ = document.getElementById('pg-optimal-q');
-
-        mcSlider.addEventListener('input', (e) => {
+        document.getElementById('mc-slider').addEventListener('input', (e) => {
             const mc = parseFloat(e.target.value);
-            mcValDisplay.innerText = mc;
+            document.getElementById('mc-val-display').innerText = mc;
             pgChart.data.datasets[2].data = Array(31).fill(mc);
             pgChart.update();
-
             let optQ = 30 - 0.5 * mc;
-            if (optQ < 0 || mc > 60) optQ = 0;
-            pgOptimalQ.innerText = optQ.toFixed(1);
+            document.getElementById('pg-optimal-q').innerText = (optQ < 0 || mc > 60 ? 0 : optQ).toFixed(1);
         });
 
-        // ================= TARIFF CHART & LOGIC =================
+        // Tariff Chart
         const tariffCtx = document.getElementById('tariffChart').getContext('2d');
         const tQPoints = Array.from({length: 121}, (_, i) => i);
-        const tDemand = tQPoints.map(q => Math.max(0, 12 - 0.1 * q));
-        const tSupply = tQPoints.map(q => 1 + 0.1 * q);
         const Pw = 4;
 
         const tariffChart = new Chart(tariffCtx, {
@@ -1260,8 +1165,8 @@
             data: {
                 labels: tQPoints,
                 datasets: [
-                    { label: 'Спрос (D)', data: tDemand, borderColor: '#6366f1', borderWidth: 2, pointRadius: 0 },
-                    { label: 'Предложение (S)', data: tSupply, borderColor: '#14b8a6', borderWidth: 2, pointRadius: 0 },
+                    { label: 'Спрос (D)', data: tQPoints.map(q => Math.max(0, 12 - 0.1 * q)), borderColor: '#6366f1', borderWidth: 2, pointRadius: 0 },
+                    { label: 'Предложение (S)', data: tQPoints.map(q => 1 + 0.1 * q), borderColor: '#14b8a6', borderWidth: 2, pointRadius: 0 },
                     { label: 'Pw (Мировая)', data: Array(121).fill(Pw), borderColor: '#94a3b8', borderWidth: 1.5, borderDash: [4, 4], pointRadius: 0 },
                     { label: 'Pt (с Тарифом)', data: Array(121).fill(6), borderColor: '#e11d48', borderWidth: 2.5, pointRadius: 0 }
                 ]
@@ -1277,15 +1182,9 @@
             }
         });
 
-        const tSlider = document.getElementById('tariff-slider');
-        const tValDisplay = document.getElementById('tariff-val-display');
-        const mLocal = document.getElementById('metric-local');
-        const mImport = document.getElementById('metric-import');
-        const mRev = document.getElementById('metric-revenue');
-
-        tSlider.addEventListener('input', (e) => {
+        document.getElementById('tariff-slider').addEventListener('input', (e) => {
             const T = parseFloat(e.target.value);
-            tValDisplay.innerText = T.toFixed(1);
+            document.getElementById('tariff-val-display').innerText = T.toFixed(1);
             const Pt = Pw + T;
             
             tariffChart.data.datasets[3].data = Array(121).fill(Pt);
@@ -1294,14 +1193,13 @@
             let Qs = Math.max(0, (Pt - 1) * 10);
             let Qd = Math.max(0, (12 - Pt) * 10);
             let imports = Math.max(0, Qd - Qs);
-            let revenue = imports * T;
 
-            mLocal.innerText = Qs.toFixed(0);
-            mImport.innerText = imports.toFixed(0);
-            mRev.innerText = revenue.toFixed(1);
+            document.getElementById('metric-local').innerText = Qs.toFixed(0);
+            document.getElementById('metric-import').innerText = imports.toFixed(0);
+            document.getElementById('metric-revenue').innerText = (imports * T).toFixed(1);
         });
 
-        // ================= LANGUAGE SWITCHER =================
+        // Language Switcher
         function toggleLanguage() {
             currentLang = currentLang === 'RU' ? 'EN' : 'RU';
             const nextLangLabel = currentLang === 'RU' ? 'EN' : 'RU';
@@ -1318,7 +1216,6 @@
             document.getElementById('topbar-ref').innerText = l.topbarRef;
             document.getElementById('lbl-lang').innerText = l.lblLang;
 
-            // Nav
             document.getElementById('nav-overview').innerText = l.navOverview;
             document.getElementById('nav-ext').innerText = l.navExt;
             document.getElementById('nav-monopoly').innerText = l.navMonopoly;
@@ -1333,7 +1230,6 @@
             document.getElementById('mob-tab-trade').innerText = l.mobTrade;
             document.getElementById('mob-tab-insights').innerText = l.mobInsights;
 
-            // View 1
             document.getElementById('ov-h2').innerText = l.ovH2;
             document.getElementById('ov-p').innerText = l.ovP;
             document.getElementById('ov-intro').innerHTML = l.ovIntro;
@@ -1363,7 +1259,6 @@
             document.getElementById('rent-title').innerHTML = l.rentTitle;
             document.getElementById('rent-desc').innerHTML = l.rentDesc;
 
-            // View 2: Externalities
             document.getElementById('ext-badge').innerText = l.extBadge;
             document.getElementById('ext-h2').innerText = l.extH2;
             document.getElementById('ext-p').innerText = l.extP;
@@ -1398,7 +1293,6 @@
             document.getElementById('coase-lim-t').innerText = l.coaseLimT;
             document.getElementById('coase-lim-d').innerText = l.coaseLimD;
 
-            // View 3: Monopoly
             document.getElementById('mon-h2').innerText = l.monH2;
             document.getElementById('mon-p').innerText = l.monP;
             document.getElementById('dwl-title').innerText = l.dwlTitle;
@@ -1414,7 +1308,6 @@
             document.getElementById('lbl-f4').innerText = l.lblF4;
             document.getElementById('lbl-hhi-val').innerText = l.lblHhiVal;
 
-            // View 4: Public Goods
             document.getElementById('pg-h2').innerText = l.pgH2;
             document.getElementById('pg-p').innerText = l.pgP;
             document.getElementById('pg-props-title').innerText = l.pgPropsTitle;
@@ -1425,7 +1318,6 @@
             document.getElementById('pg-opt-title').innerText = l.pgOptTitle;
             document.getElementById('lbl-mc').innerText = l.lblMc;
 
-            // View 5: Trade
             document.getElementById('tr-h2').innerText = l.trH2;
             document.getElementById('tr-p').innerText = l.trP;
             document.getElementById('tr-card-title').innerText = l.trCardTitle;
@@ -1436,7 +1328,6 @@
             document.getElementById('lbl-budget-rev').innerText = l.lblBudgetRev;
             document.getElementById('tr-model-title').innerText = l.trModelTitle;
 
-            // View 6: Insights
             document.getElementById('ins-h2').innerText = l.insH2;
             document.getElementById('ins-p').innerText = l.insP;
             document.getElementById('ins1-title').innerText = l.ins1Title;
@@ -1449,7 +1340,6 @@
             document.getElementById('ins4-desc').innerText = l.ins4Desc;
             document.getElementById('main-footer').innerText = l.mainFooter;
 
-            // Update charts
             hhiChart.data.labels = l.firmLabels;
             pgChart.data.datasets[0].label = l.pgDatasetInd;
             pgChart.data.datasets[1].label = l.pgDatasetTotal;
@@ -1463,7 +1353,6 @@
             tariffChart.update();
         }
 
-        // Initial render
         updateExternalityModel();
         updateHHI();
     </script>
