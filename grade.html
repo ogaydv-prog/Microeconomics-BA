@@ -146,7 +146,7 @@
                             <div class="relative w-full h-28 flex items-center justify-center">
                                 <canvas id="activityLineChart"></canvas>
                             </div>
-                            <div class="text-sm font-bold text-blue-400 mt-2" id="val-act-text">Акт, ТК1, ТК2</div>
+                            <div class="text-sm font-bold text-blue-400 mt-2" id="val-act-text">Акт, ТК1, СРСП2, ТК2</div>
                         </div>
 
                         <!-- Виджет 3: Рубежные контроли -->
@@ -180,8 +180,8 @@
                     </div>
                 </div>
 
-                <!-- 7 Колонок с детальными оценками -->
-                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 divide-y sm:divide-y-0 divide-x divide-slate-800 border-b border-slate-800 bg-slate-900/20">
+                <!-- 8 Колонок с детальными оценками (включая СРСП-2 перед ТК-2) -->
+                <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 divide-y sm:divide-y-0 divide-x divide-slate-800 border-b border-slate-800 bg-slate-900/20">
                     <div class="p-3 text-center space-y-1">
                         <h4 class="text-[9px] font-semibold text-slate-400 uppercase tracking-wider">Посещаемость</h4>
                         <div class="text-base font-bold text-emerald-400" id="sr-val-attendance">0 / 100</div>
@@ -202,6 +202,11 @@
                         <div class="text-base font-bold text-amber-400" id="sr-val-mc1">0 / 100</div>
                         <p class="text-[8px] text-slate-500">Вес: <strong class="text-amber-400">10%</strong></p>
                     </div>
+                    <div class="p-3 text-center space-y-1 bg-cyan-950/10">
+                        <h4 class="text-[9px] font-semibold text-cyan-400 uppercase tracking-wider">СРСП 2</h4>
+                        <div class="text-base font-bold text-cyan-400" id="sr-val-srsp2">0 / 100</div>
+                        <p class="text-[8px] text-slate-500">Лоренц и Джини</p>
+                    </div>
                     <div class="p-3 text-center space-y-1">
                         <h4 class="text-[9px] font-semibold text-slate-400 uppercase tracking-wider">ТК 2</h4>
                         <div class="text-base font-bold text-indigo-400" id="sr-val-ca2">0 / 100</div>
@@ -216,6 +221,14 @@
                         <h4 class="text-[9px] font-semibold text-slate-400 uppercase tracking-wider">Экзамен</h4>
                         <div class="text-base font-bold text-rose-400" id="sr-val-exam">0 / 100</div>
                         <p class="text-[8px] text-slate-500">Вес: <strong class="text-rose-400">40%</strong></p>
+                    </div>
+                </div>
+
+                <!-- Комментарий преподавателя по СРСП-2 -->
+                <div id="sr-srsp2-comment-box" class="px-6 py-3.5 border-b border-slate-800 bg-cyan-950/15 flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-2.5 text-xs">
+                        <span class="px-2 py-0.5 rounded bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 font-bold text-[10px] uppercase tracking-wider">Комментарий СРСП-2</span>
+                        <span id="sr-srsp2-comment" class="text-slate-200 font-medium">—</span>
                     </div>
                 </div>
 
@@ -319,6 +332,7 @@
                         <div class="flex items-center space-x-1 bg-slate-950 p-1 rounded-xl border border-slate-800 text-[11px] font-bold">
                             <button onclick="setBellMetric('mc1')" id="bell-btn-mc1" class="px-2.5 py-1 rounded-lg bg-indigo-600 text-white transition-all">РК 1</button>
                             <button onclick="setBellMetric('ca1')" id="bell-btn-ca1" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-all">ТК 1</button>
+                            <button onclick="setBellMetric('srsp2')" id="bell-btn-srsp2" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-all">СРСП 2</button>
                             <button onclick="setBellMetric('ca2')" id="bell-btn-ca2" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-all">ТК 2</button>
                             <button onclick="setBellMetric('activities')" id="bell-btn-activities" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-all">Акт</button>
                             <button onclick="setBellMetric('total')" id="bell-btn-total" class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition-all">Итог</button>
@@ -378,7 +392,7 @@
                             Сводный график успеваемости группы
                         </h3>
                         <p class="text-xs text-slate-400 mt-1">
-                            Наглядное сравнение показателей: Посещаемость, Активность, ТК, РК, Экзамен и Итоговый балл.
+                            Наглядное сравнение показателей: Посещаемость, Активность, ТК, РК, СРСП-2, Экзамен и Итоговый балл.
                         </p>
                     </div>
                     <div class="flex flex-wrap items-center gap-3 text-[11px] font-semibold">
@@ -386,6 +400,7 @@
                         <div class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-teal-500"></span><span class="text-slate-300">Акт</span></div>
                         <div class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-blue-500"></span><span class="text-slate-300">ТК1</span></div>
                         <div class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-amber-500"></span><span class="text-slate-300">РК1</span></div>
+                        <div class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-cyan-500"></span><span class="text-slate-300">СРСП2</span></div>
                         <div class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-indigo-500"></span><span class="text-slate-300">ТК2</span></div>
                         <div class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-orange-500"></span><span class="text-slate-300">РК2</span></div>
                         <div class="flex items-center gap-1"><span class="w-2.5 h-2.5 rounded bg-rose-500"></span><span class="text-slate-300">Экз</span></div>
@@ -397,152 +412,69 @@
                 </div>
             </div>
 
-            <!-- Главный журнал оценок и формы ввода -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                
-                <!-- Таблица оценок (2/3 ширины) -->
-                <div class="lg:col-span-2 flex flex-col space-y-6">
-                    <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden flex flex-col shadow-2xl">
-                        <!-- Панель управления таблицей -->
-                        <div class="p-5 border-b border-slate-800 bg-slate-900/50 flex flex-col sm:flex-row justify-between items-center gap-4">
-                            <div class="relative w-full sm:w-72">
-                                <i class="fa-solid fa-magnifying-glass absolute left-3 top-3.5 text-slate-500"></i>
-                                <input type="text" id="teacher-search-input" placeholder="Поиск студента..." 
-                                    class="w-full pl-9 pr-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder-slate-600">
-                            </div>
-                            <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
-                                <button onclick="exportToCSV()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow-md transition-colors flex items-center space-x-2">
-                                    <i class="fa-solid fa-file-excel"></i>
-                                    <span>Экспорт в Excel</span>
-                                </button>
-                                <button onclick="confirmReset()" class="px-4 py-2.5 bg-rose-950/40 text-rose-400 hover:bg-rose-900/40 rounded-xl text-xs font-semibold transition-colors flex items-center space-x-2 border border-rose-900/40">
-                                    <i class="fa-solid fa-trash-can"></i>
-                                    <span>Сброс</span>
-                                </button>
-                            </div>
+            <!-- Главный журнал оценок на всю ширину с колонкой СРСП-2 и комментариями -->
+            <div class="w-full">
+                <div class="bg-slate-900 rounded-2xl border border-slate-800 overflow-hidden flex flex-col shadow-2xl">
+                    <!-- Панель управления таблицей -->
+                    <div class="p-5 border-b border-slate-800 bg-slate-900/50 flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <div class="relative w-full sm:w-80">
+                            <i class="fa-solid fa-magnifying-glass absolute left-3 top-3.5 text-slate-500"></i>
+                            <input type="text" id="teacher-search-input" placeholder="Поиск студента..." 
+                                class="w-full pl-9 pr-4 py-2.5 bg-slate-950 border border-slate-800 rounded-xl text-slate-100 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder-slate-600">
                         </div>
-
-                        <!-- Интерактивная таблица -->
-                        <div class="overflow-x-auto custom-scrollbar">
-                            <table class="w-full text-left border-collapse min-w-[810px]">
-                                <thead>
-                                    <tr class="border-b border-slate-800 bg-slate-900/40 text-slate-400 text-[9px] font-bold uppercase tracking-wider">
-                                        <th class="py-3.5 px-2 text-center w-9">№</th>
-                                        <th class="py-3.5 px-2">Студент (Микроэкономика BA)</th>
-                                        <th class="py-3.5 px-1.5 text-center w-16">Пос (10%)</th>
-                                        <th class="py-3.5 px-1.5 text-center w-14">Акт (10%)</th>
-                                        <th class="py-3.5 px-1.5 text-center w-16">ТК1 (10%)</th>
-                                        <th class="py-3.5 px-1.5 text-center w-16">РК1 (10%)</th>
-                                        <th class="py-3.5 px-1.5 text-center w-14">ТК2 (10%)</th>
-                                        <th class="py-3.5 px-1.5 text-center w-14">РК2 (10%)</th>
-                                        <th class="py-3.5 px-1.5 text-center w-14">Экз (40%)</th>
-                                        <th class="py-3.5 px-2 text-right w-14 bg-indigo-950/20">Итог</th>
-                                        <th class="py-3.5 px-2 text-center w-12">Оценка</th>
-                                        <th class="py-3.5 px-1.5 text-center w-8"></th>
-                                    </tr>
-                                </thead>
-                                <tbody id="students-table-body" class="divide-y divide-slate-800/40">
-                                    <!-- Динамические строки -->
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <!-- Пустое состояние -->
-                        <div id="empty-state" class="hidden flex flex-col items-center justify-center py-12 px-4 text-center">
-                            <div class="p-4 bg-slate-950 rounded-full text-slate-500 mb-3 text-3xl">
-                                <i class="fa-solid fa-user-slash"></i>
-                            </div>
-                            <h4 class="text-sm font-semibold text-slate-300">Журнал пуст</h4>
-                            <p class="text-xs text-slate-500 mt-1">Добавьте студентов вручную или используйте массовый импорт.</p>
-                        </div>
-                        
-                        <!-- Подсказка по редактированию -->
-                        <div class="bg-indigo-950/10 p-4 border-t border-slate-800/80 text-xs text-indigo-300 flex items-center space-x-3.5">
-                            <i class="fa-solid fa-circle-info text-indigo-400 text-lg"></i>
-                            <p><strong>Учет посещаемости:</strong> Нажмите на процент в колонке "Пос", чтобы открыть подробный чек-лист за 15 недель (45 часов)!</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Боковая панель инструментов (1/3 ширины) -->
-                <div class="space-y-6">
-                    
-                    <!-- Массовый импорт -->
-                    <div class="bg-slate-900 rounded-2xl border border-slate-800 p-5 shadow-2xl">
-                        <h3 class="text-sm font-bold text-white mb-3.5 flex items-center space-x-2">
-                            <i class="fa-solid fa-file-import text-indigo-400"></i>
-                            <span>Массовый импорт студентов</span>
-                        </h3>
-                        <p class="text-[11px] text-slate-400 mb-3 leading-relaxed">
-                            Каждая новая строка будет импортирована как ФИО студента.
-                        </p>
-                        <textarea id="bulk-import-area" rows="4" placeholder="Иванов Иван&#10;Петров Пётр" 
-                            class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder-slate-700 font-mono"></textarea>
-                        
-                        <button onclick="runBulkImport()" class="w-full mt-3 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl text-xs transition-colors flex items-center justify-center space-x-2 shadow-lg shadow-indigo-600/15">
-                            <i class="fa-solid fa-users-medical"></i>
-                            <span>Импортировать список</span>
-                        </button>
-                    </div>
-
-                    <!-- Форма добавления одного студента -->
-                    <div class="bg-slate-900 rounded-2xl border border-slate-800 p-5 shadow-2xl">
-                        <h3 class="text-sm font-bold text-white mb-3.5 flex items-center space-x-2">
-                            <i class="fa-solid fa-user-plus text-blue-400"></i>
-                            <span>Добавить студента</span>
-                        </h3>
-                        <div class="space-y-3">
-                            <div>
-                                <label class="block text-[10px] font-bold text-slate-400 mb-1">ФИО Студента</label>
-                                <input type="text" id="add-student-name" placeholder="Введите ФИО" 
-                                    class="w-full px-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all placeholder-slate-700">
-                            </div>
-                            <div class="grid grid-cols-4 gap-2">
-                                <div>
-                                    <label class="block text-[8px] font-bold text-slate-400 mb-1" title="Посещаемость">Пос</label>
-                                    <input type="number" step="any" id="add-student-attendance" min="0" max="100" placeholder="0" 
-                                        class="w-full px-1.5 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                </div>
-                                <div>
-                                    <label class="block text-[8px] font-bold text-slate-400 mb-1" title="Активность">Акт</label>
-                                    <input type="number" step="any" id="add-student-activities" min="0" max="100" placeholder="0" 
-                                        class="w-full px-1.5 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                </div>
-                                <div>
-                                    <label class="block text-[8px] font-bold text-slate-400 mb-1" title="Текущий контроль 1">ТК 1</label>
-                                    <input type="number" step="any" id="add-student-ca1" min="0" max="100" placeholder="0" 
-                                        class="w-full px-1.5 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                </div>
-                                <div>
-                                    <label class="block text-[8px] font-bold text-slate-400 mb-1" title="Рубежный контроль 1">РК 1</label>
-                                    <input type="number" step="any" id="add-student-mc1" min="0" max="100" placeholder="0" 
-                                        class="w-full px-1.5 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                </div>
-                                <div>
-                                    <label class="block text-[8px] font-bold text-slate-400 mb-1" title="Текущий контроль 2">ТК 2</label>
-                                    <input type="number" step="any" id="add-student-ca2" min="0" max="100" placeholder="0" 
-                                        class="w-full px-1.5 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                </div>
-                                <div>
-                                    <label class="block text-[8px] font-bold text-slate-400 mb-1" title="Рубежный контроль 2">РК 2</label>
-                                    <input type="number" step="any" id="add-student-mc2" min="0" max="100" placeholder="0" 
-                                        class="w-full px-1.5 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                </div>
-                                <div class="col-span-2">
-                                    <label class="block text-[8px] font-bold text-slate-400 mb-1" title="Экзамен">Экзамен (40%)</label>
-                                    <input type="number" step="any" id="add-student-exam" min="0" max="100" placeholder="0" 
-                                        class="w-full px-1.5 py-1.5 bg-slate-950 border border-slate-800 rounded-xl text-xs text-slate-200 text-center focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                                </div>
-                            </div>
-                            <button onclick="addSingleStudent()" class="w-full mt-2 py-2.5 bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-xl text-xs transition-colors flex items-center justify-center space-x-2 border border-slate-700">
-                                <i class="fa-solid fa-plus"></i>
-                                <span>Сохранить в журнал</span>
+                        <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
+                            <button onclick="exportToCSV()" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-semibold shadow-md transition-colors flex items-center space-x-2">
+                                <i class="fa-solid fa-file-excel"></i>
+                                <span>Экспорт в Excel</span>
+                            </button>
+                            <button onclick="confirmReset()" class="px-4 py-2.5 bg-rose-950/40 text-rose-400 hover:bg-rose-900/40 rounded-xl text-xs font-semibold transition-colors flex items-center space-x-2 border border-rose-900/40">
+                                <i class="fa-solid fa-trash-can"></i>
+                                <span>Сброс</span>
                             </button>
                         </div>
                     </div>
 
-                </div>
+                    <!-- Интерактивная таблица -->
+                    <div class="overflow-x-auto custom-scrollbar">
+                        <table class="w-full text-left border-collapse min-w-[1140px]">
+                            <thead>
+                                <tr class="border-b border-slate-800 bg-slate-900/40 text-slate-400 text-[9px] font-bold uppercase tracking-wider">
+                                    <th class="py-3.5 px-2 text-center w-9">№</th>
+                                    <th class="py-3.5 px-2 w-52">Студент (Микроэкономика BA)</th>
+                                    <th class="py-3.5 px-1.5 text-center w-16">Пос (10%)</th>
+                                    <th class="py-3.5 px-1.5 text-center w-14">Акт (10%)</th>
+                                    <th class="py-3.5 px-1.5 text-center w-16">ТК1 (10%)</th>
+                                    <th class="py-3.5 px-1.5 text-center w-16">РК1 (10%)</th>
+                                    <th class="py-3.5 px-1.5 text-center w-16 text-cyan-400 bg-cyan-950/20">СРСП-2</th>
+                                    <th class="py-3.5 px-2 text-left min-w-[240px] text-cyan-400 bg-cyan-950/20">Комментарий к СРСП-2</th>
+                                    <th class="py-3.5 px-1.5 text-center w-14">ТК2 (10%)</th>
+                                    <th class="py-3.5 px-1.5 text-center w-14">РК2 (10%)</th>
+                                    <th class="py-3.5 px-1.5 text-center w-14">Экз (40%)</th>
+                                    <th class="py-3.5 px-2 text-right w-14 bg-indigo-950/20">Итог</th>
+                                    <th class="py-3.5 px-2 text-center w-12">Оценка</th>
+                                </tr>
+                            </thead>
+                            <tbody id="students-table-body" class="divide-y divide-slate-800/40">
+                                <!-- Динамические строки -->
+                            </tbody>
+                        </table>
+                    </div>
 
+                    <!-- Пустое состояние -->
+                    <div id="empty-state" class="hidden flex flex-col items-center justify-center py-12 px-4 text-center">
+                        <div class="p-4 bg-slate-950 rounded-full text-slate-500 mb-3 text-3xl">
+                            <i class="fa-solid fa-user-slash"></i>
+                        </div>
+                        <h4 class="text-sm font-semibold text-slate-300">Журнал пуст</h4>
+                        <p class="text-xs text-slate-500 mt-1">Нажмите «Сброс», чтобы восстановить сформированную группу.</p>
+                    </div>
+                    
+                    <!-- Подсказка по редактированию -->
+                    <div class="bg-indigo-950/10 p-4 border-t border-slate-800/80 text-xs text-indigo-300 flex items-center space-x-3.5">
+                        <i class="fa-solid fa-circle-info text-indigo-400 text-lg"></i>
+                        <p><strong>Учет посещаемости и СРСП-2:</strong> Нажмите на процент в колонке «Пос», чтобы открыть чек-лист за 15 недель (45 часов). Баллы и комментарии по СРСП-2 можно редактировать прямо в таблице.</p>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -628,12 +560,12 @@
     <footer class="bg-slate-950 border-t border-slate-900 py-6 text-center text-xs text-slate-500">
         <div class="max-w-7xl mx-auto px-4 pr-12 flex flex-col sm:flex-row justify-between items-center gap-3">
             <p>© 2026 ALMAU Школа Цифровых Технологий и Экономики. Все права защищены.</p>
-            <p class="text-slate-600">Силлабус: Пос (10%) | Акт (10%) | ТК1 (10%) | РК1 (10%) | ТК2 (10%) | РК2 (10%) | Экзамен (40%)</p>
+            <p class="text-slate-600">Силлабус: Пос (10%) | Акт (10%) | ТК1 (10%) | РК1 (10%) | СРСП-2 | ТК2 (10%) | РК2 (10%) | Экзамен (40%)</p>
         </div>
     </footer>
 
     <script>
-        const STORAGE_KEY = 'almau_micro_ba_students_2026_final';
+        const STORAGE_KEY = 'almau_micro_ba_students_2026_srsp2_v1';
         const TOTAL_ATTENDANCE_HOURS = 45;
 
         const weekLabels = [
@@ -655,25 +587,25 @@
         ];
 
         const platonusData = [
-            { name: "Айболқызы Алиназ", activities: 30, ca1: 65.00, mc1: 65.00, ca2: 73, mc2: 0, exam: 0, absences: [] },
-            { name: "Айткали Амир Русланулы", activities: 30, ca1: 74.33, mc1: 74.33, ca2: 75, mc2: 0, exam: 0, absences: [4, 10] },
-            { name: "Амантай Әмина Бейбітқызы", activities: 50, ca1: 68.33, mc1: 68.33, ca2: 82, mc2: 0, exam: 0, absences: [13, 25, 26, 27] },
-            { name: "Гуляев Никита Константинович", activities: 45, ca1: 79.00, mc1: 79.00, ca2: 74, mc2: 0, exam: 0, absences: [4, 5, 10, 13, 14, 15, 22, 23, 24, 34, 37] },
-            { name: "Ефремов Далир Игоревич", activities: 90, ca1: 91.67, mc1: 91.67, ca2: 93, mc2: 0, exam: 0, absences: [] },
-            { name: "Жалпакова Ажар Бауыржановна", activities: 85, ca1: 76.67, mc1: 76.67, ca2: 87, mc2: 0, exam: 0, absences: [7, 13, 16, 17, 18, 22, 23, 24] },
-            { name: "Казумов Руслан", activities: 10, ca1: 56.00, mc1: 56.00, ca2: 52, mc2: 0, exam: 0, absences: [10, 13, 14, 15, 31, 32, 33] },
-            { name: "Канатова Сауле Канатовна", activities: 40, ca1: 76.67, mc1: 76.67, ca2: 82, mc2: 0, exam: 0, absences: [19] },
-            { name: "Ким Екатерина Максимовна", activities: 5, ca1: 57.67, mc1: 57.67, ca2: 40, mc2: 0, exam: 0, absences: [1, 2, 3, 4, 5, 6, 7, 10, 13, 22, 23, 24, 28, 31, 32, 33, 34, 37, 38] },
-            { name: "Курбанов Игорь Сергеевич", activities: 10, ca1: 75.00, mc1: 75.00, ca2: 65, mc2: 0, exam: 0, absences: [4, 10, 13, 14, 25, 26, 28, 29, 30, 34, 35, 36] },
-            { name: "Құдайберген Бақыт Нұрланұлы", activities: 5, ca1: 50.00, mc1: 50.00, ca2: 45, mc2: 0, exam: 0, absences: [7, 10, 11, 12, 13, 14, 15, 16, 17, 18, 22, 23, 24, 25, 26, 27] },
-            { name: "Марат Жанибек Досжанұлы", activities: 0, ca1: 55.00, mc1: 55.00, ca2: 0, mc2: 0, exam: 0, absences: [12, 13, 14, 15, 16, 17, 22, 23, 24] },
-            { name: "Мехтипур Альберт Мерабович", activities: 15, ca1: 76.67, mc1: 76.67, ca2: 65, mc2: 0, exam: 0, absences: [7, 10, 13, 14, 15, 28, 31, 32, 33, 37, 38] },
-            { name: "Рамазанова Аяла Амиржановна", activities: 40, ca1: 61.67, mc1: 61.67, ca2: 67, mc2: 0, exam: 0, absences: [10, 13, 14, 15, 25] },
-            { name: "Снесарев Даниил Сергеевич", activities: 95, ca1: 81.67, mc1: 81.67, ca2: 90, mc2: 0, exam: 0, absences: [7, 10, 13, 14, 15, 25, 26, 27, 31] },
-            { name: "Ткаченко Алина Евгеньевна", activities: 30, ca1: 65.00, mc1: 65.00, ca2: 66, mc2: 0, exam: 0, absences: [7, 10, 13, 14, 15] },
-            { name: "Тойбай Тогжан Талғатқызы", activities: 87, ca1: 69.00, mc1: 69.00, ca2: 65, mc2: 0, exam: 0, absences: [4, 5, 10, 13, 14, 15, 22, 23, 24, 28, 29, 30, 34, 37, 38] },
-            { name: "Тухтамова Анель Романовна", activities: 10, ca1: 71.67, mc1: 71.67, ca2: 60, mc2: 0, exam: 0, absences: [7, 10, 13, 14, 15, 22, 23, 24, 34, 37, 38] },
-            { name: "Чаблина Карина Сергеевна", activities: 60, ca1: 71.67, mc1: 71.67, ca2: 70, mc2: 0, exam: 0, absences: [7, 10, 13, 14, 15, 22, 23, 24, 28, 29, 30, 34, 35, 36, 37, 38] }
+            { name: "Айболқызы Алиназ", activities: 30, ca1: 65.00, mc1: 65.00, srsp2: 62, srsp2Comment: "Сделаны 4 ошибки. Краткий вывод.", ca2: 73, mc2: 0, exam: 0, absences: [] },
+            { name: "Айткали Амир Русланулы", activities: 30, ca1: 74.33, mc1: 74.33, srsp2: 0, srsp2Comment: "Задание не сдано", ca2: 75, mc2: 0, exam: 0, absences: [4, 10] },
+            { name: "Амантай Әмина Бейбітқызы", activities: 50, ca1: 68.33, mc1: 68.33, srsp2: 82, srsp2Comment: "Сделаны 2 ошибки. Вывод сформулирован.", ca2: 82, mc2: 0, exam: 0, absences: [13, 25, 26, 27] },
+            { name: "Гуляев Никита Константинович", activities: 45, ca1: 79.00, mc1: 79.00, srsp2: 62, srsp2Comment: "Сделаны 5 ошибок. Развёрнутый анализ с источниками.", ca2: 74, mc2: 0, exam: 0, absences: [4, 5, 10, 13, 14, 15, 22, 23, 24, 34, 37] },
+            { name: "Ефремов Далир Игоревич", activities: 90, ca1: 91.67, mc1: 91.67, srsp2: 87, srsp2Comment: "Сделаны 2 ошибки. Подробный разбор квинтилей.", ca2: 93, mc2: 0, exam: 0, absences: [] },
+            { name: "Жалпакова Ажар Бауыржановна", activities: 85, ca1: 76.67, mc1: 76.67, srsp2: 92, srsp2Comment: "Сделана 1 ошибка. Анализ разрыва доходов выполнен.", ca2: 87, mc2: 0, exam: 0, absences: [7, 13, 16, 17, 18, 22, 23, 24] },
+            { name: "Казумов Руслан", activities: 10, ca1: 56.00, mc1: 56.00, srsp2: 85, srsp2Comment: "Сделаны 2 ошибки. Указаны причины распределения.", ca2: 52, mc2: 0, exam: 0, absences: [10, 13, 14, 15, 31, 32, 33] },
+            { name: "Канатова Сауле Канатовна", activities: 40, ca1: 76.67, mc1: 76.67, srsp2: 95, srsp2Comment: "Сделана 1 ошибка. Содержательный разбор квинтилей.", ca2: 82, mc2: 0, exam: 0, absences: [19] },
+            { name: "Ким Екатерина Максимовна", activities: 5, ca1: 57.67, mc1: 57.67, srsp2: 0, srsp2Comment: "Задание не сдано", ca2: 40, mc2: 0, exam: 0, absences: [1, 2, 3, 4, 5, 6, 7, 10, 13, 22, 23, 24, 28, 31, 32, 33, 34, 37, 38] },
+            { name: "Курбанов Игорь Сергеевич", activities: 10, ca1: 75.00, mc1: 75.00, srsp2: 85, srsp2Comment: "Сделаны 2 ошибки. Сопоставление с данными Всемирного банка.", ca2: 65, mc2: 0, exam: 0, absences: [4, 10, 13, 14, 25, 26, 28, 29, 30, 34, 35, 36] },
+            { name: "Құдайберген Бақыт Нұрланұлы", activities: 5, ca1: 50.00, mc1: 50.00, srsp2: 0, srsp2Comment: "Задание не сдано", ca2: 45, mc2: 0, exam: 0, absences: [7, 10, 11, 12, 13, 14, 15, 16, 17, 18, 22, 23, 24, 25, 26, 27] },
+            { name: "Марат Жанибек Досжанұлы", activities: 0, ca1: 55.00, mc1: 55.00, srsp2: 70, srsp2Comment: "", ca2: 0, mc2: 0, exam: 0, absences: [12, 13, 14, 15, 16, 17, 22, 23, 24] },
+            { name: "Мехтипур Альберт Мерабович", activities: 15, ca1: 76.67, mc1: 76.67, srsp2: 0, srsp2Comment: "Задание не сдано", ca2: 65, mc2: 0, exam: 0, absences: [7, 10, 13, 14, 15, 28, 31, 32, 33, 37, 38] },
+            { name: "Рамазанова Аяла Амиржановна", activities: 40, ca1: 61.67, mc1: 61.67, srsp2: 82, srsp2Comment: "Сделаны 2 ошибки. Основной вывод сформулирован.", ca2: 67, mc2: 0, exam: 0, absences: [10, 13, 14, 15, 25] },
+            { name: "Снесарев Даниил Сергеевич", activities: 95, ca1: 81.67, mc1: 81.67, srsp2: 92, srsp2Comment: "Сделана 1 ошибка. Анализ по квинтилям выполнен.", ca2: 90, mc2: 0, exam: 0, absences: [7, 10, 13, 14, 15, 25, 26, 27, 31] },
+            { name: "Ткаченко Алина Евгеньевна", activities: 30, ca1: 65.00, mc1: 65.00, srsp2: 82, srsp2Comment: "Сделаны 2 ошибки. Краткий вывод.", ca2: 66, mc2: 0, exam: 0, absences: [7, 10, 13, 14, 15] },
+            { name: "Тойбай Тогжан Талғатқызы", activities: 87, ca1: 69.00, mc1: 69.00, srsp2: 62, srsp2Comment: "Сделаны 4 ошибки. Краткий вывод.", ca2: 65, mc2: 0, exam: 0, absences: [4, 5, 10, 13, 14, 15, 22, 23, 24, 28, 29, 30, 34, 37, 38] },
+            { name: "Тухтамова Анель Романовна", activities: 10, ca1: 71.67, mc1: 71.67, srsp2: 82, srsp2Comment: "Сделаны 2 ошибки. Основной вывод сформулирован.", ca2: 60, mc2: 0, exam: 0, absences: [7, 10, 13, 14, 15, 22, 23, 24, 34, 37, 38] },
+            { name: "Чаблина Карина Сергеевна", activities: 60, ca1: 71.67, mc1: 71.67, srsp2: 82, srsp2Comment: "Сделаны 2 ошибки. Основной вывод сформулирован.", ca2: 70, mc2: 0, exam: 0, absences: [7, 10, 13, 14, 15, 22, 23, 24, 28, 29, 30, 34, 35, 36, 37, 38] }
         ];
 
         function buildAttendanceArray(absences) {
@@ -697,6 +629,8 @@
                 activities: st.activities,
                 ca1: st.ca1,
                 mc1: st.mc1,
+                srsp2: st.srsp2 !== undefined ? st.srsp2 : 0,
+                srsp2Comment: st.srsp2Comment !== undefined ? st.srsp2Comment : "",
                 ca2: st.ca2 || 0,
                 mc2: st.mc2 || 0,
                 exam: st.exam || 0,
@@ -808,9 +742,20 @@
                 document.getElementById('sr-val-activities').textContent = `${matchedStudent.activities || 0}`;
                 document.getElementById('sr-val-ca1').textContent = `${matchedStudent.ca1 || 0}`;
                 document.getElementById('sr-val-mc1').textContent = `${matchedStudent.mc1 || 0}`;
+                document.getElementById('sr-val-srsp2').textContent = `${matchedStudent.srsp2 || 0}`;
                 document.getElementById('sr-val-ca2').textContent = `${matchedStudent.ca2 || 0}`;
                 document.getElementById('sr-val-mc2').textContent = `${matchedStudent.mc2 || 0}`;
                 document.getElementById('sr-val-exam').textContent = `${matchedStudent.exam || 0}`;
+
+                const commentBox = document.getElementById('sr-srsp2-comment-box');
+                const commentEl = document.getElementById('sr-srsp2-comment');
+                if (matchedStudent.srsp2Comment && matchedStudent.srsp2Comment.trim() !== '') {
+                    commentEl.textContent = matchedStudent.srsp2Comment;
+                    commentBox.classList.remove('hidden');
+                } else {
+                    commentEl.textContent = 'Без комментария';
+                    commentBox.classList.add('hidden');
+                }
 
                 renderStudentAttendanceDetails(matchedStudent);
                 renderPersonalCharts(matchedStudent, finalScore, gradeInfo.letter);
@@ -865,20 +810,20 @@
                 }
             });
 
-            // 2. Текущий контроль (Акт, ТК1, ТК2)
+            // 2. Текущий контроль (Акт, ТК1, СРСП2, ТК2)
             const actCtx = document.getElementById('activityLineChart').getContext('2d');
             personalActChart = new Chart(actCtx, {
                 type: 'line',
                 data: {
-                    labels: ['Акт', 'ТК 1', 'ТК 2'],
+                    labels: ['Акт', 'ТК 1', 'СРСП 2', 'ТК 2'],
                     datasets: [{
-                        data: [student.activities || 0, student.ca1 || 0, student.ca2 || 0],
+                        data: [student.activities || 0, student.ca1 || 0, student.srsp2 || 0, student.ca2 || 0],
                         borderColor: '#3b82f6',
                         backgroundColor: 'rgba(59, 130, 246, 0.12)',
                         fill: true,
                         tension: 0.3,
                         borderWidth: 2,
-                        pointBackgroundColor: '#3b82f6',
+                        pointBackgroundColor: ['#3b82f6', '#3b82f6', '#06b6d4', '#6366f1'],
                         pointRadius: 3
                     }]
                 },
@@ -887,7 +832,7 @@
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: {
-                        x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 9 } } },
+                        x: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 8 } } },
                         y: { min: 0, max: 100, grid: { color: '#1e293b' }, ticks: { display: false } }
                     }
                 }
@@ -927,7 +872,7 @@
 
         function setBellMetric(metric) {
             bellMetric = metric;
-            ['mc1', 'ca1', 'ca2', 'activities', 'total', 'mc2', 'exam'].forEach(m => {
+            ['mc1', 'ca1', 'srsp2', 'ca2', 'activities', 'total', 'mc2', 'exam'].forEach(m => {
                 const btn = document.getElementById(`bell-btn-${m}`);
                 if (!btn) return;
                 if (m === metric) {
@@ -946,6 +891,7 @@
             const scores = students.map(s => {
                 if (bellMetric === 'mc1') return Number(s.mc1) || 0;
                 if (bellMetric === 'ca1') return Number(s.ca1) || 0;
+                if (bellMetric === 'srsp2') return Number(s.srsp2) || 0;
                 if (bellMetric === 'ca2') return Number(s.ca2) || 0;
                 if (bellMetric === 'activities') return Number(s.activities) || 0;
                 if (bellMetric === 'mc2') return Number(s.mc2) || 0;
@@ -975,10 +921,6 @@
                 else counts[5]++;
             });
 
-            // Проверка соответствия регламенту AlmaU (п. 8.2):
-            // A/A- (90-100) <= 15% (допуск +5% => 20%)
-            // F/FX (<50) <= 15% (допуск +5% => 20%)
-            // Суммарно <= 30% (допуск +10% => 40%)
             const countF = counts[0];
             const countA = counts[5];
             const pctA = (countA / n) * 100;
@@ -1012,7 +954,6 @@
 
             const actualProfilePoints = counts.map(val => val);
 
-            // Идеальная кривая Гаусса с целевым центром группы (mu = 72, sigma = 14 -> A/A- ~10%, F ~6%, пик на 70-79)
             function gaussianPDF(x, mu, sigma) {
                 return (1 / (sigma * Math.sqrt(2 * Math.PI))) * Math.exp(-0.5 * Math.pow((x - mu) / sigma, 2));
             }
@@ -1133,6 +1074,10 @@
             }
         }
 
+        function escapeHtmlAttr(str) {
+            return String(str || '').replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
         function renderTeacherTable(filterQuery = '') {
             const tbody = document.getElementById('students-table-body');
             const emptyState = document.getElementById('empty-state');
@@ -1159,6 +1104,8 @@
                     student.exam
                 );
                 const gradeInfo = getLetterGrade(finalScore);
+                const srspVal = student.srsp2 !== undefined ? student.srsp2 : 0;
+                const isZeroSrsp = srspVal === 0;
 
                 const row = document.createElement('tr');
                 row.className = "hover:bg-slate-900/60 transition-colors border-b border-slate-800/40";
@@ -1167,7 +1114,7 @@
                         ${rowNumber}
                     </td>
                     <td class="py-2.5 px-2 font-medium text-slate-100">
-                        <span class="block font-bold text-slate-200 truncate max-w-[230px]" title="${student.name}">${student.name}</span>
+                        <span class="block font-bold text-slate-200 truncate max-w-[210px]" title="${escapeHtmlAttr(student.name)}">${escapeHtmlAttr(student.name)}</span>
                     </td>
                     <td class="py-2.5 px-1">
                         <button onclick="openAttendanceModal('${student.id}')" id="att-trigger-${student.id}"
@@ -1190,6 +1137,17 @@
                         <input type="number" step="any" min="0" max="100" value="${student.mc1 || 0}" 
                             onchange="updateStudentGrade('${student.id}', 'mc1', this.value)"
                             class="w-full text-center py-1 bg-slate-950 border border-slate-800 hover:border-slate-700 focus:border-indigo-500 rounded-lg text-amber-300 text-xs font-semibold transition-all">
+                    </td>
+                    <td class="py-2.5 px-1 bg-cyan-950/10">
+                        <input type="number" step="any" min="0" max="100" value="${srspVal}" 
+                            onchange="updateStudentGrade('${student.id}', 'srsp2', this.value)"
+                            class="w-full text-center py-1 bg-slate-950 border ${isZeroSrsp ? 'border-rose-500/40 text-rose-400' : 'border-cyan-500/30 text-cyan-300'} hover:border-cyan-400 focus:border-cyan-400 rounded-lg text-xs font-bold transition-all">
+                    </td>
+                    <td class="py-2.5 px-1.5 bg-cyan-950/10">
+                        <input type="text" value="${escapeHtmlAttr(student.srsp2Comment)}" placeholder="—"
+                            onchange="updateStudentComment('${student.id}', this.value)"
+                            title="${escapeHtmlAttr(student.srsp2Comment)}"
+                            class="w-full px-2 py-1 bg-slate-950/90 border border-slate-800 hover:border-slate-700 focus:border-cyan-500 rounded-lg ${isZeroSrsp ? 'text-rose-400/90' : 'text-slate-300'} text-[11px] transition-all">
                     </td>
                     <td class="py-2.5 px-1">
                         <input type="number" step="any" min="0" max="100" value="${student.ca2 || 0}" 
@@ -1214,14 +1172,18 @@
                             ${gradeInfo.letter}
                         </span>
                     </td>
-                    <td class="py-2.5 px-1 text-center">
-                        <button onclick="deleteStudent('${student.id}')" class="p-1 text-slate-500 hover:text-rose-400 rounded-lg hover:bg-rose-500/10 transition-colors" title="Удалить">
-                            <i class="fa-regular fa-trash-can text-xs"></i>
-                        </button>
-                    </td>
                 `;
                 tbody.appendChild(row);
             });
+        }
+
+        function updateStudentComment(id, value) {
+            const student = students.find(s => s.id === id);
+            if (student) {
+                student.srsp2Comment = String(value || '').trim();
+                saveDatabase();
+                showToast(`Комментарий СРСП-2 обновлён для: ${student.name}`, 'success');
+            }
         }
 
         function updateStudentGrade(id, field, value) {
@@ -1296,6 +1258,7 @@
                         { label: 'Акт', data: [], backgroundColor: 'rgba(20, 184, 166, 0.85)', borderRadius: 2, maxBarThickness: 6 },
                         { label: 'ТК1', data: [], backgroundColor: 'rgba(59, 130, 246, 0.85)', borderRadius: 2, maxBarThickness: 6 },
                         { label: 'РК1', data: [], backgroundColor: 'rgba(245, 158, 11, 0.85)', borderRadius: 2, maxBarThickness: 6 },
+                        { label: 'СРСП2', data: [], backgroundColor: 'rgba(6, 182, 212, 0.85)', borderRadius: 2, maxBarThickness: 6 },
                         { label: 'ТК2', data: [], backgroundColor: 'rgba(99, 102, 241, 0.85)', borderRadius: 2, maxBarThickness: 6 },
                         { label: 'РК2', data: [], backgroundColor: 'rgba(249, 115, 22, 0.85)', borderRadius: 2, maxBarThickness: 6 },
                         { label: 'Экз', data: [], backgroundColor: 'rgba(244, 63, 94, 0.85)', borderRadius: 2, maxBarThickness: 6 },
@@ -1328,10 +1291,11 @@
             groupChart.data.datasets[1].data = sorted.map(s => s.activities || 0);
             groupChart.data.datasets[2].data = sorted.map(s => s.ca1 || 0);
             groupChart.data.datasets[3].data = sorted.map(s => s.mc1 || 0);
-            groupChart.data.datasets[4].data = sorted.map(s => s.ca2 || 0);
-            groupChart.data.datasets[5].data = sorted.map(s => s.mc2 || 0);
-            groupChart.data.datasets[6].data = sorted.map(s => s.exam || 0);
-            groupChart.data.datasets[7].data = sorted.map(s => calculateWeightedScore(s.attendance, s.activities, s.ca1, s.mc1, s.ca2, s.mc2, s.exam));
+            groupChart.data.datasets[4].data = sorted.map(s => s.srsp2 || 0);
+            groupChart.data.datasets[5].data = sorted.map(s => s.ca2 || 0);
+            groupChart.data.datasets[6].data = sorted.map(s => s.mc2 || 0);
+            groupChart.data.datasets[7].data = sorted.map(s => s.exam || 0);
+            groupChart.data.datasets[8].data = sorted.map(s => calculateWeightedScore(s.attendance, s.activities, s.ca1, s.mc1, s.ca2, s.mc2, s.exam));
 
             groupChart.update();
         }
@@ -1508,109 +1472,6 @@
             }
         }
 
-        function addSingleStudent() {
-            const nameInput = document.getElementById('add-student-name');
-            const attInput = document.getElementById('add-student-attendance');
-            const actInput = document.getElementById('add-student-activities');
-            const ca1Input = document.getElementById('add-student-ca1');
-            const mc1Input = document.getElementById('add-student-mc1');
-            const ca2Input = document.getElementById('add-student-ca2');
-            const mc2Input = document.getElementById('add-student-mc2');
-            const exmInput = document.getElementById('add-student-exam');
-
-            const name = nameInput.value.trim();
-            if (!name) {
-                showToast('Укажите ФИО студента!', 'error');
-                return;
-            }
-
-            const parseGrade = (el) => {
-                const v = parseFloat(String(el.value).replace(',', '.'));
-                return isNaN(v) ? 0 : Math.max(0, Math.min(100, Math.round(v * 100) / 100));
-            };
-
-            const newStudent = {
-                id: 'st-' + Date.now(),
-                name,
-                attendance: parseGrade(attInput),
-                activities: parseGrade(actInput),
-                ca1: parseGrade(ca1Input),
-                mc1: parseGrade(mc1Input),
-                ca2: parseGrade(ca2Input),
-                mc2: parseGrade(mc2Input),
-                exam: parseGrade(exmInput)
-            };
-
-            ensureAttendanceHours(newStudent);
-            students.unshift(newStudent);
-            saveDatabase();
-            updateDashboardData();
-
-            nameInput.value = '';
-            attInput.value = '';
-            actInput.value = '';
-            ca1Input.value = '';
-            mc1Input.value = '';
-            ca2Input.value = '';
-            mc2Input.value = '';
-            exmInput.value = '';
-
-            showToast(`Студент ${name} добавлен!`, 'success');
-        }
-
-        function runBulkImport() {
-            const textarea = document.getElementById('bulk-import-area');
-            const text = textarea.value.trim();
-
-            if (!text) {
-                showToast('Введите ФИО студентов (по одному в строке)!', 'error');
-                return;
-            }
-
-            const lines = text.split('\n');
-            let counter = 0;
-
-            lines.forEach(line => {
-                const cleanName = line.trim();
-                if (cleanName) {
-                    const newSt = {
-                        id: 'st-' + Date.now() + Math.random().toString(36).substr(2, 4),
-                        name: cleanName,
-                        attendance: 0,
-                        activities: 0,
-                        ca1: 0,
-                        mc1: 0,
-                        ca2: 0,
-                        mc2: 0,
-                        exam: 0
-                    };
-                    ensureAttendanceHours(newSt);
-                    students.push(newSt);
-                    counter++;
-                }
-            });
-
-            if (counter > 0) {
-                saveDatabase();
-                updateDashboardData();
-                textarea.value = '';
-                showToast(`Успешно импортировано: ${counter} студентов`, 'success');
-            } else {
-                showToast('Не найдено корректных строк для импорта', 'error');
-            }
-        }
-
-        function deleteStudent(id) {
-            const index = students.findIndex(s => s.id === id);
-            if (index !== -1) {
-                const name = students[index].name;
-                students.splice(index, 1);
-                saveDatabase();
-                updateDashboardData();
-                showToast(`Студент ${name} удален из журнала.`, 'info');
-            }
-        }
-
         function confirmReset() {
             const modal = document.getElementById('confirm-modal');
             modal.classList.remove('hidden');
@@ -1645,12 +1506,13 @@
             }
 
             let csvContent = "\uFEFF";
-            csvContent += "№;ФИО Студента;Посещаемость (10%);Активность (10%);ТК1 (10%);РК1 (10%);ТК2 (10%);РК2 (10%);Экзамен (40%);Итоговый балл;Оценка\n";
+            csvContent += "№;ФИО Студента;Посещаемость (10%);Активность (10%);ТК1 (10%);РК1 (10%);СРСП-2;Комментарий к СРСП-2;ТК2 (10%);РК2 (10%);Экзамен (40%);Итоговый балл;Оценка\n";
 
             students.forEach((s, index) => {
                 const final = calculateWeightedScore(s.attendance, s.activities, s.ca1, s.mc1, s.ca2, s.mc2, s.exam);
                 const letter = getLetterGrade(final).letter;
-                csvContent += `${index + 1};"${s.name.replace(/"/g, '""')}";${s.attendance};${s.activities || 0};${s.ca1 || 0};${s.mc1 || 0};${s.ca2 || 0};${s.mc2 || 0};${s.exam || 0};${final};${letter}\n`;
+                const comm = (s.srsp2Comment || '').replace(/"/g, '""');
+                csvContent += `${index + 1};"${s.name.replace(/"/g, '""')}";${s.attendance};${s.activities || 0};${s.ca1 || 0};${s.mc1 || 0};${s.srsp2 || 0};"${comm}";${s.ca2 || 0};${s.mc2 || 0};${s.exam || 0};${final};${letter}\n`;
             });
 
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
